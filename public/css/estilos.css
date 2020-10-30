@@ -1,0 +1,8 @@
+.marco-inicial {margin-top: 56px;}
+.ocultar {display: none;}
+.tercermenu ul { display: flex; list-style-type: none;}
+.tercermenu ul li { display: flex; margin: 10px 20px; text-decoration: none;}
+.tabla {width: auto;}
+.principal { margin: 65px 3%; }
+.margenAbajo {margin-bottom : 0;}
+.margin-10 {margin-top :10px; margin-bottom: 10px;}
