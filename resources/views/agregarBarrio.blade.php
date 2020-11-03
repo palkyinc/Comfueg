@@ -3,23 +3,22 @@
 @section('contenido')
 
 
-    <h3>Modificando Barrio con ID: {{ $elemento->id }}</h3>
+    <h3>Nuevo Barrio</h3>
 
     <div class="alert bg-light border col-8 mx-auto p-4">
-    <form action="/modificarBarrio" method="post">
+    <form action="/agregarBarrio" method="post">
         @csrf
-        @method('patch')
-
-        
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="nombre">Nombre: </label>
-                <input type="text" name="nombre" value="{{$elemento->nombre}}" maxlength="30"  class="form-control">
+                <input type="text" name="nombre" value="" maxlength="30"  class="form-control">
             </div>
         </div>
-            <input type="hidden" name="id" value="{{$elemento->id}}">
-            <button type="submit" class="btn btn-primary" id="enviar">Modificar</button>
+        
+            <input type="hidden" name="id" value="">
+            <button type="submit" class="btn btn-primary" id="enviar">Crear Nuevo</button>
             <a href="/adminBarrios" class="btn btn-primary">volver</a>
+        
     </form>
     </div>
 

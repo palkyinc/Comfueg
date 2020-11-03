@@ -48,7 +48,6 @@ class AntenaController extends Controller
         $Antena->save();
         $respuesta[] = 'Antena se creo correctamente';
         return redirect('/adminAntenas')->with('mensaje', $respuesta);
-
     }
 
     /**

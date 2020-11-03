@@ -28,7 +28,7 @@ class BarrioController extends Controller
      */
     public function create()
     {
-        //
+        return view('agregarBarrio');
     }
 
     /**
@@ -39,7 +39,12 @@ class BarrioController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $Barrio = new Barrio;
+        $Barrio->nombre = $request->input('nombre');
+        $Barrio->save();
+        $respuesta[] = 'Barrio se creo correctamente';
+        return redirect('/adminBarrios')->with('mensaje', $respuesta);
     }
 
     /**
@@ -76,21 +81,26 @@ class BarrioController extends Controller
     {
         $nombre = $request->input('nombre');
         $barrio = Barrio::find($request->input('id'));
-        $this->validar($request, $barrio);
+        $this->validar($request, $barrio->id);
         $barrio->nombre = $nombre;
         $respuesta[] = 'Se cambió con exito:';
         if ($barrio->nombre != $barrio->getOriginal()['nombre']) {
             $respuesta[] = ' Nombre: ' . $barrio->getOriginal()['nombre'] . ' POR ' . $barrio->nombre;
         }
         $barrio->save();
-        return redirect('adminBarrios')->with('mensaje', 'Se cambió con exito ->' . $respuesta);
+        return redirect('adminBarrios')->with('mensaje', $respuesta);
     }
 
-    public function validar(Request $request, Barrio $barrio)
+    public function validar(Request $request, $idBarrio = "")
     {
+        if ($idBarrio) {
+            $condicion = 'required|min:2|max:45|unique:barrios,nombre,' . $idBarrio;
+        } else {
+            $condicion = 'required|min:2|max:45|unique:barrios,nombre';
+        }
         $request->validate(
             [
-                'nombre' => 'required|min:2|max:45|unique:barrios,nombre,' . $barrio->id
+                'nombre' => $condicion
             ],
             [
                 'nombre.required' => 'El campo Nombre es obligatorio',

@@ -43,6 +43,8 @@ Route::get('/adminBarrios', [BarrioController::class, 'index']);
 Route::get('/searchBarrios', [BarrioController::class, 'search']);
 Route::get('/modificarBarrio/{id}', [BarrioController::class, 'edit']);
 Route::patch('/modificarBarrio', [BarrioController::class, 'update']);
+Route::get('/agregarBarrio', [BarrioController::class, 'create']);
+Route::post('/agregarBarrio', [BarrioController::class, 'store']);
 ####################
 ####### CRUD Calles
 Route::get('/adminCalles', [CalleController::class, 'index']);
