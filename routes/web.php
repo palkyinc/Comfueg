@@ -80,6 +80,8 @@ Route::patch('/panelActivar', [PanelController::class, 'activar']);
 ####################
 ####### CRUD Planes
 Route::get('/adminPlanes', [PlanController::class, 'index']);
+Route::get('/modificarPlan/{id}', [PlanController::class, 'edit']);
+Route::patch('/modificarPlan', [PlanController::class, 'update']);
 ####################
 ####### CRUD Productos
 Route::get('/adminProductos', [ProductoController::class, 'index']);

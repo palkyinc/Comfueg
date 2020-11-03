@@ -12,9 +12,12 @@ class PlanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $planes = Plan::paginate(10);
+        $nombre = strtoupper($request->input('nombre'));
+        $planes = Plan::select("*")
+            ->whereRaw("UPPER(nombre) LIKE (?)", ["%{$nombre}%"])
+            ->paginate(10);
         return view('adminPlanes', ['planes' => $planes, 'datos' => 'active']);
     }
 
@@ -56,9 +59,23 @@ class PlanController extends Controller
      * @param  \App\Models\Plan  $plan
      * @return \Illuminate\Http\Response
      */
-    public function edit(Plan $plan)
+    public function edit( $id)
     {
-        //
+        $Plan = Plan::find($id);
+        return view('modificarPlan', ['elemento' => $Plan]);
+    }
+
+    public function validar(Request $request)
+    {
+        //dd($request->input());
+        $request->validate(
+            [
+                'nombre' => 'required|min:2|max:20',
+                'descripcion' => 'max:100',
+                'bajada' => 'required|numeric|min:1|max:99999',
+                'subida' => 'required|numeric|min:1|max:99999'
+            ]
+        );
     }
 
     /**
@@ -68,9 +85,33 @@ class PlanController extends Controller
      * @param  \App\Models\Plan  $plan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Plan $plan)
+    public function update(Request $request)
     {
-        //
+        $nombre = $request->input('nombre');
+        $bajada = $request->input('bajada');
+        $subida = $request->input('subida');
+        $descripcion = $request->input('descripcion');
+        $plan = Plan::find($request->input('id'));
+        $this->validar($request);
+        $plan->nombre = $nombre;
+        $plan->descripcion = $descripcion;
+        $plan->bajada = $bajada;
+        $plan->subida = $subida;
+        $respuesta[] = 'Se cambió con exito:';
+        if ($plan->nombre != $plan->getOriginal()['nombre']) {
+            $respuesta[] = ' Nombre: ' . $plan->getOriginal()['nombre'] . ' POR ' . $plan->nombre;
+        }
+        if ($plan->descripcion != $plan->getOriginal()['descripcion']) {
+            $respuesta[] = ' Descripción: ' . $plan->getOriginal()['descripcion'] . ' POR ' . $plan->descripcion;
+        }
+        if ($plan->bajada != $plan->getOriginal()['bajada']) {
+            $respuesta[] = ' Bajada: ' . $plan->getOriginal()['bajada'] . ' POR ' . $plan->bajada;
+        }
+        if ($plan->subida != $plan->getOriginal()['subida']) {
+            $respuesta[] = ' Subida: ' . $plan->getOriginal()['subida'] . ' POR ' . $plan->subida;
+        }
+        $plan->save();
+        return redirect('adminPlanes')->with('mensaje', $respuesta);
     }
 
     /**

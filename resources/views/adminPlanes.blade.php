@@ -41,10 +41,10 @@
                             <td>{{$plan->bajada}}</td>
                             <td>{{$plan->subida}}</td>
                             <td>{{$plan->descripcion}}</td>
-                            <td><form action="" method="post" class="margenAbajo">
-                                <input type="hidden" name="idEdit" value="{{$plan->id}}">
-                                <button class="btn"><img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px"></button>
-                            </form>
+                            <td> 
+                                <a href="/modificarPlan/{{$plan->id}}" class="margenAbajo btn btn-outline-secundary">
+                                <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                </a>
                             </td>
                             
                             </tr>
