@@ -18,9 +18,6 @@
                     <input type="text" name="cod_comfueg" value="" maxlength="45" class="form-control">
                 </div>
         </div>
-            
-    
-            <input type="hidden" name="id" value="">
             <button type="submit" class="btn btn-primary" id="enviar">Crear Nueva</button>
             <a href="/adminAntenas" class="btn btn-primary">volver</a>
     </form>

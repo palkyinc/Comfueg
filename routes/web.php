@@ -51,6 +51,8 @@ Route::get('/adminCalles', [CalleController::class, 'index']);
 Route::get('/searchCalles', [CalleController::class, 'search']);
 Route::get('/modificarCalle/{id}', [CalleController::class, 'edit']);
 Route::patch('/modificarCalle', [CalleController::class, 'update']);
+Route::get('/agregarCalle', [CalleController::class, 'create']);
+Route::post('/agregarCalle', [CalleController::class, 'store']);
 ####################
 ####### CRUD Ciudades
 Route::get('/adminCiudades', [CiudadController::class, 'index']);

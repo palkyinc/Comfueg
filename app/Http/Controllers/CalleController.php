@@ -28,7 +28,7 @@ class CalleController extends Controller
      */
     public function create()
     {
-        //
+        return view('agregarCalle');
     }
 
     /**
@@ -39,7 +39,12 @@ class CalleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $Calle = new Calle;
+        $Calle->nombre = $request->input('nombre');
+        $Calle->save();
+        $respuesta[] = 'Calle se creo correctamente';
+        return redirect('/adminCalles')->with('mensaje', $respuesta);
     }
 
     /**
@@ -76,21 +81,26 @@ class CalleController extends Controller
     {
         $nombre = $request->input('nombre');
         $calle = Calle::find($request->input('id'));
-        $this->validar($request, $calle);
+        $this->validar($request, $calle->id);
         $calle->nombre = $nombre;
         $respuesta[] = 'Se cambió con exito:';
         if ($calle->nombre != $calle->getOriginal()['nombre']) {
             $respuesta[] = ' Nombre: ' . $calle->getOriginal()['nombre'] . ' POR ' . $calle->nombre;
         }
         $calle->save();
-        return redirect('adminCalles')->with('mensaje', 'Se cambió con exito ->' . $respuesta);
+        return redirect('adminCalles')->with('mensaje', $respuesta);
     }
 
-    public function validar(Request $request, Calle $calle)
+    public function validar(Request $request, $idCalle = "")
     {
+        if ($idCalle) {
+            $condicion = 'required|min:2|max:45|unique:calles,nombre,' . $idCalle;
+        } else {
+            $condicion = 'required|min:2|max:45|unique:calles,nombre';
+        }
         $request->validate(
             [
-                'nombre' => 'required|min:2|max:45|unique:calles,nombre,' . $calle->id
+                'nombre' => $condicion
             ],
             [
                 'nombre.required' => 'El campo Nombre es obligatorio',

@@ -3,20 +3,19 @@
 @section('contenido')
 
 
-    <h3>Nuevo Barrio</h3>
+    <h3>Nueva Calle</h3>
 
     <div class="alert bg-light border col-8 mx-auto p-4">
-    <form action="/agregarBarrio" method="post">
+    <form action="/agregarCalle" method="post">
         @csrf
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="nombre">Nombre: </label>
-                <input type="text" name="nombre" value="" maxlength="30"  class="form-control">
+                <input type="text" name="nombre" value="" maxlength="45" class="form-control">
             </div>
         </div>
-            <button type="submit" class="btn btn-primary" id="enviar">Crear Nuevo</button>
-            <a href="/adminBarrios" class="btn btn-primary">volver</a>
-        
+            <button type="submit" class="btn btn-primary" id="enviar">Crear Nueva</button>
+            <a href="/adminCalles" class="btn btn-primary">volver</a>
     </form>
     </div>
 

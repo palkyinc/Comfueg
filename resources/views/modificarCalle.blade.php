@@ -14,11 +14,9 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="nombre">Nombre: </label>
+                <input type="text" name="nombre" value="{{$elemento->nombre}}" maxlength="45"  class="form-control">
             </div>
-            <input type="text" name="nombre" value="{{$elemento->nombre}}" maxlength="45"  class="form-control">
         </div>
-            
-    
             <input type="hidden" name="id" value="{{$elemento->id}}">
             <button type="submit" class="btn btn-primary" id="enviar">Modificar</button>
             <a href="/adminCalles" class="btn btn-primary">volver</a>
