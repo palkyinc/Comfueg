@@ -30,7 +30,7 @@ class AntenaController extends Controller
      */
     public function create()
     {
-        //
+        return view('agregarAntena');
     }
 
     /**
@@ -41,7 +41,14 @@ class AntenaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $Antena = new Antena;
+        $Antena->descripcion = $request->input('descripcion');
+        $Antena->cod_comfueg = $request->input('cod_comfueg');
+        $Antena->save();
+        $respuesta[] = 'Antena se creo correctamente';
+        return redirect('/adminAntenas')->with('mensaje', $respuesta);
+
     }
 
     /**
@@ -79,7 +86,7 @@ class AntenaController extends Controller
         $descripcion = $request->input('descripcion');
         $cod_comfueg = $request->input('cod_comfueg');
         $antena = Antena::find( $request->input('id'));
-        $this->validar($request, $antena);
+        $this->validar($request, $antena->id);
         $antena->descripcion = $descripcion;
         $antena->cod_comfueg = $cod_comfueg;
         $respuesta[] = 'Se cambió con exito:';
@@ -90,15 +97,22 @@ class AntenaController extends Controller
             $respuesta[] = ' Cod Comfueg: ' . $antena->getOriginal()['cod_comfueg'] . ' POR ' . $antena->cod_comfueg;
         }
         $antena->save();
-        return redirect('adminAntenas')->with('mensaje', 'Se cambió con exito ->' . $respuesta);
+        return redirect('adminAntenas')->with('mensaje', $respuesta);
     }
 
-    public function validar(Request $request, Antena $antena)
+    public function validar(Request $request, $idAntena = "")
     {
+        if ($idAntena)
+        {
+            $condicion = 'required|min:2|max:45|unique:antenas,cod_comfueg,' . $idAntena;
+        }else
+            {
+                $condicion = 'required|min:2|max:45|unique:antenas,cod_comfueg';
+            }
         $request->validate(
             [
                 'descripcion' => 'required|min:2|max:30',
-                'cod_comfueg' => 'required|min:2|max:45|unique:antenas,cod_comfueg,'.$antena->id
+                'cod_comfueg' => $condicion
             ],
             [
                 'descripcion.required' => 'El campo Descripción es obligatorio',

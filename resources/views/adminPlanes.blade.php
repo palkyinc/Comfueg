@@ -28,7 +28,9 @@
                             <th scope="col"> Bajada (Kb) </th>
                             <th scope="col"> Subida (Kb)</th>
                             <th scope="col"> Descripcion </th>
-                            <th scope="col"></th>
+                            <th scope="col" colspan="2">
+                                <a href="/agregarPlan" class="btn btn-dark">Agregar</a>
+                            </th>
                         </tr>
                     </thead>
 

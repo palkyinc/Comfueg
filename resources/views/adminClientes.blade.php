@@ -30,7 +30,9 @@
                             <th scope="col"> Telefono </th>
                             <th scope="col"> Celular </th>
                             <th scope="col"> Email </th>
-                            <th scope="col"> Agregar </th>
+                            <th scope="col" colspan="2">
+                                <a href="/agregarCliente" class="btn btn-dark">Agregar</a>
+                            </th>
                         </tr>
                     </thead>
 

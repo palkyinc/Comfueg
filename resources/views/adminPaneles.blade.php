@@ -40,7 +40,9 @@
                             <th scope="col"> Activo </th>
                             <th scope="col"> Comentario </th>
                             <th scope="col"> Cobertura </th>
-                            <th scope="col"></th>
+                            <th scope="col" colspan="2">
+                                <a href="/agregarPanel" class="btn btn-dark">Agregar</a>
+                            </th>
                         </tr>
                     </thead>
 

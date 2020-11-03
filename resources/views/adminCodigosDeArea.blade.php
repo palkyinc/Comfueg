@@ -27,7 +27,9 @@
                             <th scope="col"> Código de área </th>
                             <th scope="col"> Provicias </th>
                             <th scope="col"> Localidades </th>
-                            <th scope="col"></th>
+                            <th scope="col" colspan="2">
+                                <a href="/agregarCodigoDeArea" class="btn btn-dark">Agregar</a>
+                            </th>
                         </tr>
                     </thead>
 

@@ -33,7 +33,9 @@
                             <th scope="col"> Antena </th>
                             <th scope="col"> Estado </th>
                             <th scope="col"> Comentario </th>
-                            <th scope="col"></th>
+                            <th scope="col" colspan="2">
+                                <a href="/agregarEquipo" class="btn btn-dark">Agregar</a>
+                            </th>
                         </tr>
                     </thead>
 

@@ -30,7 +30,9 @@
                             <th scope="col"> Modelo </th>
                             <th scope="col"> Código Comfueg </th>
                             <th scope="col"> Descripción </th>
-                            <th scope="col"></th>
+                            <th scope="col" colspan="2">
+                                <a href="/agregarProducto" class="btn btn-dark">Agregar</a>
+                            </th>
                         </tr>
                     </thead>
 

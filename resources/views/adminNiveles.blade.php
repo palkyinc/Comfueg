@@ -23,7 +23,9 @@
                         <tr>
                             <th scope="col"> Id </th>
                             <th scope="col"> Nivel </th>
-                            <th scope="col"></th>
+                            <th scope="col" colspan="2">
+                                <a href="/agregarNivel" class="btn btn-dark">Agregar</a>
+                            </th>
                         </tr>
                     </thead>
 

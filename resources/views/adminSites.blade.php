@@ -29,7 +29,9 @@
                             <th scope="col"> Coordenadas </th>
                             <th scope="col"> Inicio Rango IP </th>
                             <th scope="col"> IP Disponible </th>
-                            <th scope="col"></th>
+                            <th scope="col" colspan="2">
+                                <a href="/agregarSite" class="btn btn-dark">Agregar</a>
+                            </th>
                         </tr>
                     </thead>
 

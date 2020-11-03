@@ -30,7 +30,9 @@
                             <th scope="col"> Entrecalle 2 </th>
                             <th scope="col"> Barrio </th>
                             <th scope="col"> Ciudad </th>
-                            <th scope="col"></th>
+                            <th scope="col" colspan="2">
+                                <a href="/agregarDireccion" class="btn btn-dark">Agregar</a>
+                            </th>
                         </tr>
                     </thead>
 

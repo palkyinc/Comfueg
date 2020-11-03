@@ -35,6 +35,8 @@ Route::get('/inicio', function (){return view('inicio', ['principal' => 'active'
 Route::get('/adminAntenas', [AntenaController::class, 'index']);
 Route::get('/modificarAntena/{id}', [AntenaController::class, 'edit']);
 Route::patch('/modificarAntena', [AntenaController::class, 'update']);
+Route::get('/agregarAntena', [AntenaController::class, 'create']);
+Route::post('/agregarAntena', [AntenaController::class, 'store']);
 ####################
 ####### CRUD Barrios
 Route::get('/adminBarrios', [BarrioController::class, 'index']);
