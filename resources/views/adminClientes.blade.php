@@ -55,10 +55,10 @@
                                 <td>{{$cliente->relCodAreaCel->codigoDeArea . '-15-' . $cliente->celular}}</td>
                             @endif
                             <td>{{$cliente->email}}</td>
-                            <td><form action="" method="post" class="margenAbajo">
-                                <input type="hidden" name="idEdit" value="{{$cliente->id}}">
-                                <button class="btn"><img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px"></button>
-                            </form>
+                            <td>
+                                 <a href="/modificarCliente/{{$cliente->id}}" class="margenAbajo btn btn-outline-secundary">
+                                <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                </a>
                             </td>
                             
                             </tr>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\CodigoDeArea;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
@@ -61,9 +62,34 @@ class ClienteController extends Controller
      * @param  \App\Models\Cliente  $cliente
      * @return \Illuminate\Http\Response
      */
-    public function edit(Cliente $cliente)
+    public function edit($id)
     {
-        //
+        $codigosArea = CodigoDeArea::all();
+        $Cliente = Cliente::find($id);
+        return view('modificarCliente', ['elemento' => $Cliente, 'codigosArea' => $codigosArea]);
+    }
+
+    public function validar(Request $request, Cliente $cliente)
+    {
+        //dd(CodigoDeArea::find($request->cod_area_tel)->codigoDeArea);
+        if ($request->cod_area_tel && $request->cod_area_cel)
+        {
+            $longTel = 10-strlen(CodigoDeArea::find($request->cod_area_tel)->codigoDeArea);
+            $longCel = 10-strlen(CodigoDeArea::find($request->cod_area_cel)->codigoDeArea);
+        } else {
+            $longTel = 20;
+            $longCel = 20;
+        }
+        $aValidar = [
+            'nombre' => 'nullable|min:2|max:45',
+            'apellido' => 'required|min:2|max:45',
+            'cod_area_tel' => 'required',
+            'cod_area_cel' => 'required',
+            'celular' => 'required|numeric|digits:' . $longCel,
+            'telefono' => 'nullable|numeric|digits:' . $longTel,
+            'email' => 'nullable|email:rfc,dns'
+        ];
+        $request->validate($aValidar);
     }
 
     /**
@@ -73,9 +99,48 @@ class ClienteController extends Controller
      * @param  \App\Models\Cliente  $cliente
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cliente $cliente)
+    public function update(Request $request)
     {
-        //
+        $nombre = $request->input('nombre');
+        $apellido = $request->input('apellido');
+        $cod_area_tel = $request->input('cod_area_tel');
+        $telefono = $request->input('telefono');
+        $cod_area_cel = $request->input('cod_area_cel');
+        $celular = $request->input('celular');
+        $email = $request->input('email');
+        $cliente = Cliente::find($request->input('id'));
+        $this->validar($request, $cliente);
+        $cliente->nombre = $nombre;
+        $cliente->apellido = $apellido;
+        $cliente->cod_area_tel = $cod_area_tel;
+        $cliente->telefono = $telefono;
+        $cliente->cod_area_cel = $cod_area_cel;
+        $cliente->celular = $celular;
+        $cliente->email = $email;
+        $respuesta[] = 'Se cambió con exito:';
+        if ($cliente->nombre != $cliente->getOriginal()['nombre']) {
+            $respuesta[] = ' Nombre: ' . $cliente->getOriginal()['nombre'] . ' POR ' . $cliente->nombre;
+        }
+        if ($cliente->apellido != $cliente->getOriginal()['apellido']) {
+            $respuesta[] = ' Apellido: ' . $cliente->getOriginal()['apellido'] . ' POR ' . $cliente->apellido;
+        }
+        if ($cliente->cod_area_tel != $cliente->getOriginal()['cod_area_tel']) {
+            $respuesta[] = ' Código área Teléfono: ' . $cliente->getOriginal()['cod_area_tel'] . ' POR ' . $cliente->cod_area_tel;
+        }
+        if ($cliente->telefono != $cliente->getOriginal()['telefono']) {
+            $respuesta[] = ' Teléfono: ' . $cliente->getOriginal()['telefono'] . ' POR ' . $cliente->telefono;
+        }
+        if ($cliente->cod_area_cel != $cliente->getOriginal()['cod_area_cel']) {
+            $respuesta[] = ' Código área Celular: ' . $cliente->getOriginal()['cod_area_cel'] . ' POR ' . $cliente->cod_area_cel;
+        }
+        if ($cliente->celular != $cliente->getOriginal()['celular']) {
+            $respuesta[] = ' Celular: ' . $cliente->getOriginal()['celular'] . ' POR ' . $cliente->celular;
+        }
+        if ($cliente->email != $cliente->getOriginal()['email']) {
+            $respuesta[] = ' email: ' . $cliente->getOriginal()['email'] . ' POR ' . $cliente->email;
+        }
+        $cliente->save();
+        return redirect('adminClientes')->with('mensaje', $respuesta);
     }
 
     /**

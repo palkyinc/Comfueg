@@ -95,4 +95,5 @@ Route::patch('/modificarSite', [SiteController::class, 'update']);
 ####################
 ####### CRUD Clientes
 Route::get('/adminClientes', [ClienteController::class, 'index']);
-
+Route::get('/modificarCliente/{id}', [ClienteController::class, 'edit']);
+Route::patch('/modificarCliente', [ClienteController::class, 'update']);
