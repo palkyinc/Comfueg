@@ -58,6 +58,8 @@ Route::post('/agregarCalle', [CalleController::class, 'store']);
 Route::get('/adminCiudades', [CiudadController::class, 'index']);
 Route::get('/modificarCiudad/{id}', [CiudadController::class, 'edit']);
 Route::patch('/modificarCiudad', [CiudadController::class, 'update']);
+Route::get('/agregarCiudad', [CiudadController::class, 'create']);
+Route::post('/agregarCiudad', [CiudadController::class, 'store']);
 ####################
 ####### CRUD Codigos de Area
 Route::get('/adminCodigosDeArea', [CodigoDeAreaController::class, 'index']);

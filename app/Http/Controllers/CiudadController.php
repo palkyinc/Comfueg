@@ -28,7 +28,7 @@ class CiudadController extends Controller
      */
     public function create()
     {
-        //
+        return view('agregarCiudad');
     }
 
     /**
@@ -39,7 +39,12 @@ class CiudadController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $Ciudad = new Ciudad;
+        $Ciudad->nombre = $request->input('nombre');
+        $Ciudad->save();
+        $respuesta[] = 'Ciudad se creo correctamente';
+        return redirect('/adminCiudades')->with('mensaje', $respuesta);
     }
 
     /**
@@ -76,21 +81,25 @@ class CiudadController extends Controller
     {
         $nombre = $request->input('nombre');
         $ciudad = Ciudad::find($request->input('id'));
-        $this->validar($request, $ciudad);
+        $this->validar($request, $ciudad->id);
         $ciudad->nombre = $nombre;
         $respuesta[] = 'Se cambió con exito:';
         if ($ciudad->nombre != $ciudad->getOriginal()['nombre']) {
             $respuesta[] = ' Nombre: ' . $ciudad->getOriginal()['nombre'] . ' POR ' . $ciudad->nombre;
         }
         $ciudad->save();
-        return redirect('adminCiudades')->with('mensaje', 'Se cambió con exito ->' . $respuesta);
+        return redirect('adminCiudades')->with('mensaje', $respuesta);
     }
 
-    public function validar(Request $request, Ciudad $ciudad)
+    public function validar(Request $request, $idCiudad = "")
     {
-        $request->validate(
+        if ($idCiudad) {
+            $condicion = 'required|min:2|max:45|unique:ciudades,nombre,' . $idCiudad;
+        } else {
+            $condicion = 'required|min:2|max:45|unique:ciudades,nombre';
+        }$request->validate(
             [
-                'nombre' => 'required|min:2|max:45|unique:ciudades,nombre,' . $ciudad->id
+                'nombre' => $condicion
             ],
             [
                 'nombre.required' => 'El campo Nombre es obligatorio',
