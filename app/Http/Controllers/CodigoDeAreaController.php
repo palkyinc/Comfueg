@@ -28,7 +28,7 @@ class CodigoDeAreaController extends Controller
      */
     public function create()
     {
-        //
+        return view('agregarCodigoDeArea');
     }
 
     /**
@@ -39,7 +39,14 @@ class CodigoDeAreaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $CodigoDeArea = new CodigoDeArea;
+        $CodigoDeArea->codigoDeArea = $request->input('codigoDeArea');
+        $CodigoDeArea->provincia = $request->input('provincia');
+        $CodigoDeArea->localidades = $request->input('localidades');
+        $CodigoDeArea->save();
+        $respuesta[] = 'Código De área se creo correctamente';
+        return redirect('/adminCodigosDeArea')->with('mensaje', $respuesta);
     }
 
     /**
@@ -78,7 +85,7 @@ class CodigoDeAreaController extends Controller
         $provincia = $request->input('provincia');
         $localidades = $request->input('localidades');
         $codigoArea = CodigoDeArea::find($request->input('id'));
-        $this->validar($request, $codigoArea);
+        $this->validar($request, $codigoArea->id);
         $codigoArea->codigoDeArea = $codigoDeArea;
         $codigoArea->provincia = $provincia;
         $codigoArea->localidades = $localidades;
@@ -92,14 +99,19 @@ class CodigoDeAreaController extends Controller
             $respuesta[] = ' Localidades: ' . $codigoArea->getOriginal()['localidades'] . ' POR ' . $codigoArea->localidades;
         }
         $codigoArea->save();
-        return redirect('adminCodigosDeArea')->with('mensaje', 'Se cambió con exito ->' . $respuesta);
+        return redirect('adminCodigosDeArea')->with('mensaje', $respuesta);
     }
 
-    public function validar(Request $request, CodigoDeArea $codigoDeArea)
+    public function validar(Request $request, $idCodigoDeArea = "")
     {
+        if ($idCodigoDeArea) {
+            $condicion = 'required|numeric|min:11|max:9999|unique:codigosDeArea,codigoDeArea,' . $idCodigoDeArea;
+        } else {
+            $condicion = 'required|numeric|min:11|max:9999|unique:codigosDeArea,codigoDeArea';
+        }
         $request->validate(
             [
-                'codigoDeArea' => 'required|numeric|min:11|max:9999|unique:codigosDeArea,codigoDeArea,' . $codigoDeArea->id,
+                'codigoDeArea' => $condicion,
                 'provincia' => 'required|min:2|max:45',
                 'localidad' => 'max:65535'
             ],

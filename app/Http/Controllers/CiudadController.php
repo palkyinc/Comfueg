@@ -97,7 +97,8 @@ class CiudadController extends Controller
             $condicion = 'required|min:2|max:45|unique:ciudades,nombre,' . $idCiudad;
         } else {
             $condicion = 'required|min:2|max:45|unique:ciudades,nombre';
-        }$request->validate(
+        }
+        $request->validate(
             [
                 'nombre' => $condicion
             ],
