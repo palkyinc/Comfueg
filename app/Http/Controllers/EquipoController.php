@@ -7,6 +7,8 @@ use App\Models\Equipo;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Axiom\Rules\MacAddress;
+use DateTime;
+
 class EquipoController extends Controller
 {
     /**
@@ -32,7 +34,13 @@ class EquipoController extends Controller
      */
     public function create()
     {
-        //
+        $dispositivos = Producto::get();
+        $antenas = Antena::get();
+        return view('agregarEquipo', [
+            'dispositivos' => $dispositivos,
+            'antenas' => $antenas,
+            'datos' => 'active'
+        ]);
     }
 
     /**
@@ -43,7 +51,19 @@ class EquipoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $Equipo = new Equipo;
+        $Equipo->nombre = $request->input('nombre');
+        $Equipo->num_dispositivo = $request->input('num_dispositivo');
+        $Equipo->mac_address = $request->input('mac_address');
+        $Equipo->ip = $request->input('ip');
+        $Equipo->num_antena = $request->input('num_antena');
+        $Equipo->comentario = $request->input('comentario');
+        $Equipo->fecha_alta = new DateTime();
+        //dd($Equipo->fecha_alta);
+        $Equipo->save();
+        $respuesta[] = 'El Equipo se creo correctamente';
+        return redirect('/adminEquipos')->with('mensaje', $respuesta);
     }
 
     /**
@@ -77,9 +97,14 @@ class EquipoController extends Controller
     }
     //https://github.com/mattkingshott/axiom/blob/master/README.md
     //,'unique:equipos,mac_address,' . $Equipo->id
-    public function validar(Request $request, Equipo $Equipo)
+    public function validar(Request $request, $idEquipo = "")
     {
-        $request->validate(['mac_address' => ['unique:equipos,mac_address,' . $Equipo->id, 'required', new MacAddress]]);
+        if ($idEquipo) {
+            $condicion = ['mac_address' => ['unique:equipos,mac_address,' . $idEquipo, 'required', new MacAddress]];
+        } else {
+            $condicion = ['mac_address' => ['unique:equipos,mac_address', 'required', new MacAddress]];
+        }
+        $request->validate($condicion);
         $request->validate(
             [
                 'nombre' => 'required|min:2|max:45',

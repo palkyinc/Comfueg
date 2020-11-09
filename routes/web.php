@@ -80,6 +80,8 @@ Route::get('/adminEquipos', [EquipoController::class, 'index']);
 Route::get('/modificarEquipo/{id}', [EquipoController::class, 'edit']);
 Route::patch('/modificarEquipo', [EquipoController::class, 'update']);
 Route::patch('/equipoActivar', [EquipoController::class, 'activar']);
+Route::get('/agregarEquipo', [EquipoController::class, 'create']);
+Route::post('/agregarEquipo', [EquipoController::class, 'store']);
 ####################
 ####### CRUD Niveles
 Route::get('/adminNiveles', [NivelController::class, 'index']);
