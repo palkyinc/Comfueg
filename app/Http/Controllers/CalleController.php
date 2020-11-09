@@ -28,7 +28,7 @@ class CalleController extends Controller
      */
     public function create()
     {
-        return view('agregarCalle');
+        return view('agregarCalle', ['datos' => 'active']);
     }
 
     /**

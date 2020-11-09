@@ -30,7 +30,7 @@ class AntenaController extends Controller
      */
     public function create()
     {
-        return view('agregarAntena');
+        return view('agregarAntena', ['datos' => 'active']);
     }
 
     /**

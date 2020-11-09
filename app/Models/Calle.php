@@ -9,4 +9,11 @@ class Calle extends Model
 {
     use HasFactory;
     public $timestamps = false;
+
+    public static function getCallePorNombre($calle) {
+        return Calle::select("*")
+            ->whereRaw("UPPER(nombre) LIKE (?)", ["%{$calle}%"])
+            ->first();
+    }
+
 }

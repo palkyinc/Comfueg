@@ -5,7 +5,7 @@
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de direcciones</h2>
                         <label for="calle" class="mx-3">Calle: </label>
-                        <input type="text" name="calle" class="form-control mx-3" id="calle">
+                        <input type="text" name="calle" class="form-control mx-3" id="nombreSearch">
                         <button type="submit" class="btn btn-primary mx-3">Enviar</button>
                     </form>
 
@@ -68,4 +68,17 @@
 </div>
         {{ $direcciones->links() }}
     
+@endsection
+@section('javascript')
+    <script>
+        let datosArray=[], optionsFinal;
+        fetch('/searchCalles')
+        .then(valor=>valor.json())
+        .then(valor=>
+            {
+                valor.forEach(element => datosArray.push(element.nombre));
+            });
+        optionsFinal = {data : datosArray, list:{match:{enabled:true}}};
+        $("#nombreSearch").easyAutocomplete(optionsFinal);
+    </script>
 @endsection

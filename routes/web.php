@@ -72,6 +72,8 @@ Route::post('/agregarCodigoDeArea', [CodigoDeAreaController::class, 'store']);
 Route::get('/adminDirecciones', [DireccionController::class, 'index']);
 Route::get('/modificarDireccion/{id}', [DireccionController::class, 'edit']);
 Route::patch('/modificarDireccion', [DireccionController::class, 'update']);
+Route::get('/agregarDireccion', [DireccionController::class, 'create']);
+Route::post('/agregarDireccion', [DireccionController::class, 'store']);
 ####################
 ####### CRUD Equipos
 Route::get('/adminEquipos', [EquipoController::class, 'index']);

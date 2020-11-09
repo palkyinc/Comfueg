@@ -28,7 +28,7 @@ class BarrioController extends Controller
      */
     public function create()
     {
-        return view('agregarBarrio');
+        return view('agregarBarrio', ['datos' => 'active']);
     }
 
     /**

@@ -17,8 +17,17 @@ class DireccionController extends Controller
      */
     public function index(Request $request)
     {
-        //falta hacer resolver la caja de rebusqueda.
-        $direcciones = Direccion::with('relCalle', 'relEntrecalle1', 'relBarrio', 'relCiudad', 'relEntrecalle2')->paginate(10);
+        $calle = strtoupper($request->input('calle'));
+        if ($calle)
+        {
+            $Street = Calle::getCallePorNombre($calle);
+            //dd($Street);
+            $direcciones = Direccion::with('relCalle', 'relEntrecalle1', 'relBarrio', 'relCiudad', 'relEntrecalle2')
+                            ->where("id_calle", $Street->id)
+                            ->paginate(10);
+        }else   {
+                $direcciones = Direccion::with('relCalle', 'relEntrecalle1', 'relBarrio', 'relCiudad', 'relEntrecalle2')->paginate(10);
+                }
         return view('adminDirecciones', ['direcciones' => $direcciones, 'datos' => 'active']);
     }
 
@@ -29,7 +38,17 @@ class DireccionController extends Controller
      */
     public function create()
     {
-        //
+        $calles = Calle::get();
+        $barrios = Barrio::get();
+        $ciudades = Ciudad::get();
+        return view('agregarDireccion', 
+                        [
+                        'datos' => 'active',
+                        'calles' => $calles,
+                        'barrios' => $barrios,
+                        'ciudades' => $ciudades
+                        ]
+                    );
     }
 
     /**
@@ -40,7 +59,23 @@ class DireccionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $Direccion = new Direccion;
+        $Direccion->id_calle = $request->input('id_calle');
+        $Direccion->numero = $request->input('numero');
+        $Direccion->entrecalle_1 = $request->input('entrecalle_1');
+        $Direccion->entrecalle_2 = $request->input('entrecalle_2');
+        $Direccion->id_barrio = $request->input('id_barrio');
+        $Direccion->id_ciudad = $request->input('id_ciudad');
+        if ($existe = Direccion::select('id')->where([['id_calle', $Direccion->id_calle ], ['numero', $Direccion->numero]])->first())
+        {
+            //dd($existe->id);
+            $respuesta[] = 'Dirección ya EXISTE. Es la ID: ' . $existe->id;
+        } else  {
+                $Direccion->save();
+                $respuesta[] = 'Dirección se creo correctamente';
+                }
+        return redirect('/adminDirecciones')->with('mensaje', $respuesta);
     }
 
     /**
@@ -51,7 +86,7 @@ class DireccionController extends Controller
      */
     public function show(Direccion $direccion)
     {
-        //
+        // 
     }
 
     /**

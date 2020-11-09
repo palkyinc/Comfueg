@@ -28,7 +28,7 @@ class CodigoDeAreaController extends Controller
      */
     public function create()
     {
-        return view('agregarCodigoDeArea');
+        return view('agregarCodigoDeArea', ['datos' => 'active']);
     }
 
     /**

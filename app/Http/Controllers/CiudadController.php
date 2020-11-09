@@ -28,7 +28,7 @@ class CiudadController extends Controller
      */
     public function create()
     {
-        return view('agregarCiudad');
+        return view('agregarCiudad', ['datos' => 'active']);
     }
 
     /**
