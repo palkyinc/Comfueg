@@ -103,6 +103,8 @@ Route::patch('/modificarPlan', [PlanController::class, 'update']);
 Route::get('/adminProductos', [ProductoController::class, 'index']);
 Route::get('/modificarProducto/{id}', [ProductoController::class, 'edit']);
 Route::patch('/modificarProducto', [ProductoController::class, 'update']);
+Route::get('/agregarProducto', [ProductoController::class, 'create']);
+Route::post('/agregarProducto', [ProductoController::class, 'store']);
 ####################
 ####### CRUD Sites
 Route::get('/adminSites', [SiteController::class, 'index']);

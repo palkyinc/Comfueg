@@ -31,7 +31,7 @@ class ProductoController extends Controller
      */
     public function create()
     {
-        //
+        return view('agregarProducto', ['datos' => 'active']);        
     }
 
     /**
@@ -42,7 +42,15 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $Producto = new Producto;
+        $Producto->marca = $request->input('marca');
+        $Producto->modelo = $request->input('modelo');
+        $Producto->cod_comfueg = $request->input('cod_comfueg');
+        $Producto->descripcion = $request->input('descripcion');
+        $Producto->save();
+        $respuesta[] = 'Producto se creo correctamente';
+        return redirect('/adminProductos')->with('mensaje', $respuesta);
     }
 
     /**
@@ -69,13 +77,18 @@ class ProductoController extends Controller
             'elemento' => $producto]);
     }
 
-    public function validar(Request $request, Producto $Producto)
+    public function validar(Request $request, $idProducto = "")
     {
+        if ($idProducto) {
+            $condicion = 'required|min:3|max:45|unique:equipos,mac_address,' . $idProducto;
+        } else {
+            $condicion = 'required|min:3|max:45|unique:equipos,mac_address,';
+        }
         $request->validate(
             [
                 'marca' => 'required|min:2|max:45',
                 'modelo' => 'required|min:2|max:45',
-                'cod_comfueg' => 'required|min:3|max:45|unique:equipos,mac_address,' . $Producto->id,
+                'cod_comfueg' => $condicion,
                 'descripcion' => 'max:100'
             ]
         );
@@ -95,7 +108,7 @@ class ProductoController extends Controller
         $cod_comfueg = $request->input('cod_comfueg');
         $descripcion = $request->input('descripcion');
         $Producto = Producto::find($request->input('id'));
-        $this->validar($request, $Producto);
+        $this->validar($request, $Producto->id);
         $Producto->marca = $marca;
         $Producto->modelo = $modelo;
         $Producto->cod_comfueg = $cod_comfueg;
