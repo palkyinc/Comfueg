@@ -28,7 +28,7 @@ class PlanController extends Controller
      */
     public function create()
     {
-        //
+        return view('agregarPlan', ['datos' => 'active']);
     }
 
     /**
@@ -39,7 +39,15 @@ class PlanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $Plan = new Plan;
+        $Plan->nombre = $request->input('nombre');
+        $Plan->bajada = $request->input('bajada');
+        $Plan->subida = $request->input('subida');
+        $Plan->descripcion = $request->input('descripcion');
+        $Plan->save();
+        $respuesta[] = 'Plan se creo correctamente';
+        return redirect('/adminPlanes')->with('mensaje', $respuesta);
     }
 
     /**
@@ -62,7 +70,7 @@ class PlanController extends Controller
     public function edit( $id)
     {
         $Plan = Plan::find($id);
-        return view('modificarPlan', ['elemento' => $Plan]);
+        return view('modificarPlan', ['elemento' => $Plan, 'datos' => 'active']);
     }
 
     public function validar(Request $request)

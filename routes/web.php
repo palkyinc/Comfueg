@@ -98,6 +98,8 @@ Route::post('/agregarPanel', [PanelController::class, 'store']);
 Route::get('/adminPlanes', [PlanController::class, 'index']);
 Route::get('/modificarPlan/{id}', [PlanController::class, 'edit']);
 Route::patch('/modificarPlan', [PlanController::class, 'update']);
+Route::get('/agregarPlan', [PlanController::class, 'create']);
+Route::post('/agregarPlan', [PlanController::class, 'store']);
 ####################
 ####### CRUD Productos
 Route::get('/adminProductos', [ProductoController::class, 'index']);
