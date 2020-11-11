@@ -19,10 +19,15 @@ class PanelController extends Controller
         $sitios = Site::get();
         $sitio = $request->input('sitio');
         $ssid = strtoupper($request->input('ssid'));
-        $paneles = Panel::select("*")
-            ->whereRaw("UPPER(num_site) LIKE (?)", ["{$sitio}"])
-            ->whereRaw("UPPER(ssid) LIKE (?)", ["%{$ssid}%"])
-            ->paginate(10);
+        if ($sitio || $ssid)
+        {
+            $paneles = Panel::select("*")
+                ->whereRaw("UPPER(ssid) LIKE (?)", ["%{$ssid}%"])
+                ->whereRaw("UPPER(num_site) LIKE (?)", ["%{$sitio}"])
+                ->paginate(10);
+            } else  {
+                $paneles = Panel::select('*')->paginate(10);
+            }
         return view('adminPaneles', ['paneles' => $paneles, 'datos' => 'active', 'sitios' => $sitios]);
     }
 
@@ -33,7 +38,29 @@ class PanelController extends Controller
      */
     public function create()
     {
-        //
+        $equipos = Equipo::equiposSinAgregar();
+        $equipos = $this->eliminarClientes($equipos);
+        $paneles = Panel::get();
+        $sitios = Site::get();
+        return view('agregarPanel', [
+            'equipos' => $equipos,
+            'paneles' => $paneles,
+            'sitios' => $sitios,
+            'datos' => 'active',
+            'seleccionado' => false,
+            'roles' => ['PTPAP' => 'PTPAP', 'PTPST' => 'PTPST', 'PANEL' => 'PANEL', 'SWITCH' => 'SWITCH', 'GATEWAY' => 'GATEWAY']
+        ]);
+    }
+
+    private function eliminarClientes($equipos)
+    {
+    foreach ($equipos as $key => $equipo) {
+        $ipEquipo = explode(".", $equipo->ip);
+        if ($ipEquipo[2] !== '0') {
+            unset($equipos[$key]);
+        }
+    }
+    return $equipos;
     }
 
     /**
@@ -42,13 +69,38 @@ class PanelController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function validar(Request $request, Panel $Panel)
+    public function store(Request $request)
     {
+        $this->validar($request);
+        $Panel = new Panel;
+        $Panel->ssid = $request->input('ssid');
+        $Panel->rol = $request->input('rol');
+        $Panel->id_equipo = $request->input('id_equipo');
+        $Panel->num_site = $request->input('num_site');
+        $Panel->panel_ant = $request->input('panel_ant');
+        $Panel->activo = TRUE;
+        $Panel->comentario = $request->input('comentario');
+        $cobertura = $this->subirImagen($request);
+        if ($cobertura !== $Panel->cobertura && $cobertura != 'sinMapa.svg') {
+            $Panel->cobertura = $cobertura;
+        }
+        $Panel->save();
+        $respuesta[] = 'El Panel se creo correctamente';
+        return redirect('/adminPaneles')->with('mensaje', $respuesta);
+    }
+
+    public function validar(Request $request, $idPanel = "")
+    {
+        if ($idPanel) {
+            $condicion = 'required|numeric|min:1|max:99999|unique:equipos,mac_address,' . $idPanel;
+        } else {
+            $condicion = 'required|numeric|min:1|max:99999|unique:equipos,mac_address,';
+        }
         $request->validate(
             [
                 'ssid' => 'required|min:2|max:15',
                 'rol' => 'required|min:1|max:10',
-                'id_equipo' => 'required|numeric|min:1|max:99999|unique:equipos,mac_address,' . $Panel->id,
+                'id_equipo' => $condicion,
                 'num_site' => 'required|numeric|min:1|max:99999',
                 'panel_ant' => 'nullable|numeric|min:1|max:99999',
                 'activo' => 'boolean',
@@ -75,7 +127,7 @@ class PanelController extends Controller
         $activo = $request->input('activo');
         $comentario = $request->input('comentario');
         $Panel = Panel::find($request->input('id'));
-        $this->validar($request, $Panel);
+        $this->validar($request, $Panel->id);
         $cobertura = $this->subirImagen($request);
         if ($cobertura !== $Panel->cobertura && $cobertura != 'sinMapa.svg') {
             $Panel->cobertura = $cobertura;
@@ -146,23 +198,12 @@ class PanelController extends Controller
      */
     public function edit($id)
     {
-        $equiposTodos = Equipo::get();
+        $equipos = Equipo::equiposSinAgregar();
+        $equipos = $this->eliminarClientes($equipos);
         $paneles = Panel::get();
         $panel = Panel::find($id);
-        $equipos;
-        foreach ($equiposTodos as $equipo) {
-            $encontrado = false;
-            foreach ($paneles as $unPanel) {
-                if ($equipo->id == $unPanel->id_equipo) {
-                    $encontrado = true;
-                }
-            }
-            if (!$encontrado && !$equipo->fecha_baja) {
-                $equipos[] = $equipo;
-            }
-        }
-        $equipos[] = Equipo::find($panel->id_equipo);
         $sitios = Site::get();
+        $equipos[] = Equipo::find($panel->id_equipo);
         return view('modificarPanel', [
             'elemento' => $panel,
             'equipos' => $equipos,

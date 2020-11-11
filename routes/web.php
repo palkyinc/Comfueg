@@ -91,6 +91,8 @@ Route::get('/adminPaneles', [PanelController::class, 'index']);
 Route::get('/modificarPanel/{id}', [PanelController::class, 'edit']);
 Route::patch('/modificarPanel', [PanelController::class, 'update']);
 Route::patch('/panelActivar', [PanelController::class, 'activar']);
+Route::get('/agregarPanel', [PanelController::class, 'create']);
+Route::post('/agregarPanel', [PanelController::class, 'store']);
 ####################
 ####### CRUD Planes
 Route::get('/adminPlanes', [PlanController::class, 'index']);

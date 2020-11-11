@@ -60,7 +60,6 @@ class EquipoController extends Controller
         $Equipo->num_antena = $request->input('num_antena');
         $Equipo->comentario = $request->input('comentario');
         $Equipo->fecha_alta = new DateTime();
-        //dd($Equipo->fecha_alta);
         $Equipo->save();
         $respuesta[] = 'El Equipo se creo correctamente';
         return redirect('/adminEquipos')->with('mensaje', $respuesta);
@@ -135,7 +134,7 @@ class EquipoController extends Controller
         $fecha_baja = $request->input('fecha_baja');
         $comentario = $request->input('comentario');
         $Equipo = Equipo::find($request->input('id'));
-        $this->validar($request, $Equipo);
+        $this->validar($request, $Equipo->id);
         $Equipo->nombre = $nombre;
         $Equipo->num_dispositivo = $num_dispositivo;
         $Equipo->mac_address = $mac_address;
@@ -170,7 +169,7 @@ class EquipoController extends Controller
             $respuesta[] = ' Comentario: ' . $Equipo->getOriginal()['comentario'] . ' POR ' . $Equipo->comentario;
         }
         $Equipo->save();
-        return redirect('adminEquipos')->with('mensaje', 'Se cambió con exito ->' . $respuesta);
+        return redirect('adminEquipos')->with('mensaje', $respuesta);
     }
 
     /**
