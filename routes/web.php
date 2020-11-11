@@ -119,3 +119,5 @@ Route::post('/agregarSite', [SiteController::class, 'store']);
 Route::get('/adminClientes', [ClienteController::class, 'index']);
 Route::get('/modificarCliente/{id}', [ClienteController::class, 'edit']);
 Route::patch('/modificarCliente', [ClienteController::class, 'update']);
+Route::get('/agregarCliente', [ClienteController::class, 'create']);
+Route::post('/agregarCliente', [ClienteController::class, 'store']);

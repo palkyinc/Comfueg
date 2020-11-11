@@ -31,7 +31,8 @@ class ClienteController extends Controller
      */
     public function create()
     {
-        //
+        $codigosArea = CodigoDeArea::all();
+        return view('agregarCliente', ['codigosArea' =>$codigosArea, 'datos' => 'active']);
     }
 
     /**
@@ -42,7 +43,19 @@ class ClienteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $Cliente = new Cliente;
+        $Cliente->id = $request->input('id');
+        $Cliente->nombre = ucfirst(strtolower($request->input('nombre')));
+        $Cliente->apellido = strtoupper($request->input('apellido'));
+        $Cliente->cod_area_tel = $request->input('cod_area_tel');
+        $Cliente->telefono = $request->input('telefono');
+        $Cliente->cod_area_cel = $request->input('cod_area_cel');
+        $Cliente->celular = $request->input('celular');
+        $Cliente->email = $request->input('email');
+        $Cliente->save();
+        $respuesta[] = 'Cliente se creo correctamente';
+        return redirect('/adminClientes')->with('mensaje', $respuesta);
     }
 
     /**
@@ -66,10 +79,10 @@ class ClienteController extends Controller
     {
         $codigosArea = CodigoDeArea::all();
         $Cliente = Cliente::find($id);
-        return view('modificarCliente', ['elemento' => $Cliente, 'codigosArea' => $codigosArea]);
+        return view('modificarCliente', ['elemento' => $Cliente, 'codigosArea' =>$codigosArea, 'datos' => 'active']);
     }
 
-    public function validar(Request $request, Cliente $cliente)
+    public function validar(Request $request)
     {
         //dd(CodigoDeArea::find($request->cod_area_tel)->codigoDeArea);
         if ($request->cod_area_tel && $request->cod_area_cel)
@@ -81,6 +94,7 @@ class ClienteController extends Controller
             $longCel = 20;
         }
         $aValidar = [
+            'id' => 'required|numeric|min:1|max:99999',
             'nombre' => 'nullable|min:2|max:45',
             'apellido' => 'required|min:2|max:45',
             'cod_area_tel' => 'required',
