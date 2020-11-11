@@ -29,7 +29,7 @@ class SiteController extends Controller
      */
     public function create()
     {
-        //
+        return view('agregarSite', ['datos' => 'active']);
     }
 
     /**
@@ -40,7 +40,16 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $Site = new Site;
+        $Site->nombre = $request->input('nombre');
+        $Site->descripcion = $request->input('descripcion');
+        $Site->coordenadas = $request->input('coordenadas');
+        $Site->rangoIp = $request->input('rangoIp');
+        $Site->ipDisponible = $request->input('ipDisponible');
+        $Site->save();
+        $respuesta[] = 'Site se creo correctamente';
+        return redirect('/adminSites')->with('mensaje', $respuesta);
     }
 
     /**
@@ -63,12 +72,11 @@ class SiteController extends Controller
     public function edit($id)
     {
         $Sitio = Site::find($id);
-        return view('modificarSite', ['elemento' => $Sitio]);
+        return view('modificarSite', ['elemento' => $Sitio, 'datos' => 'active']);
     }
 
     public function validar(Request $request)
     {
-        //dd($request->input());
         $request->validate(
             [
                 'nombre' => 'required|min:2|max:30',

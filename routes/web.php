@@ -112,6 +112,8 @@ Route::post('/agregarProducto', [ProductoController::class, 'store']);
 Route::get('/adminSites', [SiteController::class, 'index']);
 Route::get('/modificarSite/{id}', [SiteController::class, 'edit']);
 Route::patch('/modificarSite', [SiteController::class, 'update']);
+Route::get('/agregarSite', [SiteController::class, 'create']);
+Route::post('/agregarSite', [SiteController::class, 'store']);
 ####################
 ####### CRUD Clientes
 Route::get('/adminClientes', [ClienteController::class, 'index']);
