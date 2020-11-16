@@ -32,92 +32,96 @@ Route::get('/', function (){return view('inicio', ['principal' => 'active']);});
 Route::get('/inicio', function (){return view('inicio', ['principal' => 'active']);});
 ####################
 ####### CRUD Antenas
-Route::get('/adminAntenas', [AntenaController::class, 'index']);
-Route::get('/modificarAntena/{id}', [AntenaController::class, 'edit']);
-Route::patch('/modificarAntena', [AntenaController::class, 'update']);
-Route::get('/agregarAntena', [AntenaController::class, 'create']);
-Route::post('/agregarAntena', [AntenaController::class, 'store']);
+Route::get('/adminAntenas', [AntenaController::class, 'index'])->middleware('auth');
+Route::get('/modificarAntena/{id}', [AntenaController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarAntena', [AntenaController::class, 'update'])->middleware('auth');
+Route::get('/agregarAntena', [AntenaController::class, 'create'])->middleware('auth');
+Route::post('/agregarAntena', [AntenaController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Barrios
-Route::get('/adminBarrios', [BarrioController::class, 'index']);
-Route::get('/searchBarrios', [BarrioController::class, 'search']);
-Route::get('/modificarBarrio/{id}', [BarrioController::class, 'edit']);
-Route::patch('/modificarBarrio', [BarrioController::class, 'update']);
-Route::get('/agregarBarrio', [BarrioController::class, 'create']);
-Route::post('/agregarBarrio', [BarrioController::class, 'store']);
+Route::get('/adminBarrios', [BarrioController::class, 'index'])->middleware('auth');
+Route::get('/searchBarrios', [BarrioController::class, 'search'])->middleware('auth');
+Route::get('/modificarBarrio/{id}', [BarrioController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarBarrio', [BarrioController::class, 'update'])->middleware('auth');
+Route::get('/agregarBarrio', [BarrioController::class, 'create'])->middleware('auth');
+Route::post('/agregarBarrio', [BarrioController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Calles
-Route::get('/adminCalles', [CalleController::class, 'index']);
-Route::get('/searchCalles', [CalleController::class, 'search']);
-Route::get('/modificarCalle/{id}', [CalleController::class, 'edit']);
-Route::patch('/modificarCalle', [CalleController::class, 'update']);
-Route::get('/agregarCalle', [CalleController::class, 'create']);
-Route::post('/agregarCalle', [CalleController::class, 'store']);
+Route::get('/adminCalles', [CalleController::class, 'index'])->middleware('auth');
+Route::get('/searchCalles', [CalleController::class, 'search'])->middleware('auth');
+Route::get('/modificarCalle/{id}', [CalleController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarCalle', [CalleController::class, 'update'])->middleware('auth');
+Route::get('/agregarCalle', [CalleController::class, 'create'])->middleware('auth');
+Route::post('/agregarCalle', [CalleController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Ciudades
-Route::get('/adminCiudades', [CiudadController::class, 'index']);
-Route::get('/modificarCiudad/{id}', [CiudadController::class, 'edit']);
-Route::patch('/modificarCiudad', [CiudadController::class, 'update']);
-Route::get('/agregarCiudad', [CiudadController::class, 'create']);
-Route::post('/agregarCiudad', [CiudadController::class, 'store']);
+Route::get('/adminCiudades', [CiudadController::class, 'index'])->middleware('auth');
+Route::get('/modificarCiudad/{id}', [CiudadController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarCiudad', [CiudadController::class, 'update'])->middleware('auth');
+Route::get('/agregarCiudad', [CiudadController::class, 'create'])->middleware('auth');
+Route::post('/agregarCiudad', [CiudadController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Codigos de Area
-Route::get('/adminCodigosDeArea', [CodigoDeAreaController::class, 'index']);
-Route::get('/modificarCodigoDeArea/{id}', [CodigoDeAreaController::class, 'edit']);
-Route::patch('/modificarCodigoDeArea', [CodigoDeAreaController::class, 'update']);
-Route::get('/agregarCodigoDeArea', [CodigoDeAreaController::class, 'create']);
-Route::post('/agregarCodigoDeArea', [CodigoDeAreaController::class, 'store']);
+Route::get('/adminCodigosDeArea', [CodigoDeAreaController::class, 'index'])->middleware('auth');
+Route::get('/modificarCodigoDeArea/{id}', [CodigoDeAreaController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarCodigoDeArea', [CodigoDeAreaController::class, 'update'])->middleware('auth');
+Route::get('/agregarCodigoDeArea', [CodigoDeAreaController::class, 'create'])->middleware('auth');
+Route::post('/agregarCodigoDeArea', [CodigoDeAreaController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Direcciones
-Route::get('/adminDirecciones', [DireccionController::class, 'index']);
-Route::get('/modificarDireccion/{id}', [DireccionController::class, 'edit']);
-Route::patch('/modificarDireccion', [DireccionController::class, 'update']);
-Route::get('/agregarDireccion', [DireccionController::class, 'create']);
-Route::post('/agregarDireccion', [DireccionController::class, 'store']);
+Route::get('/adminDirecciones', [DireccionController::class, 'index'])->middleware('auth');
+Route::get('/modificarDireccion/{id}', [DireccionController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarDireccion', [DireccionController::class, 'update'])->middleware('auth');
+Route::get('/agregarDireccion', [DireccionController::class, 'create'])->middleware('auth');
+Route::post('/agregarDireccion', [DireccionController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Equipos
-Route::get('/adminEquipos', [EquipoController::class, 'index']);
-Route::get('/modificarEquipo/{id}', [EquipoController::class, 'edit']);
-Route::patch('/modificarEquipo', [EquipoController::class, 'update']);
-Route::patch('/equipoActivar', [EquipoController::class, 'activar']);
-Route::get('/agregarEquipo', [EquipoController::class, 'create']);
-Route::post('/agregarEquipo', [EquipoController::class, 'store']);
+Route::get('/adminEquipos', [EquipoController::class, 'index'])->middleware('auth');
+Route::get('/modificarEquipo/{id}', [EquipoController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarEquipo', [EquipoController::class, 'update'])->middleware('auth');
+Route::patch('/equipoActivar', [EquipoController::class, 'activar'])->middleware('auth');
+Route::get('/agregarEquipo', [EquipoController::class, 'create'])->middleware('auth');
+Route::post('/agregarEquipo', [EquipoController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Niveles
-Route::get('/adminNiveles', [NivelController::class, 'index']);
+Route::get('/adminNiveles', [NivelController::class, 'index'])->middleware('auth');
 ####################
 ####### CRUD Paneles 
-Route::get('/adminPaneles', [PanelController::class, 'index']);
-Route::get('/modificarPanel/{id}', [PanelController::class, 'edit']);
-Route::patch('/modificarPanel', [PanelController::class, 'update']);
-Route::patch('/panelActivar', [PanelController::class, 'activar']);
-Route::get('/agregarPanel', [PanelController::class, 'create']);
-Route::post('/agregarPanel', [PanelController::class, 'store']);
+Route::get('/adminPaneles', [PanelController::class, 'index'])->middleware('auth');
+Route::get('/modificarPanel/{id}', [PanelController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarPanel', [PanelController::class, 'update'])->middleware('auth');
+Route::patch('/panelActivar', [PanelController::class, 'activar'])->middleware('auth');
+Route::get('/agregarPanel', [PanelController::class, 'create'])->middleware('auth');
+Route::post('/agregarPanel', [PanelController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Planes
-Route::get('/adminPlanes', [PlanController::class, 'index']);
-Route::get('/modificarPlan/{id}', [PlanController::class, 'edit']);
-Route::patch('/modificarPlan', [PlanController::class, 'update']);
-Route::get('/agregarPlan', [PlanController::class, 'create']);
-Route::post('/agregarPlan', [PlanController::class, 'store']);
+Route::get('/adminPlanes', [PlanController::class, 'index'])->middleware('auth');
+Route::get('/modificarPlan/{id}', [PlanController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarPlan', [PlanController::class, 'update'])->middleware('auth');
+Route::get('/agregarPlan', [PlanController::class, 'create'])->middleware('auth');
+Route::post('/agregarPlan', [PlanController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Productos
-Route::get('/adminProductos', [ProductoController::class, 'index']);
-Route::get('/modificarProducto/{id}', [ProductoController::class, 'edit']);
-Route::patch('/modificarProducto', [ProductoController::class, 'update']);
-Route::get('/agregarProducto', [ProductoController::class, 'create']);
-Route::post('/agregarProducto', [ProductoController::class, 'store']);
+Route::get('/adminProductos', [ProductoController::class, 'index'])->middleware('auth');
+Route::get('/modificarProducto/{id}', [ProductoController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarProducto', [ProductoController::class, 'update'])->middleware('auth');
+Route::get('/agregarProducto', [ProductoController::class, 'create'])->middleware('auth');
+Route::post('/agregarProducto', [ProductoController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Sites
-Route::get('/adminSites', [SiteController::class, 'index']);
-Route::get('/modificarSite/{id}', [SiteController::class, 'edit']);
-Route::patch('/modificarSite', [SiteController::class, 'update']);
-Route::get('/agregarSite', [SiteController::class, 'create']);
-Route::post('/agregarSite', [SiteController::class, 'store']);
+Route::get('/adminSites', [SiteController::class, 'index'])->middleware('auth');
+Route::get('/modificarSite/{id}', [SiteController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarSite', [SiteController::class, 'update'])->middleware('auth');
+Route::get('/agregarSite', [SiteController::class, 'create'])->middleware('auth');
+Route::post('/agregarSite', [SiteController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Clientes
-Route::get('/adminClientes', [ClienteController::class, 'index']);
-Route::get('/modificarCliente/{id}', [ClienteController::class, 'edit']);
-Route::patch('/modificarCliente', [ClienteController::class, 'update']);
-Route::get('/agregarCliente', [ClienteController::class, 'create']);
-Route::post('/agregarCliente', [ClienteController::class, 'store']);
+Route::get('/adminClientes', [ClienteController::class, 'index'])->middleware('auth');
+Route::get('/modificarCliente/{id}', [ClienteController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarCliente', [ClienteController::class, 'update'])->middleware('auth');
+Route::get('/agregarCliente', [ClienteController::class, 'create'])->middleware('auth');
+Route::post('/agregarCliente', [ClienteController::class, 'store'])->middleware('auth');
+####################
+####### Auth Routes
+Auth::routes();
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

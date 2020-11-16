@@ -8,10 +8,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 20XX-XX-XX
 ### Added
+### Changed
+### Removed
+
+## [0.2.0] - 20XX-XX-XX
+### Added
+1. Carpeta sql renombrada a extras.
+2. Nuevo backup de la base de datos con las tablas eliminadas. -> slam20201115.sql
+3. Instalar Laravel UI
+4. Instalar node.js -> https://nodejs.org/en/download/ para poder correr los comandos NPM.
+5. Se habilitó envios de mail.
+	- Configuración con datos de cuenta de gmail en .env
+6. Backup en 'extras' de los archivos:
+	- vendor/laravel/framework/src/illuminate/Auth/Passwords/CanResetPassword.php
+	- vendor/laravel/framework/src/illuminate/Auth/Notifications/ResetPassword.php
+
+-Instalar Laravel Permission de Spatie
+    composer require spatie/laravel-permission
+-
+
 
 ### Changed
-
+	
 ### Removed
+1. Base de Datos.
+  - Tabla audits
+  - Tabla usuarios
+  - Tabla niveles
+  - Version con las tablas removidas -> slam20201115.sql
+  
 
 ## [0.1.1] - 2020-11-12
 ### Added
