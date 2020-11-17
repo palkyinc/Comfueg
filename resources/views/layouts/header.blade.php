@@ -54,6 +54,10 @@
 		          <a class="dropdown-item" href="/adminSites">Sitios</a>
 		          <div class="dropdown-divider"></div>
 		          <a class="dropdown-item" href="/adminClientes">Clientes</a>
+		          <div class="dropdown-divider"></div>
+		          <a class="dropdown-item" href="/adminUsers">Usuarios</a>
+		          <a class="dropdown-item" href="/adminRoles">Roles</a>
+		          <a class="dropdown-item" href="/adminPermissions">Permisos</a>
 		        </div>
 		      </li>
 		    </ul>

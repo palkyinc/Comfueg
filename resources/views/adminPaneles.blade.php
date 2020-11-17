@@ -84,7 +84,7 @@
                             <td>{{$panel->comentario}}</td>
                             <td>{{$panel->cobertura}}</td>
                             <td>
-                                <a href="/modificarPanel/{{$panel->id}}" class="margenAbajo btn btn-outline-secundary">
+                                <a href="/modificarPanel/{{$panel->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
                             </td>

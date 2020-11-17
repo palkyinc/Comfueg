@@ -38,7 +38,7 @@
                     <th scope="row"> {{$barrio->id}}</th>
                     <td>{{$barrio->nombre}}</td>
                     <td>
-                        <a href="/modificarBarrio/{{ $barrio->id }}" class="margenAbajo btn btn-outline-secundary">
+                        <a href="/modificarBarrio/{{ $barrio->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                         <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                         </a>
                     </td>

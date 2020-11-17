@@ -122,6 +122,21 @@ Route::patch('/modificarCliente', [ClienteController::class, 'update'])->middlew
 Route::get('/agregarCliente', [ClienteController::class, 'create'])->middleware('auth');
 Route::post('/agregarCliente', [ClienteController::class, 'store'])->middleware('auth');
 ####################
+####### CRUD Users
+Route::get('/adminUsers', [App\Http\Controllers\UserController::class, 'index'])->middleware('auth');
+Route::get('/modificarUser/{id}', [App\Http\Controllers\UserController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarUser', [App\Http\Controllers\UserController::class, 'update'])->middleware('auth');
+####################
+####### CRUD Roles
+Route::get('/adminRoles', [App\Http\Controllers\RoleController::class, 'index'])->middleware('auth');
+Route::get('/modificarRole/{id}', [App\Http\Controllers\RoleController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarRole', [App\Http\Controllers\RoleController::class, 'update'])->middleware('auth');
+####################
+####### CRUD Permissions
+Route::get('/adminPermissions', [App\Http\Controllers\PermissionController::class, 'index'])->middleware('auth');
+Route::get('/modificarPermission/{id}', [App\Http\Controllers\PermissionController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarPermission', [App\Http\Controllers\PermissionController::class, 'update'])->middleware('auth');
+####################
 ####### Auth Routes
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -55,7 +55,7 @@
                                     @csrf
                                     @method('patch')
                                         <input type="hidden" name="idEdit" value="{{$equipo->id}}">
-                                        <button class="btn btn-danger">Cambiar</button>
+                                        <button class="btn btn-danger"  title="Habilitar">Cambiar</button>
                                     </form>
                                 </td>
                             @else
@@ -64,13 +64,13 @@
                                     @csrf
                                     @method('patch')
                                         <input type="hidden" name="idEdit" value="{{$equipo->id}}">
-                                        <button class="btn btn-success">Cambiar</button>
+                                        <button class="btn btn-success" title="DesHabilitar">Cambiar</button>
                                     </form>
                                 </td>
                             @endif
                             <td>{{$equipo->comentario}}</td>
                             <td>
-                                <a href="/modificarEquipo/{{ $equipo->id }}" class="margenAbajo btn btn-outline-secundary">
+                                <a href="/modificarEquipo/{{ $equipo->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
                             </td>

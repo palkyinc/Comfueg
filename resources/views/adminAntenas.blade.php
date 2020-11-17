@@ -42,7 +42,7 @@
                             <td>{{$antena->descripcion}}</td>
                             <td>{{$antena->cod_comfueg}}</td>
                             <td>
-                                <a href="/modificarAntena/{{ $antena->id }}" class="margenAbajo btn btn-outline-secundary">
+                                <a href="/modificarAntena/{{ $antena->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
                             </td>

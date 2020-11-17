@@ -22,10 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. Backup en 'extras' de los archivos:
 	- vendor/laravel/framework/src/illuminate/Auth/Passwords/CanResetPassword.php
 	- vendor/laravel/framework/src/illuminate/Auth/Notifications/ResetPassword.php
-
--Instalar Laravel Permission de Spatie
-    composer require spatie/laravel-permission
--
+7. Instalar Laravel Permission de Spatie
+8. Se Generan vistas de admin, editar, nuevo para Usuarios, Roles y Permisos.
+9.
+10. Se borra Niveles del Menú Datos.
 
 
 ### Changed

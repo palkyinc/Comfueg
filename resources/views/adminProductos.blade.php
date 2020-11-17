@@ -46,7 +46,7 @@
                             <td>{{$producto->cod_comfueg}}</td>
                             <td>{{$producto->descripcion}}</td>
                             <td>
-                                <a href="/modificarProducto/{{$producto->id}}" class="margenAbajo btn btn-outline-secundary">
+                                <a href="/modificarProducto/{{$producto->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
                             </td>
