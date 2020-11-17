@@ -47,7 +47,6 @@
 		          <a class="dropdown-item" href="/adminCodigosDeArea">Códigos de Área</a>
 		          <a class="dropdown-item" href="/adminDirecciones">Direcciones</a>
 		          <a class="dropdown-item" href="/adminEquipos">Equipos</a>
-		          <a class="dropdown-item" href="/adminNiveles">Niveles</a>
 		          <a class="dropdown-item" href="/adminPaneles">Paneles</a>
 		          <a class="dropdown-item" href="/adminProductos">Productos</a>
 		          <a class="dropdown-item" href="/adminPlanes">Planes</a>

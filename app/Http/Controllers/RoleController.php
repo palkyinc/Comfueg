@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -53,7 +54,49 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        //
+        $Role = Role::find($id);
+        $PermissionsAdded = $Role->getPermissionNames();
+        $Permissions = Permission::select("id", "name")->get();
+        foreach ($Permissions as $Permission) {
+            foreach ($PermissionsAdded as $PermissionAdded) {
+                if ($PermissionAdded == $Permission->name) {
+                    $Permission->checked = 1;
+                }
+            }
+            if (null === $Permission->checked) {
+                $Permission->checked = 0;
+            }
+        }
+        return view(
+            'agregarPermissionsToRole',
+            [
+                'Permissions' => $Permissions,
+                'Role' => $Role,
+                'datos' => 'active'
+            ]
+        );
+    }
+
+    /**
+     * Update the Permission added into roles in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePermissionsToRole(Request $request)
+    {
+        $Role = Role::find($request->input('id'));
+        $Permissions = Permission::select("*")->get();
+        foreach ($Permissions as $Permission) {
+            if (null !== $request->input($Permission->name)) {
+                $Permission->assignRole($Role);
+            } else {
+                $Permission->removeRole($Role);
+            }
+        }
+        $respuesta[] = 'Se agrego/quito permisos del Role '.$Role->name.' con exito:';
+        return redirect('adminRoles')->with('mensaje', $respuesta);
     }
 
     /**

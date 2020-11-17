@@ -11,7 +11,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="name">Nombre: </label>
-                <input type="text" name="name" value="" maxlength="255"  class="form-control">
+                <input type="text" name="name" value="" maxlength="255"  class="form-control" autofocus>
             </div>
         </div>
             <button type="submit" class="btn btn-primary" id="enviar">Crear Nuevo</button>

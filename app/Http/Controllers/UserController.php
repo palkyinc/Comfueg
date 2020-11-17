@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Datetime;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -59,7 +59,54 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $User = User::find($id);
+        $RolesAdded = $User->getRoleNames();
+        $Roles = Role::select("id", "name")->get();
+        foreach ($Roles as $Role) {
+            foreach ($RolesAdded as $RoleAdded) {
+                if ($RoleAdded == $Role->name) {
+                    $Role->checked = 1;
+                }
+            }
+            if (null === $Role->checked) {
+                $Role->checked = 0;
+            }
+        }
+        return view(
+            'agregarRoleToUser',
+            [
+                'Roles' => $Roles,
+                'User' => $User,
+                'datos' => 'active'
+            ]
+        );
+    }
+    
+    /**
+     * Update the Permission added into roles in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateRoleToUser(Request $request)
+    {
+        $request->validate(
+            [
+                'role' => 'required',
+                ]
+            );
+        //dd($request);
+        $User = User::find($request->input('id'));
+        $Roles = $User->getRoleNames();
+        foreach ($Roles as $Role) {
+            $User->removeRole($Role);
+        } 
+        if ($request->input('role') != 'none'){
+            $User->assignRole($request->input('role'));
+        }
+        $respuesta[] = 'Se cambió Rol del Usuario ' . $User->name . ' con exito:';
+        return redirect('adminUsers')->with('mensaje', $respuesta);
     }
 
     /**

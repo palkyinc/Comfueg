@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
@@ -53,9 +54,49 @@ class PermissionController extends Controller
      */
     public function show($id)
     {
-        //
+        $Permission = Permission::find($id);
+        $rolesAdded = $Permission->getRoleNames();
+        $roles = Role::select("id", "name")->get();
+        foreach ($roles as $role) {
+            foreach ($rolesAdded as $roleAdded) {
+                if ($roleAdded == $role->name) {
+                    $role->checked = 1;
+                }
+            }
+            if (null === $role->checked) {
+                $role->checked = 0;
+            }
+        }
+        return view('agregarPermissionToRoles',
+        [
+            'Permission' => $Permission,
+            'roles' => $roles, 
+            'datos' => 'active'
+        ]);
     }
 
+    /**
+     * Update the Permission added into roles in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePermissionToRoles(Request $request)
+    {
+        $Permission = Permission::find($request->input('id'));
+        $roles = Role::select("*")->get();
+        foreach ($roles as $role) {
+            if (null !== $request->input($role->name)) {
+                $role->givePermissionTo($Permission);
+            } else {
+                $role->revokePermissionTo($Permission);
+            }
+        }
+        $respuesta[] = 'Se agrego/quito permiso de Roles con exito:';
+        return redirect('adminPermissions')->with('mensaje', $respuesta);
+    }
+    
     /**
      * Show the form for editing the specified resource.
      *

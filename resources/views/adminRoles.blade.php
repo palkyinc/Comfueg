@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-
+@can('roles_index')
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración de Roles</h2>
                         <label for="nombre" class="mx-3">Nombre</label>
@@ -27,7 +27,9 @@
                             <th scope="col"> Nombre </th>
                             <th scope="col"> Creado </th>
                             <th scope="col" colspan="2">
+                                @can('roles_create')
                                 <a href="/agregarRole" class="btn btn-dark">Agregar</a>
+                                @endcan
                             </th>
                         </tr>
                     </thead>
@@ -40,9 +42,14 @@
                             <td>{{$Role->name}}</td>
                             <td>{{$Role->created_at}}</td>
                             <td>
+                                @can('roles_edit')
                                 <a href="/modificarRole/{{ $Role->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                <a href="/agregarPermissionsToRole/{{ $Role->id }}" class="margenAbajo btn btn-outline-secundary" title="Agregar/Quitar a Rol">
+                                <img src="imagenes/iconfinder_user-permission_3018548.svg" alt="imagen de Cambio de Roles" height="20px">
+                                </a>
+                                @endcan
                             </td>
                             
                             </tr>
@@ -51,5 +58,5 @@
                 </table>
 </div>
         {{ $Roles->links() }}
-    
+@endcan    
 @endsection

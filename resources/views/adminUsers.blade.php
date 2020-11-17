@@ -45,6 +45,9 @@
                                 <a href="/modificarUser/{{ $User->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                <a href="/agregarRoleToUser/{{ $User->id }}" class="margenAbajo btn btn-outline-secundary" title="Cambiar a Rol">
+                                <img src="imagenes/iconfinder_user-permission_3018548.svg" alt="imagen de Cambio de Roles" height="20px">
+                                </a>
                             </td>
                             
                             </tr>
