@@ -24,8 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- vendor/laravel/framework/src/illuminate/Auth/Notifications/ResetPassword.php
 7. Instalar Laravel Permission de Spatie
 8. Se Generan vistas de admin, editar, nuevo para Usuarios, Roles y Permisos.
-9.
-10. Se borra Niveles del Menú Datos.
+9. Se Generan vistas de agregar para Usuarios, Roles y Permisos.
+10. 
 
 
 ### Changed
@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Tabla usuarios
   - Tabla niveles
   - Version con las tablas removidas -> slam20201115.sql
+2. Se borra Niveles del Menú Datos, del model, controller y todas las vistas.
   
 
 ## [0.1.1] - 2020-11-12

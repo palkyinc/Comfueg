@@ -28,7 +28,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        //
+        return view('agregarRole', ['datos' => 'active']);
     }
 
     /**
@@ -39,7 +39,10 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        Role::create(['name' => $request->input('name')]);
+        $respuesta[] = 'Permiso se creó correctamente';
+        return redirect('/adminRoles')->with('mensaje', $respuesta);
     }
 
     /**

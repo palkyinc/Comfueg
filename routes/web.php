@@ -126,16 +126,22 @@ Route::post('/agregarCliente', [ClienteController::class, 'store'])->middleware(
 Route::get('/adminUsers', [App\Http\Controllers\UserController::class, 'index'])->middleware('auth');
 Route::get('/modificarUser/{id}', [App\Http\Controllers\UserController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarUser', [App\Http\Controllers\UserController::class, 'update'])->middleware('auth');
+Route::get('/agregarUser', [App\Http\Controllers\UserController::class, 'create'])->middleware('auth');
+Route::post('/agregarUser', [App\Http\Controllers\UserController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Roles
 Route::get('/adminRoles', [App\Http\Controllers\RoleController::class, 'index'])->middleware('auth');
 Route::get('/modificarRole/{id}', [App\Http\Controllers\RoleController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarRole', [App\Http\Controllers\RoleController::class, 'update'])->middleware('auth');
+Route::get('/agregarRole', [App\Http\Controllers\RoleController::class, 'create'])->middleware('auth');
+Route::post('/agregarRole', [App\Http\Controllers\RoleController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Permissions
 Route::get('/adminPermissions', [App\Http\Controllers\PermissionController::class, 'index'])->middleware('auth');
 Route::get('/modificarPermission/{id}', [App\Http\Controllers\PermissionController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarPermission', [App\Http\Controllers\PermissionController::class, 'update'])->middleware('auth');
+Route::get('/agregarPermission', [App\Http\Controllers\PermissionController::class, 'create'])->middleware('auth');
+Route::post('/agregarPermission', [App\Http\Controllers\PermissionController::class, 'store'])->middleware('auth');
 ####################
 ####### Auth Routes
 Auth::routes();

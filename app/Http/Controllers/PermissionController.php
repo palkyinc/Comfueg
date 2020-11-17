@@ -28,7 +28,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        //
+        return view('agregarPermission', ['datos' => 'active']);
     }
 
     /**
@@ -39,7 +39,10 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        Permission::create(['name' => $request->input('name')]);
+        $respuesta[] = 'Permiso se creó correctamente';
+        return redirect('/adminPermissions')->with('mensaje', $respuesta);
     }
 
     /**

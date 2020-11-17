@@ -27,7 +27,7 @@
                             <th scope="col"> Nombre </th>
                             <th scope="col"> Creado </th>
                             <th scope="col" colspan="2">
-                                <a href="/agregarAntena" class="btn btn-dark">Agregar</a>
+                                <a href="/agregarRole" class="btn btn-dark">Agregar</a>
                             </th>
                         </tr>
                     </thead>

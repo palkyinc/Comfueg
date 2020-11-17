@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Datetime;
 
 class UserController extends Controller
 {
@@ -28,7 +30,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('agregarUser', ['datos' => 'active']);
     }
 
     /**
@@ -39,7 +41,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validar($request);
+        $User = new User;
+        $User->name = $request->input('name');
+        $User->email = $request->input('email');
+        $User->password = Hash::make($request->input('name'));
+        $User->save();
+        $respuesta[] = 'Permiso se creó correctamente';
+        return redirect('/adminUsers')->with('mensaje', $respuesta);
     }
 
     /**
@@ -92,13 +101,16 @@ class UserController extends Controller
     {
         if ($idUser) {
             $condicion = 'required|email:rfc,dns|unique:users,email,' . $idUser;
+            $condicion2 = 'nullable|min:8|max:25';
         } else {
             $condicion = 'required|email:rfc,dns|unique:users,email';
+            $condicion2 = 'required|min:8|max:25';
         }
         $request->validate(
             [
                 'name' => 'required|min:2|max:255',
-                'email' => $condicion
+                'email' => $condicion,
+                'password' => $condicion2
             ]
         );
     }
