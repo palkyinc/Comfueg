@@ -1,9 +1,9 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-@can('roles_index')
 
     <h3>Agregar/quitar permisos a Rol: {{ $Role->name }}</h3>
+@can('roles_edit')
 
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarPermissionsToRole" method="post">

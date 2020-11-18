@@ -4,7 +4,7 @@
 
 
     <h3>Modificando Barrio con ID: {{ $elemento->id }}</h3>
-
+@can('barrios_edit')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarBarrio" method="post">
         @csrf
@@ -32,5 +32,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan 
 @endsection

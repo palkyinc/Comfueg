@@ -1,6 +1,6 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
+@can('usuarios_index')
 
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración de Usuarios</h2>
@@ -28,7 +28,9 @@
                             <th scope="col"> Email </th>
                             <th scope="col"> Creado </th>
                             <th scope="col" colspan="2">
+                                @can('usuarios_create')
                                 <a href="/agregarUser" class="btn btn-dark">Agregar</a>
+                                @endcan
                             </th>
                         </tr>
                     </thead>
@@ -42,12 +44,14 @@
                             <td>{{$User->email}}</td>
                             <td>{{$User->created_at}}</td>
                             <td>
+                                @can('usuarios_edit')
                                 <a href="/modificarUser/{{ $User->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
                                 <a href="/agregarRoleToUser/{{ $User->id }}" class="margenAbajo btn btn-outline-secundary" title="Cambiar a Rol">
                                 <img src="imagenes/iconfinder_user-permission_3018548.svg" alt="imagen de Cambio de Roles" height="20px">
                                 </a>
+                                @endcan
                             </td>
                             
                             </tr>
@@ -56,5 +60,5 @@
                 </table>
 </div>
         {{ $Users->links() }}
-    
+@endcan    
 @endsection

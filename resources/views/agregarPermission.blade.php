@@ -4,7 +4,7 @@
 
 
     <h3>Nuevo Permiso</h3>
-
+@can('permisos_create')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarPermission" method="post">
         @csrf
@@ -29,5 +29,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

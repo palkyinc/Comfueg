@@ -4,7 +4,7 @@
 
 
     <h3>Agregar Dirección nueva.</h3>
-
+@can('direcciones_create')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarDireccion" method="post">
         @csrf
@@ -80,5 +80,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

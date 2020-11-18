@@ -4,7 +4,7 @@
 
 
     <h3>Modificando Usuario con ID: {{ $elemento->id }}</h3>
-
+@can('usuarios_edit')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarUser" method="post">
         @csrf
@@ -36,5 +36,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

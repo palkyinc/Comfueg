@@ -4,7 +4,7 @@
 
 
     <h3>Modificando Código de Área con ID: {{ $elemento->id }}</h3>
-
+@can('codigoDeArea_edit')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarCodigoDeArea" method="post">
         @csrf
@@ -43,5 +43,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

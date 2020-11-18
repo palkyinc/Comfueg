@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-
+@can('paneles_index')
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de Paneles</h2>
                         <label for="ssid" class="mx-3">SSID</label>
@@ -41,7 +41,9 @@
                             <th scope="col"> Comentario </th>
                             <th scope="col"> Cobertura </th>
                             <th scope="col" colspan="2">
+                                @can('paneles_create')
                                 <a href="/agregarPanel" class="btn btn-dark">Agregar</a>
+                                @endcan
                             </th>
                         </tr>
                     </thead>
@@ -64,29 +66,35 @@
 
                             @if ($panel->activo)
                                 <td>
+                                    @can('paneles_edit')
                                     <form action="/panelActivar" method="post" class="margenAbajo">
                                     @csrf
                                     @method('patch')
                                         <input type="hidden" name="idEdit" value="{{$panel->id}}">
                                         <button class="btn btn-success">Cambiar</button>
                                     </form>
+                                    @endcan
                                 </td>
                             @else 
                                 <td>
+                                    @can('paneles_edit')
                                     <form action="/panelActivar" method="post" class="margenAbajo">
                                     @csrf
                                     @method('patch')
                                         <input type="hidden" name="idEdit" value="{{$panel->id}}">
                                         <button class="btn btn-danger">Cambiar</button>
                                     </form>
+                                    @endcan
                                 </td>
                             @endif    
                             <td>{{$panel->comentario}}</td>
                             <td>{{$panel->cobertura}}</td>
                             <td>
+                                @can('paneles_edit')
                                 <a href="/modificarPanel/{{$panel->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                @endcan
                             </td>
                             
                             </tr>
@@ -95,7 +103,7 @@
                 </table>
 </div>
         {{ $paneles->links() }}
-    
+@endcan    
 @endsection
 
 @section('javascript')

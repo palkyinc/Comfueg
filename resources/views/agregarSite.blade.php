@@ -4,7 +4,7 @@
 
 
     <h3>Agregar Sitio nuevo</h3>
-
+@can('sitios_create')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarSite" method="post">
         @csrf
@@ -50,5 +50,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

@@ -4,7 +4,7 @@
 
 
     <h3>Nueva Ciudad</h3>
-
+@can('ciudades_create')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarCiudad" method="post">
         @csrf
@@ -28,5 +28,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

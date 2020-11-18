@@ -4,7 +4,7 @@
 
 
     <h3>Modificando Dirección con ID: {{ $elemento->id }}</h3>
-
+@can('direcciones_edit')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarDireccion" method="post">
         @csrf
@@ -103,5 +103,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

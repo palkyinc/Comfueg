@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-
+@can('barrios_index')
         <form class="form-inline mx-4 margin-10" action="" method="GET">
             <h2 class="mx-3">Administración de Barrios</h2>
             <label for="nombre" class="mx-3">Nombre</label>
@@ -26,7 +26,9 @@
                     <th scope="col"> Id </th>
                     <th scope="col"> Nombre </th>
                     <th scope="col" colspan="2">
+                        @can('barrios_create')
                         <a href="/agregarBarrio" class="btn btn-dark">Agregar</a>
+                        @endcan
                     </th>
                 </tr>
             </thead>
@@ -38,9 +40,11 @@
                     <th scope="row"> {{$barrio->id}}</th>
                     <td>{{$barrio->nombre}}</td>
                     <td>
+                        @can('barrios_edit')
                         <a href="/modificarBarrio/{{ $barrio->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                         <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                         </a>
+                        @endcan
                     </td>
                     
                     </tr>
@@ -49,7 +53,7 @@
         </table>
 </div>
         {{ $barrios->links() }}
-    
+@endcan    
 @endsection
 
 @section('javascript')

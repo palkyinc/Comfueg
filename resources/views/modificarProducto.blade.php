@@ -4,7 +4,7 @@
 
 
     <h3>Modificando Producto con ID: {{ $elemento->id }}</h3>
-
+@can('productos_edit')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarProducto" method="post">
         @csrf
@@ -47,5 +47,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

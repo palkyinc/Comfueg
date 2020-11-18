@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-
+@can('equipos_index')
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de equipos</h2>
                         <label for="ip" class="mx-3">IP: </label>
@@ -34,7 +34,9 @@
                             <th scope="col"> Estado </th>
                             <th scope="col"> Comentario </th>
                             <th scope="col" colspan="2">
+                                @can('equipos_create')
                                 <a href="/agregarEquipo" class="btn btn-dark">Agregar</a>
+                                @endcan
                             </th>
                         </tr>
                     </thead>
@@ -51,28 +53,34 @@
                             <td>{{$equipo->relAntena->descripcion}}</td>
                             @if ($equipo->fecha_baja != '')
                                 <td>
+                                    @can('equipos_edit')
                                     <form action="/equipoActivar" method="post" class="margenAbajo">
                                     @csrf
                                     @method('patch')
                                         <input type="hidden" name="idEdit" value="{{$equipo->id}}">
                                         <button class="btn btn-danger"  title="Habilitar">Cambiar</button>
                                     </form>
+                                    @endcan
                                 </td>
                             @else
                                 <td>
+                                    @can('equipos_edit')
                                     <form action="/equipoActivar" method="post" class="margenAbajo">
                                     @csrf
                                     @method('patch')
                                         <input type="hidden" name="idEdit" value="{{$equipo->id}}">
                                         <button class="btn btn-success" title="DesHabilitar">Cambiar</button>
                                     </form>
+                                    @endcan
                                 </td>
                             @endif
                             <td>{{$equipo->comentario}}</td>
                             <td>
+                                @can('equipos_edit')
                                 <a href="/modificarEquipo/{{ $equipo->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                @endcan
                             </td>
                             
                             </tr>
@@ -81,7 +89,7 @@
                 </table>
 </div>
         {{ $equipos->links() }}
-    
+@endcan    
 @endsection
 
 @section('javascript')

@@ -4,7 +4,7 @@
 
 
     <h3>Agregar Plan nuevo</h3>
-
+@can('planes_create')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarPlan" method="post">
         @csrf
@@ -46,5 +46,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

@@ -4,7 +4,7 @@
 
 
     <h3>Nueva Calle</h3>
-
+@can('calles_create')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarCalle" method="post">
         @csrf
@@ -28,5 +28,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

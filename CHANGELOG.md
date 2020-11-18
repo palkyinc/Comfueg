@@ -23,9 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- vendor/laravel/framework/src/illuminate/Auth/Passwords/CanResetPassword.php
 	- vendor/laravel/framework/src/illuminate/Auth/Notifications/ResetPassword.php
 7. Instalar Laravel Permission de Spatie
-8. Se Generan vistas de admin, editar, nuevo para Usuarios, Roles y Permisos.
-9. Se Generan vistas de agregar para Usuarios, Roles y Permisos.
-10. 
+8. Se generan vistas de admin, editar, nuevo para Usuarios, Roles y Permisos.
+9. Se generan vistas de agregar para Usuarios, Roles y Permisos.
+10. Se generan vistas de:
+	- Asginar permisos a rol.
+	- Asignar permiso a roles.
+	- Asignar rol a Usuario.
+11. Se adecuan vistas adminXXXXX a permisos y roles.
 
 
 ### Changed

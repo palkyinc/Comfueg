@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-
+@can('productos_index')
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de Productos</h2>
                         <label for="modelo" class="mx-3">Modelo</label>
@@ -31,7 +31,9 @@
                             <th scope="col"> Código Comfueg </th>
                             <th scope="col"> Descripción </th>
                             <th scope="col" colspan="2">
+                                @can('productos_create')
                                 <a href="/agregarProducto" class="btn btn-dark">Agregar</a>
+                                @endcan
                             </th>
                         </tr>
                     </thead>
@@ -46,9 +48,11 @@
                             <td>{{$producto->cod_comfueg}}</td>
                             <td>{{$producto->descripcion}}</td>
                             <td>
+                                @can('productos_edit')
                                 <a href="/modificarProducto/{{$producto->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                @endcan
                             </td>
                             
                             </tr>
@@ -57,5 +61,5 @@
                 </table>
 </div>
         {{ $productos->links() }}
-    
+@endcan    
 @endsection

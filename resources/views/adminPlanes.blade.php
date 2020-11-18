@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-
+@can('planes_index')
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de planes</h2>
                         <label for="nombre" class="mx-3">Nombre</label>
@@ -29,7 +29,9 @@
                             <th scope="col"> Subida (Kb)</th>
                             <th scope="col"> Descripcion </th>
                             <th scope="col" colspan="2">
+                                @can('planes_create')
                                 <a href="/agregarPlan" class="btn btn-dark">Agregar</a>
+                                @endcan
                             </th>
                         </tr>
                     </thead>
@@ -44,9 +46,11 @@
                             <td>{{$plan->subida}}</td>
                             <td>{{$plan->descripcion}}</td>
                             <td> 
+                                @can('planes_edit')
                                 <a href="/modificarPlan/{{$plan->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                @endcan
                             </td>
                             
                             </tr>
@@ -55,5 +59,5 @@
                 </table>
 </div>
         {{ $planes->links() }}
-    
+@endcan    
 @endsection

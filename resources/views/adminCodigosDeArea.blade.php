@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-
+@can('codigoDeArea_index')
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de Códigos de área</h2>
                         <label for="codigoDeArea" class="mx-3">Código de área</label>
@@ -28,7 +28,9 @@
                             <th scope="col"> Provicias </th>
                             <th scope="col"> Localidades </th>
                             <th scope="col" colspan="2">
+                                @can('codigoDeArea_create')
                                 <a href="/agregarCodigoDeArea" class="btn btn-dark">Agregar</a>
+                                @endcan
                             </th>
                         </tr>
                     </thead>
@@ -42,9 +44,11 @@
                             <td>{{$codigo->provincia}}</td>
                             <td>{{$codigo->localidades}}</td>
                             <td>
+                                @can('codigoDeArea_edit')
                                 <a href="/modificarCodigoDeArea/{{ $codigo->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                @endcan
                             </td>
                             
                             </tr>
@@ -53,5 +57,5 @@
                 </table>
 </div>
         {{ $codigosDeArea->links() }}
-    
+@endcan    
 @endsection

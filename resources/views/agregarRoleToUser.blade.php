@@ -1,9 +1,9 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-@can('usuarios_index')
 
     <h3>Cambiar Rol a Usuario: {{ $User->name }}</h3>
+@can('usuarios_edit')
 
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarRoleToUser" method="post">

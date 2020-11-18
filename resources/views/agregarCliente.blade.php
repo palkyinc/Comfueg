@@ -4,7 +4,7 @@
 
 
     <h3>Agregar Cliente nuevo</h3>
-
+@can('cliente_create')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarCliente" method="post">
         @csrf
@@ -78,5 +78,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

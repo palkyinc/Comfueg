@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-
+@can('antenas_index')
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración de Antenas</h2>
                         <label for="descripcion" class="mx-2">Descripción</label>
@@ -29,7 +29,9 @@
                             <th scope="col"> Descripción </th>
                             <th scope="col"> Código Comfueg </th>
                             <th scope="col" colspan="2">
+                                @can('antenas_create')
                                 <a href="/agregarAntena" class="btn btn-dark">Agregar</a>
+                                @endcan
                             </th>
                         </tr>
                     </thead>
@@ -42,9 +44,11 @@
                             <td>{{$antena->descripcion}}</td>
                             <td>{{$antena->cod_comfueg}}</td>
                             <td>
+                                @can('antenas_edit')
                                 <a href="/modificarAntena/{{ $antena->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                @endcan
                             </td>
                             
                             </tr>
@@ -53,5 +57,5 @@
                 </table>
 </div>
         {{ $antenas->links() }}
-    
+@endcan
 @endsection

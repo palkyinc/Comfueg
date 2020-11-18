@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-
+@can('direcciones_index')
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de direcciones</h2>
                         <label for="calle" class="mx-3">Calle: </label>
@@ -31,7 +31,9 @@
                             <th scope="col"> Barrio </th>
                             <th scope="col"> Ciudad </th>
                             <th scope="col" colspan="2">
+                                @can('direcciones_create')
                                 <a href="/agregarDireccion" class="btn btn-dark">Agregar</a>
+                                @endcan
                             </th>
                         </tr>
                     </thead>
@@ -56,9 +58,11 @@
                             <td>{{$direccion->relBarrio->nombre}}</td>
                             <td>{{$direccion->relCiudad->nombre}}</td>
                             <td>
+                                @can('direcciones_edit')
                                 <a href="/modificarDireccion/{{ $direccion->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                @endcan
                             </td>
                             
                             </tr>
@@ -67,7 +71,7 @@
                 </table>
 </div>
         {{ $direcciones->links() }}
-    
+@endcan
 @endsection
 @section('javascript')
     <script>

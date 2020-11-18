@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
-
+@can('clientes_index')
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de clientes</h2>
                         <label for="num_cliente" class="mx-3">Id Genesys</label>
@@ -31,7 +31,9 @@
                             <th scope="col"> Celular </th>
                             <th scope="col"> Email </th>
                             <th scope="col" colspan="2">
+                                @can('clientes_create')
                                 <a href="/agregarCliente" class="btn btn-dark">Agregar</a>
+                                @endcan
                             </th>
                         </tr>
                     </thead>
@@ -58,9 +60,11 @@
                             @endif
                             <td>{{$cliente->email}}</td>
                             <td>
-                                 <a href="/modificarCliente/{{$cliente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
+                                @can('clientes_edit')
+                                <a href="/modificarCliente/{{$cliente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                @endcan
                             </td>
                             
                             </tr>
@@ -69,5 +73,5 @@
                 </table>
 </div>
         {{ $clientes->links() }}
-    
+@endcan    
 @endsection

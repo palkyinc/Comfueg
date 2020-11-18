@@ -4,7 +4,7 @@
 
 
     <h3>Nueva Antena</h3>
-
+@can('antenas_create')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarAntena" method="post">
         @csrf
@@ -32,5 +32,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection

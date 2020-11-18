@@ -4,7 +4,7 @@
 
 
     <h3>Agregar Panel nuevo</h3>
-
+@can('paneles_create')
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarPanel" method="post" enctype="multipart/form-data">
         @csrf
@@ -86,5 +86,5 @@
             </ul>
         </div>
     @endif
-        
+@endcan
 @endsection
