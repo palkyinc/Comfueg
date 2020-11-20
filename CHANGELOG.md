@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- Asginar permisos a rol.
 	- Asignar permiso a roles.
 	- Asignar rol a Usuario.
-11. Se adecuan vistas adminXXXXX a permisos y roles.
+11. Se adecuan vistas admin, agregar, modificar a permisos y roles.
 
 
 ### Changed
