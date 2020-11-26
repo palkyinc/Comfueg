@@ -37,9 +37,8 @@
                             <th scope="col"> IP Equipo </th>
                             <th scope="col"> Sitio </th>
                             <th scope="col"> Anterior </th>
-                            <th scope="col"> Activo </th>
+                            <th scope="col"> Altura </th>
                             <th scope="col"> Comentario </th>
-                            <th scope="col"> Cobertura </th>
                             <th scope="col" colspan="2">
                                 @can('paneles_create')
                                 <a href="/agregarPanel" class="btn btn-dark">Agregar</a>
@@ -50,8 +49,11 @@
 
                     <tbody>
                         @foreach ($paneles as $panel)
-                            <tr>
-                                
+                            @if ($panel->activo)
+                                <tr>
+                            @else
+                                <tr class="table-danger">
+                            @endif
                             <th scope="row"> {{$panel->id}}</th>
                             <td>{{$panel->ssid}}</td>
                             <td>{{$panel->rol}}</td>
@@ -59,41 +61,26 @@
                             <td>{{$panel->relEquipo->ip}}</td>
                             <td>{{$panel->relSite->nombre}}</td>
                             @if ( isset($panel->relPanel->ssid))
-                                <td>{{$panel->relPanel->relEquipo->nombre}}</td>
+                            <td>{{$panel->relPanel->relEquipo->nombre}}</td>
                             @else
-                                <td>Gateway</td>
+                            <td>Gateway</td>
                             @endif
-
-                            @if ($panel->activo)
-                                <td>
-                                    @can('paneles_edit')
-                                    <form action="/panelActivar" method="post" class="margenAbajo">
-                                    @csrf
-                                    @method('patch')
-                                        <input type="hidden" name="idEdit" value="{{$panel->id}}">
-                                        <button class="btn btn-success">Cambiar</button>
-                                    </form>
-                                    @endcan
-                                </td>
-                            @else 
-                                <td>
-                                    @can('paneles_edit')
-                                    <form action="/panelActivar" method="post" class="margenAbajo">
-                                    @csrf
-                                    @method('patch')
-                                        <input type="hidden" name="idEdit" value="{{$panel->id}}">
-                                        <button class="btn btn-danger">Cambiar</button>
-                                    </form>
-                                    @endcan
-                                </td>
-                            @endif    
+                            <td>{{$panel->altura}}</td>
                             <td>{{$panel->comentario}}</td>
-                            <td>{{$panel->cobertura}}</td>
                             <td>
                                 @can('paneles_edit')
-                                <a href="/modificarPanel/{{$panel->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
-                                <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
-                                </a>
+                                    <a href="/modificarPanel/{{$panel->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
+                                    <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                    </a>
+                                    @if ($panel->activo)
+                                            <a href="/panelActivar/{{$panel->id}}" class="margenAbajo btn btn-outline-secundary" title="Desactivar">
+                                                <img src="imagenes/iconfinder_Turn_On__Off_2134663.svg" alt="imagen de Desactivar" height="20px">
+                                            </a>
+                                    @else 
+                                        <a href="/panelActivar/{{$panel->id}}" class="margenAbajo btn btn-outline-secundary" title="Activar">
+                                            <img src="imagenes/iconfinder_Multimedia_Turn_on_off_power_button_interface_3841792.svg" alt="imagen de activar" height="20px">
+                                        </a>
+                                    @endif    
                                 @endcan
                             </td>
                             

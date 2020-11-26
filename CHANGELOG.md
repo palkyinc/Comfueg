@@ -11,9 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Removed
 
-## [0.2.0] - 20XX-XX-XX
+## [0.3.0] - 20XX-XX-XX
+Antes de crear una nueva version:
+1. actualizar bien el changelog.
+2. Realizar migraciones luego de la implementacion en producción.
+
 ### Added
-1. Carpeta sql renombrada a extras.
+1. Crear taabla para vicular archivos (fotos/pdfs) con paneles, sitios
+
+### Changed
+1. agregar status de UPS en seccion Paneles.
+2. Agregar distancia Sitio anterior en sitios.
+3. Agregar Altura en seccion Paneles.
+3. Se cambia la vista de Paneles. Se retira columna de Cobertura, Se agrega distancia y boton de activar/desactivar con color de la fila.
+### Removed
+1. Cobertura de la tabla de Paneles.
+
+## [0.2.0] - 2020-11-20
+### Added
+1. Carpeta "sql" renombrada a "extras".
 2. Nuevo backup de la base de datos con las tablas eliminadas. -> slam20201115.sql
 3. Instalar Laravel UI
 4. Instalar node.js -> https://nodejs.org/en/download/ para poder correr los comandos NPM.
@@ -31,9 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- Asignar rol a Usuario.
 11. Se adecuan vistas admin, agregar, modificar a permisos y roles.
 
-
-### Changed
-	
 ### Removed
 1. Base de Datos.
   - Tabla audits
@@ -57,4 +70,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]:
 [0.1.0]: https://github.com/palkyinc/Comfueg/releases/tag/0.1.0
-What is a changelog?

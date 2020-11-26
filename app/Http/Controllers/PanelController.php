@@ -78,12 +78,9 @@ class PanelController extends Controller
         $Panel->id_equipo = $request->input('id_equipo');
         $Panel->num_site = $request->input('num_site');
         $Panel->panel_ant = $request->input('panel_ant');
+        $Panel->altura = $request->input('altura');
         $Panel->activo = TRUE;
         $Panel->comentario = $request->input('comentario');
-        $cobertura = $this->subirImagen($request);
-        if ($cobertura !== $Panel->cobertura && $cobertura != 'sinMapa.svg') {
-            $Panel->cobertura = $cobertura;
-        }
         $Panel->save();
         $respuesta[] = 'El Panel se creo correctamente';
         return redirect('/adminPaneles')->with('mensaje', $respuesta);
@@ -103,9 +100,9 @@ class PanelController extends Controller
                 'id_equipo' => $condicion,
                 'num_site' => 'required|numeric|min:1|max:99999',
                 'panel_ant' => 'nullable|numeric|min:1|max:99999',
+                'altura' => 'nullable|numeric|min:1|max:999',
                 'activo' => 'boolean',
-                'comentario' => 'max:65535',
-                'cobertura' => 'nullable|mimes:jpg,jpeg,png,gif,svg,webp|max:4096'
+                'comentario' => 'max:65535'
             ]
         );
     }
@@ -124,19 +121,17 @@ class PanelController extends Controller
         $id_equipo = $request->input('id_equipo');
         $num_site = $request->input('num_site');
         $panel_ant = $request->input('panel_ant');
+        $altura = $request->input('altura');
         $activo = $request->input('activo');
         $comentario = $request->input('comentario');
         $Panel = Panel::find($request->input('id'));
         $this->validar($request, $Panel->id);
-        $cobertura = $this->subirImagen($request);
-        if ($cobertura !== $Panel->cobertura && $cobertura != 'sinMapa.svg') {
-            $Panel->cobertura = $cobertura;
-        }
         $Panel->ssid = $ssid;
         $Panel->rol = $rol;
         $Panel->id_equipo = $id_equipo;
         $Panel->num_site = $num_site;
         $Panel->panel_ant = $panel_ant;
+        $Panel->altura = $altura;
         $Panel->activo = $activo;
         $Panel->comentario = $comentario;
         $respuesta[] = 'Se cambió con exito:';
@@ -155,6 +150,9 @@ class PanelController extends Controller
         if ($Panel->panel_ant != $Panel->getOriginal()['panel_ant']) {
             $respuesta[] = ' Panel Ant: ' . $Panel->getOriginal()['panel_ant'] . ' POR ' . $Panel->panel_ant;
         }
+        if ($Panel->altura != $Panel->getOriginal()['altura']) {
+            $respuesta[] = ' altura: ' . $Panel->getOriginal()['altura'] . ' POR ' . $Panel->altura;
+        }
         if ($Panel->comentario != $Panel->getOriginal()['comentario']) {
             $respuesta[] = ' comentario: ' . $Panel->getOriginal()['comentario'] . ' POR ' . $Panel->comentario;
         }
@@ -164,6 +162,9 @@ class PanelController extends Controller
 
     public function subirImagen(Request $request)
     {
+        //if ($cobertura !== $Panel->cobertura && $cobertura != 'sinMapa.svg') {$Panel->cobertura = $cobertura;}
+        // $cobertura = $this->subirImagen($request);
+        // para validate 'archivo' => 'nullable|mimes:jpg,jpeg,png,gif,svg,webp|max:4096'
         //si no enviaron archivo
         $prdImagen = 'sinMapa.svg';
 
@@ -225,17 +226,17 @@ class PanelController extends Controller
     {
         //
     }
-    public function activar(Request $request)
+    public function activar($id)
     {
-        $Panel = Panel::find($request->input('idEdit'));
+        $Panel = Panel::find($id);
         if ($Panel->activo) {
             $Panel->activo = false;
-            $respuesta = 'Se desactivo ID: ' . $Panel->id;
+            $respuesta[] = 'Se desactivo ID: ' . $Panel->id;
         } else {
             $Panel->activo = true;
-            $respuesta = 'Se activo ID: ' . $Panel->id;
+            $respuesta[] = 'Se activo ID: ' . $Panel->id;
         }
         $Panel->save();
-        return redirect('adminPaneles')->with('mensaje', 'Se cambió con exito ->' . $respuesta);
+        return redirect('adminPaneles')->with('mensaje', $respuesta);
     }
 }//fin de la clase

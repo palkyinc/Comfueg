@@ -9,7 +9,6 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CodigoDeAreaController;
 use App\Http\Controllers\DireccionController;
 use App\Http\Controllers\EquipoController;
-use App\Http\Controllers\NivelController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProductoController;
@@ -30,6 +29,11 @@ Route::get('/test', function () {return view('welcome');});
 ### Route index
 Route::get('/', function (){return view('inicio', ['principal' => 'active']);});
 Route::get('/inicio', function (){return view('inicio', ['principal' => 'active']);});
+Route::get('/contratos', function (){return view('contratos', ['contratos' => 'active']);});
+####################
+####### Nodos
+Route::get('/adminNodos', [App\Http\Controllers\NodoController::class, 'index']);
+Route::get('/mostrarNodo/{id}', [App\Http\Controllers\NodoController::class, 'showNodo']);
 ####################
 ####### CRUD Antenas
 Route::get('/adminAntenas', [AntenaController::class, 'index'])->middleware('auth');
@@ -83,14 +87,11 @@ Route::patch('/equipoActivar', [EquipoController::class, 'activar'])->middleware
 Route::get('/agregarEquipo', [EquipoController::class, 'create'])->middleware('auth');
 Route::post('/agregarEquipo', [EquipoController::class, 'store'])->middleware('auth');
 ####################
-####### CRUD Niveles
-Route::get('/adminNiveles', [NivelController::class, 'index'])->middleware('auth');
-####################
 ####### CRUD Paneles 
 Route::get('/adminPaneles', [PanelController::class, 'index'])->middleware('auth');
 Route::get('/modificarPanel/{id}', [PanelController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarPanel', [PanelController::class, 'update'])->middleware('auth');
-Route::patch('/panelActivar', [PanelController::class, 'activar'])->middleware('auth');
+Route::get('/panelActivar/{id}', [PanelController::class, 'activar'])->middleware('auth');
 Route::get('/agregarPanel', [PanelController::class, 'create'])->middleware('auth');
 Route::post('/agregarPanel', [PanelController::class, 'store'])->middleware('auth');
 ####################

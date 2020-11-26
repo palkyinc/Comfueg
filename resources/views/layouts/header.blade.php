@@ -32,8 +32,16 @@
 		      <li class="nav-item {{  $contratos ?? ''}}">
 		        <a class="nav-link" href="/contratos">Contratos</a>
 		      </li>
-		      <li class="nav-item {{  $nodos ?? ''}}">
-		        <a class="nav-link" href="/nodos">Nodos</a>
+		      <li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle {{  $nodos ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Nodos
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		          <a class="dropdown-item" href="/#">Paneles</a>
+		          <a class="dropdown-item" href="/#">Punto a Puntos</a>
+		          <a class="dropdown-item" href="/#">Equipos Conectividad</a>
+		          <a class="dropdown-item" href="/adminNodos">Nodos</a>
+				</div>
 		      </li>
 		      <li class="nav-item dropdown">
 		        <a class="nav-link dropdown-toggle {{ $datos ?? ''}}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

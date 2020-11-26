@@ -23,5 +23,4 @@ class Panel extends Model
     {
         return $this->belongsTo('App\Models\Panel', 'panel_ant', 'id');
     }
-    
 }// fin de la clase

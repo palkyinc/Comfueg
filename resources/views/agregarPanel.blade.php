@@ -11,12 +11,12 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="ssid">SSID: </label>
-                    <input type="text" name="ssid" value="" maxlength="15" class="form-control" id="ssid">
-                    <input type="hidden" name="activo" value="0" class="form-control" id="activo">
+                    <input type="text" name="ssid" value="" maxlength="15" class="form-control">
+                    <input type="hidden" name="activo" value="0" class="form-control">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="rol">Rol: </label>
-                    <select class="form-control" name="rol" id="rol">
+                    <select class="form-control" name="rol">
                         <option value="">Seleccione un Rol...</option>
                         @foreach ($roles as $key => $rol)
                             <option value="{{$key}}">{{$rol}}</option>
@@ -25,7 +25,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="id_equipo">Equipo: </label>
-                    <select class="form-control" name="id_equipo" id="id_equipo">
+                    <select class="form-control" name="id_equipo">
                         <option value="">Seleccione un Equipo...</option>
                         @foreach ($equipos as $dato)
                             <option value="{{$dato->id}}">{{$dato->nombre}}->{{$dato->ip}}</option>
@@ -36,7 +36,7 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="num_site">Sitio: </label>
-                    <select class="form-control" name="num_site" id="num_site">
+                    <select class="form-control" name="num_site">
                         <option value="">Seleccione un Sitio...</option>
                         @foreach ($sitios as $sitio)
                             <option value="{{$sitio->id}}">{{$sitio->nombre}}</option>
@@ -45,7 +45,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="panel_ant">Panel Anterior: </label>
-                    <select class="form-control" name="panel_ant" id="panel_ant">
+                    <select class="form-control" name="panel_ant">
                         <option value="">Gateway...</option>
                         @foreach ($paneles as $panel)
                             @if ($panel->activo)
@@ -54,25 +54,21 @@
                         @endforeach
                     </select>
                 </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-9">
-                    <div class="custom-file">
-                        <label for="cobertura">Archivo de Cobertura: (Solo PNG/JPG/SVG)</label>
-                        <input type="file" class="form-control-file" id="cobertura" name="cobertura">
-                    </div>
+                <div class="form-group col-md-3">
+                    <label for="altura">Altura (mt.): </label>
+                    <input type="text" name="altura" value="" maxlength="15" class="form-control">
                 </div>
             </div>
             <br>
             <div class="form-row">
                 <div class="form-group col-md-9">
                     <label for="comentario">Comentario: </label>
-                    <textarea name="comentario" class="form-control" id="comentario" rows="auto" cols="50"></textarea>
+                    <textarea name="comentario" class="form-control" rows="auto" cols="50"></textarea>
                 </div>
             </div>
     
             <input type="hidden" name="id" value="">
-            <button type="submit" class="btn btn-primary" id="enviar">Crear Nuevo</button>
+            <button type="submit" class="btn btn-primary">Crear Nuevo</button>
             <a href="/adminPaneles" class="btn btn-primary">volver</a>
     </form>
     </div>
