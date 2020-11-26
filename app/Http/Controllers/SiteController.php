@@ -47,6 +47,7 @@ class SiteController extends Controller
         $Site->coordenadas = $request->input('coordenadas');
         $Site->rangoIp = $request->input('rangoIp');
         $Site->ipDisponible = $request->input('ipDisponible');
+        $Site->distancia = $request->input('distancia');
         $Site->save();
         $respuesta[] = 'Site se creo correctamente';
         return redirect('/adminSites')->with('mensaje', $respuesta);
@@ -83,7 +84,8 @@ class SiteController extends Controller
                 'descripcion' => 'max:100',
                 'coordenadas' => 'max:60',
                 'rangoIp' => 'ipv4',
-                'ipDisponible' => 'ipv4'
+                'ipDisponible' => 'ipv4',
+                'distancia' => 'nullable|numeric|min:0|max:999'
             ]
         );
     }
@@ -102,6 +104,7 @@ class SiteController extends Controller
         $coordenadas = $request->input('coordenadas');
         $rangoIp = $request->input('rangoIp');
         $ipDisponible = $request->input('ipDisponible');
+        $distancia = $request->input('distancia');
         $site = Site::find($request->input('id'));
         $this->validar($request);
         $site->nombre = $nombre;
@@ -109,6 +112,7 @@ class SiteController extends Controller
         $site->coordenadas = $coordenadas;
         $site->rangoIp = $rangoIp;
         $site->ipDisponible = $ipDisponible;
+        $site->distancia = $distancia;
         $respuesta [] = 'Se cambió con exito:';
         if ($site->nombre != $site->getOriginal()['nombre']) {
             $respuesta [] = ' Nombre: ' . $site->getOriginal()['nombre'] . ' POR ' . $site->nombre;
@@ -124,6 +128,9 @@ class SiteController extends Controller
         }
         if ($site->ipDisponible != $site->getOriginal()['ipDisponible']) {
             $respuesta []= ' Ip Disponible: ' . $site->getOriginal()['ipDisponible'] . ' POR ' . $site->ipDisponible;
+        }
+        if ($site->distancia != $site->getOriginal()['distancia']) {
+            $respuesta []= ' Distancia: ' . $site->getOriginal()['distancia'] . ' POR ' . $site->distancia;
         }
         $site->save();
         return redirect('adminSites')->with('mensaje', $respuesta);

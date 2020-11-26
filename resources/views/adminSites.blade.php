@@ -29,6 +29,7 @@
                             <th scope="col"> Coordenadas </th>
                             <th scope="col"> Inicio Rango IP </th>
                             <th scope="col"> IP Disponible </th>
+                            <th scope="col"> Dist Sitio Ant(Km) </th>
                             <th scope="col" colspan="2">
                                 @can('sitios_create')
                                 <a href="/agregarSite" class="btn btn-dark">Agregar</a>
@@ -47,6 +48,7 @@
                             <td>{{$site->coordenadas}}</td>
                             <td>{{$site->rangoIp}}</td>
                             <td>{{$site->ipDisponible}}</td>
+                            <td>{{$site->distancia}}</td>
                             <td>
                                 @can('sitios_edit')
                                 <a href="/modificarSite/{{$site->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
