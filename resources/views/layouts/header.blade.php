@@ -40,7 +40,7 @@
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 		          <a class="dropdown-item" href="/#">Paneles</a>
 		          <a class="dropdown-item" href="/#">Punto a Puntos</a>
-		          <a class="dropdown-item" href="/#">Equipos Conectividad</a>
+		          <a class="dropdown-item" href="/adminIncidencias">Incidencias GLobales</a>
 		          <a class="dropdown-item" href="/adminNodos">Nodos</a>
 				</div>
 		      </li>

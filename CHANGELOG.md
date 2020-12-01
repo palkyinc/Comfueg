@@ -11,22 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Removed
 
-## [0.3.0] - 20XX-XX-XX
+## [0.3.0] - 2020-12-01
 Antes de crear una nueva version:
 1. actualizar bien el changelog.
 2. Realizar migraciones luego de la implementacion en producción.
 
 ### Added
-1. Crear taabla para vicular archivos (fotos/pdfs) con paneles, sitios
+1. Crear taabla, entity_has_file, para vicular archivos (fotos/pdfs) con paneles, sitios
 
 ### Changed
-1. agregar status de UPS en seccion Paneles.
-2. Agregar distancia Sitio anterior en sitios.
-3. Agregar Altura en seccion Paneles.
+1. Agregar distancia Sitio anterior en sitios.
+2. Agregar Altura en seccion Paneles.
 3. Se cambia la vista de Paneles. Se retira columna de Cobertura, Se agrega distancia y boton de activar/desactivar con color de la fila.
 
 ### Removed
-1. Cobertura de la tabla de Paneles.
+1. COlumna Cobertura de la tabla de Paneles.
 
 ## [0.2.0] - 2020-11-20
 ### Added
