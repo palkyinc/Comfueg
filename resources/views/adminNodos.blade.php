@@ -1,6 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
+@can('nodos_index')
 <div class="card-columns">
      @foreach ($nodes as $node)
         <div class="card">
@@ -8,13 +9,13 @@
             <div class="card-body">
             <h5 class="card-title">{{$node->nombre}}</h5>
                 <p class="card-text">Rango de IP: {{$node->rangoIp}}</p>
+                <p class="card-text">{{$node->descripcion}}</p>
                 <footer class="blockquote-footer">
-                <a href="mostrarNodo/{{$node->id}}" class="btn btn-primary">Mas Info</a>
-                    <a href="#" class="btn btn-primary">Informes</a>
-                    <a href="#" class="btn btn-primary">Fotos</a>
+                    <a href="mostrarNodo/{{$node->id}}" class="btn btn-primary">Mas Info</a>
                 </footer>
             </div>
         </div>
         @endforeach
     </div>
+@endcan
 @endsection

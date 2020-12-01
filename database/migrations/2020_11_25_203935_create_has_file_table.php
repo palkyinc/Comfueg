@@ -13,11 +13,11 @@ class CreateHasFileTable extends Migration
      */
     public function up()
     {
-        Schema::create('has_file', function (Blueprint $table) {
+        Schema::create('entity_has_files', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('entidad-id');
-            $table->enum('entidad', ['panel', 'sitio']);
-            $table->enum('tipo', ['cover', 'photo', 'file', 'scheme']);
+            $table->foreignId('entidad_id');
+            $table->enum('entidad', ['PANEL', 'SITIO']);
+            $table->enum('tipo', ['COVER', 'PHOTO', 'FILE', 'SCHEME']);
             $table->string('file_name', 100);
             $table->timestamps();
         });

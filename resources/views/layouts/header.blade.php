@@ -8,6 +8,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/cssboot/easy-autocomplete.min.css">
 	<link rel="stylesheet" href="/cssboot/easy-autocomplete.themes.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 	<script src="/jsboot/jquery-3.5.1.slim.min.js"></script>
 	<script src="/jsboot/popper.min.js"></script>
 	<script src="/jsboot/bootstrap.min.js"></script>

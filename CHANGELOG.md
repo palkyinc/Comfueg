@@ -24,6 +24,7 @@ Antes de crear una nueva version:
 2. Agregar distancia Sitio anterior en sitios.
 3. Agregar Altura en seccion Paneles.
 3. Se cambia la vista de Paneles. Se retira columna de Cobertura, Se agrega distancia y boton de activar/desactivar con color de la fila.
+
 ### Removed
 1. Cobertura de la tabla de Paneles.
 

@@ -160,26 +160,6 @@ class PanelController extends Controller
         return redirect('adminPaneles')->with('mensaje', $respuesta);
     }
 
-    public function subirImagen(Request $request)
-    {
-        //if ($cobertura !== $Panel->cobertura && $cobertura != 'sinMapa.svg') {$Panel->cobertura = $cobertura;}
-        // $cobertura = $this->subirImagen($request);
-        // para validate 'archivo' => 'nullable|mimes:jpg,jpeg,png,gif,svg,webp|max:4096'
-        //si no enviaron archivo
-        $prdImagen = 'sinMapa.svg';
-
-        //si enviaron archivo
-        if ($request->file('cobertura')) {
-            //renombrar archivo
-            # time().extension
-            $prdImagen = time() . '.' . $request->file('cobertura')->clientExtension();
-
-            //subir imagen a directorio productos
-            $request->file('cobertura')
-            ->move(public_path('/imgUsuarios'), $prdImagen);
-        }
-        return $prdImagen;
-    }
     /**
      * Display the specified resource.
      *

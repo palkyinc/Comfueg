@@ -32,8 +32,16 @@ Route::get('/inicio', function (){return view('inicio', ['principal' => 'active'
 Route::get('/contratos', function (){return view('contratos', ['contratos' => 'active']);});
 ####################
 ####### Nodos
-Route::get('/adminNodos', [App\Http\Controllers\NodoController::class, 'index']);
-Route::get('/mostrarNodo/{id}', [App\Http\Controllers\NodoController::class, 'showNodo']);
+Route::get('/adminNodos', [App\Http\Controllers\NodoController::class, 'index'])->middleware('auth');
+Route::get('/mostrarNodo/{id}', [App\Http\Controllers\NodoController::class, 'showNodo'])->middleware('auth');
+Route::get('/cambiarFileSitio/{id}', [App\Http\Controllers\NodoController::class, 'editFileSitio'])->middleware('auth');
+Route::patch('/cambiarFileSitio', [App\Http\Controllers\NodoController::class, 'updateFileSitio'])->middleware('auth');
+Route::get('/cambiarFilePanel/{id}', [App\Http\Controllers\NodoController::class, 'editFilePanel'])->middleware('auth');
+Route::patch('/cambiarFilePanel', [App\Http\Controllers\NodoController::class, 'updateFilePanel'])->middleware('auth');
+Route::get('/adminArchivosSitio/{id}', [App\Http\Controllers\NodoController::class, 'editArchivosSitio'])->middleware('auth');
+Route::get('/agregarArchivoSitio/{id}', [App\Http\Controllers\NodoController::class, 'createArchivoSitio'])->middleware('auth');
+Route::get('/eliminarArchivo/{archivo_id}/{sitio_id}', [App\Http\Controllers\NodoController::class, 'destroyArchivo'])->middleware('auth');
+Route::patch('/adminArchivosSitio', [App\Http\Controllers\NodoController::class, 'updateArchivoSitio'])->middleware('auth');
 ####################
 ####### CRUD Antenas
 Route::get('/adminAntenas', [AntenaController::class, 'index'])->middleware('auth');
