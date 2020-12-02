@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+1. Agregar frecuencia y cantidad de clientes a Paneles.
 
 ## [1.0.0] - 20XX-XX-XX
 ### Added
@@ -13,20 +14,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.0] - 20XX-XX-XX
 ### Added
+1. Vista mostrarNodo agregar link al equipo desde el IP.
+2. 
 
 ### Changed
 1. mostrarNodos: luego de agregar un esquema o cobertura debe volver a mostrarNodos
 2. problema de permisos en IIS_IURS al grabar en carpeta public
+3. Retorno de la vista cambiarFilePanel.
 
 ### Removed
 
 ## [0.3.0] - 2020-12-01
-Antes de crear una nueva version:
-1. actualizar bien el changelog.
-2. Realizar migraciones luego de la implementacion en producción.
 
 ### Added
-1. Crear taabla, entity_has_file, para vicular archivos (fotos/pdfs) con paneles, sitios
+1. Crear tabla, entity_has_file, para vicular archivos (fotos/pdfs) con paneles, sitios
 
 ### Changed
 1. Agregar distancia Sitio anterior en sitios.

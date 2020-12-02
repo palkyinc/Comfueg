@@ -19,8 +19,9 @@
                 <input type="hidden" name="archivoId" value="{{$file->id}}">
             @endif
             <input type="hidden" name="panelId" value="{{$panel_id}}">
+            <input type="hidden" name="sitioId" value="{{$sitio_id}}">
             <button type="submit" class="btn btn-primary">Modificar</button>
-            <a href="/adminNodos" class="btn btn-primary">Volver</a>
+            <a href="/mostrarNodo/{{$sitio_id}}" class="btn btn-primary">Volver</a>
     </form>
     </div>
 

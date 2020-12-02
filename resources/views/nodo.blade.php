@@ -178,7 +178,11 @@
                 <ul class="card-test">
                     <li>SSID: {{$panel->ssid}}</li>
                     <li>Nombre del Equipo: {{$panel->relEquipo->nombre}}</li>
-                    <li>IP: {{$panel->relEquipo->ip}}</li>
+                    <li>IP: 
+                        <a href="https://{{$panel->relEquipo->ip}}" class="btn btn-link btn-sm" target="_blank">
+                                {{$panel->relEquipo->ip}}
+                            </a>
+                    </li>
                     <li>Dispositivo: {{$panel->relEquipo->relProducto->modelo}}</li>
                     <li>Antena: {{$panel->relEquipo->relAntena->descripcion}}</li>
                     <li>Alta de equipo: {{$panel->relEquipo->fecha_alta}}</li>
@@ -201,7 +205,7 @@
                 @endforeach
                 <h5 class="card-title">Cobertura / esquema de conexión</h5>
                 @can('nodos_edit')
-                <a href="/cambiarFilePanel/{{$panel->id}}" class="btn btn-primary">Cambiar</a>
+                <a href="/cambiarFilePanel/{{$panel->id}}/{{$site->id}}" class="btn btn-primary">Cambiar</a>
                 @endcan
             </div>
         </div>

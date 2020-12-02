@@ -138,10 +138,10 @@ class NodoController extends Controller
         return view('modificarFileSitio', [ 'file' => $file, 'sitio_id' => $id, 'nodos' => 'active']);
     }
     
-    public function editFilePanel($id)
+    public function editFilePanel($panel_id, $sitio_id)
     {
-        $file = $this->buscarEntityHasFile($id, 'PANEL', 'COVER');
-        return view('modificarFilePanel', [ 'file' => $file, 'panel_id' => $id, 'nodos' => 'active']);
+        $file = $this->buscarEntityHasFile($panel_id, 'PANEL', 'COVER');
+        return view('modificarFilePanel', [ 'file' => $file, 'panel_id' =>$panel_id, 'sitio_id' => $sitio_id, 'nodos' => 'active']);
     }
 
     public function updateFileSitio(Request $request)
@@ -151,7 +151,6 @@ class NodoController extends Controller
         // para validate 
         //si no enviaron archivo
         $schemeImagen = 'sinMapa.svg';
-        //dd($request->file('scheme_file'));
         //si enviaron archivo
         if ($request->file('scheme_file')) {
             //renombrar archivo
@@ -228,8 +227,7 @@ class NodoController extends Controller
             }
         $entity_has_file->file_name = $coverImagen;
         $entity_has_file->save();
-        $nodes = Site::select('*')->get();
-        return view('adminNodos', ['nodes' => $nodes, 'nodos' => 'active']);
+        return redirect('mostrarNodo/' . $request->input('sitioId'));
     }
 
     /**

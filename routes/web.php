@@ -39,7 +39,7 @@ Route::get('/adminNodos', [App\Http\Controllers\NodoController::class, 'index'])
 Route::get('/mostrarNodo/{id}', [App\Http\Controllers\NodoController::class, 'showNodo'])->middleware('auth');
 Route::get('/cambiarFileSitio/{id}', [App\Http\Controllers\NodoController::class, 'editFileSitio'])->middleware('auth');
 Route::patch('/cambiarFileSitio', [App\Http\Controllers\NodoController::class, 'updateFileSitio'])->middleware('auth');
-Route::get('/cambiarFilePanel/{id}', [App\Http\Controllers\NodoController::class, 'editFilePanel'])->middleware('auth');
+Route::get('/cambiarFilePanel/{panel_id}/{sitio_id}', [App\Http\Controllers\NodoController::class, 'editFilePanel'])->middleware('auth');
 Route::patch('/cambiarFilePanel', [App\Http\Controllers\NodoController::class, 'updateFilePanel'])->middleware('auth');
 Route::get('/adminArchivosSitio/{id}', [App\Http\Controllers\NodoController::class, 'editArchivosSitio'])->middleware('auth');
 Route::get('/agregarArchivoSitio/{id}', [App\Http\Controllers\NodoController::class, 'createArchivoSitio'])->middleware('auth');
