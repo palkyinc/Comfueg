@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Entity_has_file;
 use App\Models\Site;
 use App\Models\Panel;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 class NodoController extends Controller
 {
@@ -97,8 +97,11 @@ class NodoController extends Controller
             Entity_has_file::select('*')
             ->where('entidad_id', $id)
             ->where('entidad', $entidad)
-            ->where('tipo', $tipo)
-            ->orWhere('tipo', $tipo2)
+            ->where(function (Builder $query) use ($tipo, $tipo2)
+            {
+                return $query->where('tipo', $tipo)
+                            ->orWhere('tipo', $tipo2);
+            })
             ->get();
         } else 
             {
@@ -106,8 +109,11 @@ class NodoController extends Controller
                 Entity_has_file::select('*')
                 ->where('entidad_id', $id)
                 ->where('entidad', $entidad)
-                ->where('tipo', $tipo)
-                ->orWhere('tipo', $tipo2)
+                ->where(function (Builder $query) use ($tipo, $tipo2)
+                {
+                    return $query->where('tipo', $tipo)
+                                ->orWhere('tipo', $tipo2);
+                })
                 ->paginate($paginado);
             }
     }
@@ -172,7 +178,7 @@ class NodoController extends Controller
             }
         $entity_has_file->file_name = $schemeImagen;
         $entity_has_file->save();
-        $this->showNodo($request->input('sitioId'));
+        return redirect('mostrarNodo/' . $request->input('sitioId'));
     }
     
     public function updateArchivoSitio(Request $request)
@@ -194,8 +200,7 @@ class NodoController extends Controller
         $entity_has_file->tipo = $tipo;
         $entity_has_file->file_name = $schemeImagen;
         $entity_has_file->save();
-        $files = $this->buscarEntitysHasFile($request->input('sitioId'), 'SITIO', 'FILE', 'PHOTO');
-        return view('adminArchivosSitio', ['files' => $files, 'sitio_id' => $request->input('sitioId'), 'nodos' => 'active']);
+        return redirect('adminArchivosSitio/' . $request->input('sitioId'));
     }
 
     public function updateFilePanel(Request $request)

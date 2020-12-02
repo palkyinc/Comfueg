@@ -31,6 +31,9 @@ Route::get('/', function (){return view('inicio', ['principal' => 'active']);});
 Route::get('/inicio', function (){return view('inicio', ['principal' => 'active']);});
 Route::get('/contratos', function (){return view('contratos', ['contratos' => 'active']);});
 ####################
+####### Inicidencias
+Route::get('/adminIncidencias', [App\Http\Controllers\NodoController::class, 'index'])->middleware('auth');
+####################
 ####### Nodos
 Route::get('/adminNodos', [App\Http\Controllers\NodoController::class, 'index'])->middleware('auth');
 Route::get('/mostrarNodo/{id}', [App\Http\Controllers\NodoController::class, 'showNodo'])->middleware('auth');

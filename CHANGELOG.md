@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Removed
 
+## [0.4.0] - 20XX-XX-XX
+### Added
+
+### Changed
+1. mostrarNodos: luego de agregar un esquema o cobertura debe volver a mostrarNodos
+2. problema de permisos en IIS_IURS al grabar en carpeta public
+
+### Removed
+
 ## [0.3.0] - 2020-12-01
 Antes de crear una nueva version:
 1. actualizar bien el changelog.
