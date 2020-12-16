@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-1. Agregar frecuencia y cantidad de clientes a Paneles.
+1. haruncpi/laravel-user-activity
 
 ## [1.0.0] - 20XX-XX-XX
 ### Added
@@ -14,8 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.0] - 20XX-XX-XX
 ### Added
-1. Vista mostrarNodo agregar link al equipo desde el IP.
-2. 
+1.	Vista mostrarNodo agregar link al equipo desde el IP.
+2.	Agregar frecuencia y cantidad de clientes a Paneles.
+3.	Agregar tabla site_has_incidencia
+4.	agregar tabla panel_has_barrios. Done.-
 
 ### Changed
 1. mostrarNodos: luego de agregar un esquema o cobertura debe volver a mostrarNodos

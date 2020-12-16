@@ -31,6 +31,14 @@ Route::get('/', function (){return view('inicio', ['principal' => 'active']);});
 Route::get('/inicio', function (){return view('inicio', ['principal' => 'active']);});
 Route::get('/contratos', function (){return view('contratos', ['contratos' => 'active']);});
 ####################
+####### panel test Web services
+Route::get('/panelTest/{ip}', [App\Http\Controllers\PruebaController::class, 'test']);
+####################
+####### Panel tiene Barrio CRUD
+Route::get('/adminPanelhasBarrio', [App\Http\Controllers\Panel_has_barrioController::class, 'index']);
+Route::get('/modificarPanelHasBarrio/{id}', [App\Http\Controllers\Panel_has_barrioController::class, 'edit']);
+Route::patch('/modificarPanelHasBarrio', [App\Http\Controllers\Panel_has_barrioController::class, 'update']);
+####################
 ####### Inicidencias
 Route::get('/adminIncidencias', [App\Http\Controllers\NodoController::class, 'index'])->middleware('auth');
 ####################

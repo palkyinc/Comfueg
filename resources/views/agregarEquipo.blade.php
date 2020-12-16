@@ -11,7 +11,7 @@
         <div class="form-row">
         <div class="form-group col-md-3">
             <label for="nombre">Nombre: </label>
-            <input type="text" name="nombre" value="" maxlength="45" class="form-control" id="nombre">
+            <input type="text" name="nombre" value="{{old('nombre')}}" maxlength="45" class="form-control" id="nombre">
         </div>
         <div class="form-group col-md-3">
             <label for="num_dispositivo">Dispositivo: </label>
@@ -35,17 +35,17 @@
     <div class="form-row">
         <div class="form-group col-md-3">
             <label for="mac_address">Mac Address: </label>
-            <input type="text" name="mac_address" value="" maxlength="17" class="form-control" id="mac_address">
+            <input type="text" name="mac_address" value="{{old('mac_address')}}" maxlength="17" class="form-control" id="mac_address">
         </div>
         <div class="form-group col-md-3">
             <label for="ip">Ip: </label>
-            <input type="text" name="ip" value="" maxlength="15" class="form-control" id="ip">
+            <input type="text" name="ip" value="{{old('ip')}}" maxlength="15" class="form-control" id="ip">
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-9">
             <label for="comentario">Comentario: </label>
-            <textarea name="comentario" class=" form-control" id="comentario" rows="auto" cols="50"></textarea>
+            <textarea name="comentario" class=" form-control" id="comentario" rows="auto" cols="50">{{old('comentario')}}</textarea>
         </div>
     </div>
     

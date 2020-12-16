@@ -11,7 +11,7 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="ssid">SSID: </label>
-                    <input type="text" name="ssid" value="" maxlength="15" class="form-control">
+                    <input type="text" name="ssid" value="{{old('ssid')}}" maxlength="15" class="form-control">
                     <input type="hidden" name="activo" value="0" class="form-control">
                 </div>
                 <div class="form-group col-md-3">
@@ -56,14 +56,14 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="altura">Altura (mt.): </label>
-                    <input type="text" name="altura" value="" maxlength="15" class="form-control">
+                    <input type="text" name="altura" value="{{old('altura')}}" maxlength="15" class="form-control">
                 </div>
             </div>
             <br>
             <div class="form-row">
                 <div class="form-group col-md-9">
                     <label for="comentario">Comentario: </label>
-                    <textarea name="comentario" class="form-control" rows="auto" cols="50"></textarea>
+                    <textarea name="comentario" class="form-control" rows="auto" cols="50">{{old('comentario')}}</textarea>
                 </div>
             </div>
     

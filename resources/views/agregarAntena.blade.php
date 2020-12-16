@@ -11,11 +11,11 @@
         <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="descripcion">Descripción: </label>
-                    <input type="text" name="descripcion" value="" maxlength="30"  class="form-control">
+                    <input type="text" name="descripcion" value="{{old('descripcion')}}" maxlength="30"  class="form-control">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="cod_comfueg">Código Comfueg: </label>
-                    <input type="text" name="cod_comfueg" value="" maxlength="45" class="form-control">
+                <input type="text" name="cod_comfueg" value="{{old('cod_comfueg')}}" maxlength="45" class="form-control">
                 </div>
         </div>
             <button type="submit" class="btn btn-primary" id="enviar">Crear Nueva</button>

@@ -11,15 +11,15 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="name">Nombre: </label>
-                <input type="text" name="name" value="" maxlength="255"  class="form-control">
+                <input type="text" name="name" value="{{old('name')}}" maxlength="255"  class="form-control">
             </div>
              <div class="form-group col-md-8">
                 <label for="email">Correo Electrónico: </label>
-                <input type="text" name="email" value="" class="form-control">
+                <input type="text" name="email" value="{{old('email')}}" class="form-control">
             </div>
             <div class="form-group col-md-4">
                 <label for="password">Contraseña: </label>
-                <input type="password" name="password" value="" maxlength="25"  class="form-control">
+                <input type="password" name="password" value="{{old('password')}}" maxlength="25"  class="form-control">
             </div>
         </div>
             <button type="submit" class="btn btn-primary" id="enviar">Crear Nuevo</button>

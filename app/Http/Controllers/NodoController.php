@@ -70,7 +70,7 @@ class NodoController extends Controller
         $site = Site::find($id);
         $archivos = Entity_has_file::select('*')->where('entidad_id', $id)->get();
         //dd($archivos);
-        $paneles = Panel::select('*')->where('num_site', $id)->get();
+        $paneles = Panel::select('*')->where('num_site', $id)->where('activo', 1)->get();
         foreach ($paneles as $panel) {
             $imagenes[] =
             $this->buscarEntityHasFile($panel->id, 'PANEL', 'COVER');

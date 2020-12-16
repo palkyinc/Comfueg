@@ -38,9 +38,9 @@
 				Nodos
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		          <a class="dropdown-item" href="/#">Paneles</a>
-		          <a class="dropdown-item" href="/#">Punto a Puntos</a>
-		          <a class="dropdown-item" href="/adminIncidencias">Incidencias GLobales</a>
+		          <a class="dropdown-item" href="/#">Disponible</a>
+		          <a class="dropdown-item" href="/adminPanelhasBarrio">Barrios por panel</a>
+		          <a class="dropdown-item" href="/adminIncidencias">Incidencias Globales</a>
 		          <a class="dropdown-item" href="/adminNodos">Nodos</a>
 				</div>
 		      </li>

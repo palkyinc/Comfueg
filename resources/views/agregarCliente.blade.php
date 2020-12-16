@@ -11,17 +11,17 @@
         <div class="form-row">
             <div class="form-group col-md-2">
                 <label for="id">ID Genesys: </label>
-                <input type="text" name="id" value="" maxlength="45"  class="form-control">
+                <input type="text" name="id" value="{{old('id')}}" maxlength="45"  class="form-control">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="nombre">Nombre: </label>
-                <input type="text" name="nombre" value="" maxlength="45"  class="form-control">
+                <input type="text" name="nombre" value="{{old('nombre')}}" maxlength="45"  class="form-control">
             </div>
             <div class="form-group col-md-4">
                 <label for="apellido">Apellido: </label>
-                <input type="text" name="apellido" value="" maxlength="45"  class="form-control">
+                <input type="text" name="apellido" value="{{old('apellido')}}" maxlength="45"  class="form-control">
             </div>
         </div>
         <div class="form-row">
@@ -36,7 +36,7 @@
             </div>
             <div class="form-group col-md-4">
                 <label for="telefono">Teléfono: </label>
-                <input type="text" name="telefono" value="" maxlength="8"  class="form-control">
+                <input type="text" name="telefono" value="{{old('telefono')}}" maxlength="8"  class="form-control">
             </div>
         </div>
         <div class="form-row">
@@ -55,13 +55,13 @@
             </div>
             <div class="form-group col-md-4">
                 <label for="celular">Celular: </label>
-                <input type="text" name="celular" value="" maxlength="8"  class="form-control">
+                <input type="text" name="celular" value="{{old('celular')}}" maxlength="8"  class="form-control">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-8">
                 <label for="email">Correo Electrónico: </label>
-                <input type="email" name="email" value="" class="form-control">
+                <input type="email" name="email" value="{{old('email')}}" class="form-control">
             </div>
         </div>
             <button type="submit" class="btn btn-primary" id="enviar">Crear Nuevo</button>

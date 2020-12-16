@@ -20,7 +20,7 @@
             </div>
             <div class="form-group col-md-4">
                 <label for="numero">Altura: </label>
-                <input type="text" name="numero" value="" maxlength="5"  class="form-control">
+                <input type="text" name="numero" value="{{old('numero')}}" maxlength="5"  class="form-control">
             </div>
         </div>
         <div class="form-row">

@@ -11,21 +11,21 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="marca">Marca: </label>
-                <input type="text" name="marca" value="" maxlength="45"  class="form-control">
+                <input type="text" name="marca" value="{{old('marca')}}" maxlength="45"  class="form-control">
             </div>
             <div class="form-group col-md-6">
                 <label for="modelo">Modelo: </label>
-                <input type="text" name="modelo" value="" maxlength="45"  class="form-control">
+                <input type="text" name="modelo" value="{{old('modelo')}}" maxlength="45"  class="form-control">
             </div>
             <div class="form-group col-md-6">
                 <label for="cod_comfueg">Código Comfueg: </label>
-                <input type="text" name="cod_comfueg" value="" maxlength="45"  class="form-control">
+                <input type="text" name="cod_comfueg" value="{{old('cod_comfueg')}}" maxlength="45"  class="form-control">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-9">
                 <label for="descripcion">Descripción: </label>
-                <textarea name="descripcion" class="form-control" id="descripcion" rows="auto" cols="50"></textarea>
+                <textarea name="descripcion" class="form-control" id="descripcion" rows="auto" cols="50">{{old('descripcion')}}</textarea>
             </div>
         </div>    
     

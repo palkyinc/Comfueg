@@ -11,7 +11,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="nombre">Nombre: </label>
-                <input type="text" name="nombre" value="" maxlength="45" class="form-control">
+                <input type="text" name="nombre" value="{{old('nombre')}}" maxlength="45" class="form-control">
             </div>
         </div>
             <button type="submit" class="btn btn-primary" id="enviar">Crear Nueva</button>

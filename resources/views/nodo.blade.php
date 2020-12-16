@@ -168,11 +168,11 @@
 </div>
 
 @foreach ($paneles as $panel)
-<a id="{{$panel->ssid}}"></a>    
+<a id="{{$panel->ssid}}"></a>
 <div class="row">
     <div class="col-sm-6">
         <div class="card bg-light mb-3">
-        <div class="card-header">{{$panel->rol}}</div>
+            <div class="card-header">{{$panel->rol}}</div>
             <div class="card-body">
                 <h5 class="card-title">Detalles Técnicos</h5>
                 <ul class="card-test">
@@ -182,26 +182,26 @@
                         <a href="https://{{$panel->relEquipo->ip}}" class="btn btn-link btn-sm" target="_blank">
                                 {{$panel->relEquipo->ip}}
                             </a>
-                    </li>
-                    <li>Dispositivo: {{$panel->relEquipo->relProducto->modelo}}</li>
-                    <li>Antena: {{$panel->relEquipo->relAntena->descripcion}}</li>
-                    <li>Alta de equipo: {{$panel->relEquipo->fecha_alta}}</li>
-                    <li>Altura: {{$panel->altura}}</li>
-                    <li>Comentarios: {{$panel->comentario}}</li>
-                </ul>
-                <footer class="blockquote-footer">
+                        </li>
+                        <li>Dispositivo: {{$panel->relEquipo->relProducto->modelo}}</li>
+                        <li>Antena: {{$panel->relEquipo->relAntena->descripcion}}</li>
+                        <li>Alta de equipo: {{$panel->relEquipo->fecha_alta}}</li>
+                        <li>Altura: {{$panel->altura}}</li>
+                        <li>Comentarios: {{$panel->comentario}}</li>
+                    </ul>
+                    <footer class="blockquote-footer">
                 <a href="#cielo" class="btn btn-info btn-sm">Ir arriba</a>
-                </footer>
-            </div>
+            </footer>
         </div>
     </div>
-    <div class="col-sm-6">
+</div>
+<div class="col-sm-6">
         <div class="card">
             <div class="card-body">
                 @foreach ($imagenes as $imagen)
-                    @if (null != $imagen && $imagen->entidad == 'PANEL' && $imagen->entidad_id == $panel->id)
-                        <img class="card-img-top" src="/imgUsuarios/{{$imagen->file_name}}" alt="Esquema de la rama">
-                    @endif
+                @if (null != $imagen && $imagen->entidad == 'PANEL' && $imagen->entidad_id == $panel->id)
+                <img class="card-img-top" src="/imgUsuarios/{{$imagen->file_name}}" alt="Esquema de la rama">
+                @endif
                 @endforeach
                 <h5 class="card-title">Cobertura / esquema de conexión</h5>
                 @can('nodos_edit')
@@ -211,7 +211,6 @@
         </div>
     </div>
 </div>
-
 @endforeach
 @endcan
 @endsection

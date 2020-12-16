@@ -11,16 +11,16 @@
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="nombre">Nombre: </label>
-                <input type="text" name="nombre" value="" maxlength="30"  class="form-control">
+                <input type="text" name="nombre" value="{{old('nombre')}}" maxlength="30"  class="form-control">
             </div>
             
             <div class="form-group col-md-4">
                 <label for="bajada">Bajada: </label>
-                <input type="text" name="bajada" value="" maxlength="60"  class="form-control">
+                <input type="text" name="bajada" value="{{old('bajada')}}" maxlength="60"  class="form-control">
             </div>
             <div class="form-group col-md-4">
                 <label for="subida">Subida: </label>
-                <input type="text" name="subida" value="" maxlength="15"  class="form-control">
+                <input type="text" name="subida" value="{{old('subida')}}" maxlength="15"  class="form-control">
             </div>
         </div>
         <div class="form-row">
@@ -28,7 +28,7 @@
         <div class="form-row">
             <div class="form-group col-md-12">
                 <label for="descripcion">Descripción: </label>
-                <textarea name="descripcion" class="form-control" id="descripcion" rows="auto" cols="15"></textarea>
+                <textarea name="descripcion" class="form-control" id="descripcion" rows="auto" cols="15">{{old('decripcion')}}</textarea>
             </div>
         </div>    
     
