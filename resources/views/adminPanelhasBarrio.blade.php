@@ -2,7 +2,6 @@
 
 @section('contenido')
 @can('paneles_index')
-@endcan
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración del alcance de Barrio por Panel.</h2>
                     </form>
@@ -37,10 +36,10 @@
                             <td>{{$panel->relEquipo->ip}}</td>
                             <td>
                                 @can('paneles_edit')
-                                @endcan
                                 <a href="/modificarPanelHasBarrio/{{ $panel->id }}" class="margenAbajo btn btn-outline-secundary" title="Agregar/Quitar Barrio">
-                                <img src="imagenes/iconfinder_user-permission_3018548.svg" alt="imagen de Cambio de Barrio en Panel" height="20px">
+                                    <img src="imagenes/iconfinder_user-permission_3018548.svg" alt="imagen de Cambio de Barrio en Panel" height="20px">
                                 </a>
+                                @endcan
                             </td>
                             
                             </tr>
@@ -49,4 +48,5 @@
                 </table>
 </div>
         {{ $paneles->links() }}
+@endcan
 @endsection

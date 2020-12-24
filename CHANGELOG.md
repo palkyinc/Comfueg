@@ -17,7 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1.	Vista mostrarNodo agregar link al equipo desde el IP.
 2.	Agregar frecuencia y cantidad de clientes a Paneles.
 3.	Agregar tabla site_has_incidencia
-4.	agregar tabla panel_has_barrios. Done.-
+4.	agregar tabla panel_has_barrios.
+5.	Se agrega tablas Mail_groups y Mail_group_has_users
+6.	Se crea el crud de barrios por panel.
+7.	Se crea crud de Usuarios a Grupos de mail.
+
 
 ### Changed
 1. mostrarNodos: luego de agregar un esquema o cobertura debe volver a mostrarNodos

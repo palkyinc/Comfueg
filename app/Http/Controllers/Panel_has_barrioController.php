@@ -62,7 +62,8 @@ class panel_has_barrioController extends Controller
     {
         $barrios = Barrio::all();
         $panelHasBarrios = Panel_has_barrio::select('*')->where('panel_id', $id)->get();
-        return view ('agregarBarrioToPanel', ['panelHasBarrios' => $panelHasBarrios, 'panel_id' => $id, 'barrios' => $barrios, 'nodos' => 'active']);
+        $panel_actual = Panel::find($id);
+        return view ('agregarBarrioToPanel', ['panel_actual' => $panel_actual->relEquipo->nombre, 'panelHasBarrios' => $panelHasBarrios, 'panel_id' => $id, 'barrios' => $barrios, 'nodos' => 'active']);
     }
 
     /**
@@ -75,6 +76,7 @@ class panel_has_barrioController extends Controller
     public function update(Request $request)
     {
         $barrios = Barrio::all();
+        $panel = Panel::find($request->input('id'));
         foreach ($barrios as $barrio) 
         {
             $panelHasBarrio = Panel_has_barrio::where('panel_id', $request->input('id'))
@@ -82,15 +84,12 @@ class panel_has_barrioController extends Controller
                                             ->first();
             if (isset($panelHasBarrio->id) && null == $request->input($barrio->id))
             {
-                $panelHasBarrio->delete();
-                $respuesta[] = 'Se eliminó barrio ' . $barrio->nombre . ' de Panel con ID ' . $request->input('id') . ' correctamente.';
+                $panel->barrios()->detach($barrio->id);
+                $respuesta[] = 'Se eliminó barrio ' . $barrio->nombre . ' de Panel ' . $panel->relEquipo->nombre . ' correctamente.';
             } elseif (!isset($panelHasBarrio->id) && null != $request->input($barrio->id))
                     {
-                    $panelHasBarrio = new Panel_has_barrio;
-                    $panelHasBarrio->panel_id = $request->input('id');
-                    $panelHasBarrio->barrio_id = $barrio->id;
-                    $panelHasBarrio->save();
-                    $respuesta[] = 'Se agregó barrio ' . $barrio->nombre . 'a Panel con ID ' . $request->input('id') . ' correctamente.';
+                        $panel->barrios()->attach($barrio->id);
+                        $respuesta[] = 'Se agregó barrio ' . $barrio->nombre . ' a Panel ' . $panel->relEquipo->nombre . ' correctamente.';
                     }
         }
         return redirect('adminPanelhasBarrio')->with('mensaje', $respuesta);

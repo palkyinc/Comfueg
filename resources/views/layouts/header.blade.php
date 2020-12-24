@@ -66,6 +66,7 @@
 		          <a class="dropdown-item" href="/adminUsers">Usuarios</a>
 		          <a class="dropdown-item" href="/adminRoles">Roles</a>
 		          <a class="dropdown-item" href="/adminPermissions">Permisos</a>
+		          <a class="dropdown-item" href="/adminMailGroups">Grupos de Mail</a>
 		        </div>
 		      </li>
 		    </ul>

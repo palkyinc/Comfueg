@@ -9,11 +9,22 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CodigoDeAreaController;
 use App\Http\Controllers\DireccionController;
 use App\Http\Controllers\EquipoController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Mail_groupController;
+use App\Http\Controllers\NodoController;
+use App\Http\Controllers\panel_has_barrioController;
 use App\Http\Controllers\PanelController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\PruebaController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SiteController;
-
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\SiteHasIncidenteController;
+use App\Mail\IncidenciaGlobal;
+use App\Models\Site_has_incidente;
+use Illuminate\Support\Facades\Mail;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,34 +36,51 @@ use App\Http\Controllers\SiteController;
 |
 */
 ## Route Inicial Default
-Route::get('/test', function () {return view('welcome');});
+Route::get('/test', function () {
+    $incidente = Site_has_incidente::find(1);
+    Mail ::to(['laboratorio@comunicacionesfueguinas.com','migvicpereyra@hotmail.com'])->send(new IncidenciaGlobal($incidente));
+    dd($incidente);
+});
 ### Route index
-Route::get('/', function (){return view('inicio', ['principal' => 'active']);});
-Route::get('/inicio', function (){return view('inicio', ['principal' => 'active']);});
+Route::get('/', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);});
+Route::get('/inicio', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos(), 'principal' => 'active']);});
 Route::get('/contratos', function (){return view('contratos', ['contratos' => 'active']);});
 ####################
 ####### panel test Web services
-Route::get('/panelTest/{ip}', [App\Http\Controllers\PruebaController::class, 'test']);
+Route::get('/panelTest/{ip}', [PruebaController::class, 'test']);
 ####################
 ####### Panel tiene Barrio CRUD
-Route::get('/adminPanelhasBarrio', [App\Http\Controllers\Panel_has_barrioController::class, 'index']);
-Route::get('/modificarPanelHasBarrio/{id}', [App\Http\Controllers\Panel_has_barrioController::class, 'edit']);
-Route::patch('/modificarPanelHasBarrio', [App\Http\Controllers\Panel_has_barrioController::class, 'update']);
+Route::get('/adminPanelhasBarrio', [Panel_has_barrioController::class, 'index'])->middleware('auth');
+Route::get('/modificarPanelHasBarrio/{id}', [Panel_has_barrioController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarPanelHasBarrio', [Panel_has_barrioController::class, 'update'])->middleware('auth');
 ####################
 ####### Inicidencias
-Route::get('/adminIncidencias', [App\Http\Controllers\NodoController::class, 'index'])->middleware('auth');
+Route::get('/adminIncidencias', [SiteHasIncidenteController::class, 'index'])->middleware('auth');
+Route::get('/agregarSiteHasIncidente', [SiteHasIncidenteController::class, 'create'])->middleware('auth');
+Route::post('/agregarSiteHasIncidente', [SiteHasIncidenteController::class, 'store'])->middleware('auth');
+Route::get('/modificarSiteHasIncidente/{id}', [SiteHasIncidenteController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarSiteHasIncidente', [SiteHasIncidenteController::class, 'update'])->middleware('auth');
 ####################
 ####### Nodos
-Route::get('/adminNodos', [App\Http\Controllers\NodoController::class, 'index'])->middleware('auth');
-Route::get('/mostrarNodo/{id}', [App\Http\Controllers\NodoController::class, 'showNodo'])->middleware('auth');
-Route::get('/cambiarFileSitio/{id}', [App\Http\Controllers\NodoController::class, 'editFileSitio'])->middleware('auth');
-Route::patch('/cambiarFileSitio', [App\Http\Controllers\NodoController::class, 'updateFileSitio'])->middleware('auth');
-Route::get('/cambiarFilePanel/{panel_id}/{sitio_id}', [App\Http\Controllers\NodoController::class, 'editFilePanel'])->middleware('auth');
-Route::patch('/cambiarFilePanel', [App\Http\Controllers\NodoController::class, 'updateFilePanel'])->middleware('auth');
-Route::get('/adminArchivosSitio/{id}', [App\Http\Controllers\NodoController::class, 'editArchivosSitio'])->middleware('auth');
-Route::get('/agregarArchivoSitio/{id}', [App\Http\Controllers\NodoController::class, 'createArchivoSitio'])->middleware('auth');
-Route::get('/eliminarArchivo/{archivo_id}/{sitio_id}', [App\Http\Controllers\NodoController::class, 'destroyArchivo'])->middleware('auth');
-Route::patch('/adminArchivosSitio', [App\Http\Controllers\NodoController::class, 'updateArchivoSitio'])->middleware('auth');
+Route::get('/adminNodos', [NodoController::class, 'index'])->middleware('auth');
+Route::get('/mostrarNodo/{id}', [NodoController::class, 'showNodo'])->middleware('auth');
+Route::get('/cambiarFileSitio/{id}', [NodoController::class, 'editFileSitio'])->middleware('auth');
+Route::patch('/cambiarFileSitio', [NodoController::class, 'updateFileSitio'])->middleware('auth');
+Route::get('/cambiarFilePanel/{panel_id}/{sitio_id}', [NodoController::class, 'editFilePanel'])->middleware('auth');
+Route::patch('/cambiarFilePanel', [NodoController::class, 'updateFilePanel'])->middleware('auth');
+Route::get('/adminArchivosSitio/{id}', [NodoController::class, 'editArchivosSitio'])->middleware('auth');
+Route::get('/agregarArchivoSitio/{id}', [NodoController::class, 'createArchivoSitio'])->middleware('auth');
+Route::get('/eliminarArchivo/{archivo_id}/{sitio_id}', [NodoController::class, 'destroyArchivo'])->middleware('auth');
+Route::patch('/adminArchivosSitio', [NodoController::class, 'updateArchivoSitio'])->middleware('auth');
+####################
+####### CRUD Mail Group
+Route::get('/adminMailGroups', [Mail_groupController::class, 'index'])->middleware('auth');
+Route::get('/agregarMail_group', [Mail_groupController::class, 'create'])->middleware('auth');
+Route::post('/agregarMail_group', [Mail_groupController::class, 'store'])->middleware('auth');
+Route::get('/modificarMail_group/{id}', [Mail_groupController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarMail_group', [Mail_groupController::class, 'update'])->middleware('auth');
+Route::get('/agregarUsersToMail_group/{id}', [Mail_groupController::class, 'show'])->middleware('auth');
+Route::patch('/agregarUsersToMail_group', [Mail_groupController::class, 'updateUsersToMail_group'])->middleware('auth');
 ####################
 ####### CRUD Antenas
 Route::get('/adminAntenas', [AntenaController::class, 'index'])->middleware('auth');
@@ -143,32 +171,32 @@ Route::get('/agregarCliente', [ClienteController::class, 'create'])->middleware(
 Route::post('/agregarCliente', [ClienteController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Users
-Route::get('/adminUsers', [App\Http\Controllers\UserController::class, 'index'])->middleware('auth');
-Route::get('/modificarUser/{id}', [App\Http\Controllers\UserController::class, 'edit'])->middleware('auth');
-Route::patch('/modificarUser', [App\Http\Controllers\UserController::class, 'update'])->middleware('auth');
-Route::get('/agregarRoleToUser/{id}', [App\Http\Controllers\UserController::class, 'show'])->middleware('auth');
-Route::patch('/agregarRoleToUser', [App\Http\Controllers\UserController::class, 'updateRoleToUser'])->middleware('auth');
-Route::get('/agregarUser', [App\Http\Controllers\UserController::class, 'create'])->middleware('auth');
-Route::post('/agregarUser', [App\Http\Controllers\UserController::class, 'store'])->middleware('auth');
+Route::get('/adminUsers', [UserController::class, 'index'])->middleware('auth');
+Route::get('/modificarUser/{id}', [UserController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarUser', [UserController::class, 'update'])->middleware('auth');
+Route::get('/agregarRoleToUser/{id}', [UserController::class, 'show'])->middleware('auth');
+Route::patch('/agregarRoleToUser', [UserController::class, 'updateRoleToUser'])->middleware('auth');
+Route::get('/agregarUser', [UserController::class, 'create'])->middleware('auth');
+Route::post('/agregarUser', [UserController::class, 'store'])->middleware('auth');
 ####################
-####### CRUD Roles
-Route::get('/adminRoles', [App\Http\Controllers\RoleController::class, 'index'])->middleware('auth');
-Route::get('/modificarRole/{id}', [App\Http\Controllers\RoleController::class, 'edit'])->middleware('auth');
-Route::patch('/modificarRole', [App\Http\Controllers\RoleController::class, 'update'])->middleware('auth');
-Route::get('/agregarPermissionsToRole/{id}', [App\Http\Controllers\RoleController::class, 'show'])->middleware('auth');
-Route::patch('/agregarPermissionsToRole', [App\Http\Controllers\RoleController::class, 'updatePermissionsToRole'])->middleware('auth');
-Route::get('/agregarRole', [App\Http\Controllers\RoleController::class, 'create'])->middleware('auth');
-Route::post('/agregarRole', [App\Http\Controllers\RoleController::class, 'store'])->middleware('auth');
+####### CRUD Roles 
+Route::get('/adminRoles', [RoleController::class, 'index'])->middleware('auth');
+Route::get('/modificarRole/{id}', [RoleController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarRole', [RoleController::class, 'update'])->middleware('auth');
+Route::get('/agregarPermissionsToRole/{id}', [RoleController::class, 'show'])->middleware('auth');
+Route::patch('/agregarPermissionsToRole', [RoleController::class, 'updatePermissionsToRole'])->middleware('auth');
+Route::get('/agregarRole', [RoleController::class, 'create'])->middleware('auth');
+Route::post('/agregarRole', [RoleController::class, 'store'])->middleware('auth');
 ####################
 ####### CRUD Permissions
-Route::get('/adminPermissions', [App\Http\Controllers\PermissionController::class, 'index'])->middleware('auth');
-Route::get('/modificarPermission/{id}', [App\Http\Controllers\PermissionController::class, 'edit'])->middleware('auth');
-Route::patch('/modificarPermission', [App\Http\Controllers\PermissionController::class, 'update'])->middleware('auth');
-Route::get('/agregarPermissionToRoles/{id}', [App\Http\Controllers\PermissionController::class, 'show'])->middleware('auth');
-Route::patch('/agregarPermissionToRoles', [App\Http\Controllers\PermissionController::class, 'updatePermissionToRoles'])->middleware('auth');
-Route::get('/agregarPermission', [App\Http\Controllers\PermissionController::class, 'create'])->middleware('auth');
-Route::post('/agregarPermission', [App\Http\Controllers\PermissionController::class, 'store'])->middleware('auth');
+Route::get('/adminPermissions', [PermissionController::class, 'index'])->middleware('auth');
+Route::get('/modificarPermission/{id}', [PermissionController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarPermission', [PermissionController::class, 'update'])->middleware('auth');
+Route::get('/agregarPermissionToRoles/{id}', [PermissionController::class, 'show'])->middleware('auth');
+Route::patch('/agregarPermissionToRoles', [PermissionController::class, 'updatePermissionToRoles'])->middleware('auth');
+Route::get('/agregarPermission', [PermissionController::class, 'create'])->middleware('auth');
+Route::post('/agregarPermission', [PermissionController::class, 'store'])->middleware('auth');
 ####################
 ####### Auth Routes
 Auth::routes();
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');

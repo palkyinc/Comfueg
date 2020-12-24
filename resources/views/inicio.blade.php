@@ -3,7 +3,7 @@
     @section('contenido')
             <h2>
         @php
-            
+            date_default_timezone_set('America/Argentina/Buenos_Aires');
             $dia = date ('N');
             switch ($dia) {
               case '1':
@@ -28,75 +28,51 @@
                 echo "Hoy es Domingo, NO deberias estar trabajando!!.";
                 break;
               default:
-                echo "Hoy es Lunes, Fuerza que recién empieza la semana.";
+                echo "ERROR estoy saliedo por el Default.";
                 break;
             }
         @endphp     
         </h2>
 
-<div class="card-columns" style="margin-top: 3%;">
-  <div class="card">
-    <img class="card-img-top" src=".../100px160/" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">Card title that wraps to a new line</h5>
-      <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+<div class="container-fluid mt-5">
+  <div class="row">
+
+    <div class="col-sm">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">This is another card with title and supporting text below. This card has some additional content to make it slightly taller overall.</p>
+          <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="card p-3">
-    <blockquote class="blockquote mb-0 card-body">
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-      <footer class="blockquote-footer">
-        <small class="text-muted">
-          Someone famous in <cite title="Source Title">Source Title</cite>
-        </small>
-      </footer>
-    </blockquote>
-  </div>
-  <div class="card">
-    <img class="card-img-top" src=".../100px160/" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+
+    <div class="col-sm">
+      @foreach ($incidentes as $incidente)
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Incidente Global: {{$incidente->crearNombre()}}</h5>
+            <p class="card-text">Tiempo de la Caída: <strong>{{$incidente->tiempoCaida()}}</strong></p>
+            <p class="card-text">Sitios Afectados: <strong>{{$incidente->sitios_afectados}}</strong></p>
+            <p class="card-text">Barrios Afectados: <strong>{{$incidente->barrios_afectados}}</strong></p>
+            <p class="card-text">Mensaje para Clientes: <strong>{{$incidente->mensaje_clientes}}</strong></p>
+            <p class="card-text">Cantidad de Actualizaciones: <strong>{{count($incidente->incidente_has_mensaje)}}</strong></p>
+            <p class="card-text"> <a href="modificarSiteHasIncidente/{{$incidente->id}}">Ver Incidente</a> </p>
+            <p class="card-text"><small class="text-muted">Creado {{$incidente->created_at}} por {{$incidente->reluser->name}}</small></p>
+          </div>
+        </div>
+      @endforeach
     </div>
-  </div>
-  <div class="card bg-primary text-white text-center p-3">
-    <blockquote class="blockquote mb-0">
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat.</p>
-      <footer class="blockquote-footer">
-        <small>
-          Someone famous in <cite title="Source Title">Source Title</cite>
-        </small>
-      </footer>
-    </blockquote>
-  </div>
-  <div class="card text-center">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">This card has a regular title and short paragraphy of text below it.</p>
-      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-    </div>
-  </div>
-  <div class="card">
-    <img class="card-img" src=".../100px260/" alt="Card image">
-  </div>
-  <div class="card p-3 text-right">
-    <blockquote class="blockquote mb-0">
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-      <footer class="blockquote-footer">
-        <small class="text-muted">
-          Someone famous in <cite title="Source Title">Source Title</cite>
-        </small>
-      </footer>
-    </blockquote>
-  </div>
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">This is another card with title and supporting text below. This card has some additional content to make it slightly taller overall.</p>
-      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+
+    <div class="col-sm">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">This is another card with title and supporting text below. This card has some additional content to make it slightly taller overall.</p>
+          <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
-    @endsection
+@endsection

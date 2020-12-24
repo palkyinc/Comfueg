@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Panel_has_barrio extends Model
 {
     use HasFactory;
+    public $timestamps = false;
 }
