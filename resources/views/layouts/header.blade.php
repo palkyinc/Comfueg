@@ -4,14 +4,15 @@
 	<meta charset="UTF-8">
 	<title>Intranet CF</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link rel="stylesheet" href="/cssboot/bootstrap.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 	<link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+	
 	<link rel="stylesheet" href="/cssboot/easy-autocomplete.min.css">
 	<link rel="stylesheet" href="/cssboot/easy-autocomplete.themes.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 	<script src="/jsboot/jquery-3.5.1.slim.min.js"></script>
-	<script src="/jsboot/popper.min.js"></script>
-	<script src="/jsboot/bootstrap.min.js"></script>
+	
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 	<script src="/jsboot/sweetalert.min.js"></script>
 	<script src="/jsboot/jquery.easy-autocomplete.min.js"></script>
 	<link rel="stylesheet" href="/css/estilos.css">
@@ -31,21 +32,21 @@
 		        <a class="nav-link" href="/inicio">Principal</a>
 		      </li>
 		      <li class="nav-item {{  $contratos ?? ''}}">
-		        <a class="nav-link" href="/contratos">Contratos</a>
+		        <a class="nav-link disabled" href="/contratos">Contratos</a>
 		      </li>
 		      <li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle {{  $nodos ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<a class="nav-link dropdown-toggle {{  $nodos ?? ''}}" href="#" id="nodosNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 				Nodos
 				</a>
-				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		          <a class="dropdown-item" href="/#">Disponible</a>
-		          <a class="dropdown-item" href="/adminPanelhasBarrio">Barrios por panel</a>
-		          <a class="dropdown-item" href="/adminIncidencias">Incidencias Globales</a>
-		          <a class="dropdown-item" href="/adminNodos">Nodos</a>
-				</div>
+				<ul class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
+		          <li><a class="dropdown-item" href="/#">Disponible</a></li>
+		          <li><a class="dropdown-item" href="/adminPanelhasBarrio">Barrios por panel</a></li>
+		          <li><a class="dropdown-item" href="/adminIncidencias">Incidencias Globales</a></li>
+		          <li><a class="dropdown-item" href="/adminNodos">Nodos</a></li>
+				</ul>
 		      </li>
 		      <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle {{ $datos ?? ''}}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		        <a class="nav-link dropdown-toggle {{ $datos ?? ''}}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 		          Datos
 		        </a>
 		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">

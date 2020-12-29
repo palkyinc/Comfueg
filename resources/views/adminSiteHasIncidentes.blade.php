@@ -2,18 +2,42 @@
 
 @section('contenido')
 @can('SiteHasIncidente_index')
-                    <form class="form-inline mx-4 margin-10" action="" method="GET">
-                        <h2 class="mx-3">Administración de Incidentes Globales</h2>
-                        <label for="ssid" class="mx-3">Revisar</label>
-                        <input type="text" name="ssid" class="form-control mx-3" id="ssid">
-                        <label for="sitio" class="mx-3">Sitio</label>
-                        <select class="form-control" name="sitio" id="sitio">
-                            <option value="">Seleccione un Sitio...</option>
-                            @foreach ($sitios as $sitio)
-                                    <option value="{{$sitio->id}}">{{$sitio->nombre}}</option>
-                            @endforeach
-                        </select>
-                        <button type="submit" class="btn btn-primary mx-3">Enviar</button>
+                    <form class="form-inline mx-4 margin-10" action="adminIncidenciasRebusqueda" method="get">
+                        <div class="conteiner">
+                            <div class="row">
+                                <div class="col">
+                                    <h2 class="mx-3">Administración de Incidentes Globales</h2>
+                                </div>
+                                <div class="form-check form-switch col-2">
+                                    @if ($abiertas)
+                                        <input class="form-check-input" type="checkbox" name="abiertas" id="flexSwitchCheckChecked" checked>
+                                    @else
+                                        <input class="form-check-input" type="checkbox" name="abiertas" id="flexSwitchCheckChecked">
+                                    @endif
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Solo Abiertas</label>
+                                </div>
+                                <div class="col-2">
+                                    <label for="sitio" class="mx-3">Sitio</label>
+                                    <select class="form-control" name="sitio" id="sitio">
+                                        @if (!$sitioSelected)
+                                            <option value="" selected>Seleccione un Sitio...</option>
+                                        @else
+                                            <option value="">Seleccione un Sitio...</option>
+                                        @endif
+                                        @foreach ($sitios as $sitio)
+                                            @if ($sitio->id == $sitioSelected)
+                                                <option value="{{$sitio->id}}" selected>{{$sitio->nombre}}</option>
+                                            @else
+                                                <option value="{{$sitio->id}}">{{$sitio->nombre}}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <button type="submit" class="btn btn-primary mx-3">Enviar</button>
+                                </div>
+                            </div>
+                        </div>
                     </form>
 
         @if ( session('mensaje') )
@@ -33,7 +57,7 @@
                             <th scope="col"> Nombre </th>
                             <th scope="col"> Tipo </th>
                             <th scope="col"> Inicio </th>
-                            <th scope="col"> Tiempo Caída / Final </th>
+                            <th scope="col"> Tiempo Caída / Finalizada </th>
                             <th scope="col"> Afectado </th>
                             <th scope="col"> Sitio </th>
                             <th scope="col"> Creado por </th>
@@ -67,10 +91,13 @@
                             <td>{{$incidente->relUser->name}}</td>
                             <td>
                                 @can('SiteHasIncidente_edit')
-                                    <a href="/modificarSiteHasIncidente/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Ver/Editar">
+                                    <a href="/modificarSiteHasIncidente/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                         <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                     </a>
                                 @endcan
+                                <a href="#" class="margenAbajo btn btn-outline-secundary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{$incidente->id}}" title="Ver">
+                                        <img src="imagenes/iconfinder_VIEW_eye_2738306.svg" alt="imagen de ojo para ver" height="20px">
+                                </a>
                             </td>
                             
                             </tr>
@@ -79,5 +106,6 @@
                 </table>
 </div>
         {{ $incidentes->links() }}
+@include('modals.incidente')
 @endcan
 @endsection

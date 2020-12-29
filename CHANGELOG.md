@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5.	Se agrega tablas Mail_groups y Mail_group_has_users
 6.	Se crea el crud de barrios por panel.
 7.	Se crea crud de Usuarios a Grupos de mail.
+8.	Se crea CRUD de Incidente Globales. No se completo agregar archivos a Incidentes.
 
 
 ### Changed

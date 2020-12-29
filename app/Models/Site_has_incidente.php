@@ -39,7 +39,7 @@ class Site_has_incidente extends Model
     }
     public function relPanel()
     {
-        return $this->belongsTo('App\Models\Panel', 'afectado', 'id');
+        return $this->belongsTo(Panel::class, 'afectado', 'id');
     }
     public function relUser()
     {
@@ -55,6 +55,7 @@ class Site_has_incidente extends Model
     }
     public function tiempoCaida ()
     {
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $hoy = new DateTime();
         $inicio = new DateTime($this->inicio);
         $interval = $inicio->diff($hoy);

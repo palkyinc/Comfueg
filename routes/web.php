@@ -56,6 +56,7 @@ Route::patch('/modificarPanelHasBarrio', [Panel_has_barrioController::class, 'up
 ####################
 ####### Inicidencias
 Route::get('/adminIncidencias', [SiteHasIncidenteController::class, 'index'])->middleware('auth');
+Route::get('/adminIncidenciasRebusqueda', [SiteHasIncidenteController::class, 'indexRebusqueda'])->middleware('auth');
 Route::get('/agregarSiteHasIncidente', [SiteHasIncidenteController::class, 'create'])->middleware('auth');
 Route::post('/agregarSiteHasIncidente', [SiteHasIncidenteController::class, 'store'])->middleware('auth');
 Route::get('/modificarSiteHasIncidente/{id}', [SiteHasIncidenteController::class, 'edit'])->middleware('auth');

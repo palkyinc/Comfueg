@@ -3,7 +3,7 @@
     @section('contenido')
             <h2>
         @php
-            date_default_timezone_set('America/Argentina/Buenos_Aires');
+            date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
             $dia = date ('N');
             switch ($dia) {
               case '1':
@@ -57,7 +57,7 @@
             <p class="card-text">Barrios Afectados: <strong>{{$incidente->barrios_afectados}}</strong></p>
             <p class="card-text">Mensaje para Clientes: <strong>{{$incidente->mensaje_clientes}}</strong></p>
             <p class="card-text">Cantidad de Actualizaciones: <strong>{{count($incidente->incidente_has_mensaje)}}</strong></p>
-            <p class="card-text"> <a href="modificarSiteHasIncidente/{{$incidente->id}}">Ver Incidente</a> </p>
+            <p class="card-text"> <a href="#" class="margenAbajo btn btn-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{$incidente->id}}" title="Ver">Ver Incidente</a> </p>
             <p class="card-text"><small class="text-muted">Creado {{$incidente->created_at}} por {{$incidente->reluser->name}}</small></p>
           </div>
         </div>
@@ -75,4 +75,5 @@
     </div>
   </div>
 </div>
+@include('modals.incidente')
 @endsection

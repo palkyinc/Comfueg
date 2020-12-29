@@ -19,10 +19,53 @@ class SiteHasIncidenteController extends Controller
     public function index()
     {
         $sitios = Site::all();
-        $incidentes = Site_has_incidente::select()->orderByDesc('inicio')->paginate(10);
+        $incidentes = Site_has_incidente::where('final', null)->orderByDesc('inicio')->paginate(10);
         return view('adminSiteHasIncidentes', ['incidentes' => $incidentes,
+                                                'abiertas' => true,
                                                 'sitios' => $sitios,
-                                                'nodos' => 'active'
+                                                'nodos' => 'active',
+                                                'sitioSelected' => false
+                                                ]);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexRebusqueda(Request $request)
+    {
+        $sitios = Site::all();
+        $abiertas = (null != $request->input('abiertas')) ? true : false;
+        $nodo = (null != $request->input('sitio')) ? $request->input('sitio') : false;
+        if ($abiertas && !$nodo)
+        {
+            $incidentes = Site_has_incidente::where('final', null)->orderByDesc('inicio')->paginate();
+        } elseif (!$abiertas && !$nodo) 
+            {
+                $incidentes = Site_has_incidente::orderByDesc('inicio')->paginate();
+            }elseif ((!$abiertas && $nodo) || ($abiertas && $nodo)) 
+                {
+                if (!$abiertas)
+                {
+                    $incidentes = Site_has_incidente::orderByDesc('inicio')->paginate();
+                } else
+                    {
+                        $incidentes = Site_has_incidente::where('final', null)->orderByDesc('inicio')->paginate();
+                    }
+                foreach ($incidentes as $key => $incidente)
+                    {
+                        if($incidente->relPanel->relSite->id != $nodo)
+                        {
+                            unset($incidentes[$key]);
+                        }
+                    }
+                }
+        return view('adminSiteHasIncidentes', ['incidentes' => $incidentes,
+                                                'abiertas' => $abiertas,
+                                                'sitios' => $sitios,
+                                                'nodos' => 'active',
+                                                'sitioSelected' => $nodo
                                                 ]);
     }
 
