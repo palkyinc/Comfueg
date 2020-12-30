@@ -95,7 +95,7 @@
                                         <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                     </a>
                                 @endcan
-                                <a href="#" class="margenAbajo btn btn-outline-secundary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{$incidente->id}}" title="Ver">
+                                <a href="#" class="margenAbajo btn btn-outline-secundary" data-toggle="modal" data-target="#staticBackdrop{{$incidente->id}}" title="Ver">
                                         <img src="imagenes/iconfinder_VIEW_eye_2738306.svg" alt="imagen de ojo para ver" height="20px">
                                 </a>
                             </td>

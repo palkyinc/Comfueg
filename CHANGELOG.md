@@ -22,12 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6.	Se crea el crud de barrios por panel.
 7.	Se crea crud de Usuarios a Grupos de mail.
 8.	Se crea CRUD de Incidente Globales. No se completo agregar archivos a Incidentes.
+9.	Se crea CRUD de Entidades para has_file.
 
 
 ### Changed
-1. mostrarNodos: luego de agregar un esquema o cobertura debe volver a mostrarNodos
-2. problema de permisos en IIS_IURS al grabar en carpeta public
-3. Retorno de la vista cambiarFilePanel.
+1.	MostrarNodos: luego de agregar un esquema o cobertura debe volver a mostrarNodos
+2.	Problema de permisos en IIS_IURS al grabar en carpeta public
+3.	Retorno de la vista cambiarFilePanel.
+4.	Se cambio Bootstrap a version 5. Genera varios problemas. Se vuelve a version 4.5.
 
 ### Removed
 

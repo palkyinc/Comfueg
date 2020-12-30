@@ -11,6 +11,7 @@ use App\Http\Controllers\DireccionController;
 use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Mail_groupController;
+use App\Http\Controllers\ModeloController;
 use App\Http\Controllers\NodoController;
 use App\Http\Controllers\panel_has_barrioController;
 use App\Http\Controllers\PanelController;
@@ -82,6 +83,13 @@ Route::get('/modificarMail_group/{id}', [Mail_groupController::class, 'edit'])->
 Route::patch('/modificarMail_group', [Mail_groupController::class, 'update'])->middleware('auth');
 Route::get('/agregarUsersToMail_group/{id}', [Mail_groupController::class, 'show'])->middleware('auth');
 Route::patch('/agregarUsersToMail_group', [Mail_groupController::class, 'updateUsersToMail_group'])->middleware('auth');
+####################
+####### CRUD Modelos
+Route::get('/adminModelos', [ModeloController::class, 'index'])->middleware('auth');
+Route::get('/agregarModelo', [ModeloController::class, 'create'])->middleware('auth');
+Route::post('/agregarModelo', [ModeloController::class, 'store'])->middleware('auth');
+Route::get('/modificarModelo/{id}', [ModeloController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarModelo', [ModeloController::class, 'update'])->middleware('auth');
 ####################
 ####### CRUD Antenas
 Route::get('/adminAntenas', [AntenaController::class, 'index'])->middleware('auth');
