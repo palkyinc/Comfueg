@@ -51,7 +51,11 @@ class Site_has_incidente extends Model
     }
     public static function incidentesAbiertos ()
     {
-        return Site_has_incidente::where('final', null)->where('tipo', 'INCIDENTE')->get();
+        $incidentes = Site_has_incidente::where('final', null)->where('tipo', 'INCIDENTE')->get();
+        foreach ($incidentes as $incidente) {
+            $incidente->archivos = Entity_has_file::getArchivosEntidad(3, $incidente->id);
+        }
+        return ($incidentes);
     }
     public function tiempoCaida ()
     {
@@ -69,11 +73,11 @@ class Site_has_incidente extends Model
     }
     public function inicioDateTimeLocal ()
     {
-        return $this->dateTimeLocal($this->inicio);
+        return str_split($this->dateTimeLocal($this->inicio), 16)[0];
     }
     public function finalDateTimeLocal ()
     {
-        return $this->dateTimeLocal($this->final);
+        return str_split($this->dateTimeLocal($this->final), 16)[0];
     }
 
 }

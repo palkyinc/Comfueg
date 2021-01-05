@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('paneles_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de Paneles</h2>
                         <label for="ssid" class="mx-3">SSID</label>
@@ -90,7 +92,8 @@
                 </table>
 </div>
         {{ $paneles->links() }}
-@endcan    
+@endcan
+@include('sinPermiso')
 @endsection
 
 @section('javascript')

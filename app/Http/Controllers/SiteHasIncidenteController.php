@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barrio;
+use App\Models\Entity_has_file;
 use App\Models\Incidente_has_mensaje;
 use App\Models\Panel;
 use App\Models\Site;
@@ -20,6 +20,10 @@ class SiteHasIncidenteController extends Controller
     {
         $sitios = Site::all();
         $incidentes = Site_has_incidente::where('final', null)->orderByDesc('inicio')->paginate(10);
+        foreach ($incidentes as $incidente)
+        {
+            $incidente->archivos = Entity_has_file::getArchivosEntidad(3, $incidente->id);
+        }
         return view('adminSiteHasIncidentes', ['incidentes' => $incidentes,
                                                 'abiertas' => true,
                                                 'sitios' => $sitios,
@@ -61,6 +65,9 @@ class SiteHasIncidenteController extends Controller
                         }
                     }
                 }
+        foreach ($incidentes as $incidente) {
+            $incidente->archivos = Entity_has_file::getArchivosEntidad(3, $incidente->id);
+        }
         return view('adminSiteHasIncidentes', ['incidentes' => $incidentes,
                                                 'abiertas' => $abiertas,
                                                 'sitios' => $sitios,
@@ -101,9 +108,27 @@ class SiteHasIncidenteController extends Controller
         $incidente_global->mensaje_clientes = $request->input('mensaje_clientes');
         $incidente_global->user_creator = auth()->user()->id;
         $incidente_global->save();
+        if ($request->hasfile('scheme_file')) {
+            $this->tratarArchivos($request, $incidente_global);
+        }
         $incidente_global->enviarMail();
         $respuesta[] = 'Nuevo Incidente Global se creado correctamente';
         return redirect('/adminIncidencias')->with('mensaje', $respuesta);
+    }
+
+    private function tratarArchivos ($request, $incidente_global)
+    {
+        $request->validate([
+            'scheme_file' => 'required',
+            'scheme_file.*' => 'mimes:pdf,jpg,jpeg,png|max:4096'
+        ]);
+        foreach ($request->file('scheme_file') as $archivo) {
+            try {
+                Entity_has_file::grabarPdfImage($archivo, $incidente_global->id, 3);
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+        }
     }
 
     private function iterarAfectados ($array)
@@ -229,8 +254,9 @@ class SiteHasIncidenteController extends Controller
     public function edit($id)
     {
         $incidente = Site_has_incidente::find($id);
+        $archivos = Entity_has_file::where('modelo_id', 3)->where('entidad_id', $id)->get();
         //dd(date("c", strtotime($incidente->inicio)));
-        return view('modificarSIteHasincidente', ['sololectura' => true, 'incidente' => $incidente, 'nodos' => 'active']);
+        return view('modificarSIteHasincidente', ['archivos' => $archivos, 'incidente' => $incidente, 'nodos' => 'active']);
     }
 
     /**
@@ -247,11 +273,14 @@ class SiteHasIncidenteController extends Controller
         $incidente->inicio = $request->input('inicio');
         $incidente->final = $request->input('final');
         $incidente->mensaje_clientes = $request->input('mensaje_clientes');
-        $incidente->save();
         $actualizacion = new Incidente_has_mensaje();
         $actualizacion->mensaje = $request->input('actualizacion');
         $actualizacion->incidente_id = $incidente->id;
         $actualizacion->user_creator = auth()->user()->id;
+        if ($request->hasfile('scheme_file')) {
+            $this->tratarArchivos($request, $incidente);
+        }
+        $incidente->save();
         $actualizacion->save();
         if(!$incidente->final)
         {
@@ -271,7 +300,7 @@ class SiteHasIncidenteController extends Controller
                 'inicio' => 'required|date',
                 'final' => 'nullable|date',
                 'mensaje_clientes' => 'required|min:2|max:255',
-                'actualizacion' => 'required|min:2|max:255'
+                'actualizacion' => 'required|min:2|max:255',
             ]
         );
     }

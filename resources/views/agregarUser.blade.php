@@ -1,10 +1,10 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
-
-
-    <h3>Nuevo Usuario</h3>
 @can('usuarios_create')
+@php
+$mostrarSololectura = true;
+@endphp
+<h3>Nuevo Usuario</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarUser" method="post">
         @csrf
@@ -38,4 +38,5 @@
         </div>
     @endif
 @endcan        
+@include('sinPermiso')
 @endsection

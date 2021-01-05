@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('paneles_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración del alcance de Barrio por Panel.</h2>
                     </form>
@@ -49,4 +51,5 @@
 </div>
         {{ $paneles->links() }}
 @endcan
+@include('sinPermiso')
 @endsection

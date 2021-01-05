@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 7.	Se crea crud de Usuarios a Grupos de mail.
 8.	Se crea CRUD de Incidente Globales. No se completo agregar archivos a Incidentes.
 9.	Se crea CRUD de Entidades para has_file.
+10.	Se agregó carga de archivos simultaneos a vistas de Sitio e Incidentes.
 
 
 ### Changed

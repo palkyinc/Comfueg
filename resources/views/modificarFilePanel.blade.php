@@ -1,6 +1,9 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
+@php
+$mostrarSololectura = true;
+@endphp
 @if (null != $file)
 <h3>Modificando covertura "{{$file->file_name}}" del panel con ID: {{ $panel_id }}</h3> <!--  -->
 @else
@@ -35,4 +38,5 @@
         </div>
     @endif
 @endcan
+@include('sinPermiso')
 @endsection

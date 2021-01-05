@@ -35,7 +35,7 @@
         <li>Creado por: <strong><i>{{ $incidente->relUser->name }}</i></strong></li>
         <li>Hora de Creado: <strong><i>{{ $incidente->created_at }}</i></strong></li>
         <li>
-            <a href="http://{{$incidente->obtenerDominio()}}/modificarSiteHasIncidente/{{$incidente->id}}">
+            <a href="http://{{$incidente->obtenerDominio()}}/inicio">
                 Ver Incidencia
             </a>
         </li>

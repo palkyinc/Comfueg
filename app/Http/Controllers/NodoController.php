@@ -68,14 +68,12 @@ class NodoController extends Controller
     public function showNodo($id)
     {
         $site = Site::find($id);
-        $archivos = Entity_has_file::select('*')->where('entidad_id', $id)->get();
-        //dd($archivos);
+        $archivos = Entity_has_file::select('*')->where('entidad_id', $id)->where('modelo_id', 2)->get();
         $paneles = Panel::select('*')->where('num_site', $id)->where('activo', 1)->get();
         foreach ($paneles as $panel) {
             $imagenes[] =
-            $this->buscarEntityHasFile($panel->id, 'PANEL', 'COVER');
+            $this->buscarEntityHasFile($panel->id, 1, 'COVER');
         }
-        //dd($imagenes);
         return view('nodo', ['archivos' => $archivos, 'imagenes' => $imagenes, 'site' => $site, 'paneles' => $paneles, 'nodos' => 'active'] );
     }
 
@@ -89,14 +87,14 @@ class NodoController extends Controller
     {
         //
     }
-    private function buscarEntitysHasFile ($id, $entidad, $tipo, $tipo2 = null, $paginado = 10)
+    private function buscarEntitysHasFile ($id, $modelo, $tipo, $tipo2 = null, $paginado = 10)
     {
         if($paginado == "")
         {
             return
             Entity_has_file::select('*')
             ->where('entidad_id', $id)
-            ->where('entidad', $entidad)
+            ->where('modelo_id', $modelo)
             ->where(function (Builder $query) use ($tipo, $tipo2)
             {
                 return $query->where('tipo', $tipo)
@@ -108,7 +106,7 @@ class NodoController extends Controller
                 return
                 Entity_has_file::select('*')
                 ->where('entidad_id', $id)
-                ->where('entidad', $entidad)
+                ->where('modelo_id', $modelo)
                 ->where(function (Builder $query) use ($tipo, $tipo2)
                 {
                     return $query->where('tipo', $tipo)
@@ -118,47 +116,38 @@ class NodoController extends Controller
             }
     }
     
-    private function buscarEntityHasFile ($id, $entidad, $tipo)
+    private function buscarEntityHasFile ($id, $modelo, $tipo)
     {
         return
         Entity_has_file::select('*')
             ->where('entidad_id', $id)
-            ->where('entidad', $entidad)
+            ->where('modelo_id', $modelo)
             ->where('tipo', $tipo)
             ->first();
     }
     public function editArchivosSitio($id)
     {
-        $files = $this->buscarEntitysHasFile($id, 'SITIO', 'FILE', 'PHOTO');
+        $files = $this->buscarEntitysHasFile($id, 2, 'FILE', 'PHOTO');
         return view('adminArchivosSitio', [ 'files' => $files, 'sitio_id' => $id, 'nodos' => 'active']);
     }
     public function editFileSitio($id)
     {
-        $file = $this->buscarEntityHasFile($id, 'SITIO', 'SCHEME');
+        $file = $this->buscarEntityHasFile($id, 2, 'SCHEME');
         return view('modificarFileSitio', [ 'file' => $file, 'sitio_id' => $id, 'nodos' => 'active']);
     }
     
     public function editFilePanel($panel_id, $sitio_id)
     {
-        $file = $this->buscarEntityHasFile($panel_id, 'PANEL', 'COVER');
+        $file = $this->buscarEntityHasFile($panel_id, 1, 'COVER');
         return view('modificarFilePanel', [ 'file' => $file, 'panel_id' =>$panel_id, 'sitio_id' => $sitio_id, 'nodos' => 'active']);
     }
 
     public function updateFileSitio(Request $request)
     {
-        //if ($cobertura !== $Panel->cobertura && $cobertura != 'sinMapa.svg') {$Panel->cobertura = $cobertura;}
-        // $cobertura = $this->subirImagen($request);
-        // para validate 
-        //si no enviaron archivo
         $schemeImagen = 'sinMapa.svg';
-        //si enviaron archivo
         if ($request->file('scheme_file')) {
-            //renombrar archivo
-            # time().extension
             $request->validate(['scheme_file' => 'nullable|mimes:jpg,jpeg,png,gif,svg,webp|max:4096']);
             $schemeImagen = time() . '.' . $request->file('scheme_file')->clientExtension();
-
-            //subir imagen a directorio productos
             $request->file('scheme_file')->move(public_path('/imgUsuarios'), $schemeImagen);
         }
         if (null != $request->archivoId)
@@ -172,7 +161,7 @@ class NodoController extends Controller
             {
             $entity_has_file = new Entity_has_file;
             $entity_has_file->entidad_id = $request->input('sitioId');
-            $entity_has_file->entidad = 'SITIO';
+            $entity_has_file->modelo_id = 2;
             $entity_has_file->tipo = 'SCHEME';
             }
         $entity_has_file->file_name = $schemeImagen;
@@ -182,23 +171,20 @@ class NodoController extends Controller
     
     public function updateArchivoSitio(Request $request)
     {
-        $request->validate(['scheme_file' => 'required|mimes:pdf,jpg,jpeg,png|max:4096']);
-        $schemeImagen = $request->file('scheme_file')->getClientOriginalName();
-        if ($request->file('scheme_file')->clientExtension() == 'pdf')
-        {
-            $request->file('scheme_file')->move(public_path('/imgUsuarios/pdf'), $schemeImagen);
-            $tipo = 'FILE';
-        } else 
-            {
-            $request->file('scheme_file')->move(public_path('/imgUsuarios/photos'), $schemeImagen);
-            $tipo = 'PHOTO';
+        if ($request->hasfile('scheme_file')) {
+            $request->validate([
+                                'scheme_file' => 'required',
+                                'scheme_file.*' => 'mimes:pdf,jpg,jpeg,png|max:10240'
+                                ]);
+            foreach ($request->file('scheme_file') as $archivo) {
+                try {
+                    Entity_has_file::grabarPdfImage($archivo, $request->input('sitioId'), 2);
+                } catch (\Throwable $th) {
+                    throw $th;
+                }
+                
             }
-        $entity_has_file = new Entity_has_file;
-        $entity_has_file->entidad_id = $request->input('sitioId');
-        $entity_has_file->entidad = 'SITIO';
-        $entity_has_file->tipo = $tipo;
-        $entity_has_file->file_name = $schemeImagen;
-        $entity_has_file->save();
+        }
         return redirect('adminArchivosSitio/' . $request->input('sitioId'));
     }
 
@@ -222,7 +208,7 @@ class NodoController extends Controller
             {
             $entity_has_file = new Entity_has_file;
             $entity_has_file->entidad_id = $request->input('panelId');
-            $entity_has_file->entidad = 'PANEL';
+            $entity_has_file->modelo_id = 1;
             $entity_has_file->tipo = 'COVER';
             }
         $entity_has_file->file_name = $coverImagen;
@@ -265,7 +251,7 @@ class NodoController extends Controller
         $aBorrar->delete();
         //devover a vista adminArvhivosSitio/sitio_id con mensaje de OK.
         $respuesta[] = 'Archivo se eliminó correctamente';
-        $files = $this->buscarEntitysHasFile($sitio_id, 'SITIO', 'FILE', 'PHOTO');
+        $files = $this->buscarEntitysHasFile($sitio_id, 2, 'FILE', 'PHOTO');
         return redirect('adminArchivosSitio/'. $sitio_id)->with('mensaje', $respuesta);;
     }
 }

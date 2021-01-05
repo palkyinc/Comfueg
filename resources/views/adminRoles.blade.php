@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('roles_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración de Roles</h2>
                         <label for="nombre" class="mx-3">Nombre</label>
@@ -59,4 +61,5 @@
 </div>
         {{ $Roles->links() }}
 @endcan    
+@include('sinPermiso')
 @endsection

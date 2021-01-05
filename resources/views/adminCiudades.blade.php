@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('ciudades_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de ciudades</h2>
                         <label for="nombre" class="mx-3">Nombre</label>
@@ -54,4 +56,5 @@
 </div>
         {{ $ciudades->links() }}
 @endcan    
+@include('sinPermiso')
 @endsection

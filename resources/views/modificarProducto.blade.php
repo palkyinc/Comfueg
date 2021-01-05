@@ -1,10 +1,10 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
-
-
-    <h3>Modificando Producto con ID: {{ $elemento->id }}</h3>
 @can('productos_edit')
+@php
+$mostrarSololectura = true;
+@endphp
+<h3>Modificando Producto con ID: {{ $elemento->id }}</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarProducto" method="post">
         @csrf
@@ -48,4 +48,5 @@
         </div>
     @endif
 @endcan
+@include('sinPermiso')
 @endsection

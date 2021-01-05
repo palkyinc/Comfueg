@@ -4,7 +4,7 @@
     
         @yield('contenido')
         @yield('javascript')
-    
+        
     </main>
 
 @include('layouts.footer')

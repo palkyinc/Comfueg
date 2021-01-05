@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('codigoDeArea_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de Códigos de área</h2>
                         <label for="codigoDeArea" class="mx-3">Código de área</label>
@@ -58,4 +60,5 @@
 </div>
         {{ $codigosDeArea->links() }}
 @endcan    
+@include('sinPermiso')
 @endsection

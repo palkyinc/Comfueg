@@ -3,8 +3,11 @@
 @section('contenido')
 
 
-    <h3>Modificando Código de Área con ID: {{ $elemento->id }}</h3>
 @can('codigoDeArea_edit')
+@php
+$mostrarSololectura = true;
+@endphp
+<h3>Modificando Código de Área con ID: {{ $elemento->id }}</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarCodigoDeArea" method="post">
         @csrf
@@ -44,4 +47,5 @@
         </div>
     @endif
 @endcan
+@include('sinPermiso')
 @endsection

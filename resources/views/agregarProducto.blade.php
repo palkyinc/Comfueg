@@ -1,10 +1,10 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
-
-
-    <h3>Agregar Producto nuevo</h3>
 @can('productos_create')
+@php
+$mostrarSololectura = true;
+@endphp
+<h3>Agregar Producto nuevo</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarProducto" method="post">
         @csrf
@@ -45,4 +45,5 @@
         </div>
     @endif
 @endcan
+@include('sinPermiso')
 @endsection

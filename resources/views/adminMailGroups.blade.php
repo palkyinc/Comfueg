@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('mail_group_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración de Grupos de mail</h2>
                         <label for="nombre" class="mx-3">Nombre</label>
@@ -59,4 +61,5 @@
 </div>
         {{ $Mail_groups->links() }}
 @endcan
+@include('sinPermiso')
 @endsection

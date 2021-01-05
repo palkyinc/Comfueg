@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('modelos_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración de Modelos para Has_file</h2>
                     </form>
@@ -51,4 +53,5 @@
 </div>
         {{ $modelos->links() }}
 @endcan
+@include('sinPermiso')
 @endsection

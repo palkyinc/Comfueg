@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('nodos_index')
+@php
+$mostrarSololectura = true;
+@endphp
 <div class="card-columns">
      @foreach ($nodes as $node)
         <div class="card">
@@ -18,4 +20,5 @@
         @endforeach
     </div>
 @endcan
+@include('sinPermiso')
 @endsection

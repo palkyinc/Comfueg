@@ -61,7 +61,7 @@ Route::get('/adminIncidenciasRebusqueda', [SiteHasIncidenteController::class, 'i
 Route::get('/agregarSiteHasIncidente', [SiteHasIncidenteController::class, 'create'])->middleware('auth');
 Route::post('/agregarSiteHasIncidente', [SiteHasIncidenteController::class, 'store'])->middleware('auth');
 Route::get('/modificarSiteHasIncidente/{id}', [SiteHasIncidenteController::class, 'edit'])->middleware('auth');
-Route::patch('/modificarSiteHasIncidente', [SiteHasIncidenteController::class, 'update'])->middleware('auth');
+Route::post('/modificarSiteHasIncidente', [SiteHasIncidenteController::class, 'update'])->middleware('auth');
 ####################
 ####### Nodos
 Route::get('/adminNodos', [NodoController::class, 'index'])->middleware('auth');

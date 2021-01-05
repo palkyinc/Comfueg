@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('antenas_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración de Antenas</h2>
                         <label for="descripcion" class="mx-2">Descripción</label>
@@ -58,4 +60,5 @@
 </div>
         {{ $antenas->links() }}
 @endcan
+@include('sinPermiso')
 @endsection

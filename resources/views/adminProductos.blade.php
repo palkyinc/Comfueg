@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('productos_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de Productos</h2>
                         <label for="modelo" class="mx-3">Modelo</label>
@@ -62,4 +64,5 @@
 </div>
         {{ $productos->links() }}
 @endcan    
+@include('sinPermiso')
 @endsection

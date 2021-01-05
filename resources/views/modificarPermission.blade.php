@@ -1,10 +1,10 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
-
-
-    <h3>Modificando Permiso con ID: {{ $elemento->id }}</h3>
 @can('permisos_edit')
+@php
+$mostrarSololectura = true;
+@endphp
+<h3>Modificando Permiso con ID: {{ $elemento->id }}</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarPermission" method="post">
         @csrf
@@ -33,4 +33,5 @@
         </div>
     @endif
 @endcan
+@include('sinPermiso')
 @endsection

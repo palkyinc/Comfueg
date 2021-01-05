@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('sitios_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de sitios</h2>
                         <label for="nombre" class="mx-3">Nombre: </label>
@@ -64,4 +66,5 @@
 </div>
         {{ $sites->links() }}
 @endcan    
+@include('sinPermiso')
 @endsection

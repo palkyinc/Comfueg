@@ -1,9 +1,10 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
-
-    <h3>Cambiar Rol a Usuario: {{ $User->name }}</h3>
 @can('usuarios_edit')
+@php
+$mostrarSololectura = true;
+@endphp
+<h3>Cambiar Rol a Usuario: {{ $User->name }}</h3>
 
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarRoleToUser" method="post">
@@ -58,4 +59,5 @@
         </div>
     @endif
 @endcan        
+@include('sinPermiso')
 @endsection

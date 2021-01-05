@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('calles_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de calles</h2>
                         <label for="nombre" class="mx-3">Nombre</label>
@@ -54,6 +56,7 @@
 </div>
         {{ $calles->links() }}
 @endcan
+@include('sinPermiso')
 @endsection
 @section('javascript')
     <script>

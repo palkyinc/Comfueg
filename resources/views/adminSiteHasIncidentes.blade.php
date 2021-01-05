@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('SiteHasIncidente_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-4 margin-10" action="adminIncidenciasRebusqueda" method="get">
                         <div class="conteiner">
                             <div class="row">
@@ -106,6 +108,7 @@
                 </table>
 </div>
         {{ $incidentes->links() }}
-@include('modals.incidente')
+@include('modals.incidentes')
 @endcan
+@include('sinPermiso')
 @endsection

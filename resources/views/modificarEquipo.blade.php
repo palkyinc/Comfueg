@@ -3,8 +3,11 @@
 @section('contenido')
 
 
-    <h3>Modificando Equipo con ID: {{ $elemento->id }}</h3>
 @can('equipos_edit')
+@php
+$mostrarSololectura = true;
+@endphp
+<h3>Modificando Equipo con ID: {{ $elemento->id }}</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarEquipo" method="post">
         @csrf
@@ -88,4 +91,5 @@
         </div>
     @endif
 @endcan        
+@include('sinPermiso')
 @endsection

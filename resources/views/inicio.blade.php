@@ -7,7 +7,7 @@
             $dia = date ('N');
             switch ($dia) {
               case '1':
-                echo "Hoy es lunes, el lado bueno es que la semana tiene un solo Lunes.";
+                echo "Hoy es lunes, el lado bueno del Lunes es que, la semana tiene un solo Lunes.";
                 break;
               case '2':
                 echo "Hoy es martes, Ríe y el mundo reirá contigo, ronca y dormirás solo. Anthony Burgess.";
@@ -57,7 +57,7 @@
             <p class="card-text">Barrios Afectados: <strong>{{$incidente->barrios_afectados}}</strong></p>
             <p class="card-text">Mensaje para Clientes: <strong>{{$incidente->mensaje_clientes}}</strong></p>
             <p class="card-text">Cantidad de Actualizaciones: <strong>{{count($incidente->incidente_has_mensaje)}}</strong></p>
-            <p class="card-text"> <a href="#" class="margenAbajo btn btn-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{$incidente->id}}" title="Ver">Ver Incidente</a> </p>
+            <p class="card-text"> <a href="#" class="margenAbajo btn btn-link" data-toggle="modal" data-target="#staticBackdrop{{$incidente->id}}" title="Ver">Ver Incidente</a> </p>
             <p class="card-text"><small class="text-muted">Creado {{$incidente->created_at}} por {{$incidente->reluser->name}}</small></p>
           </div>
         </div>
@@ -75,5 +75,5 @@
     </div>
   </div>
 </div>
-@include('modals.incidente')
+@include('modals.incidentes')
 @endsection

@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('clientes_index')
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de clientes</h2>
                         <label for="num_cliente" class="mx-3">Id Genesys</label>
@@ -74,4 +76,5 @@
 </div>
         {{ $clientes->links() }}
 @endcan    
+@include('sinPermiso')
 @endsection

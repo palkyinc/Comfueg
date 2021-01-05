@@ -1,10 +1,10 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
-
-
-    <h3>Modificando Usuario con ID: {{ $elemento->id }}</h3>
 @can('usuarios_edit')
+@php
+$mostrarSololectura = true;
+@endphp
+<h3>Modificando Usuario con ID: {{ $elemento->id }}</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarUser" method="post">
         @csrf
@@ -37,4 +37,8 @@
         </div>
     @endif
 @endcan
+@if (!isset($mostrarSololectura))
+<h3>No tienes permisos para ver esta página.</h3>
+<a href="/inicio" class="btn btn-primary">Volver</a>
+@endif
 @endsection

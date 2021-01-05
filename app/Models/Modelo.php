@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class modelo extends Model
 {
     use HasFactory;
+
+    public function relEntityHasFile()
+    {
+        return $this->hasMany(Entity_has_file::class);
+    }
 }

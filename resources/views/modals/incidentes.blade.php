@@ -21,10 +21,10 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="final">Final: </label>
-                                @if (null === $incidente->final)
-                                <input type="datetime-local" name="final" value="{{$incidente->finalDateTimeLocal()}}" class="form-control" readonly>
+                                @if ($incidente->final)
+                                    <input type="datetime-local" name="final" value="{{$incidente->finalDateTimeLocal()}}" class="form-control" readonly>
                                 @else
-                                <input type="text" name="final" value="{{$incidente->final ?? 'Aun Ocurriendo'}}" class="form-control" readonly>
+                                    <input type="text" name="final" value="Aun Ocurriendo" class="form-control" readonly>
                                 @endif
                             </div>
                             <div class="form-group col-md-2">
@@ -75,9 +75,20 @@
                 </form>
             </div>
             <div class="modal-footer">
+                @php
+                    $archivos = $incidente->archivos;
+                @endphp
+                @if (count($archivos))
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdropPhoto{{$incidente->id}}">
+                        Fotos
+                    </button>
+                @endif
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-    </div>
+</div>
+@if (count($archivos))
+@include('modals.photosCarrusel')
+@endif
     @endforeach

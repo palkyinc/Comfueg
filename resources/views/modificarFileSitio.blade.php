@@ -1,12 +1,15 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
+@can('nodos_edit')
+@php
+$mostrarSololectura = true;
+@endphp
 @if (null != $file)
     <h3>Modificando esquema "{{$file->file_name}}" del sitio con ID: {{ $sitio_id }}</h3> <!--  -->
 @else
     <h3>Agregando esquema del sitio con ID: {{ $sitio_id }}</h3> <!--  -->
 @endif
-@can('nodos_edit')
 <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/cambiarFileSitio" method="post" enctype="multipart/form-data">
         @csrf
@@ -34,4 +37,5 @@
     </div>
     @endif
 @endcan     
+@include('sinPermiso')
 @endsection

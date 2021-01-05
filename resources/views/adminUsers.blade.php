@@ -1,7 +1,9 @@
 @extends('layouts.plantilla')
 @section('contenido')
 @can('usuarios_index')
-
+@php
+$mostrarSololectura = true;
+@endphp
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración de Usuarios</h2>
                         <label for="nombre" class="mx-3">Nombre</label>
@@ -61,4 +63,5 @@
 </div>
         {{ $Users->links() }}
 @endcan    
+@include('sinPermiso')
 @endsection
