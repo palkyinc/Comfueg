@@ -93,9 +93,14 @@ $mostrarSololectura = true;
                             <td>{{$incidente->relUser->name}}</td>
                             <td>
                                 @can('SiteHasIncidente_edit')
-                                    <a href="/modificarSiteHasIncidente/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
-                                        <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
-                                    </a>
+                                    @if (!$incidente->final)
+                                        <a href="/modificarSiteHasIncidente/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
+                                            <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                        </a>
+                                        <a href="/adminArchivosIncidente/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar archivoss">
+                                            <img src="imagenes/iconfinder_document-text-file-sheet-doc_2931167.svg" alt="imagen editar archivo" height="20px">
+                                        </a>
+                                    @endif
                                 @endcan
                                 <a href="#" class="margenAbajo btn btn-outline-secundary" data-toggle="modal" data-target="#staticBackdrop{{$incidente->id}}" title="Ver">
                                         <img src="imagenes/iconfinder_VIEW_eye_2738306.svg" alt="imagen de ojo para ver" height="20px">

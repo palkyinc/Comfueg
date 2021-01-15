@@ -7,7 +7,6 @@ use App\Models\Site;
 use App\Models\Panel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 
 class NodoController extends Controller
 {
@@ -238,7 +237,8 @@ class NodoController extends Controller
     {
         // si es pdf la carpeta es imgUsuarios/pdf
         $aBorrar = Entity_has_file::find($archivo_id);
-        if ($aBorrar->tipo == 'FILE')
+        $aBorrar->deleteArchivo();
+        /* if ($aBorrar->tipo == 'FILE')
         {
             //borrar pdf
             $carpeta = 'imgUsuarios/pdf/' . $aBorrar->file_name;
@@ -247,11 +247,11 @@ class NodoController extends Controller
             $carpeta = 'imgUsuarios/photos/' . $aBorrar->file_name;
         }
         //dd($carpeta);
-        File::delete(public_path($carpeta));
+        File::delete(public_path($carpeta));*/
         $aBorrar->delete();
         //devover a vista adminArvhivosSitio/sitio_id con mensaje de OK.
         $respuesta[] = 'Archivo se eliminó correctamente';
-        $files = $this->buscarEntitysHasFile($sitio_id, 2, 'FILE', 'PHOTO');
-        return redirect('adminArchivosSitio/'. $sitio_id)->with('mensaje', $respuesta);;
+        //$files = $this->buscarEntitysHasFile($sitio_id, 2, 'FILE', 'PHOTO');
+        return redirect('adminArchivosSitio/'. $sitio_id)->with('mensaje', $respuesta);
     }
 }

@@ -7,7 +7,7 @@ use App\Models\Panel;
 use App\Models\Panel_has_barrio;
 use Illuminate\Http\Request;
 
-class panel_has_barrioController extends Controller
+class Panel_has_barrioController extends Controller
 {
     /**
      * Display a listing of the resource.

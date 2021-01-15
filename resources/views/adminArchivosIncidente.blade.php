@@ -1,15 +1,15 @@
 @extends('layouts.plantilla')
 @section('contenido')
-@can('nodos_index')
+@can('SiteHasIncidente_index')
 @php
 $mostrarSololectura = true;
 @endphp
                         <form class="form-inline mx-6 margin-10" action="" method="GET">
-                        <h2 class="mx-2">Administración de Archivos del Sitio con ID: {{$sitio_id}}</h2>
-                            <label for="descripcion" class="mx-2">Nombre</label>
+                        <h2 class="mx-2">Administración de Archivos del Incidente con ID: {{$incidente->crearNombre()}}</h2>
+                        <!--    <label for="descripcion" class="mx-2">Nombre</label>
                             <input type="text" name="descripcion" class="form-control mx-3" id="descripcion">
-                            <button type="submit" class="btn btn-primary mx-3">Buscar</button>
-                            <a href="/mostrarNodo/{{$sitio_id}}" class="btn btn-primary">volver</a>
+                            <button type="submit" class="btn btn-primary mx-3">Buscar</button> -->
+                            <a href="/adminIncidencias" class="btn btn-primary">volver</a>
                         </form>
 
             @if ( session('mensaje') )
@@ -31,8 +31,8 @@ $mostrarSololectura = true;
                                 <th scope="col"> Nombre </th>
                                 <th scope="col"> Fecha </th>
                                 <th scope="col" colspan="2">
-                                    @can('nodos_edit')
-                                    <a href="/agregarArchivoSitio/{{$sitio_id}}" class="btn btn-dark">Agregar</a>
+                                    @can('SiteHasIncidente_edit')
+                                    <a href="/agregarArchivoIncidente/{{$incidente->id}}" class="btn btn-dark">Agregar</a>
                                     @endcan
                                 </th>
                             </tr>
@@ -51,8 +51,8 @@ $mostrarSololectura = true;
                                     <td>{{$file->file_name}}</td>
                                 <td>{{$file->created_at}}</td>
                                 <td>
-                                    @can('nodos_edit')
-                                    <form method="post" action="/eliminarArchivo/{{ $file->id }}/{{$sitio_id}}">
+                                    @can('SiteHasIncidente_edit')
+                                    <form method="post" action="/eliminarArchivoIncidente/{{$file->id}}">
                                         @csrf
                                         @method('delete')
                                     <button type="submit"><img src="/imagenes/iconfinder_basket_1814090.svg" 

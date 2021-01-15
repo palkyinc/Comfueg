@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Removed
 
-## [0.4.0] - 20XX-XX-XX
+## [0.4.0] - 2021-01-15
 ### Added
 1.	Vista mostrarNodo agregar link al equipo desde el IP.
 2.	Agregar frecuencia y cantidad de clientes a Paneles.
@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 8.	Se crea CRUD de Incidente Globales. No se completo agregar archivos a Incidentes.
 9.	Se crea CRUD de Entidades para has_file.
 10.	Se agregó carga de archivos simultaneos a vistas de Sitio e Incidentes.
+11.	Finalizada secciones de Incidencia Global, Nodos, Barrios Por panel.
 
 
 ### Changed
@@ -31,8 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 2.	Problema de permisos en IIS_IURS al grabar en carpeta public
 3.	Retorno de la vista cambiarFilePanel.
 4.	Se cambio Bootstrap a version 5. Genera varios problemas. Se vuelve a version 4.5.
-
-### Removed
 
 ## [0.3.0] - 2020-12-01
 

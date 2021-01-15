@@ -87,6 +87,11 @@ class SiteHasIncidenteController extends Controller
         return view('agregarSiteHasIncidente', ['paneles' => $paneles, 'completo' => 0, 'nodos' => 'activate']);
     }
 
+    public function createArchivoIncidente($id)
+    {
+        return view('agregarArchivoIncidente', ['incidente_id' => $id, 'nodos' => 'active']);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -258,7 +263,20 @@ class SiteHasIncidenteController extends Controller
         //dd(date("c", strtotime($incidente->inicio)));
         return view('modificarSIteHasincidente', ['archivos' => $archivos, 'incidente' => $incidente, 'nodos' => 'active']);
     }
-
+    
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Site_has_incidente  $site_has_incidente
+     * @return \Illuminate\Http\Response
+     */
+    public function editArchivosIncidente($id)
+    {
+        $incidente = Site_has_incidente::find($id);
+        $archivos = Entity_has_file::where('modelo_id', 3)->where('entidad_id', $id)->paginate();
+        return view('adminArchivosincidente', ['files' => $archivos, 'incidente' => $incidente, 'nodos' => 'active']);
+    }
+    
     /**
      * Update the specified resource in storage.
      *
@@ -293,6 +311,24 @@ class SiteHasIncidenteController extends Controller
         return redirect('/adminIncidencias')->with('mensaje', $respuesta);
     }
 
+    public function updateArchivoIncidente(Request $request)
+    {
+        if ($request->hasfile('scheme_file')) {
+            $request->validate([
+                'scheme_file' => 'required',
+                'scheme_file.*' => 'mimes:pdf,jpg,jpeg,png|max:10240'
+            ]);
+            foreach ($request->file('scheme_file') as $archivo) {
+                try {
+                    Entity_has_file::grabarPdfImage($archivo, $request->input('incidenteId'), 3);
+                } catch (\Throwable $th) {
+                    throw $th;
+                }
+            }
+        }
+        return redirect('adminArchivosIncidente/' . $request->input('incidenteId'));
+    }
+
     private function updateValidar (Request $request)
     {
         $request->validate(
@@ -311,8 +347,15 @@ class SiteHasIncidenteController extends Controller
      * @param  \App\Models\Site_has_incidente  $site_has_incidente
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Site_has_incidente $site_has_incidente)
+    public function destroyArchivo($id)
     {
-        //
+        $aBorrar = Entity_has_file::find($id);
+        //$incidente_id = $aBorrar->entidad_id;
+        $aBorrar->deleteArchivo();
+        $aBorrar->delete();
+        //dd($aBorrar);
+        $respuesta[] = 'Archivo se eliminó correctamente';
+        return redirect('adminArchivosIncidente/' . $aBorrar->entidad_id)->with('mensaje', $respuesta);
+    
     }
 }

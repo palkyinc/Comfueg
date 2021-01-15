@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Modelo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
 
 class Entity_has_file extends Model
 {
@@ -35,6 +36,25 @@ class Entity_has_file extends Model
     public static function getArchivosEntidad($modelo_id, $entidad_id)
     {
         return Entity_has_file::where('modelo_id', $modelo_id)->where('entidad_id', $entidad_id)->get();
+    }
+
+    public function deleteArchivo ()
+    {
+        if ($this->tipo == 'FILE') {
+            //borrar pdf
+            $carpeta = 'imgUsuarios/pdf/' . $this->file_name;
+        } else {
+            //borrar photos
+            $carpeta = 'imgUsuarios/photos/' . $this->file_name;
+        }
+        //dd($carpeta);
+        if (File::delete(public_path($carpeta)))
+        {
+            return true;
+        } else {
+            return false;
+        }
+        
     }
                     
 }

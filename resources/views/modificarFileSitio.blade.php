@@ -1,5 +1,4 @@
 @extends('layouts.plantilla')
-
 @section('contenido')
 @can('nodos_edit')
 @php

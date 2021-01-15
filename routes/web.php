@@ -62,6 +62,10 @@ Route::get('/agregarSiteHasIncidente', [SiteHasIncidenteController::class, 'crea
 Route::post('/agregarSiteHasIncidente', [SiteHasIncidenteController::class, 'store'])->middleware('auth');
 Route::get('/modificarSiteHasIncidente/{id}', [SiteHasIncidenteController::class, 'edit'])->middleware('auth');
 Route::post('/modificarSiteHasIncidente', [SiteHasIncidenteController::class, 'update'])->middleware('auth');
+Route::get('/adminArchivosIncidente/{id}', [SiteHasIncidenteController::class, 'editArchivosIncidente'])->middleware('auth');
+Route::delete('/eliminarArchivoIncidente/{id}', [SiteHasIncidenteController::class, 'destroyArchivo'])->middleware('auth');
+Route::get('/agregarArchivoIncidente/{id}', [SiteHasIncidenteController::class, 'createArchivoIncidente'])->middleware('auth');
+Route::patch('/adminArchivosIncidente', [SiteHasIncidenteController::class, 'updateArchivoIncidente'])->middleware('auth');
 ####################
 ####### Nodos
 Route::get('/adminNodos', [NodoController::class, 'index'])->middleware('auth');
@@ -70,9 +74,9 @@ Route::get('/cambiarFileSitio/{id}', [NodoController::class, 'editFileSitio'])->
 Route::patch('/cambiarFileSitio', [NodoController::class, 'updateFileSitio'])->middleware('auth');
 Route::get('/cambiarFilePanel/{panel_id}/{sitio_id}', [NodoController::class, 'editFilePanel'])->middleware('auth');
 Route::patch('/cambiarFilePanel', [NodoController::class, 'updateFilePanel'])->middleware('auth');
-Route::get('/adminArchivosSitio/{id}', [NodoController::class, 'editArchivosSitio'])->middleware('auth');
 Route::get('/agregarArchivoSitio/{id}', [NodoController::class, 'createArchivoSitio'])->middleware('auth');
-Route::get('/eliminarArchivo/{archivo_id}/{sitio_id}', [NodoController::class, 'destroyArchivo'])->middleware('auth');
+Route::get('/adminArchivosSitio/{id}', [NodoController::class, 'editArchivosSitio'])->middleware('auth');
+Route::delete('/eliminarArchivo/{archivo_id}/{sitio_id}', [NodoController::class, 'destroyArchivo'])->middleware('auth');
 Route::patch('/adminArchivosSitio', [NodoController::class, 'updateArchivoSitio'])->middleware('auth');
 ####################
 ####### CRUD Mail Group

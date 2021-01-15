@@ -72,12 +72,24 @@
                                 </div>
                             </div>
                         @endforeach
+                        @php
+                            $archivos = $incidente->archivos;
+                        @endphp
+                        @if (count($archivos))
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <h5>Documentos PDF adjuntos a la incidencia</h5>
+                                     @foreach ($archivos as $archivo)
+                                        @if ($archivo->tipo === 'FILE')
+                                            <a href="/imgUsuarios/pdf/{{$archivo->file_name}}" target="_blank">{{$archivo->file_name}}</a>
+                                        @endif
+                                     @endforeach
+                                </div>
+                            </div>
+                        @endif
                 </form>
             </div>
             <div class="modal-footer">
-                @php
-                    $archivos = $incidente->archivos;
-                @endphp
                 @if (count($archivos))
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdropPhoto{{$incidente->id}}">
                         Fotos
@@ -91,4 +103,4 @@
 @if (count($archivos))
 @include('modals.photosCarrusel')
 @endif
-    @endforeach
+@endforeach
