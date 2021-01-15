@@ -28,7 +28,7 @@ class AddToEntityHasFilesTable extends Migration
     public function down()
     {
         Schema::table('entity_has_files', function (Blueprint $table) {
-            $table->dropColumn('entidad');
+            $table->dropColumn('modelo_id');
         });
     }
 }

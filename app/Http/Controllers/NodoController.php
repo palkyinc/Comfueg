@@ -7,6 +7,7 @@ use App\Models\Site;
 use App\Models\Panel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class NodoController extends Controller
 {
