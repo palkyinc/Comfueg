@@ -11,11 +11,8 @@ $mostrarSololectura = true;
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="tipo" class="mx-3">Tipo</label>
-                <select class="form-control" name="tipo">
-                    <option value="">Seleccione un Tipo de Incidente...</option>
+                <select class="form-control" name="tipo" readonly>
                     <option value="INCIDENTE">Incidente Global</option>
-                    <option value="DEUDA TECNICA">Deuda Técnica</option>
-                    
                 </select>
             </div>
             <div class="form-group col-md-6">

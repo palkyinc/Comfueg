@@ -5,9 +5,9 @@
 $mostrarSololectura = true;
 @endphp
 @if (null != $file)
-<h3>Modificando covertura "{{$file->file_name}}" del panel con ID: {{ $panel_id }}</h3> <!--  -->
+<h3>Modificando cobertura "{{$file->file_name}}" del panel con ID: {{ $panel_id }}</h3> <!--  -->
 @else
-<h3>Agregando covertura del panel con ID: {{ $panel_id }}</h3> <!--  -->
+<h3>Agregando cobertura del panel con ID: {{ $panel_id }}</h3> <!--  -->
 @endif
 @can('nodos_edit')
     <div class="alert bg-light border col-8 mx-auto p-4">

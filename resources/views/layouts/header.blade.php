@@ -39,10 +39,11 @@
 				Nodos
 				</a>
 				<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
-		          <a class="dropdown-item" href="/#">Disponible</a>
+					<a class="dropdown-item" href="/adminIncidencias">Incidencias Globales</a>
+					<a class="dropdown-item" href="/adminNodos">Nodos</a>
+				  	<a class="dropdown-item" href="/adminDeuda">Deuda Técnica</a>
+				  <div class="dropdown-divider"></div>
 		          <a class="dropdown-item" href="/adminPanelhasBarrio">Barrios por panel</a>
-		          <a class="dropdown-item" href="/adminIncidencias">Incidencias Globales</a>
-		          <a class="dropdown-item" href="/adminNodos">Nodos</a>
 				</div>
 		      </li>
 		      <li class="nav-item dropdown">
@@ -75,7 +76,7 @@
 		  </div>
 		    <div class="collapse navbar-collapse" id="navbarSupportedContent2">
 		  	<a class="navbar-brand" href="#">
-			    <img src="../img/miniLogoCF.jpg" width="30" height="30" class="d-inline-block align-top" alt="logotipo" loading="lazy">
+			    <img src="/img/miniLogoCF.jpg" width="30" height="30" class="d-inline-block align-top" alt="logotipo" loading="lazy">
 			    Comunicaciones Fueguinas SRL
 			</a>
 			</div>

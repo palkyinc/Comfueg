@@ -49,18 +49,20 @@
 
     <div class="col-sm">
       @foreach ($incidentes as $incidente)
-        <div class="card mb-4">
-          <div class="card-body">
-            <h5 class="card-title">Incidente Global: {{$incidente->crearNombre()}}</h5>
-            <p class="card-text">Tiempo de la Caída: <strong>{{$incidente->tiempoCaida()}}</strong></p>
-            <p class="card-text">Sitios Afectados: <strong>{{$incidente->sitios_afectados}}</strong></p>
-            <p class="card-text">Barrios Afectados: <strong>{{$incidente->barrios_afectados}}</strong></p>
-            <p class="card-text">Mensaje para Clientes: <strong>{{$incidente->mensaje_clientes}}</strong></p>
-            <p class="card-text">Cantidad de Actualizaciones: <strong>{{count($incidente->incidente_has_mensaje)}}</strong></p>
-            <p class="card-text"> <a href="#" class="margenAbajo btn btn-link" data-toggle="modal" data-target="#staticBackdrop{{$incidente->id}}" title="Ver">Ver Incidente</a> </p>
-            <p class="card-text"><small class="text-muted">Creado {{$incidente->created_at}} por {{$incidente->reluser->name}}</small></p>
+        @if ($incidente->tipo === 'INCIDENTE')
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Incidente Global: {{$incidente->crearNombre()}}</h5>
+              <p class="card-text">Tiempo de la Caída: <strong>{{$incidente->tiempoCaida()}}</strong></p>
+              <p class="card-text">Sitios Afectados: <strong>{{$incidente->sitios_afectados}}</strong></p>
+              <p class="card-text">Barrios Afectados: <strong>{{$incidente->barrios_afectados}}</strong></p>
+              <p class="card-text">Mensaje para Clientes: <strong>{{$incidente->mensaje_clientes}}</strong></p>
+              <p class="card-text">Cantidad de Actualizaciones: <strong>{{count($incidente->incidente_has_mensaje)}}</strong></p>
+              <p class="card-text"> <a href="#" class="margenAbajo btn btn-link" data-toggle="modal" data-target="#staticBackdrop{{$incidente->id}}" title="Ver">Ver Incidente</a> </p>
+              <p class="card-text"><small class="text-muted">Creado {{$incidente->created_at}} por {{$incidente->reluser->name}}</small></p>
+            </div>
           </div>
-        </div>
+        @endif
       @endforeach
     </div>
 
