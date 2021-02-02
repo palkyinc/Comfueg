@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\Mail;
 ## Route Inicial Default
 Route::get('/test', function () {
     $incidente = Site_has_incidente::find(1);
-    Mail ::to(['laboratorio@comunicacionesfueguinas.com','migvicpereyra@hotmail.com'])->send(new IncidenciaGlobal($incidente));
+    Mail::to(['laboratorio@comunicacionesfueguinas.com','migvicpereyra@hotmail.com'])->send(new IncidenciaGlobal($incidente));
     dd($incidente);
 });
 ### Route index
@@ -48,12 +48,18 @@ Route::get('/inicio', function (){return view('inicio', ['incidentes' => Site_ha
 Route::get('/contratos', function (){return view('contratos', ['contratos' => 'active']);});
 ####################
 ####### panel test Web services
-Route::get('/panelTest/{ip}', [PruebaController::class, 'test']);
+Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel']);
 ####################
 ####### Panel tiene Barrio CRUD
 Route::get('/adminPanelhasBarrio', [Panel_has_barrioController::class, 'index'])->middleware('auth');
 Route::get('/modificarPanelHasBarrio/{id}', [Panel_has_barrioController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarPanelHasBarrio', [Panel_has_barrioController::class, 'update'])->middleware('auth');
+####################
+####### Deuda
+Route::get('/adminDeudasTecnica', [SiteHasIncidenteController::class, 'indexDeuda'])->middleware('auth');
+####################
+####### NodosControlPanel
+Route::get('/adminControlPanelNodos', function () {return view('adminControlPanelNodos', ['nodos' => 'active']);});
 ####################
 ####### Inicidencias
 Route::get('/adminIncidencias', [SiteHasIncidenteController::class, 'index'])->middleware('auth');

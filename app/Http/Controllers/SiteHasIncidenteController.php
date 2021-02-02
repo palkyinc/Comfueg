@@ -18,18 +18,32 @@ class SiteHasIncidenteController extends Controller
      */
     public function index()
     {
+        
+        return view('adminSiteHasIncidentes', $this->getDatosIndex('INCIDENTE'));
+    }
+    private function getDatosIndex ($tipo)
+    {
         $sitios = Site::all();
-        $incidentes = Site_has_incidente::where('final', null)->orderByDesc('inicio')->paginate(10);
-        foreach ($incidentes as $incidente)
-        {
+        $incidentes = Site_has_incidente::where('final', null)->where('tipo', $tipo)->orderByDesc('inicio')->paginate(10);
+        foreach ($incidentes as $incidente) {
             $incidente->archivos = Entity_has_file::getArchivosEntidad(3, $incidente->id);
         }
-        return view('adminSiteHasIncidentes', ['incidentes' => $incidentes,
-                                                'abiertas' => true,
-                                                'sitios' => $sitios,
-                                                'nodos' => 'active',
-                                                'sitioSelected' => false
-                                                ]);
+        return [
+            'incidentes' => $incidentes,
+            'abiertas' => true,
+            'sitios' => $sitios,
+            'nodos' => 'active',
+            'sitioSelected' => false
+        ];
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexDeuda()
+    {
+        return view('adminSiteHasDeudas', $this->getDatosIndex('DEUDA TECNICA'));
     }
     
     /**

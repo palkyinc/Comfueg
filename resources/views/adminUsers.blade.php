@@ -28,6 +28,7 @@ $mostrarSololectura = true;
                             <th scope="col"> Id </th>
                             <th scope="col"> Nombre </th>
                             <th scope="col"> Email </th>
+                            <th scope="col"> Rol </th>
                             <th scope="col"> Creado </th>
                             <th scope="col" colspan="2">
                                 @can('usuarios_create')
@@ -44,6 +45,7 @@ $mostrarSololectura = true;
                             <th scope="row"> {{$User->id}}</th>
                             <td>{{$User->name}}</td>
                             <td>{{$User->email}}</td>
+                            <td>{{$User->getRoleNames()[0]}}</td>
                             <td>{{$User->created_at}}</td>
                             <td>
                                 @can('usuarios_edit')

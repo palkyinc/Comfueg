@@ -1,5 +1,5 @@
 <?php
-//namespace App\Custom;
+namespace App\Custom;
 /*
  * Usage example:
  * $ubiquiti   = new Ubiquiti('10.10.6.34', 'ubnt', 'S1mon3d@', true, '80', 3);

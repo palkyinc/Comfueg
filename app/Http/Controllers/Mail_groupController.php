@@ -20,7 +20,7 @@ class Mail_groupController extends Controller
         $Mail_groups = Mail_group::select("*")
             ->whereRaw("UPPER(name) LIKE (?)", ["%{$name}%"])
             ->paginate(10);
-        return view('adminMailGroups', ['Mail_groups' => $Mail_groups, 'datos' => 'active']);
+        return view('adminMailGroups', ['Mail_groups' => $Mail_groups, 'sistema' => 'active']);
     }
 
     /**
@@ -30,7 +30,7 @@ class Mail_groupController extends Controller
      */
     public function create()
     {
-        return view('agregarMail_group', ['datos' => 'active']);
+        return view('agregarMail_group', ['sistema' => 'active']);
     }
 
     /**
@@ -67,7 +67,7 @@ class Mail_groupController extends Controller
         $users = User::all();
         $mail_group = Mail_group::find($id);
         $users_agregados = $mail_group->relUsers;
-        return view('agregarUsersToMail_group', ['usuarios_agregados' => $users_agregados, 'Users' => $users, 'mail_group' => $mail_group , 'datos' => 'active']);
+        return view('agregarUsersToMail_group', ['usuarios_agregados' => $users_agregados, 'Users' => $users, 'mail_group' => $mail_group , 'sistema' => 'active']);
         //dd($users_agregados);
     }
 
@@ -80,7 +80,7 @@ class Mail_groupController extends Controller
     public function edit($id)
     {
         $mail_group = Mail_group::find($id);
-        return view('modificarMail_group', ['elemento' => $mail_group, 'datos' => 'active']);
+        return view('modificarMail_group', ['elemento' => $mail_group, 'sistema' => 'active']);
     }
 
     /**

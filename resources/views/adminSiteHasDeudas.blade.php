@@ -4,11 +4,11 @@
 @php
 $mostrarSololectura = true;
 @endphp
-                    <form class="form-inline mx-4 margin-10" action="adminIncidenciasRebusqueda" method="get">
+                    <form class="form-inline mx-4 margin-10" action="adminDeudasRebusqueda" method="get">
                         <div class="conteiner">
                             <div class="row">
-                                <div class="col">
-                                    <h2 class="mx-3">Administración de Incidentes Globales</h2>
+                                <div class="col-6">
+                                    <h2 class="mx-3">Deudas Técnica</h2>
                                 </div>
                                 <div class="form-check form-switch col-2">
                                     @if ($abiertas)
@@ -18,7 +18,7 @@ $mostrarSololectura = true;
                                     @endif
                                     <label class="form-check-label" for="flexSwitchCheckChecked">Solo Abiertas</label>
                                 </div>
-                                <div class="col-2">
+                                <div class="col-4">
                                     <label for="sitio" class="mx-3">Sitio</label>
                                     <select class="form-control" name="sitio" id="sitio">
                                         @if (!$sitioSelected)

@@ -20,7 +20,7 @@ class UserController extends Controller
         $Users = User::select("*")
             ->whereRaw("UPPER(name) LIKE (?)", ["%{$name}%"])
             ->paginate(10);
-        return view('adminUsers', ['Users' => $Users, 'datos' => 'active']);
+        return view('adminUsers', ['Users' => $Users, 'sistema' => 'active']);
     }
 
     /**
@@ -30,7 +30,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('agregarUser', ['datos' => 'active']);
+        return view('agregarUser', ['sistema' => 'active']);
     }
 
     /**
@@ -77,7 +77,7 @@ class UserController extends Controller
             [
                 'Roles' => $Roles,
                 'User' => $User,
-                'datos' => 'active'
+                'sistema' => 'active'
             ]
         );
     }
@@ -118,7 +118,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $User = User::find($id);
-        return view('modificarUser', ['elemento' => $User, 'datos' => 'active']);
+        return view('modificarUser', ['elemento' => $User, 'sistema' => 'active']);
     }
 
     /**

@@ -7,7 +7,7 @@
 </head>
 <body>
     <h3>Actualización/es del Incidente: {{ $incidente->crearNombre() }}.</h3>
-    <h4>Incidente fianlizado el <strong><i>{{ $incidente->final}}</i></strong>.</h4>
+    <h4>Incidente finalizado el <strong><i>{{ $incidente->final}}</i></strong>.</h4>
 
         @foreach ($incidente->incidente_has_mensaje as $mensaje)
             <ul>
@@ -27,7 +27,7 @@
         <li>Sitios Afectados: <strong><i>{{ $incidente->sitios_afectados }}</i></strong></li>
         <li>Paneles Afectados Indirectamente: <strong><i>{{ $incidente->afectados_indi }}</i></strong></li>
         <li>Barrios Afectados: <strong><i>{{ $incidente->barrios_afectados }}</i></strong></li>
-        <li>Causa/Diagnostico: <strong><i>{{ $incidente->causa }}</i></strong></li>
+        <li>Causa/Diagnóstico: <strong><i>{{ $incidente->causa }}</i></strong></li>
         <li>Mensaje para los Clientes: <strong><i>{{ $incidente->mensaje_clientes }}</i></strong></li>
     </ul>
     <p>Información Extra:</p>
@@ -36,7 +36,7 @@
         <li>Hora de Creado: <strong><i>{{ $incidente->created_at }}</i></strong></li>
         <li>
             <a href="http://{{$incidente->obtenerDominio()}}/inicio">
-                Ver Incidencia
+                Ir a Inicio de Slam
             </a>
         </li>
     </ul>

@@ -68,7 +68,7 @@ $mostrarSololectura = true;
     </div>
     {{ $files->links() }}
     @can('nodos_edit')
-    @section('javascript')
+        @section('javascript')
             <script>
             const td = document.querySelector('#deleteFile');
             let botones = td.getElementsByTagName('button');

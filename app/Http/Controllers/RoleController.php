@@ -19,7 +19,7 @@ class RoleController extends Controller
         $Roles = Role::select("*")
             ->whereRaw("UPPER(name) LIKE (?)", ["%{$name}%"])
             ->paginate(10);
-        return view('adminRoles', ['Roles' => $Roles, 'datos' => 'active']);
+        return view('adminRoles', ['Roles' => $Roles, 'sistema' => 'active']);
     }
 
     /**
@@ -29,7 +29,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return view('agregarRole', ['datos' => 'active']);
+        return view('agregarRole', ['sistema' => 'active']);
     }
 
     /**
@@ -72,7 +72,7 @@ class RoleController extends Controller
             [
                 'Permissions' => $Permissions,
                 'Role' => $Role,
-                'datos' => 'active'
+                'sistema' => 'active'
             ]
         );
     }
@@ -108,7 +108,7 @@ class RoleController extends Controller
     public function edit($id)
     {
         $Role = Role::find($id);
-        return view('modificarRole', ['elemento' => $Role, 'datos' => 'active']);
+        return view('modificarRole', ['elemento' => $Role, 'sistema' => 'active']);
     }
 
     /**

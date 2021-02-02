@@ -62,7 +62,12 @@ class Site_has_incidente extends Model
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $hoy = new DateTime();
         $inicio = new DateTime($this->inicio);
-        $interval = $inicio->diff($hoy);
+        if (!$this->final)
+            {
+                $interval = $inicio->diff($hoy);
+            } else {
+                $interval = $inicio->diff(new DateTime($this->final));
+            }
         return($interval->d . 'd ' . $interval->h . 'h ' . $interval->i . 'm');
     }
     private function dateTimeLocal($date)

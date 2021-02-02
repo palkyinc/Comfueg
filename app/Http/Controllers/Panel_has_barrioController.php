@@ -17,7 +17,7 @@ class Panel_has_barrioController extends Controller
     public function index()
     {
         $paneles = Panel::select('*')->where('rol', 'PANEL')->paginate(10);
-        return view('adminPanelhasBarrio', ['paneles' => $paneles, 'nodos' => 'active']);
+        return view('adminPanelhasBarrio', ['paneles' => $paneles, 'datos' => 'active']);
     }
 
     /**
@@ -63,7 +63,7 @@ class Panel_has_barrioController extends Controller
         $barrios = Barrio::all();
         $panelHasBarrios = Panel_has_barrio::select('*')->where('panel_id', $id)->get();
         $panel_actual = Panel::find($id);
-        return view ('agregarBarrioToPanel', ['panel_actual' => $panel_actual->relEquipo->nombre, 'panelHasBarrios' => $panelHasBarrios, 'panel_id' => $id, 'barrios' => $barrios, 'nodos' => 'active']);
+        return view ('agregarBarrioToPanel', ['panel_actual' => $panel_actual->relEquipo->nombre, 'panelHasBarrios' => $panelHasBarrios, 'panel_id' => $id, 'barrios' => $barrios, 'datos' => 'active']);
     }
 
     /**

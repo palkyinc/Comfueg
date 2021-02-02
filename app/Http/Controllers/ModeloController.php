@@ -15,7 +15,7 @@ class ModeloController extends Controller
     public function index()
     {
         $Modelos = modelo::paginate(10);
-        return view('adminModelos', ['modelos' => $Modelos, 'datos' => 'active']);
+        return view('adminModelos', ['modelos' => $Modelos, 'sistema' => 'active']);
         dd($Modelos);
     }
 
@@ -26,7 +26,7 @@ class ModeloController extends Controller
      */
     public function create()
     {
-        return view ('agregarModelo', ['datos'=> 'active']);
+        return view ('agregarModelo', ['sistema'=> 'active']);
     }
 
     /**
@@ -65,7 +65,7 @@ class ModeloController extends Controller
     public function edit($id)
     {
         $Modelo = Modelo::find($id);
-        return view('modificarModelo', ['elemento' => $Modelo, 'datos' => 'active']);
+        return view('modificarModelo', ['elemento' => $Modelo, 'sistema' => 'active']);
     }
 
     /**

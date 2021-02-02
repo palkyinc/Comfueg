@@ -84,8 +84,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'comunicacionesfueguinas@gmail.com'),
-        'name' => env('MAIL_FROM_NAME', 'Comfueg Slam Robot'),
+        'address' => env('MAIL_FROM_ADDRESS'),
+        'name' => env('MAIL_FROM_NAME'),
     ],
 
     /*

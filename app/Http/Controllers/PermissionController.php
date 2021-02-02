@@ -19,7 +19,7 @@ class PermissionController extends Controller
         $Permissions = Permission::select("*")
             ->whereRaw("UPPER(name) LIKE (?)", ["%{$name}%"])
             ->paginate(10);
-        return view('adminPermissions', ['Permissions' => $Permissions, 'datos' => 'active']);
+        return view('adminPermissions', ['Permissions' => $Permissions, 'sistema' => 'active']);
     }
 
     /**
@@ -29,7 +29,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        return view('agregarPermission', ['datos' => 'active']);
+        return view('agregarPermission', ['sistema' => 'active']);
     }
 
     /**
@@ -71,7 +71,7 @@ class PermissionController extends Controller
         [
             'Permission' => $Permission,
             'roles' => $roles, 
-            'datos' => 'active'
+            'sistema' => 'active'
         ]);
     }
 
@@ -106,7 +106,7 @@ class PermissionController extends Controller
     public function edit($id)
     {
         $Permission = Permission::find($id);
-        return view('modificarPermission', ['elemento' => $Permission, 'datos' => 'active']);
+        return view('modificarPermission', ['elemento' => $Permission, 'sistema' => 'active']);
     }
 
     /**
