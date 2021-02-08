@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Prueba;
 use Illuminate\Http\Request;
 use App\Custom\ubiquiti;
+use App\Models\Panel;
 use Illuminate\Support\Facades\Config;
 
 class PruebaController extends Controller
@@ -37,7 +38,7 @@ class PruebaController extends Controller
             'DevModel' => $status['host']['devmodel'],
             'NetRole' => $status['host']['netrole'],
             'Clients' => $status['wireless']['count'],
-            'statusClients' => ($status['wireless']['count'] > 26) ? 0 : 1,
+            'statusClients' => ($status['wireless']['count'] > 25) ? (($status['wireless']['count'] > 29) ? 0 : 2) : 1,
             'SSID' => $status['wireless']['essid'],
             'Signal' => $signal['signal'] . 'dBm',
             'statusSignal' => ($signal['signal'] < -69) ? (($signal['signal'] < -75) ? 0 : 2) : 1,
@@ -47,7 +48,7 @@ class PruebaController extends Controller
             'CCQ' => ($status['wireless']['ccq'] ?? 'N/A'),
             'statusCCQ' => (isset($status['wireless']['ccq'])) ? (($status['wireless']['ccq'] < 700) ? (($status['wireless']['ccq'] < 600) ? 0 : 2) : 1) : 3,
             'CpuUse' => (isset($status['host']['cpuload'])) ? (round($status['host']['cpuload']) . "%") : 'N/A ',
-            'statusCpuUse' => (isset($status['host']['cpuload'])) ? ((round($status['host']['cpuload']) > 70) ? 0 : 1) : 3,
+            'statusCpuUse' => (isset($status['host']['cpuload'])) ? ((round($status['host']['cpuload']) > 50) ? ((round($status['host']['cpuload']) > 85) ? 0 : 2) : 1) : 3,
             'MemFree' => (isset($status['host']['freeram'])) ? (round(($status['host']['freeram'] / $status['host']['totalram']) * 100) . "%") : 'N/A',
             'statusMemFree' => (isset($status['host']['freeram'])) ? ((round($status['host']['freeram'] / $status['host']['totalram']) < 0.5) ? 0 : 1) : 3,
             'TX' => ($status['wireless']['txrate'] ?? ''),
@@ -73,9 +74,34 @@ class PruebaController extends Controller
     private function lanspeed ($status, &$statusLAN)
     {
         for ($i = 0; $i < count($status['interfaces']); $i++) {
-            if ($status['interfaces'][$i]['ifname'] == 'eth0') {
+            if  (
+                    (
+                        $status['interfaces'][$i]['ifname'] == 'eth0' 
+                        && 
+                        $status['interfaces'][$i]['status']['plugged'] == 1
+                        &&
+                        (
+                            $status['interfaces'][$i]['status']['duplex'] == 1
+                            ||
+                            $status['interfaces'][$i]['status']['duplex'] == 0
+                        )
+                    )
+                    ||
+                    (
+                        $status['interfaces'][$i]['ifname'] == 'ath0' 
+                        &&
+                        $status['interfaces'][$i]['status']['plugged'] == 1
+                        &&
+                        (
+                            $status['interfaces'][$i]['status']['duplex'] == 1
+                            ||
+                            $status['interfaces'][$i]['status']['duplex'] == 0
+                        )
+                    )
+                )
+                {
                 $lanSpeed = $status['interfaces'][$i]['status']['speed'] . "Mb";
-                $statusLAN = ($status['interfaces'][$i]['status']['speed'] == 100) ? 1 : (($status['interfaces'][$i]['status']['speed'] == 10) ? 2 : 0);
+                $statusLAN = ($status['interfaces'][$i]['status']['speed'] >= 100) ? 1 : (($status['interfaces'][$i]['status']['speed'] == 10) ? 2 : 0);
                 if ($status['interfaces'][$i]['status']['duplex'] == 1)
                 {
                     $lanSpeed .= '-Full';
@@ -110,6 +136,23 @@ class PruebaController extends Controller
         return round($rta) . $unidad;
     }
     
+    public function allPanels()
+    {
+        // sitio ip hostname
+        $Paneles = Panel::where('activo', 1)
+                        ->orderBy('num_site')
+                        ->orWhere(function($query){
+                            $query->where('rol', 'PANEL')
+                            ->where('rol', 'PTPAP')
+                            ->where('rol', 'PTPST');
+                        })
+                        ->get();
+        foreach ($Paneles as $panel) {
+                $rta[] = ['sitio' => $panel->relSite->nombre, 'Hostname' => $panel->relEquipo->nombre, 'ip' => $panel->relEquipo->ip];
+        }
+        return response()->json($rta, 200);
+    }
+
     /**
      * Display a listing of the resource.
      *

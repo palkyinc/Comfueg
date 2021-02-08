@@ -49,6 +49,7 @@ Route::get('/contratos', function (){return view('contratos', ['contratos' => 'a
 ####################
 ####### panel test Web services
 Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel']);
+Route::get('/allPanels', [PruebaController::class, 'allPanels']);
 ####################
 ####### Panel tiene Barrio CRUD
 Route::get('/adminPanelhasBarrio', [Panel_has_barrioController::class, 'index'])->middleware('auth');

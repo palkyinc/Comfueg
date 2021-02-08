@@ -53,23 +53,33 @@ class SiteHasIncidenteController extends Controller
      */
     public function indexRebusqueda(Request $request)
     {
+        return view('adminSiteHasIncidentes', $this->getIndexRebusqueda($request, 'INCIDENTE'));
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getIndexRebusqueda(Request $request, $tipo)
+    {
         $sitios = Site::all();
         $abiertas = (null != $request->input('abiertas')) ? true : false;
         $nodo = (null != $request->input('sitio')) ? $request->input('sitio') : false;
         if ($abiertas && !$nodo)
         {
-            $incidentes = Site_has_incidente::where('final', null)->orderByDesc('inicio')->paginate();
+            $incidentes = Site_has_incidente::where('final', null)->where('tipo', $tipo)->orderByDesc('inicio')->paginate();
         } elseif (!$abiertas && !$nodo) 
             {
-                $incidentes = Site_has_incidente::orderByDesc('inicio')->paginate();
+                $incidentes = Site_has_incidente::where('tipo', $tipo)->orderByDesc('inicio')->paginate();
             }elseif ((!$abiertas && $nodo) || ($abiertas && $nodo)) 
                 {
                 if (!$abiertas)
                 {
-                    $incidentes = Site_has_incidente::orderByDesc('inicio')->paginate();
+                    $incidentes = Site_has_incidente::where('tipo', $tipo)->orderByDesc('inicio')->paginate();
                 } else
                     {
-                        $incidentes = Site_has_incidente::where('final', null)->orderByDesc('inicio')->paginate();
+                        $incidentes = Site_has_incidente::where('tipo', $tipo)->where('final', null)->orderByDesc('inicio')->paginate();
                     }
                 foreach ($incidentes as $key => $incidente)
                     {
@@ -82,12 +92,12 @@ class SiteHasIncidenteController extends Controller
         foreach ($incidentes as $incidente) {
             $incidente->archivos = Entity_has_file::getArchivosEntidad(3, $incidente->id);
         }
-        return view('adminSiteHasIncidentes', ['incidentes' => $incidentes,
-                                                'abiertas' => $abiertas,
-                                                'sitios' => $sitios,
-                                                'nodos' => 'active',
-                                                'sitioSelected' => $nodo
-                                                ]);
+        return ['incidentes' => $incidentes,
+                'abiertas' => $abiertas,
+                'sitios' => $sitios,
+                'nodos' => 'active',
+                'sitioSelected' => $nodo
+                ];
     }
 
     /**

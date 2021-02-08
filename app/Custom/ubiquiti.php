@@ -31,10 +31,15 @@ class Ubiquiti{
 		$this->_username	= $user;
 		$this->_password	= $password;
 		$this->_ip			= $ip;
-		$this->_baseurl		= ($https) ? 'https://'.$ip.':'.$port.'/login.cgi?uri=' : 'http://'.$ip.':'.$port.'/login.cgi?uri=';
+        $this->_baseurl		= ($https) 
+                                ? 
+                                ('https://'.$ip) 
+                                : 
+                                ('http://'.$ip);
 	}
 
-	private function query($page, $timeout = false){
+	private function query($page, $timeout = false)
+    {
 		if(!$timeout){
 			$timeout = $this->_timeout;
 		}
@@ -45,21 +50,56 @@ class Ubiquiti{
 			'redirect'	=> $this->_baseurl,
 			'uri'		=> $page
 		];
-
-        curl_setopt($this->_ch, CURLOPT_URL, $this->_baseurl.$page);
+        $postdata1   = [
+            'username'  => $this->_username,
+            'password'  => $this->_password
+        ];
+        
+        $cookies = str_replace('\\','/', getcwd().'/'.'tmp/cookie-'.$this->_ip);
+        
+        //Setup CURL
         curl_setopt($this->_ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt ($this->_ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($this->_ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->_ch, CURLOPT_COOKIEJAR, null);
         curl_setopt($this->_ch, CURLOPT_HTTPHEADER,array("Expect:  "));
         curl_setopt($this->_ch, CURLOPT_TIMEOUT, $timeout);
-        curl_setopt($this->_ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->_ch, CURLOPT_COOKIEFILE, '/tmp/cookie-'.$this->_ip);
-        curl_setopt($this->_ch, CURLOPT_COOKIEJAR, '/tmp/cookie-'.$this->_ip);
+
+        // Login AirOS >= 8.5.0+ OR get cookie with session ID for AirOS < 8.5.0
+        curl_setopt($this->_ch, CURLOPT_URL, $this->_baseurl . '/api/auth');
         curl_setopt($this->_ch, CURLOPT_POST, true);
-        curl_setopt($this->_ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($this->_ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-        curl_setopt($this->_ch, CURLOPT_FOLLOWLOCATION, true);
-	    curl_setopt($this->_ch, CURLOPT_POSTFIELDS, $postdata);
-        $result		= curl_exec($this->_ch);
-		return ($result);
+	    curl_setopt($this->_ch, CURLOPT_POSTFIELDS, $postdata1);
+        curl_setopt ($this->_ch, CURLOPT_HEADER, true);
+        $response = curl_exec ($this->_ch);
+        curl_setopt ($this->_ch, CURLOPT_HEADER, false);
+
+        // AirOS >= 8.5.0 request and return file
+        if (curl_getinfo ($this->_ch, CURLINFO_HTTP_CODE) == 200)
+        {
+            curl_setopt($this->_ch, CURLOPT_URL, $this->_baseurl . $page);
+            curl_setopt($this->_ch, CURLOPT_POST, false);
+            $result		= curl_exec($this->_ch);
+
+            curl_setopt ($this->_ch, CURLOPT_URL, $this->_baseurl . "/logout.cgi");
+            //curl_setopt ($this->_ch, CURLOPT_HTTPHEADER, Array (trim ($XCSRFID[0]), 'X-AIROS-LUA: 1'));
+            curl_setopt ($this->_ch, CURLOPT_POST, 1);
+            curl_setopt ($this->_ch, CURLOPT_POSTFIELDS, Array());
+            curl_exec ($this->_ch);
+        }
+
+        // Login failed, try AirOS < 8.5.0 login, request, and return file
+        else
+        {
+                curl_setopt ($this->_ch, CURLOPT_URL, $this->_baseurl . "/login.cgi");
+                curl_setopt ($this->_ch, CURLOPT_POST, 1);
+                curl_setopt ($this->_ch, CURLOPT_POSTFIELDS, $postdata1);
+                curl_exec ($this->_ch);
+
+                curl_setopt ($this->_ch, CURLOPT_URL, $this->_baseurl . $page);
+                curl_setopt ($this->_ch, CURLOPT_POST, false);
+                $result     = curl_exec($this->_ch);
+        }
+        return ($result);
 	}
 
 	private function login(){
@@ -72,8 +112,7 @@ class Ubiquiti{
 	}
 
 	public function stations($array = false){
-		if($this->login()){
-			$result	= $this->query('/sta.cgi');
+		if($result = $this->query('/sta.cgi')){
 			if($array){
 				$result = json_decode($result, true);
 				return ($result);
@@ -86,8 +125,7 @@ class Ubiquiti{
 	}
 
     public function status($array = false){
-        if($this->login()){
-            $result = $this->query('/status.cgi');
+        if($result = $this->query('/status.cgi')){
             if($array){
                 $result = json_decode($result, true);
                 return ($result);
@@ -100,8 +138,7 @@ class Ubiquiti{
     }
 
     public function status_new($array = false){
-        if($this->login()){
-            $result = $this->query('/status-new.cgi');
+        if($result = $this->query('/status-new.cgi')){
             if($array){
                 $result = json_decode($result, true);
                 return ($result);
@@ -114,8 +151,7 @@ class Ubiquiti{
     }
 
     public function ifstats($array = false){
-        if($this->login()){
-            $result = $this->query('/ifstats.cgi');
+        if($result = $this->query('/ifstats.cgi')){
             if($array){
                 $result = json_decode($result, true);
                 return ($result);
@@ -128,8 +164,7 @@ class Ubiquiti{
     }
 
     public function iflist($array = false){
-        if($this->login()){
-            $result = $this->query('/iflist.cgi');
+        if($result = $this->query('/iflist.cgi')){
             if($array){
                 $result = json_decode($result, true);
                 return ($result);
@@ -142,8 +177,7 @@ class Ubiquiti{
     }
 
     public function brmacs($array = false){
-        if($this->login()){
-            $result = $this->query('/brmacs.cgi?brmacs=y');
+        if($result = $this->query('/brmacs.cgi?brmacs=y')){
             if($array){
                 $result = json_decode($result, true);
                 return ($result);
@@ -156,8 +190,7 @@ class Ubiquiti{
     }
 
     public function station_kick($mac, $interface, $array = false){
-        if($this->login()){
-            $result = $this->query('/stakick.cgi?staid='.$mac.'&staif='.$interface);
+        if($result = $this->query('/stakick.cgi?staid='.$mac.'&staif='.$interface)){
             if($array){
                 $result = json_decode($result, true);
                 return ($result);
@@ -170,8 +203,7 @@ class Ubiquiti{
     }
 
     public function spectrum($timeout = 10, $array = false){
-        if($this->login()){
-            $result = $this->query('/survey.json.cgi', $timeout);
+        if($result = $this->query('/survey.json.cgi', $timeout)){
             if($array){
                 $result = json_decode($result, true);
                 return ($result);
@@ -184,8 +216,7 @@ class Ubiquiti{
     }
 
     public function signal($array = false){
-        if($this->login()){
-            $result = $this->query('/signal.cgi');
+        if($result = $this->query('/signal.cgi')){
             if($array){
                 $result = json_decode($result, true);
                 return ($result);
@@ -198,8 +229,7 @@ class Ubiquiti{
     }
 
     public function air_view($array = false){
-        if($this->login()){
-            $result = $this->query('/air-view.cgi');
+        if($result = $this->query('/air-view.cgi')){
             if($array){
                 $result = json_decode($result, true);
                 return ($result);
@@ -216,5 +246,3 @@ class Ubiquiti{
 	}
 
 }
-
-?>
