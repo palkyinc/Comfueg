@@ -55,6 +55,10 @@ class SiteHasIncidenteController extends Controller
     {
         return view('adminSiteHasIncidentes', $this->getIndexRebusqueda($request, 'INCIDENTE'));
     }
+    public function indexDeudasRebusqueda(Request $request)
+    {
+        return view('adminSiteHasDeudas', $this->getIndexRebusqueda($request, 'DEUDA TECNICA'));
+    }
     
     /**
      * Display a listing of the resource.
@@ -111,9 +115,39 @@ class SiteHasIncidenteController extends Controller
         return view('agregarSiteHasIncidente', ['paneles' => $paneles, 'completo' => 0, 'nodos' => 'activate']);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createDeuda()
+    {
+        $paneles = Panel::all();
+        return view('agregarSiteHasDeuda', ['paneles' => $paneles, 'completo' => 0, 'nodos' => 'activate']);
+    }
+
     public function createArchivoIncidente($id)
     {
         return view('agregarArchivoIncidente', ['incidente_id' => $id, 'nodos' => 'active']);
+    }
+
+    public function storeDeuda(Request $request)
+    {
+        $this->validar($request, true);
+        $deuda = new Site_has_incidente;
+        $deuda->tipo = $request->input('tipo');
+        $deuda->inicio = $request->input('inicio');
+        $deuda->afectado = $request->input('afectado');
+        $deuda->causa = $request->input('causa');
+        $deuda->mensaje_clientes = $request->input('mensaje_clientes');
+        $deuda->user_creator = auth()->user()->id;
+        if ($request->hasfile('scheme_file')) {
+            $this->tratarArchivos($request, $deuda);
+        }
+        $deuda->enviarMail(false, true);
+        $deuda->save();
+        $respuesta[] = 'Nueva Deuda Técnica se ha creado correctamente';
+        return redirect('/adminDeudasTecnica')->with('mensaje', $respuesta);
     }
 
     /**
@@ -141,7 +175,7 @@ class SiteHasIncidenteController extends Controller
             $this->tratarArchivos($request, $incidente_global);
         }
         $incidente_global->enviarMail();
-        $respuesta[] = 'Nuevo Incidente Global se creado correctamente';
+        $respuesta[] = 'Nuevo Incidente Global se ha creado correctamente';
         return redirect('/adminIncidencias')->with('mensaje', $respuesta);
     }
 
@@ -174,15 +208,22 @@ class SiteHasIncidenteController extends Controller
         return $respuesta;
     }
 
-    private function validar(Request $request)
+    private function validar(Request $request, $esDeuda = False)
     {
+        if (!$esDeuda)
+        {
+            $mensajeClientes = 'required|min:2|max:255';
+        } else
+            {
+                $mensajeClientes = 'required|min:2|max:20';
+            }
         $request->validate(
             [
                 'tipo' => 'required|min:9|max:13',
                 'inicio' => 'required|date',
                 'afectado' => 'required|numeric|min:1|max:99999',
                 'causa' => 'required|min:2|max:255',
-                'mensaje_clientes' => 'required|min:2|max:255'
+                'mensaje_clientes' => $mensajeClientes
             ]
         );
     }
@@ -294,6 +335,20 @@ class SiteHasIncidenteController extends Controller
      * @param  \App\Models\Site_has_incidente  $site_has_incidente
      * @return \Illuminate\Http\Response
      */
+    public function editDeuda($id)
+    {
+        $incidente = Site_has_incidente::find($id);
+        $archivos = Entity_has_file::where('modelo_id', 3)->where('entidad_id', $id)->get();
+        //dd(date("c", strtotime($incidente->inicio)));
+        return view('modificarSIteHasDeuda', ['archivos' => $archivos, 'incidente' => $incidente, 'nodos' => 'active']);
+    }
+    
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Site_has_incidente  $site_has_incidente
+     * @return \Illuminate\Http\Response
+     */
     public function editArchivosIncidente($id)
     {
         $incidente = Site_has_incidente::find($id);
@@ -334,6 +389,39 @@ class SiteHasIncidenteController extends Controller
         $respuesta[] = 'Incidente Global ' . $incidente->crearNombre() . ' se ha actualizado correctamente';
         return redirect('/adminIncidencias')->with('mensaje', $respuesta);
     }
+    
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Site_has_incidente  $site_has_incidente
+     * @return \Illuminate\Http\Response
+     */
+    public function updateDeuda(Request $request)
+    {
+        $incidente = Site_has_incidente::find($request->input('id'));
+        $this->updateValidar ($request, true);
+        $incidente->inicio = $request->input('inicio');
+        $incidente->final = $request->input('final');
+        $actualizacion = new Incidente_has_mensaje();
+        $actualizacion->mensaje = $request->input('actualizacion');
+        $actualizacion->incidente_id = $incidente->id;
+        $actualizacion->user_creator = auth()->user()->id;
+        if ($request->hasfile('scheme_file')) {
+            $this->tratarArchivos($request, $incidente);
+        }
+        $incidente->save();
+        $actualizacion->save();
+        if(!$incidente->final)
+        {
+            $incidente->enviarMail('actualizacion', true);
+        } else 
+            {
+                $incidente->enviarMail('cerrado', true);
+            }
+        $respuesta[] = 'Deuda Técnica con título " ' . $incidente->mensaje_clientes . '" se ha actualizado correctamente';
+        return redirect('/adminDeudasTecnica')->with('mensaje', $respuesta);
+    }
 
     public function updateArchivoIncidente(Request $request)
     {
@@ -353,16 +441,28 @@ class SiteHasIncidenteController extends Controller
         return redirect('adminArchivosIncidente/' . $request->input('incidenteId'));
     }
 
-    private function updateValidar (Request $request)
+    private function updateValidar (Request $request, $esDeuda = false)
     {
-        $request->validate(
-            [
-                'inicio' => 'required|date',
-                'final' => 'nullable|date',
-                'mensaje_clientes' => 'required|min:2|max:255',
-                'actualizacion' => 'required|min:2|max:255',
-            ]
-        );
+        if (!$esDeuda)
+        {
+            $request->validate(
+                [
+                    'inicio' => 'required|date',
+                    'final' => 'nullable|date',
+                    'mensaje_clientes' => 'required|min:2|max:255',
+                    'actualizacion' => 'required|min:2|max:500',
+                ]
+            );
+        } else 
+            {
+                $request->validate(
+                    [
+                        'inicio' => 'required|date',
+                        'final' => 'nullable|date',
+                        'actualizacion' => 'required|min:2|max:500',
+                    ]
+                );
+            }
     }
 
     /**

@@ -17,7 +17,8 @@ class Entity_has_file extends Model
     }
     public static function grabarPdfImage($archivo, $entidad_id, $modelo_id)
     {
-        $schemeImagen = $archivo->getClientOriginalName();
+        $today = getdate();
+        $schemeImagen = $today['year'] . $today['mon'] . $today['mday'] . $today['hours'] . $today['minutes'] . $today['seconds'] . $archivo->getClientOriginalName();
         if ($archivo->clientExtension() == 'pdf') {
             $archivo->move(public_path('/imgUsuarios/pdf'), $schemeImagen);
             $tipo = 'FILE';

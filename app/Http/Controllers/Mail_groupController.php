@@ -46,7 +46,7 @@ class Mail_groupController extends Controller
         $mailGroup->name = $request->input('name');
         $mailGroup->save();
         $respuesta[] = 'Grupo de mail se creó correctamente';
-        return redirect('/adminMailgroups')->with('mensaje', $respuesta);
+        return redirect('/adminMailGroups')->with('mensaje', $respuesta);
     }
     
     private function validar ($request)

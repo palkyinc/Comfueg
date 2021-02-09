@@ -8,26 +8,61 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
 use App\Mail\IncidenciaGlobal;
+use App\Mail\DeudaTecnica;
 use App\Mail\IncidenciaGlobalActualizacion;
+use App\Mail\DeudaTecnicaActualizacion;
 use App\Mail\IncidenciaGlobalCerrada;
+use App\Mail\DeudaTecnicaCerrada;
 
 class Site_has_incidente extends Model
 {
     use HasFactory;
-    
-    public function enviarMail($tipo = null)
+    // $tipo -> false = nuevo, 'actualizacion', 'cerrado'
+    // $esDeuda -> true = es Deuda, false = no es deuda
+    public function enviarMail($tipo = false, $esDeuda = false)
     {
-        $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.INCIDENTES_GLOBALES_MAIL_GROUP'));
-        if ($tipo === null)
+        if (!$esDeuda)
         {
-            Mail::to($arrayCorreos)->send(new IncidenciaGlobal($this));
-        }else if ($tipo == 'actualizacion')
+            $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.INCIDENTES_GLOBALES_MAIL_GROUP'));
+        } else 
             {
-                Mail::to($arrayCorreos)->send(new IncidenciaGlobalActualizacion($this));
-            } elseif ($tipo == 'cerrado')
-            {
-                Mail::to($arrayCorreos)->send(new IncidenciaGlobalCerrada($this));
+            $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.DEUDAS_TECNICA_MAIL_GROUP'));
             }
+        if (!$esDeuda)
+        {
+            switch ($tipo) 
+                {
+                    case false:
+                        $toSend = new IncidenciaGlobal($this);
+                        break;
+                    
+                    case 'actualizacion':
+                        $toSend = new IncidenciaGlobalActualizacion($this);
+                        break;
+                    
+                    case 'cerrado':
+                        $toSend = new IncidenciaGlobalCerrada($this);
+                        break;
+                }
+        }else 
+            {
+                switch ($tipo)
+                    {
+                        case false:
+                            $toSend = new DeudaTecnica($this);
+                            break;
+
+                        case 'actualizacion':
+                            $toSend = new DeudaTecnicaActualizacion($this);
+                            break;
+
+                        case 'cerrado':
+                            $toSend = new DeudaTecnicaCerrada($this);
+                            break;
+                    }
+            }
+        Mail::to($arrayCorreos)->send($toSend);
+        
     }
     public function obtenerDominio ()
     {
@@ -51,7 +86,8 @@ class Site_has_incidente extends Model
     }
     public static function incidentesAbiertos ()
     {
-        $incidentes = Site_has_incidente::where('final', null)->where('tipo', 'INCIDENTE')->get();
+        //$incidentes = Site_has_incidente::where('final', null)->where('tipo', 'INCIDENTE')->get();
+        $incidentes = Site_has_incidente::where('final', null)->get();
         foreach ($incidentes as $incidente) {
             $incidente->archivos = Entity_has_file::getArchivosEntidad(3, $incidente->id);
         }

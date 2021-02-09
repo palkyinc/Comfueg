@@ -48,8 +48,8 @@ Route::get('/inicio', function (){return view('inicio', ['incidentes' => Site_ha
 Route::get('/contratos', function (){return view('contratos', ['contratos' => 'active']);});
 ####################
 ####### panel test Web services
-Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel']);
-Route::get('/allPanels', [PruebaController::class, 'allPanels']);
+Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
+Route::get('/allPanels', [PruebaController::class, 'allPanels'])->middleware('auth');
 ####################
 ####### Panel tiene Barrio CRUD
 Route::get('/adminPanelhasBarrio', [Panel_has_barrioController::class, 'index'])->middleware('auth');
@@ -58,9 +58,15 @@ Route::patch('/modificarPanelHasBarrio', [Panel_has_barrioController::class, 'up
 ####################
 ####### Deuda
 Route::get('/adminDeudasTecnica', [SiteHasIncidenteController::class, 'indexDeuda'])->middleware('auth');
+Route::get('/adminDeudasRebusqueda', [SiteHasIncidenteController::class, 'indexDeudasRebusqueda'])->middleware('auth');
+Route::get('/agregarSiteHasDeuda', [SiteHasIncidenteController::class, 'createDeuda'])->middleware('auth');
+Route::post('/agregarSiteHasDeuda', [SiteHasIncidenteController::class, 'storeDeuda'])->middleware('auth');
+Route::get('/modificarSiteHasDeuda/{id}', [SiteHasIncidenteController::class, 'editDeuda'])->middleware('auth');
+Route::patch('/modificarSiteHasDeuda', [SiteHasIncidenteController::class, 'updateDeuda'])->middleware('auth');
+Route::get('/adminArchivosDeuda/{id}', [SiteHasIncidenteController::class, 'editArchivosIncidente'])->middleware('auth');
 ####################
 ####### NodosControlPanel
-Route::get('/adminControlPanelNodos', function () {return view('adminControlPanelNodos', ['nodos' => 'active']);});
+Route::get('/adminControlPanelNodos', function () {return view('adminControlPanelNodos', ['nodos' => 'active']);})->middleware('auth');
 ####################
 ####### Inicidencias
 Route::get('/adminIncidencias', [SiteHasIncidenteController::class, 'index'])->middleware('auth');

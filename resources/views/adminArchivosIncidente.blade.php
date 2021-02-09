@@ -5,11 +5,13 @@
 $mostrarSololectura = true;
 @endphp
                         <form class="form-inline mx-6 margin-10" action="" method="GET">
-                        <h2 class="mx-2">Administración de Archivos del Incidente con ID: {{$incidente->crearNombre()}}</h2>
-                        <!--    <label for="descripcion" class="mx-2">Nombre</label>
-                            <input type="text" name="descripcion" class="form-control mx-3" id="descripcion">
-                            <button type="submit" class="btn btn-primary mx-3">Buscar</button> -->
-                            <a href="/adminIncidencias" class="btn btn-primary">volver</a>
+                            @if ($incidente->tipo == 'INCIDENTE')
+                                <h2 class="mx-2">Archivos del Incidente con ID: {{$incidente->crearNombre()}}</h2>
+                                <a href="/adminIncidencias" class="btn btn-primary">volver</a>
+                            @else
+                                <h2 class="mx-2">Archivos de la Deuda Técnica: {{$incidente->mensaje_clientes}}</h2>
+                                <a href="/adminDeudasTecnica" class="btn btn-primary">volver</a>
+                            @endif
                         </form>
 
             @if ( session('mensaje') )

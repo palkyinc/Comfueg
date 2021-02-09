@@ -7,17 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
-## [0.5.0] - 20XX-XX-XX
+## [0.6.0] - 20XX-XX-XX
 ### Added
-1. 	Agregado query.log. Registra todo cambio en MySQL. No registra los querys de 'select'. App/Providers/AppServiceProvider.php
-2.	Agrega 'Sistema' en el menú pricipal. Se mueve alli desde las vistas de usuarios, Roles, Permisos, Grupos de mail, entidades.
-
 ### Changed
 ### Removed
 
-## [0.4.1] - 20XX-XX-XX
+## [0.5.0] - 2021-02-09
 ### Added
-1. 	Crud de Deuda técnica
+1. 	Agregado query.log. Registra todo cambio en MySQL. No registra los querys de 'select'. App/Providers/AppServiceProvider.php. Deshabilitar para realizar las migrations.
+2.	Agrega 'Sistema' en el menú pricipal. Se mueve alli desde las vistas de usuarios, Roles, Permisos, Grupos de mail, entidades.
+3.	RouterOs Class.
+4.	Vista Nodo Status con Ubiquiti Class modificada para que funcione con los equipos AC y Gen2. Se implementa vista con Vue.js
+5.	Crud de Deuda Técnica completado.
 
 ## [0.4.0] - 2021-01-15
 ### Added

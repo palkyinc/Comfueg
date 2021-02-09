@@ -1,14 +1,14 @@
  @foreach ($incidentes as $incidente)
- @if ($incidente->tipo === 'INCIDENTE')
+ @if ($incidente->tipo === 'DEUDA TECNICA')
     <div class="modal fade" id="staticBackdrop{{$incidente->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdrop{{$incidente->id}}Label">Incidente: {{$incidente->crearNombre()}}</h5>
+                <h5 class="modal-title" id="staticBackdrop{{$incidente->id}}Label">Deuda Técnica N°: {{$incidente->id}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             </div>
             <div class="modal-body">
-                <form action="/modificarSiteHasIncidente" method="post">
+                <form action="#" method="post">
                     @csrf
                     @method('patch')
                         <div class="row">
@@ -39,30 +39,18 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label for="afectados_indi">Paneles Afectados Indirectamente: </label>
-                                <input type="text" name="afectados_indi" value="{{$incidente->afectados_indi}}" class="form-control" readonly>
+                                <label for="mensaje_clientes">Título: </label>
+                                <input type="text" name="mensaje_clientes" value="{{$incidente->mensaje_clientes}}" class="form-control" readonly>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="sitios_afectados">Sitios Afectados: </label>
-                                <input type="text" name="sitios_afectados" value="{{$incidente->sitios_afectados}}" class="form-control" readonly>
+                                <label for="sitio">Sitio Afectado: </label>
+                                <input type="text" name="sitio" value="{{$incidente->relPanel->relSite->nombre}}" class="form-control" readonly>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-md-12">
-                                <label for="barrios_afectados">Barrios Afectados: </label>
-                                <input type="text" name="barrios_afectados" value="{{$incidente->barrios_afectados}}" class="form-control" readonly>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-12">
-                                <label for="causa">Posible causa/Diagnóstico: </label>
+                                <label for="causa">Deuda Técnica: </label>
                                 <textarea name="causa" class="form-control" rows="auto" cols="50" readonly>{{$incidente->causa}}</textarea>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-12">
-                                <label for="mensaje_clientes">Mensaje para Clientes: </label>
-                                <textarea name="mensaje_clientes" class="form-control" rows="auto" cols="50" readonly>{{$incidente->mensaje_clientes}}</textarea>
                             </div>
                         </div>
                         @foreach ($incidente->incidente_has_mensaje as $mensaje)

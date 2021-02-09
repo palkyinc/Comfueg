@@ -18,13 +18,12 @@ $mostrarSololectura = true;
                                     @endif
                                     <label class="form-check-label" for="flexSwitchCheckChecked">Solo Abiertas</label>
                                 </div>
-                                <div class="col-4">
-                                    <label for="sitio" class="mx-3">Sitio</label>
+                                <div class="col-3">
                                     <select class="form-control" name="sitio" id="sitio">
                                         @if (!$sitioSelected)
-                                            <option value="" selected>Seleccione un Sitio...</option>
+                                            <option value="" selected>Todos los Sitios</option>
                                         @else
-                                            <option value="">Seleccione un Sitio...</option>
+                                            <option value="">Todos los Sitios</option>
                                         @endif
                                         @foreach ($sitios as $sitio)
                                             @if ($sitio->id == $sitioSelected)
@@ -35,8 +34,8 @@ $mostrarSololectura = true;
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-2">
-                                    <button type="submit" class="btn btn-primary mx-3">Enviar</button>
+                                <div class="col-1">
+                                    <button type="submit" class="btn btn-primary mx-3">Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -53,20 +52,19 @@ $mostrarSololectura = true;
 <div class="table-responsive">
                 
                 <table class="table table-sm table-bordered table-hover">
-                    <caption>Listado de Incidentes</caption>
+                    <caption>Listado de Deudas Técnicas</caption>
                     <thead class="thead-light">
                         <tr>
-                            <th scope="col"> Nombre </th>
+                            <th scope="col"> Título </th>
                             <th scope="col"> Tipo </th>
                             <th scope="col"> Inicio </th>
                             <th scope="col"> Finalizada </th>
-                            <th scope="col"> Tiempo Caída</th>
                             <th scope="col"> Afectado </th>
                             <th scope="col"> Sitio </th>
                             <th scope="col"> Creado por </th>
                             <th scope="col" colspan="2">
                                 @can('SiteHasIncidente_create')
-                                <a href="/agregarSiteHasIncidente" class="btn btn-dark">Agregar</a>
+                                <a href="/agregarSiteHasDeuda" class="btn btn-dark">Agregar</a>
                                 @endcan
                             </th>
                         </tr>
@@ -79,27 +77,26 @@ $mostrarSololectura = true;
                             @else
                                 <tr class="table-success">
                             @endif
-                            <th scope="row"> {{$incidente->crearNombre()}}</th>
+                            <th scope="row"> {{$incidente->mensaje_clientes}}</th>
                             <td>{{$incidente->tipo}}</td>
                             <td>{{$incidente->inicio}}</td>
                             <td>
                                 @if((!$incidente->final))
-                                    {{'Aún Ocurriendo'}}
+                                    {{'Abierta'}}
                                 @else
                                     {{$incidente->final}}
                                 @endif
                             </td>
-                            <td>{{$incidente->tiempoCaida()}}</td>
                             <td>{{$incidente->relPanel->relEquipo->nombre}}</td>
                             <td>{{$incidente->relPanel->relSite->nombre}}</td>
                             <td>{{$incidente->relUser->name}}</td>
                             <td>
                                 @can('SiteHasIncidente_edit')
                                     @if (!$incidente->final)
-                                        <a href="/modificarSiteHasIncidente/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
+                                        <a href="/modificarSiteHasDeuda/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                             <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                         </a>
-                                        <a href="/adminArchivosIncidente/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar archivoss">
+                                        <a href="/adminArchivosDeuda/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar archivoss">
                                             <img src="imagenes/iconfinder_document-text-file-sheet-doc_2931167.svg" alt="imagen editar archivo" height="20px">
                                         </a>
                                     @endif
@@ -115,7 +112,7 @@ $mostrarSololectura = true;
                 </table>
 </div>
         {{ $incidentes->links() }}
-@include('modals.incidentes')
+@include('modals.deudas')
 @endcan
 @include('sinPermiso')
 @endsection
