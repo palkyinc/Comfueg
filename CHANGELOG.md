@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Removed
 
+## [0.5.1] - 2021-02-10
+### Changed
+1. 	Se utiliza url global desde constant.php para adminControlPanelNodos.js
+2.	Se utiliza version de Vue.js desde constant.php para adminControlPanelNodos.js
+
 ## [0.5.0] - 2021-02-09
 ### Added
 1. 	Agregado query.log. Registra todo cambio en MySQL. No registra los querys de 'select'. App/Providers/AppServiceProvider.php. Deshabilitar para realizar las migrations.

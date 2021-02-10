@@ -96,7 +96,8 @@ $mostrarSololectura = true;
                     </div>
 </div>
                     @section('javascript')
-                        <script src="vue.js/vendor/js/vue.js"></script>
+                        <script src="vue.js/vendor/js/{{$vuejs}}"></script>
+                        <script> website = '{{$website}}'</script>
                         <script src="vue.js/resources/js/adminControlPanelNodos.js"></script>
                     @endsection
 @endcan

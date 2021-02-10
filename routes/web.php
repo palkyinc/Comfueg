@@ -25,6 +25,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SiteHasIncidenteController;
 use App\Mail\IncidenciaGlobal;
 use App\Models\Site_has_incidente;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 /*
 |--------------------------------------------------------------------------
@@ -66,7 +67,11 @@ Route::patch('/modificarSiteHasDeuda', [SiteHasIncidenteController::class, 'upda
 Route::get('/adminArchivosDeuda/{id}', [SiteHasIncidenteController::class, 'editArchivosIncidente'])->middleware('auth');
 ####################
 ####### NodosControlPanel
-Route::get('/adminControlPanelNodos', function () {return view('adminControlPanelNodos', ['nodos' => 'active']);})->middleware('auth');
+Route::get('/adminControlPanelNodos', function () {return view('adminControlPanelNodos', [
+    'nodos' => 'active',
+    'website' => Config::get('constants.DOMINIO_COMFUEG'),
+    'vuejs' => Config::get('constants.VUEJS_VERSION')
+    ]);})->middleware('auth');
 ####################
 ####### Inicidencias
 Route::get('/adminIncidencias', [SiteHasIncidenteController::class, 'index'])->middleware('auth');

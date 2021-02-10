@@ -1,7 +1,7 @@
 const vm = new Vue({
 	el: "#vista",
 	mounted: function() {
-			fetch('http://comfueg.ar/allPanels')
+			fetch('http://' + website + '/allPanels')
 			.then(response => response.json())
 			.then(datos => {
 				this.listaPaneles = datos;
@@ -17,7 +17,7 @@ const vm = new Vue({
 			}
 			this.listaPaneles.forEach(element => {
 				this.flagBuscando--;
-				fetch('http://comfueg.ar/panelTest/' + element.ip)
+				fetch('http://' + website + '/panelTest/' + element.ip)
 				.then(response => response.json())
 				.then( data => {
 					data.ip = element.ip;
