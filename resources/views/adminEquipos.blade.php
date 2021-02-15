@@ -60,7 +60,7 @@ $mostrarSololectura = true;
                                     @csrf
                                     @method('patch')
                                         <input type="hidden" name="idEdit" value="{{$equipo->id}}">
-                                        <button class="btn btn-danger"  title="Habilitar">Cambiar</button>
+                                        <button class="btn btn-danger"  title="Habilitar">Activar</button>
                                     </form>
                                     @endcan
                                 </td>
@@ -71,7 +71,7 @@ $mostrarSololectura = true;
                                     @csrf
                                     @method('patch')
                                         <input type="hidden" name="idEdit" value="{{$equipo->id}}">
-                                        <button class="btn btn-success" title="DesHabilitar">Cambiar</button>
+                                        <button class="btn btn-success" title="DesHabilitar">Desactivar</button>
                                     </form>
                                     @endcan
                                 </td>

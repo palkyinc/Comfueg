@@ -51,6 +51,7 @@ Route::get('/contratos', function (){return view('contratos', ['contratos' => 'a
 ####### panel test Web services
 Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
 Route::get('/allPanels', [PruebaController::class, 'allPanels'])->middleware('auth');
+Route::get('/adminControlPanelNodos', [PruebaController::class, 'index'])->middleware('auth');
 ####################
 ####### Panel tiene Barrio CRUD
 Route::get('/adminPanelhasBarrio', [Panel_has_barrioController::class, 'index'])->middleware('auth');
@@ -65,13 +66,6 @@ Route::post('/agregarSiteHasDeuda', [SiteHasIncidenteController::class, 'storeDe
 Route::get('/modificarSiteHasDeuda/{id}', [SiteHasIncidenteController::class, 'editDeuda'])->middleware('auth');
 Route::patch('/modificarSiteHasDeuda', [SiteHasIncidenteController::class, 'updateDeuda'])->middleware('auth');
 Route::get('/adminArchivosDeuda/{id}', [SiteHasIncidenteController::class, 'editArchivosIncidente'])->middleware('auth');
-####################
-####### NodosControlPanel
-Route::get('/adminControlPanelNodos', function () {return view('adminControlPanelNodos', [
-    'nodos' => 'active',
-    'website' => Config::get('constants.DOMINIO_COMFUEG'),
-    'vuejs' => Config::get('constants.VUEJS_VERSION')
-    ]);})->middleware('auth');
 ####################
 ####### Inicidencias
 Route::get('/adminIncidencias', [SiteHasIncidenteController::class, 'index'])->middleware('auth');

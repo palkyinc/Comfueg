@@ -64,10 +64,10 @@ class PruebaController extends Controller
     return $rta;
     }
 
-    public function getPanelUser($ip){
+    private function getPanelUser($ip){
         return Config::get('constants.PANEL_USER');
     }
-    public function getPanelPassword($ip){
+    private function getPanelPassword($ip){
         return Config::get('constants.PANEL_PASS');
     }
 
@@ -141,11 +141,7 @@ class PruebaController extends Controller
         // sitio ip hostname
         $Paneles = Panel::where('activo', 1)
                         ->orderBy('num_site')
-                        ->orWhere(function($query){
-                            $query->where('rol', 'PANEL')
-                            ->where('rol', 'PTPAP')
-                            ->where('rol', 'PTPST');
-                        })
+                        ->whereIn('rol', ['PANEL', 'PTPAP', 'PTPST'])
                         ->get();
         foreach ($Paneles as $panel) {
                 $rta[] = ['sitio' => $panel->relSite->nombre, 'Hostname' => $panel->relEquipo->nombre, 'ip' => $panel->relEquipo->ip];
@@ -160,7 +156,11 @@ class PruebaController extends Controller
      */
     public function index()
     {
-        //
+        return view('adminControlPanelNodos', [
+            'nodos' => 'active',
+            'website' => Config::get('constants.DOMINIO_COMFUEG'),
+            'vuejs' => Config::get('constants.VUEJS_VERSION')
+        ]);
     }
 
     /**

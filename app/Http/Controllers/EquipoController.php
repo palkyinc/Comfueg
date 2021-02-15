@@ -193,12 +193,13 @@ class EquipoController extends Controller
         $Equipo = Equipo::find($request->input('idEdit'));
         if (!$Equipo->fecha_baja) {
             $Equipo->fecha_baja = date('Y-m-d');
-            $respuesta = 'Se desactivo ID: ' . $Equipo->id;
+            $respuesta = 'Se desactivo el Equipo con Nombre: ' . $Equipo->nombre;
         }else {
             $Equipo->fecha_baja = null;
-            $respuesta = 'Se activo ID: ' . $Equipo->id;
+            $respuesta = 'Se activo el Equipo con Nombre: ' . $Equipo->nombre;
         }
         $Equipo->save();
-        return redirect('adminEquipos')->with('mensaje', 'Se cambió con exito ->' . $respuesta);
+        $rta [] = 'Se cambió con exito. ' . $respuesta;
+        return redirect('adminEquipos')->with('mensaje', $rta);
     }
 }//fin de la clase

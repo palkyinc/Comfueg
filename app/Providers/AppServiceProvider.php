@@ -40,12 +40,52 @@ class AppServiceProvider extends ServiceProvider
         FacadesDB::listen(function ($query) {
             if (explode(" ", $query->sql)[0] !== 'select')
             {
+                //dd($query->bindings);
                 File::append(
                     storage_path('/logs/query.log'),
                     '[' . date('Y-m-d H:i:s') . ']' . PHP_EOL .
-                    '[' . auth()->user()->id . ' , ' . auth()->user()->name . ']' . PHP_EOL . $query->sql . ' [' . implode(', ', $query->bindings) . ']' . PHP_EOL . PHP_EOL
+                    '[' . auth()->user()->id . ' , ' . auth()->user()->name . ']' . PHP_EOL . $query->sql . ' [' . $this->implotar(', ', $query->bindings) . ']' . PHP_EOL . PHP_EOL
                 );
             }
         });
+    }
+
+    private function implotar ($separador, $query)
+    {
+        foreach ($query as $value) {
+            switch (gettype($value)) 
+            {
+                case 'object':
+                    $rta = 'Object';
+                    //dd($value->date);
+                    break;
+                
+                case 'string':
+                    $rta = $value;
+                    break;
+                
+                case 'integer':
+                    $rta = $value;
+                    break;
+                
+                case 'NULL':
+                    $rta = 'null';
+                    break;
+                
+                default:
+                    $rta = 'Salió por Default';
+                    break;
+            }
+
+            if (isset($respuesta))
+            {
+                $respuesta .= $separador . $rta ;
+            } else 
+                {
+                $respuesta = $rta;
+                }
+            
+        }
+        return $respuesta;
     }
 }

@@ -12,10 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Removed
 
+## [0.5.2] - 2021-02-15
+### Changed
+1. 	Corrige problema en productos con cod_comfueg duplicado.
+2.	Corrige mensajes al retornar de Activa/desactivar en adminEquipos.
+3.	Corrige NodoController metodo showNodo por error al intentar mostrar un nodo que no tiene paneles cargados.
+4.	Corrige AppServiceProvider implode falla con datos de tipo Objeto, se reescribe método.
+
 ## [0.5.1] - 2021-02-10
 ### Changed
 1. 	Se utiliza url global desde constant.php para adminControlPanelNodos.js
 2.	Se utiliza version de Vue.js desde constant.php para adminControlPanelNodos.js
+3.	Se actualiza query para allPanels.
 
 ## [0.5.0] - 2021-02-09
 ### Added

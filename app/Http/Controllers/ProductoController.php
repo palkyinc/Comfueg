@@ -80,9 +80,9 @@ class ProductoController extends Controller
     public function validar(Request $request, $idProducto = "")
     {
         if ($idProducto) {
-            $condicion = 'required|min:3|max:45|unique:equipos,mac_address,' . $idProducto;
+            $condicion = 'required|min:3|max:45|unique:productos,cod_comfueg,' . $idProducto;
         } else {
-            $condicion = 'required|min:3|max:45|unique:equipos,mac_address,';
+            $condicion = 'required|min:3|max:45|unique:productos,cod_comfueg,';
         }
         $request->validate(
             [
