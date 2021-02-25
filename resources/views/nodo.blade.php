@@ -111,7 +111,11 @@ $mostrarSololectura = true;
                         <li>Dispositivo: {{$panel->relEquipo->relProducto->modelo}}</li>
                         <li>Antena: {{$panel->relEquipo->relAntena->descripcion}}</li>
                         <li>Alta de equipo: {{$panel->relEquipo->fecha_alta}}</li>
+                        <li>Cantidad Clientes: {{$panel->clientes}}</li>
+                        <li>Frecuencia: {{$panel->canal}}</li>
                         <li>Altura: {{$panel->altura}}</li>
+                        <li>Marca Cable: {{$panel->cable_tipo}}</li>
+                        <li>Cable instalado: {{$panel->cable_fecha}}</li>
                         <li>Comentarios: {{$panel->comentario}}</li>
                     </ul>
                     <footer class="blockquote-footer">

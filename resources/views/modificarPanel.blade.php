@@ -66,7 +66,7 @@ $mostrarSololectura = true;
                 <div class="form-group col-md-3">
                     <label for="panel_ant">Panel Anterior: </label>
                     <select class="form-control" name="panel_ant">
-                        <option value="">Gateway...</option>
+                        <option value="">Internet...</option>
                         @foreach ($paneles as $panel)
                             @if ($panel->activo)
                                 @if ($panel->id != $elemento->panel_ant)

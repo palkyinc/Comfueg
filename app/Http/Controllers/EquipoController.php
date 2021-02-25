@@ -96,6 +96,19 @@ class EquipoController extends Controller
     }
     //https://github.com/mattkingshott/axiom/blob/master/README.md
     //,'unique:equipos,mac_address,' . $Equipo->id
+    
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Equipo  $equipo
+     * @return \Illuminate\Http\Response
+     */
+    public function editUserPass($id)
+    {
+        $equipo = Equipo::getUserPassword($id);
+        return view('modificarEquipoUserPass', ['nodos' => 'active', 'elemento' => $equipo]);
+    }
+    
     public function validar(Request $request, $idEquipo = "")
     {
         if ($idEquipo) {
@@ -115,6 +128,38 @@ class EquipoController extends Controller
                 'comentario' => 'max:65535'
             ]
         );
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Equipo  $equipo
+     * @return \Illuminate\Http\Response
+     */
+    public function updateUserpass(Request $request)
+    {
+        $request->validate(
+            [
+                'usuario' => 'required|min:4|max:20',
+                'password' => [
+                            'required',
+                            'min:8',
+                            'max:20',
+                            'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%@._,"&()=+-]).*$/'
+                            ]
+            ],
+            [
+                'password.required' => 'El password es requerido',
+                'password.min' => 'Password: Como mínimo 8 caracteres',
+                'password.max' => 'Password: Como máximo 20 caracteres',
+                'password.regex'=> 'Password: Al menos una mayúscula, una minúcula, un número y alguno de estos: !$#%@._"&()=+-, '
+            ]
+
+        );
+        Equipo::setUserPass($request->input('id'), $request->input('usuario'), $request->input('password'));
+        $respuesta[] = 'Se cambió con exito Usuario y Contraseña del equipo con ID:' . $request->input('id');
+        return redirect('adminPaneles')->with('mensaje', $respuesta);
     }
     /**
      * Update the specified resource in storage.

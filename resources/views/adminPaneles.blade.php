@@ -65,7 +65,7 @@ $mostrarSololectura = true;
                             @if ( isset($panel->relPanel->ssid))
                             <td>{{$panel->relPanel->relEquipo->nombre}}</td>
                             @else
-                            <td>Gateway</td>
+                            <td>Internet</td>
                             @endif
                             <td>{{$panel->altura}}</td>
                             <td>{{$panel->comentario}}</td>
@@ -82,7 +82,10 @@ $mostrarSololectura = true;
                                         <a href="/panelActivar/{{$panel->id}}" class="margenAbajo btn btn-outline-secundary" title="Activar">
                                             <img src="imagenes/iconfinder_Multimedia_Turn_on_off_power_button_interface_3841792.svg" alt="imagen de activar" height="20px">
                                         </a>
-                                    @endif    
+                                    @endif
+                                    <a href="/modificarEquipoUserPass/{{$panel->relEquipo->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar Equipo User Pass">
+                                    <img src="imagenes/iconfinder_unlock_open_password_lock_key_3994412.svg" alt="imagen de candado" height="20px">
+                                    </a>  
                                 @endcan
                             </td>
                             

@@ -19,51 +19,70 @@ class PruebaController extends Controller
     {
         $ubiquiti   = new Ubiquiti($ip, $this->getPanelUser($ip), $this->getPanelPassword($ip));
         
-        return response()->json($this->getStatusSignal($ubiquiti), 200);
+        return response()->json($this->getStatusSignal($ubiquiti, $this->getPanelPorId($ip)), 200);
     }
 
-    private function getStatusSignal ($ubiquiti)
+    private function getStatusSignal ($ubiquiti, $panel)
     {
     $status = ($ubiquiti->status(true));
     $signal = ($ubiquiti->signal(true));
+    $prueba = New Prueba();
     if ($status) {
+        $panel->clientes = $status['wireless']['count'];
+        $panel->canal = substr($status['wireless']['frequency'], 0, 4);
+        $panel->save();
+        $prueba->ip_equipo = $panel->relEquipo->ip;
         $statusLAN = 3;
         $rta =  [
-            'status' => 1,
+            'status' => $prueba->contactado = 1,
             'Uptime' => ($this->uptime($status['host']['uptime'])),
             'Temperature' => ((isset($status['host']['temperature'])) ? $status['host']['temperature'] . "°C" : 'N/A '),
-            'Hostname' => $status['host']['hostname'],
-            'MacAdrress' => $status['wireless']['apmac'],
-            'Firmware' => ($status['host']['fwprefix'] ?? '') . $status['host']['fwversion'],
-            'DevModel' => $status['host']['devmodel'],
+            'Hostname' => $prueba->nom_equipo = $status['host']['hostname'],
+            'MacAdrress' => $prueba->mac_address = $status['wireless']['apmac'],
+            'Firmware' => $prueba->firmware = ($status['host']['fwprefix'] ?? '') . $status['host']['fwversion'],
+            'DevModel' => $prueba->dispositivo = $status['host']['devmodel'],
             'NetRole' => $status['host']['netrole'],
-            'Clients' => $status['wireless']['count'],
+            'Clients' => $prueba->clientes_conec = $status['wireless']['count'],
             'statusClients' => ($status['wireless']['count'] > 25) ? (($status['wireless']['count'] > 29) ? 0 : 2) : 1,
-            'SSID' => $status['wireless']['essid'],
-            'Signal' => $signal['signal'] . 'dBm',
+            'SSID' => $prueba->ssid = $status['wireless']['essid'],
+            'Signal' => $prueba->senial = $signal['signal'] . 'dBm',
             'statusSignal' => ($signal['signal'] < -69) ? (($signal['signal'] < -75) ? 0 : 2) : 1,
-            'NoiseFloor' => $signal['noisef'] . 'dBm',
+            'NoiseFloor' => $prueba->ruido = $signal['noisef'] . 'dBm',
             'ChannelWidth' => ((isset($signal['chwidth'])) ? $signal['chwidth'] : $signal['chbw']) . 'Mhz',
-            'Frecuency' => $status['wireless']['frequency'],
-            'CCQ' => ($status['wireless']['ccq'] ?? 'N/A'),
+            'Frecuency' => $prueba->canal = $status['wireless']['frequency'],
+            'CCQ' => $prueba->ccq = ($status['wireless']['ccq'] ?? 'N/A'),
             'statusCCQ' => (isset($status['wireless']['ccq'])) ? (($status['wireless']['ccq'] < 700) ? (($status['wireless']['ccq'] < 600) ? 0 : 2) : 1) : 3,
-            'CpuUse' => (isset($status['host']['cpuload'])) ? (round($status['host']['cpuload']) . "%") : 'N/A ',
+            'CpuUse' => $prueba->uso_cpu = (isset($status['host']['cpuload'])) ? (round($status['host']['cpuload']) . "%") : 'N/A ',
             'statusCpuUse' => (isset($status['host']['cpuload'])) ? ((round($status['host']['cpuload']) > 50) ? ((round($status['host']['cpuload']) > 85) ? 0 : 2) : 1) : 3,
-            'MemFree' => (isset($status['host']['freeram'])) ? (round(($status['host']['freeram'] / $status['host']['totalram']) * 100) . "%") : 'N/A',
+            'MemFree' => $prueba->mem_libre = (isset($status['host']['freeram'])) ? (round(($status['host']['freeram'] / $status['host']['totalram']) * 100) . "%") : 'N/A',
             'statusMemFree' => (isset($status['host']['freeram'])) ? ((round($status['host']['freeram'] / $status['host']['totalram']) < 0.5) ? 0 : 1) : 3,
-            'TX' => ($status['wireless']['txrate'] ?? ''),
+            'TX' => $prueba->tx = ($status['wireless']['txrate'] ?? ''),
             'statusTX' => (isset($status['wireless']['txrate']) ? (($status['wireless']['txrate'] < 20) ? 0 : 1) : 3),
-            'RX' => ($status['wireless']['rxrate'] ?? ''),
+            'RX' => $prueba->rx = ($status['wireless']['rxrate'] ?? ''),
             'statusRX' => (isset($status['wireless']['rxrate']) ? (($status['wireless']['rxrate'] < 20) ? 0 : 1) : 3),
-            'LanSpeed' => ($this->lanspeed($status, $statusLAN)),
+            'LanSpeed' => $prueba->lan_velocidad = ($this->lanspeed($status, $statusLAN)),
             'statusLan' => $statusLAN
         ];
+        $prueba->lan_conectado = ($statusLAN === 0) ? 0 : 1;
+        $prueba->user_id = auth()->user()->id ?? null;
     } else {
-        $rta = ['status' => 0];
+        $rta = ['status' => $prueba->contactado = 0];
     }
+    $prueba->save();
     return $rta;
     }
 
+    private function getPanelPorId ($ip)
+    {
+        $paneles = Panel::where('activo', 1)->get();
+        foreach ($paneles as $panel) {
+            if($panel->relEquipo->ip === $ip)
+            {
+                return($panel);
+            }
+        }
+        return(null);
+    }
     private function getPanelUser($ip){
         return Config::get('constants.PANEL_USER');
     }

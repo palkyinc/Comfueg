@@ -45,7 +45,11 @@ $mostrarSololectura = true;
                             <th scope="row"> {{$User->id}}</th>
                             <td>{{$User->name}}</td>
                             <td>{{$User->email}}</td>
-                            <td>{{$User->getRoleNames()[0]}}</td>
+                            <td>
+                                @foreach ($User->getRoleNames() as $rol)
+                                    {{$rol}}
+                                @endforeach
+                            </td>
                             <td>{{$User->created_at}}</td>
                             <td>
                                 @can('usuarios_edit')

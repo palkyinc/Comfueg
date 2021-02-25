@@ -23,10 +23,9 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SiteHasIncidenteController;
-use App\Mail\IncidenciaGlobal;
 use App\Models\Site_has_incidente;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Mail;
+####TEST
+use Illuminate\Support\Facades\Crypt;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,10 +37,15 @@ use Illuminate\Support\Facades\Mail;
 |
 */
 ## Route Inicial Default
-Route::get('/test', function () {
-    $incidente = Site_has_incidente::find(1);
-    Mail::to(['laboratorio@comunicacionesfueguinas.com','migvicpereyra@hotmail.com'])->send(new IncidenciaGlobal($incidente));
-    dd($incidente);
+Route::get('/test/{palabra}', function ($palabra) {
+    $encriptado = Crypt::encrypt($palabra);
+    dd($encriptado);
+    try {
+        $desencriptado = Crypt::decrypt($encriptado);
+    } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+        dd($e);
+    }
+    dd($desencriptado);
 });
 ### Route index
 Route::get('/', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);});
@@ -154,7 +158,9 @@ Route::post('/agregarDireccion', [DireccionController::class, 'store'])->middlew
 ####### CRUD Equipos
 Route::get('/adminEquipos', [EquipoController::class, 'index'])->middleware('auth');
 Route::get('/modificarEquipo/{id}', [EquipoController::class, 'edit'])->middleware('auth');
+Route::get('/modificarEquipoUserPass/{id}', [EquipoController::class, 'editUserPass'])->middleware('auth');
 Route::patch('/modificarEquipo', [EquipoController::class, 'update'])->middleware('auth');
+Route::patch('/modificarEquipoUserPass', [EquipoController::class, 'updateUserPass'])->middleware('auth');
 Route::patch('/equipoActivar', [EquipoController::class, 'activar'])->middleware('auth');
 Route::get('/agregarEquipo', [EquipoController::class, 'create'])->middleware('auth');
 Route::post('/agregarEquipo', [EquipoController::class, 'store'])->middleware('auth');

@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
-## [0.6.0] - 20XX-XX-XX
+## [0.6.0] - 2021-XX-XX
 ### Added
+2.	Agregar la opcion de empresa en clientes, haciendo cel
 ### Changed
+### Removed
+
+## [0.5.3] - 2021-02-25
+### Added
+1. 	Copia datos de canal, clientes en cada pedido de http request al ubiquiti.
+2.	Agrega datos de canal y clientes en panel en la vista de adminNodos.
+3.	Graba datos del panel cada vez que se hace un http request al ubiquiti en tabla pruebas.
+4.	Agrega al CRUD de Paneles los campos de usuario y contraseña, por seguridad no se hace desde equipos.
+### Changed
+1. 	Corrige AppServiceProvider por error al intentar recuperar contraseña por parte de un usuario.
 ### Removed
 
 ## [0.5.2] - 2021-02-15
