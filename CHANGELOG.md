@@ -10,7 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0] - 2021-XX-XX
 ### Added
 2.	Agregar la opcion de empresa en clientes, haciendo cel
+
 ### Changed
+1.	Se corrige problemas en la carga de archivos adjuntos en una Deuda Tecnica Nueva.
+
+	Preparar vista sencilla de Status Paneles para operadores.
+	Cambiar Nodos Panel de Control por Nodo Status.
+	Cambiar Sistema/Log que redirija a Inicio hasta que se desarrolle la vista.
+	Cambiar a readonly Mac address y dispositivo en la vista de modificarEquipo
+	Si sitio no posee paneles activos que no se muestre en la vista de Nodos.
+
 ### Removed
 
 ## [0.5.3] - 2021-02-25

@@ -141,11 +141,11 @@ class SiteHasIncidenteController extends Controller
         $deuda->causa = $request->input('causa');
         $deuda->mensaje_clientes = $request->input('mensaje_clientes');
         $deuda->user_creator = auth()->user()->id;
+        $deuda->save();
+        $deuda->enviarMail(false, true);
         if ($request->hasfile('scheme_file')) {
             $this->tratarArchivos($request, $deuda);
         }
-        $deuda->enviarMail(false, true);
-        $deuda->save();
         $respuesta[] = 'Nueva Deuda Técnica se ha creado correctamente';
         return redirect('/adminDeudasTecnica')->with('mensaje', $respuesta);
     }
@@ -215,7 +215,7 @@ class SiteHasIncidenteController extends Controller
             $mensajeClientes = 'required|min:2|max:255';
         } else
             {
-                $mensajeClientes = 'required|min:2|max:20';
+                $mensajeClientes = 'required|min:2|max:40';
             }
         $request->validate(
             [

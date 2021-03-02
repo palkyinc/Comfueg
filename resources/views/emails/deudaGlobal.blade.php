@@ -6,11 +6,9 @@
     <title>Nueva Incidencia GLobal</title>
 </head>
 <body>
-    <h3>Datos de la Deuda Técnica #: {{ $incidente->id }}.</h3>
+    <h3>Deuda Técnica: {{ $incidente->mensaje_clientes }}.</h3>
     <ul>
         <li>Inicio: <strong><i>{{ $incidente->inicio }}</i></strong></li>
-        <li>Equipo Afectado: <strong><i>{{ $incidente->relPanel->relEquipo->nombre }}</i></strong></li>
-        <li>IP Equipo Afectado: <strong><i>{{ $incidente->relPanel->relEquipo->ip }}</i></strong></li>
         <li>Sitio Equipo Afectado: <strong><i>{{ $incidente->relPanel->relSite->nombre }}</i></strong></li>
         <li>Deuda Técnica: <strong><i>{{ $incidente->causa }}</i></strong></li>
     </ul>

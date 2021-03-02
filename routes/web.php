@@ -52,7 +52,10 @@ Route::get('/', function (){return view('inicio', ['incidentes' => Site_has_inci
 Route::get('/inicio', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos(), 'principal' => 'active']);});
 Route::get('/contratos', function (){return view('contratos', ['contratos' => 'active']);});
 ####################
-####### panel test Web services
+####### Gateway API rest Web services
+Route::get('/gateway/clients/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
+####################
+####### Panel test Web services
 Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
 Route::get('/allPanels', [PruebaController::class, 'allPanels'])->middleware('auth');
 Route::get('/adminControlPanelNodos', [PruebaController::class, 'index'])->middleware('auth');

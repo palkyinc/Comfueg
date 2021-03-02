@@ -24,4 +24,9 @@ Requisitos:
 ## Clonar el repositorio
 -git clone https://github.com/palkyinc/Comfueg.git parado en la carpeta C:\inetpub\wwwroot
 -correr composer update.
--correr php artisan key:genetare
+-correr php artisan key:generate
+
+## Rest Resources
+- GET /panelTest/ip
+- GET /allPanels
+- GET /adminControlPanelNodos
