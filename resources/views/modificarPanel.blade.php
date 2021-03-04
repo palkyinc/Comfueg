@@ -84,7 +84,16 @@ $mostrarSololectura = true;
                 </div>
             </div>
             
-            <br>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="cable_fecha">Instalación de Cable: </label>
+                    <input type="datetime-local" name="cable_fecha" value="{{$elemento->cable_fecha}}" class="form-control">
+                </div>
+                <div class="form-group col-md-8">
+                    <label for="cable_tipo">Cable Marca detalles: </label>
+                    <input type="text" name="cable_tipo" value="{{$elemento->cable_tipo}}" maxlength="50" class="form-control">
+                </div>
+            </div>
             <div class="form-row">
                 <div class="form-group col-md-9">
                     <label for="comentario">Comentario: </label>

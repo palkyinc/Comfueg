@@ -50,7 +50,8 @@ Route::get('/test/{palabra}', function ($palabra) {
 ### Route index
 Route::get('/', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);});
 Route::get('/inicio', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos(), 'principal' => 'active']);});
-Route::get('/contratos', function (){return view('contratos', ['contratos' => 'active']);});
+Route::get('/contratos', function (){return view('construcción', ['contratos' => 'active']);});
+Route::get('/charts', function (){return view('charts');});
 ####################
 ####### Gateway API rest Web services
 Route::get('/gateway/clients/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
@@ -196,6 +197,7 @@ Route::get('/modificarSite/{id}', [SiteController::class, 'edit'])->middleware('
 Route::patch('/modificarSite', [SiteController::class, 'update'])->middleware('auth');
 Route::get('/agregarSite', [SiteController::class, 'create'])->middleware('auth');
 Route::post('/agregarSite', [SiteController::class, 'store'])->middleware('auth');
+Route::get('/siteActivar/{id}', [SiteController::class, 'activar'])->middleware('auth');
 ####################
 ####### CRUD Clientes
 Route::get('/adminClientes', [ClienteController::class, 'index'])->middleware('auth');

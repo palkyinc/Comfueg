@@ -4,22 +4,21 @@
 	<meta charset="UTF-8">
 	<title>Intranet CF</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 	<link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
 	
-	<link rel="stylesheet" href="/cssboot/easy-autocomplete.min.css">
-	<link rel="stylesheet" href="/cssboot/easy-autocomplete.themes.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+	<link rel="stylesheet" href="cssboot/easy-autocomplete.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-	<script src="/jsboot/jquery-3.5.1.slim.min.js"></script>
-	
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-	<script src="/jsboot/sweetalert.min.js"></script>
-	<script src="/jsboot/jquery.easy-autocomplete.min.js"></script>
 	<link rel="stylesheet" href="/css/estilos.css">
 	
 </head>
 <body>
 
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="jsboot/jquery.easy-autocomplete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+	
 	<header>
 
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -39,7 +38,7 @@
 				Nodos
 				</a>
 				<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
-					<a class="dropdown-item" href="/adminControlPanelNodos">Nodos Panel de Control</a>
+					<a class="dropdown-item" href="/adminControlPanelNodos">Status Paneles</a>
 					<a class="dropdown-item" href="/adminNodos">Nodos Info</a>
 					<a class="dropdown-item" href="/adminIncidencias">Incidencias Globales</a>
 				  	<a class="dropdown-item" href="/adminDeudasTecnica">Deuda Técnica</a>
@@ -76,7 +75,7 @@
 					<a class="dropdown-item" href="/adminPermissions">Permisos</a>
 					<a class="dropdown-item" href="/adminMailGroups">Grupos de Mail</a>
 					<a class="dropdown-item" href="/adminModelos">Entidades</a>
-					<a class="dropdown-item" href="/adminLogs">Logs</a>
+					<a class="dropdown-item disabled" href="/adminLogs">Logs</a>
 		        </div>
 		      </li>
 		    </ul>

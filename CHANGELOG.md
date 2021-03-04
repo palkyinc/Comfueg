@@ -7,18 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
-## [0.6.0] - 2021-XX-XX
+## [0.5.4] - 2021-XX-XX
 ### Added
-2.	Agregar la opcion de empresa en clientes, haciendo cel
+1.	Se instala Laravel Charts. https://charts.erik.cat/
 
 ### Changed
 1.	Se corrige problemas en la carga de archivos adjuntos en una Deuda Tecnica Nueva.
-
-	Preparar vista sencilla de Status Paneles para operadores.
-	Cambiar Nodos Panel de Control por Nodo Status.
-	Cambiar Sistema/Log que redirija a Inicio hasta que se desarrolle la vista.
-	Cambiar a readonly Mac address y dispositivo en la vista de modificarEquipo
-	Si sitio no posee paneles activos que no se muestre en la vista de Nodos.
+2.	Cambiar Nodos Panel de Control por Nodo Status.
+3.	Preparar vista sencilla de Status Paneles para operadores.
+4.	Cambiar Sistema/Log que redirija a Inicio hasta que se desarrolle la vista.
+5.	Cambiar a readonly Mac address en la vista de modificarEquipo
+6.	Se agregan comentarios del equipo en la vista de Nodo.
+7.	Se agrega cable fecha y cable tipo en Modificar y agregar Panel.
+8.	se agrega columna de activo a sitiopara que no se muestre en la vista de Nodos.
 
 ### Removed
 
@@ -28,9 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 2.	Agrega datos de canal y clientes en panel en la vista de adminNodos.
 3.	Graba datos del panel cada vez que se hace un http request al ubiquiti en tabla pruebas.
 4.	Agrega al CRUD de Paneles los campos de usuario y contraseña, por seguridad no se hace desde equipos.
+
 ### Changed
 1. 	Corrige AppServiceProvider por error al intentar recuperar contraseña por parte de un usuario.
-### Removed
 
 ## [0.5.2] - 2021-02-15
 ### Changed

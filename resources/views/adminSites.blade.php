@@ -42,7 +42,11 @@ $mostrarSololectura = true;
 
                     <tbody>
                         @foreach ($sites as $site)
-                            <tr>
+                           @if ($site->activo)
+                                <tr>
+                            @else
+                                <tr class="table-danger">
+                            @endif
                                 
                             <th scope="row"> {{$site->id}}</th>
                             <td>{{$site->nombre}}</td>
@@ -56,6 +60,15 @@ $mostrarSololectura = true;
                                 <a href="/modificarSite/{{$site->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                @if ($site->activo)
+                                            <a href="/siteActivar/{{$site->id}}" class="margenAbajo btn btn-outline-secundary" title="Desactivar">
+                                                <img src="imagenes/iconfinder_Turn_On__Off_2134663.svg" alt="imagen de Desactivar" height="20px">
+                                            </a>
+                                    @else 
+                                        <a href="/siteActivar/{{$site->id}}" class="margenAbajo btn btn-outline-secundary" title="Activar">
+                                            <img src="imagenes/iconfinder_Multimedia_Turn_on_off_power_button_interface_3841792.svg" alt="imagen de activar" height="20px">
+                                        </a>
+                                    @endif
                                 @endcan
                             </td>
                             

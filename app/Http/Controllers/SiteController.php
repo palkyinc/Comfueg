@@ -85,7 +85,7 @@ class SiteController extends Controller
                 'coordenadas' => 'max:60',
                 'rangoIp' => 'ipv4',
                 'ipDisponible' => 'ipv4',
-                'distancia' => 'nullable|numeric|min:0|max:999'
+                'distancia' => 'nullable|min:0|max:3'
             ]
         );
     }
@@ -145,5 +145,19 @@ class SiteController extends Controller
     public function destroy(Site $site)
     {
         //
+    }
+
+    public function activar($id)
+    {
+        $Site = Site::find($id);
+        if ($Site->activo) {
+            $Site->activo = false;
+            $respuesta[] = 'Se desactivo ID: ' . $Site->id;
+        } else {
+            $Site->activo = true;
+            $respuesta[] = 'Se activo ID: ' . $Site->id;
+        }
+        $Site->save();
+        return redirect('adminSites')->with('mensaje', $respuesta);
     }
 }

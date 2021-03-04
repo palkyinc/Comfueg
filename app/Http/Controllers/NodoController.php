@@ -18,7 +18,7 @@ class NodoController extends Controller
      */
     public function index()
     {
-        $nodes = Site::select('*')->get();
+        $nodes = Site::where('activo', true)->get();
         return view('adminNodos', ['nodes' => $nodes, 'nodos' => 'active']);
     }
 

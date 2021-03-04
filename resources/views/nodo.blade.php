@@ -112,7 +112,8 @@ $mostrarSololectura = true;
                         <li>Antena: {{$panel->relEquipo->relAntena->descripcion}}</li>
                         <li>Alta de equipo: {{$panel->relEquipo->fecha_alta}}</li>
                         <li>Cantidad Clientes: {{$panel->clientes}}</li>
-                        <li>Frecuencia: {{$panel->canal}}</li>
+                        <li>Frecuencia: {{$panel->canal}}Mhz</li>
+                        <li>Sobre el equipo: <strong>{{$panel->relEquipo->comentario}}</strong></li>
                         <li>Altura: {{$panel->altura}}</li>
                         <li>Marca Cable: {{$panel->cable_tipo}}</li>
                         <li>Cable instalado: {{$panel->cable_fecha}}</li>

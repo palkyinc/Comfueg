@@ -1,5 +1,4 @@
 <?php
-namespace App\Custom;
 /*****************************
  *
  * RouterOS PHP API class v1.6
@@ -15,6 +14,7 @@ namespace App\Custom;
  * http://wiki.mikrotik.com/wiki/API_PHP_class
  *
  ******************************/
+namespace App\Custom;
 
 class RouterosAPI
 {

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use ConsoleTVs\Charts\Registrar as Charts;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB as FacadesDB;
@@ -26,10 +27,11 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Charts $charts)
     {
         Paginator::useBootstrap();
-        FacadesDB ::listen(function($query)
+
+        FacadesDB::listen(function($query)
             {
                 FacadesLog::info(
                     $query->sql,
@@ -47,6 +49,11 @@ class AppServiceProvider extends ServiceProvider
                 );
             }
         });
+        
+            $charts->register([
+                \App\Charts\SampleChart::class
+            ]);
+        
     }
 
     private function implotar ($separador, $query)

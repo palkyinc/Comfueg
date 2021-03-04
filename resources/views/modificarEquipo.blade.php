@@ -48,7 +48,7 @@ $mostrarSololectura = true;
     <div class="form-row">
         <div class="form-group col-md-3">
             <label for="mac_address">Mac Address: </label>
-            <input type="text" name="mac_address" value="{{$elemento->mac_address}}" maxlength="17" class="form-control" id="mac_address">
+            <input type="text" name="mac_address" value="{{$elemento->mac_address}}" maxlength="17" class="form-control" id="mac_address" readonly>
         </div>
         <div class="form-group col-md-3">
             <label for="ip">Ip: </label>

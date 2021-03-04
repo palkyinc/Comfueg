@@ -79,10 +79,12 @@ class PanelController extends Controller
         $Panel->num_site = $request->input('num_site');
         $Panel->panel_ant = $request->input('panel_ant');
         $Panel->altura = $request->input('altura');
+        $Panel->cable_fecha = $request->input('cable_fecha');
+        $Panel->cable_tipo = $request->input('cable_tipo');
         $Panel->activo = TRUE;
         $Panel->comentario = $request->input('comentario');
         $Panel->save();
-        $respuesta[] = 'El Panel se creo correctamente';
+        $respuesta[] = 'El Panel se creó correctamente';
         return redirect('/adminPaneles')->with('mensaje', $respuesta);
     }
 
@@ -101,6 +103,8 @@ class PanelController extends Controller
                 'num_site' => 'required|numeric|min:1|max:99999',
                 'panel_ant' => 'nullable|numeric|min:1|max:99999',
                 'altura' => 'nullable|numeric|min:1|max:999',
+                'cable_fecha' => 'nullable|date',
+                'cable_tipo' => 'max:50',
                 'activo' => 'boolean',
                 'comentario' => 'max:65535'
             ]
@@ -122,6 +126,8 @@ class PanelController extends Controller
         $num_site = $request->input('num_site');
         $panel_ant = $request->input('panel_ant');
         $altura = $request->input('altura');
+        $cable_fecha = $request->input('cable_fecha');
+        $cable_tipo = $request->input('cable_tipo');
         $activo = $request->input('activo');
         $comentario = $request->input('comentario');
         $Panel = Panel::find($request->input('id'));
@@ -132,9 +138,11 @@ class PanelController extends Controller
         $Panel->num_site = $num_site;
         $Panel->panel_ant = $panel_ant;
         $Panel->altura = $altura;
+        $Panel->cable_fecha = $cable_fecha;
+        $Panel->cable_tipo = $cable_tipo;
         $Panel->activo = $activo;
         $Panel->comentario = $comentario;
-        $respuesta[] = 'Se cambió con exito:';
+        $respuesta[] = 'Se cambió con exito en Panel con ID: ' . $Panel->id;
         if ($Panel->ssid != $Panel->getOriginal()['ssid']) {
             $respuesta[] = ' ssid: ' . $Panel->getOriginal()['ssid'] . ' POR ' . $Panel->ssid;
         }
@@ -152,6 +160,12 @@ class PanelController extends Controller
         }
         if ($Panel->altura != $Panel->getOriginal()['altura']) {
             $respuesta[] = ' altura: ' . $Panel->getOriginal()['altura'] . ' POR ' . $Panel->altura;
+        }
+        if ($Panel->cable_fecha != $Panel->getOriginal()['cable_fecha']) {
+            $respuesta[] = ' cable_fecha: ' . $Panel->getOriginal()['cable_fecha'] . ' POR ' . $Panel->cable_fecha;
+        }
+        if ($Panel->cable_tipo != $Panel->getOriginal()['cable_tipo']) {
+            $respuesta[] = ' cable_tipo: ' . $Panel->getOriginal()['cable_tipo'] . ' POR ' . $Panel->cable_tipo;
         }
         if ($Panel->comentario != $Panel->getOriginal()['comentario']) {
             $respuesta[] = ' comentario: ' . $Panel->getOriginal()['comentario'] . ' POR ' . $Panel->comentario;

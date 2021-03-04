@@ -1,6 +1,6 @@
 @extends('layouts.plantilla')
 @section('contenido')
-@can('antenas_index')
+@can('statusPanel_index')
 @php
 $mostrarSololectura = true;
 @endphp
@@ -17,6 +17,7 @@ $mostrarSololectura = true;
                                 <th>Hostname</th>
                                 <th>Site</th>
                                 <th>Status</th>
+                                @can('statusPanel_index2')
                                 <th>CCQ</th>
                                 <th>Uptime</th>
                                 <th>ChaWidth</th>
@@ -31,6 +32,7 @@ $mostrarSololectura = true;
                                 <th>TX</th>
                                 <th>Signal</th>
                                 <th>Temperature</th>
+                                @endcan
                             </tr>
                         </thead>
                         <tr v-for="dataPanel in dataPanels">
@@ -42,6 +44,8 @@ $mostrarSololectura = true;
                             <td v-if="dataPanel.status" class="alert alert-success" role="alert">Up</td>
                             <td v-else class="alert alert-danger" role="alert">Down</td>
                             
+                            @can('statusPanel_index2')
+
                             <td v-if="dataPanel.statusCCQ === 1" class="alert alert-success" role="alert">@{{dataPanel.CCQ}}</td>
                             <td v-else-if="dataPanel.statusCCQ === 0" class="alert alert-danger" role="alert">@{{dataPanel.CCQ}}</td>
                             <td v-else-if="dataPanel.statusCCQ === 2" class="alert alert-warning" role="alert">@{{dataPanel.CCQ}}</td>
@@ -90,6 +94,8 @@ $mostrarSololectura = true;
                             <td v-else-if="dataPanel.statusSignal === 3">@{{dataPanel.Signal}}</td>
                             
                             <td>@{{dataPanel.Temperature}}</td>
+
+                            @endcan
 
                         </tr>
                     </table>
