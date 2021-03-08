@@ -21,7 +21,7 @@ class Equipo extends Model
             dd('Error');
         }
         try {
-            $equipo->password = ($equipo->usuario) ? Crypt::decrypt($equipo->password) : null;
+            $equipo->password = ($equipo->password) ? Crypt::decrypt($equipo->password) : null;
         } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
             dd($e);
         }
@@ -37,12 +37,21 @@ class Equipo extends Model
     
     public function getPassword()
     {
-        
-        return $password;
+                return (($this->password) ? Crypt::decrypt($this->password) : null);
     }
     public function setPassword($palabra)
     {
         $this->password = Crypt::encrypt($palabra);
+        $this->save();
+    }
+    
+    public function getUsuario()
+    {
+                return (($this->usuario) ? Crypt::decrypt($this->usuario) : null);
+    }
+    public function setUsuario($palabra)
+    {
+        $this->usuario = Crypt::encrypt($palabra);
         $this->save();
     }
     

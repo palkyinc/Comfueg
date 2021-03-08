@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Panel;
 use App\Models\Plan;
 use Illuminate\Http\Request;
 
@@ -70,7 +71,8 @@ class PlanController extends Controller
     public function edit( $id)
     {
         $Plan = Plan::find($id);
-        return view('modificarPlan', ['elemento' => $Plan, 'datos' => 'active']);
+        $gateway = Panel::where('rol','GATEWAY')->get();
+        return view('modificarPlan', ['elemento' => $Plan, 'gateways' => $gateway, 'datos' => 'active']);
     }
 
     public function validar(Request $request)
@@ -81,7 +83,8 @@ class PlanController extends Controller
                 'nombre' => 'required|min:2|max:20',
                 'descripcion' => 'max:100',
                 'bajada' => 'required|numeric|min:1|max:99999',
-                'subida' => 'required|numeric|min:1|max:99999'
+                'subida' => 'required|numeric|min:1|max:99999',
+                'gateway_id' => 'nullable|numeric'
             ]
         );
     }
@@ -98,6 +101,7 @@ class PlanController extends Controller
         $nombre = $request->input('nombre');
         $bajada = $request->input('bajada');
         $subida = $request->input('subida');
+        $gateway_id = $request->input('gateway_id');
         $descripcion = $request->input('descripcion');
         $plan = Plan::find($request->input('id'));
         $this->validar($request);
@@ -105,6 +109,8 @@ class PlanController extends Controller
         $plan->descripcion = $descripcion;
         $plan->bajada = $bajada;
         $plan->subida = $subida;
+        $plan->gateway_id = $gateway_id;
+        $modifyMikrotik = false;
         $respuesta[] = 'Se cambió con exito:';
         if ($plan->nombre != $plan->getOriginal()['nombre']) {
             $respuesta[] = ' Nombre: ' . $plan->getOriginal()['nombre'] . ' POR ' . $plan->nombre;
@@ -114,11 +120,25 @@ class PlanController extends Controller
         }
         if ($plan->bajada != $plan->getOriginal()['bajada']) {
             $respuesta[] = ' Bajada: ' . $plan->getOriginal()['bajada'] . ' POR ' . $plan->bajada;
+            $modifyMikrotik['bajada'] = true;
         }
         if ($plan->subida != $plan->getOriginal()['subida']) {
             $respuesta[] = ' Subida: ' . $plan->getOriginal()['subida'] . ' POR ' . $plan->subida;
+            $modifyMikrotik['subida'] = true;
         }
-        $plan->save();
+        if ($plan->gateway_id != $plan->getOriginal()['gateway_id']) {
+            $respuesta[] = ' Gateway: ' . $plan->getOriginal()['gateway_id'] . ' POR ' . $plan->gateway_id;
+            $modifyMikrotik['gateway'] = true;
+        }
+        if ($plan->modifyMikrotik($modifyMikrotik))
+        {
+            $respuesta[] = 'Gateway Actualizado OK!';
+            $plan->save();
+        }
+        else
+        {
+            $respuesta[] = 'ERROR. Nada se ha actualizado.';
+        }
         return redirect('adminPlanes')->with('mensaje', $respuesta);
     }
 

@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Custom;
+use App\Custom\RouterosAPI;
+use App\Models\Plan;
+
 //require('routeros_api.class.php');
 
 class GatewayMikrotik extends RouterosAPI
@@ -129,5 +132,153 @@ class GatewayMikrotik extends RouterosAPI
 		return ['hotspotHost' => $hotspotHost, 'hotspotUser' => $hotspotUser, 'addressList' => $addressList];
 		   
    	}
+	
+	   //funciones TYPE Tree mangel
+
+	public function checkTotales ()
+	{
+		$totalType = $this->getTypeNumbers();
+		if (!isset($totalType['down']) || !isset($totalType['up'])) {
+			$this->crearPlanType();
+		}
+		
+		$totalTree = $this->getTreeNumbers();
+		if (!isset($totalTree['down']) || !isset($totalTree['up'])) {
+			$this->crearPlanTree();
+		}
+	}
+
+	public function getTreeNumbers($id = 'total')
+	{
+		$this->write('/queue/tree/print');
+		$rtas = $this->parseResponse($this->read(false));
+		$respuesta = null;
+		foreach ($rtas as $key => $rta) {
+			if (isset($rta['comment']) && explode(';',$rta['comment'])[0] == $id . '_down') {
+				$respuesta['down'] = $key;
+			}
+			if (isset($rta['comment']) && explode(';', $rta['comment'])[0] == $id . '_up') {
+				$respuesta['up'] = $key;
+			}
+		}
+		return $respuesta;
+		
+	}
+	
+	public function getMangleNumbers($id)
+	{
+		$this->write('/ip/firewall/mangle/print');
+		$rtas = $this->parseResponse($this->read(false));
+		$respuesta = null;
+		foreach ($rtas as $key => $rta) {
+			if (isset($rta['comment']) && explode(';',$rta['comment'])[0] == $id . '_down') {
+				$respuesta['down'] = $key;
+			}
+			if (isset($rta['comment']) && explode(';', $rta['comment'])[0] == $id . '_up') {
+				$respuesta['up'] = $key;
+			}
+		}
+		return $respuesta;
+		
+	}
+
+	public function getTypeNumbers($nombre = 'total')
+	{
+		$respuesta = null;
+		$this->write('/queue/type/print');
+		$rtas = $this->parseResponse($this->read(false));
+		foreach ($rtas as $key => $rta) {
+			if (isset($rta['name']) && $rta['name'] == $nombre . '_down') 
+			{
+				$respuesta['down'] = $key;
+			}
+			if (isset($rta['name']) && $rta['name'] == $nombre . '_up') {
+				$respuesta['up'] = $key;
+			}
+		}
+		return $respuesta;
+	}
+	
+	public function crearPlanType($nombre = 'total', $up = '768K', $down = '1024K')
+	{
+		$this->comm('/queue/type/add', array(
+			"name"	=>	$nombre . "_up",
+			"kind"	=>	"pcq",
+			"pcq-rate" => $up,
+			"pcq-classifier" => "src-address"
+		));
+		$this->comm('/queue/type/add', array(
+			'name'	=>	$nombre . "_down",
+			'kind'	=>	'pcq',
+			'pcq-rate' => $down,
+			'pcq-classifier' => 'dst-address'
+		));
+	}
+	public function crearPlanTree($nombre = 'total', $id = 'total')
+	{
+		$this->comm('/queue/tree/add', array(
+			"name"	=> "DOWNLOAD_" . strtoupper($nombre),
+			"parent"	=> $nombre == 'total' ? 'global' : 'DOWNLOAD_TOTAL',
+			"queue"	=> $nombre . "_down",
+			"comment"	=>  $id . "_down;Plan_id;addBySlam"
+		));
+		$this->comm('/queue/tree/add', array(
+			"name"	=> "UPLOAD_" . strtoupper($nombre),
+			"parent"	=> ($nombre == 'total' ? 'global' : 'UPLOAD_TOTAL'),
+			"queue"	=> $nombre . "_up",
+			"comment"	=>  $id . "_up;Plan_id;addBySlam",
+		));
+	}
+	
+	public function crearPlanMangle($nombre, $id)
+	{
+		$this->comm('/ip/firewall/mangle/add', array(
+			'chain' => 'forward',
+			'src-address-list' => $nombre,
+			'action' => 'mark-packet',
+			'new-packet-mark' => "UPLOAD_" . strtoupper($nombre),
+			'passthrough' => 'no',
+			"comment"	=>  $id . "_down;Plan_id;addBySlam"
+		));
+		$this->comm('/ip/firewall/mangle/add', array(
+			'chain' => 'forward',
+			'dst-address-list' => $nombre,
+			'action' => 'mark-packet',
+			'new-packet-mark' => "DOWNLOAD_" . strtoupper($nombre),
+			'passthrough' => 'no',
+			"comment"	=>  $id . "_up;Plan_id;addBySlam",
+		));
+	}
+
+	
+	public function modificarPlanType($down, $up, $action)
+	{
+		if ($down !== null){
+			$this->comm('/queue/type/'.$action, $down);
+		}
+		if ($up !== null){
+			$this->comm('/queue/type/'.$action, $up);
+		}
+	}
+	
+	public function modificarPlanTree($down, $up, $action)
+	{
+		if ($down !== null){
+			$this->comm('/queue/tree/'.$action, $down);
+		}
+		if ($up !== null){
+			$this->comm('/queue/tree/'.$action, $up);
+		}
+	}
+	
+	public function modificarPlanMangle($down, $up, $action)
+	{
+		if ($down !== null){
+			$this->comm('/ip/firewall/mangle/'.$action, $down);
+		}
+		if ($up !== null){
+			$this->comm('/ip/firewall/mangle/'.$action, $up);
+		}
+	}
 
 }

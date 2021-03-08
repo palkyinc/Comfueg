@@ -18,15 +18,30 @@ $mostrarSololectura = true;
             </div>
             
             <div class="form-group col-md-4">
-                <label for="bajada">Bajada: </label>
+                <label for="bajada">Bajada (Kb): </label>
                 <input type="text" name="bajada" value="{{$elemento->bajada}}" maxlength="60"  class="form-control">
             </div>
             <div class="form-group col-md-4">
-                <label for="subida">Subida: </label>
+                <label for="subida">Subida (Kb): </label>
                 <input type="text" name="subida" value="{{$elemento->subida}}" maxlength="15"  class="form-control">
             </div>
         </div>
         <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="gateway_id">Gateway: </label>
+                <select class="form-control" name="gateway_id">
+                    <option value="">Sin gateway</option>
+                    @foreach ($gateways as $gateway)
+                        @if ($gateway->activo)
+                            @if ($gateway->id != $elemento->gateway_id)
+                                <option value="{{$gateway->id}}">{{$gateway->relEquipo->nombre}}->{{$gateway->relEquipo->ip}}</option>';
+                            @else
+                                <option value="{{$gateway->id}}" selected>{{$gateway->relEquipo->nombre}} -> {{$gateway->relEquipo->ip}}</option>';
+                            @endif
+                        @endif
+                    @endforeach
+                </select>
+            </div>
         </div>    
         <div class="form-row">
             <div class="form-group col-md-12">

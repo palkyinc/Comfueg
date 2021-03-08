@@ -7,12 +7,11 @@
 </head>
 <body>
     <h3>Actualización/es del Incidente: {{ $incidente->crearNombre() }}.</h3>
-    <h4>Incidente finalizado el <strong><i>{{ $incidente->final}}</i></strong>.</h4>
+    <h4>Incidente finalizado el: <strong><i>{{ $incidente->final}}</i></strong>.</h4>
 
         @foreach ($incidente->incidente_has_mensaje as $mensaje)
             <ul>
-                <li>Actualizado por: <strong><i>{{$mensaje->relUser->name}}</i></strong></li>
-                <li>Fecha de Actualizacion: <strong><i>{{$mensaje->created_at}}</i></strong></li>
+                <li>Actualizado por: <strong><i>{{$mensaje->relUser->name}}</i></strong>, el: <strong><i>{{$mensaje->created_at}}</i></strong></li>
                 <li>Mensaje: <strong><i>{{$mensaje->mensaje}}</i></strong></li>
             </ul>
         @endforeach

@@ -39,8 +39,10 @@ class AppServiceProvider extends ServiceProvider
                     $query->time
                 );
             });
-        FacadesDB::listen(function ($query) {
-            if (explode(" ", $query->sql)[0] !== 'select')
+        FacadesDB::listen(function ($query)
+        {
+            $explodeSql = explode(" ", $query->sql);
+            if ($explodeSql[0] === 'update' || $explodeSql[0] === 'insert')
             {
                 File::append(
                     storage_path('/logs/query.log'),

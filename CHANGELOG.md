@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.4] - 2021-XX-XX
 ### Added
 1.	Se instala Laravel Charts. https://charts.erik.cat/
+2.	CRUD de plan en gateway Mikrotik. (Falta baja de plan).
 
 ### Changed
 1.	Se corrige problemas en la carga de archivos adjuntos en una Deuda Tecnica Nueva.
