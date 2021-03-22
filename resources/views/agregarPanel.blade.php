@@ -4,7 +4,7 @@
 @php
 $mostrarSololectura = true;
 @endphp
-<h3>Agregar Panel nuevo</h3>
+<h3>Agregar Dispositivo nuevo</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarPanel" method="post" enctype="multipart/form-data">
         @csrf

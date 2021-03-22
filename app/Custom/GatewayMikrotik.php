@@ -3,6 +3,8 @@
 namespace App\Custom;
 use App\Custom\RouterosAPI;
 use App\Models\Plan;
+use App\Models\Proveedor;
+use Illuminate\Support\Facades\Config;
 
 //require('routeros_api.class.php');
 
@@ -42,6 +44,8 @@ class GatewayMikrotik extends RouterosAPI
 		return false;
 	}
 
+	#########		Clientes		#######################
+
 	public function addClient ($datos) // $datos = [ $name => ip, $mac-address => mac, $comment => id_genesys, $server => servidor, $list => plan]
 	{
 		$this->comm("/ip/hotspot/user/add", array(
@@ -58,10 +62,10 @@ class GatewayMikrotik extends RouterosAPI
 				   	));
    	}
 	
-	public function setClient ($datos) // $datos = [ $idContrato => contrato, $name => ip, $mac-address => mac, $comment => id_genesys, $server => servidor, $list => plan]
+	public function setClient ($datos) // $datos = [ id_HotspotUser => id_HotspotUser, id_AddressList => id_AddressList , $name => ip, $mac-address => mac, $comment => id_genesys, $server => servidor, $list => plan]
 		{
 			$this->comm("/ip/hotspot/user/set", array(
-			    "numbers"     	=> $datos['idContrato'],
+			    "numbers"     	=> $datos['id_HotspotUser'],
 			    "name"     		=> $datos['mac-address'],
 			    "mac-address"   => $datos['mac-address'],
 			   	"comment"  		=> $datos['comment'],
@@ -69,7 +73,7 @@ class GatewayMikrotik extends RouterosAPI
 			    ));
 			
 			$this->comm("/ip/firewall/address-list/set", array(
-					    "numbers"     	=> $datos['idContrato'],
+					    "numbers"     	=> $datos['id_AddressList'],
 			    		"list"     		=> $datos['list'],
 					    "address"   	=> $datos['name'],
 					   	"comment"  		=> $datos['comment']
@@ -84,6 +88,11 @@ class GatewayMikrotik extends RouterosAPI
    		$this->comm("/ip/firewall/address-list/remove", array (
    			"numbers" => $clienteMikrotik->id_AddressList,
    		));
+		if (isset($clienteMikrotik->id_HotspotHost)) {
+			$this->comm("/ip/hotspot/host/remove", array(
+				"numbers"     => $clienteMikrotik->id_HotspotHost
+			));
+		}
    	}
 
    	public function disableClient ($clienteMikrotik)
@@ -94,7 +103,7 @@ class GatewayMikrotik extends RouterosAPI
    		$this->comm("/ip/firewall/address-list/disable", array (
    			"numbers" => $clienteMikrotik->id_AddressList,
    		));
-   		if ($clienteMikrotik->id_HotspotHost) 
+		if (isset($clienteMikrotik->id_HotspotHost)) 
 		{
 			$this->comm("/ip/hotspot/host/remove", array(
 					      "numbers"     => $clienteMikrotik->id_HotspotHost
@@ -118,23 +127,127 @@ class GatewayMikrotik extends RouterosAPI
 			}
 	   	}
 
-   	public function getGatewayData ()
-   	{
-   		$this->write('/ip/hotspot/host/print');
+		   
+	public function getGatewayData ()
+	{
+		$this->write('/ip/hotspot/host/print');
 		$hotspotHost = $this->parseResponse($this->read(false));
-
+		
 		$this->write('/ip/hotspot/user/print');
 		$hotspotUser = $this->parseResponse($this->read(false));
-
+		
 		$this->write('/ip/firewall/address-list/print');
 		$addressList = $this->parseResponse($this->read(false));
-
+		
 		return ['hotspotHost' => $hotspotHost, 'hotspotUser' => $hotspotUser, 'addressList' => $addressList];
-		   
-   	}
-	
-	   //funciones TYPE Tree mangel
+		
+	}
 
+	public function checkHotspotServer ($gateway_ip)
+	{
+		$this->write('/ip/hotspot/print');
+		$hotspotServers = $this->parseResponse($this->read(false));
+		foreach ($hotspotServers as $value)
+		{
+			if ($value['name'] == 'hotspot1' && $value['profile'] == 'hsprof1')
+			{
+				return true;
+			}
+		}
+		$lanInterface = $this->getLanInterface();
+		if ($lanInterface)
+		{
+			$this->comm('/ip/hotspot/profile/add',[	'name' => 'hsprof1',
+													'hotspot-address' => $gateway_ip,
+													'html-directory' => 'hotspot',
+													'html-directory-override' => 'hotspot',
+													'login-by' => 'mac,http-chap,https',
+													'mac-auth-mode' => 'mac-as-username']);
+			$this->comm('/ip/hotspot/add',[	'name' => 'hotspot1',
+											'interface' => $lanInterface,
+											'profile' => 'hsprof1']);
+			return true;
+		}
+		return false;
+	}
+
+	public function checkDhcpServer ($gateway_ip)
+	{
+		$lanInterface = $this->getLanInterface();
+		$this->write('/ip/dhcp-server/print');
+		$dhcpServer = $this->parseResponse($this->read(false));
+		foreach ($dhcpServer as $value) {
+			if ($value['name'] == 'SlamServer' && $value['interface'] == $lanInterface)
+			{
+				$this->write('/ip/dhcp-server/network/print');
+				$network = $this->parseResponse($this->read(false));
+				foreach ($network as $value) {
+					if ($value['address'] == Config::get('constants.LAN_SEGMENT') && $value['gateway'] == $gateway_ip && $value['dns-server'] == $gateway_ip)
+					{
+						return true;
+					}
+				}
+			}
+		}
+		if($lanInterface)
+		{
+			$this->comm('/ip/dhcp-server/add', ['name' => 'SlamServer',
+												'interface' => $lanInterface,
+												'lease-time' => '23:59:59',
+												'always-broadcast' => 'yes',
+												'disabled' => 'no']);
+			$this->comm('/ip/dhcp-server/network/add', ['address' => Config::get('constants.LAN_SEGMENT'),
+														'gateway' => $gateway_ip,
+														'dns-server' => $gateway_ip]);
+		}
+		return false;
+	}
+
+	public function getIdDhcpServer($contrato_id)
+	{
+		$this->write('/ip/dhcp-server/lease/print');
+		$dhcpId = $this->parseResponse($this->read(false));
+		foreach ($dhcpId as $value) 
+		{
+			if (isset($value['comment']) && $value['comment'] == $contrato_id)
+			{
+				return ($value['.id']);
+			}
+		}
+		return false;
+	}
+
+	public function getLanInterface()
+	{
+		$interfaces = $this->getDatosInterfaces();
+		foreach ($interfaces as $tipo)
+		{
+			foreach ($tipo as $interface)
+			{
+				if (isset($interface['list']) && $interface['list'] == 'LAN' && $interface['disabled'] == 'false')
+				{
+					return $interface['name'];
+				}
+			}
+		}
+		return false;
+	}
+			
+	#############		PLANES 		#####################################
+	
+	public function getPlanesData()
+	{
+		$this->write('/queue/type/print');
+		$type = $this->parseResponse($this->read(false));
+
+		$this->write('/queue/tree/print');
+		$tree = $this->parseResponse($this->read(false));
+
+		$this->write('/ip/firewall/mangle/print');
+		$mangle = $this->parseResponse($this->read(false));
+
+		return ['type' => $type, 'tree' => $tree, 'mangle' => $mangle];
+	}
 	public function checkTotales ()
 	{
 		$totalType = $this->getTypeNumbers();
@@ -281,4 +394,234 @@ class GatewayMikrotik extends RouterosAPI
 		}
 	}
 
+	###		Interfaces                ############################################################
+
+	public function getDatosInterfaces()
+	{
+		$respuesta = null;
+		$this->checkInterfacesList();
+		$this->write('/interface/ethernet/print');
+		$rtas = $this->parseResponse($this->read(false));
+		$this->write('/interface/vlan/print');
+		$vlans = $this->parseResponse($this->read(false));
+		foreach ($rtas as $key => $value) {
+			$status = $this->comm('/interface/ethernet/monitor', ['numbers' => $value['.id'], 'once' => null]);
+			if ($status[0]['status'] == 'no-link')
+			{
+				$rtas[$key]['status'] = $status[0]['status'];
+			}
+			else
+				{
+					$rtas[$key]['status'] = $status[0]['status'];
+					$rtas[$key]['rate'] = $status[0]['rate'] . ($status[0]['full-duplex'] == 'true' ? 'Full' : 'Half');
+				}
+			$this->addListDataToInterface($rtas[$key]);
+		}
+		foreach ($vlans as $key => $value) {
+			$this->addListDataToInterface($vlans[$key]);
+		}
+		return(['rtas' => $rtas, 'vlans' => $vlans]);
+	}
+
+	public function getDatosEthernet($id, $esVlan = false)
+	{
+		if (!$esVlan)
+		{
+			$interface = $this->comm('/interface/ethernet/print', ['from' => $id]);
+		}
+		else 
+			{
+				$interface = $this->comm('/interface/vlan/print', ['from' => $id]);
+			}
+		$this->addListDataToInterface($interface[0]);
+		return $interface[0];
+	}
+
+	public function addListDataToInterface (&$value, $retornarId = false)
+	{
+		$this->write('/interface/list/member/print');
+		$lists = $this->parseResponse($this->read(false));
+		foreach ($lists as $list) {
+			//dd($list);
+			if ($list['interface'] == $value['name']) {
+				$value['list'] = $list['list'];
+				if ($retornarId)
+				{
+					return $list['.id'];
+				}
+			}
+		}
+	}
+
+	public function getDatosList()
+	{
+		$this->write('/interface/list/print');
+		$rtas = $this->parseResponse($this->read(false));
+		$respuesta = null;
+		foreach ($rtas as $value) {
+			if($value['name'] === 'WAN' || $value['name'] === 'LAN')
+			{
+				$respuesta [] = $value;
+			}
+		}
+		return $respuesta;
+	}
+
+	public function checkInterfacesList()
+	{
+		$rtas = $this->getDatosList();
+		if ($rtas)
+		{
+			foreach ($rtas as $key => $value) {
+				if ($value['name'] == 'WAN') {$wanList = true;}
+				if ($value['name'] == 'LAN') {$lanList = true;}
+			}
+		}
+		if (!isset($wanlist))
+		{
+			$this->comm('/interface/list/add', ['name' => 'WAN', 'comment' => 'addBySlam']);
+		}
+		if (!isset($lanlist))
+		{
+			$this->comm('/interface/list/add', ['name' =>'LAN', 'comment' => 'addBySlam']);
+		}
+	}
+
+	public function modifyInterface($array, $action) //numbers, name, disabled= yes | no
+	{
+		$this->comm('/interface/ethernet/' . $action, $array);
+	}
+	
+	public function modifyVlan($array, $action) //$array = numbers, name, disabled= yes | no
+	{
+		$this->comm('/interface/vlan/' . $action, $array);
+	}
+
+	public function modifyInterfaceListMember($array, $action)
+	{
+		$this->comm('/interface/list/member/' . $action, $array);
+	}
+
+	####	NAT 		#################
+
+	public function checkNat ()
+	{
+		$this->write('/ip/firewall/nat/print');
+		$rtas = $this->parseResponse($this->read(false));
+		foreach ($rtas as $value) {
+			if ($value['out-interface-list'] === 'WAN' && $value['chain'] === 'srcnat' && $value['action'] === 'masquerade') {
+				return true;
+			}
+		}
+		$this->comm('/ip/firewall/nat/add', ['chain' => 'srcnat',
+											 'out-interface-list' => 'WAN',
+											 'action' => 'masquerade']);
+		return false;		
+	}
+
+	#########   PROVEEDORES 	#####################
+
+	public function modifyProveedor(Proveedor $proveedor, $action)
+	{
+		if ($action == 'add')
+		{
+			$interface = $this->getDatosEthernet($proveedor->interface, $proveedor->esVlan)['name'];
+			$this->comm('/ip/dhcp-client/add', ['add-default-route' => $proveedor->getProveedoresQuantity() == 1 ? 'yes' : 'no',
+												'use-peer-dns' => 'no',
+												'interface' => $interface,
+												'disabled' => 'no',
+												'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam']);
+			$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'prerouting',
+															'in-interface' => $interface,
+															'connection-mark' => 'no-mark',
+															'action' => 'mark-connection',
+															'new-connection-mark' => $interface . '_conn',
+															'passthrough' => 'yes',
+															'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam' ]);
+			$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'prerouting',
+															'src-address' => '10.10.0.0/16',
+															'in-interface-list' => 'LAN',
+															'connection-state' => 'established,related,new',
+															'per-connection-classifier' => 'both-addresses:' . $proveedor->getProveedoresQuantity() . '/' . $proveedor->classifier,
+															'dst-address-type' => '!local',
+															'action' => 'mark-connection',
+															'new-connection-mark' => $interface . '_conn',
+															'passthrough' => 'yes',
+															'comment' => $proveedor->id . ';proveedor_id;B;addedBySlam']);
+			$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'prerouting',
+															'in-interface-list' => 'LAN',
+															'connection-mark' => $interface . '_conn',
+															'action' => 'mark-routing',
+															'new-routing-mark' => 'to_' . $interface,
+															'passthrough' => 'no' ,
+															'comment' => $proveedor->id . ';proveedor_id;C;addedBySlam']);
+			$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'output',
+															'connection-mark' => $interface . '_conn',
+															'action' => 'mark-routing' ,
+															'new-routing-mark' => 'to_' . $interface,
+															'passthrough' => 'no',
+															'comment' => $proveedor->id . ';proveedor_id;D;addedBySlam']);
+			if ($proveedor->getProveedoresQuantity() > 1)
+			{
+				### Set routes con recusividad
+				$this->comm('/ip/route/' . $action, [	'dst-address' => $proveedor->dns,
+														'gateway' => $proveedor->ipGateway,
+														'check-gateway' => 'ping',
+														'distance' => 1,
+														'scope' => 10,
+														'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam']);
+				$this->comm('/ip/route/' . $action, [	'dst-address' => '0.0.0.0/0',
+														'gateway' => $proveedor->dns,
+														'check-gateway' => 'ping',
+														'distance' => '1',
+														'scope' => '30',
+														'target-scope' => '10',
+														'routing-mark' => 'to_' . $interface,
+														'comment' => $proveedor->id . ';proveedor_id;B;addedBySlam']);
+				$this->comm('/ip/route/' . $action, [	'dst-address' => '0.0.0.0/0',
+														'gateway' => $proveedor->dns,
+														'check-gateway' => 'ping',
+														'distance' => 2,
+														'scope' => 30,
+														'target-scope' => 10,
+														'routing-mark' => 'to_' . ($this->getDatosEthernet($proveedor->getNextInterface()->interface, $proveedor->getNextInterface()->esVlan)['name']),
+														'comment' => $proveedor->id . ';proveedor_id;C;addedBySlam']);
+			}
+		}
+		if ($action == 'remove')
+		{
+			$this->removeProveedor('/ip/route/print', '/ip/route/' . $action, $proveedor->id);
+			$this->removeProveedor('/ip/firewall/mangle/print', '/ip/firewall/mangle/' . $action, $proveedor->id);
+			$this->removeProveedor('/ip/dhcp-client/print', '/ip/dhcp-client/' . $action, $proveedor->id);
+		}
+	}
+
+	private function removeProveedor($print, $remove, $proveedor_id, $all = false)
+	{
+		$this->write($print);
+		$rtas = $this->parseResponse($this->read(false));
+		foreach ($rtas as $key => $value) {
+			if (isset($value['comment'])) {
+				$comment = (explode(';', $value['comment']));
+				if ($comment[1] == 'proveedor_id') 
+				{
+					if ($all)
+					{
+						$this->comm($remove, ['numbers' => $key]);
+					}
+					elseif ($comment[0] == $proveedor_id)
+						{
+							$this->comm($remove, ['numbers' => $key]);
+						}
+				}
+			}
+		}
+	}
+
+	public function removeAllProveedores()
+	{
+		$this->removeProveedor('/ip/route/print', '/ip/route/remove', 0, true);
+		$this->removeProveedor('/ip/firewall/mangle/print', '/ip/firewall/mangle/remove', 0, true);
+		$this->removeProveedor('/ip/dhcp-client/print', '/ip/dhcp-client/remove', 0, true);
+	}
 }

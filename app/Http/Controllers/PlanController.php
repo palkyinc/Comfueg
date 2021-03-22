@@ -19,7 +19,15 @@ class PlanController extends Controller
         $planes = Plan::select("*")
             ->whereRaw("UPPER(nombre) LIKE (?)", ["%{$nombre}%"])
             ->paginate(10);
-        return view('adminPlanes', ['planes' => $planes, 'datos' => 'active']);
+        $respuesta = null;
+        foreach ($planes as $key => $plan) {
+            if (!$plan->reconcileMikrotik())
+            {
+                $planes[$key]->reconcile = 1;
+                $respuesta[] = 'El plan ' . $plan->nombre . ' debe reconciliarse. Debe borrar el gateway y volver a configurarlo.';
+            }
+        }
+        return view('adminPlanes', ['planes' => $planes, 'datos' => 'active', 'warning' => $respuesta]);
     }
 
     /**
@@ -148,8 +156,12 @@ class PlanController extends Controller
      * @param  \App\Models\Plan  $plan
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Plan $plan)
+    public function destroy($plan_id)
     {
-        //
+        $Plan = Plan::find($plan_id);
+        $respuesta[] = ' Se eliminó correctamente el plan: ' . $Plan->nombre;
+        $Plan->delete();
+        return redirect('adminPlanes')->with('mensaje', $respuesta);
+        dd($plan_id);
     }
 }

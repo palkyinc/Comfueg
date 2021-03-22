@@ -7,8 +7,10 @@ use App\Http\Controllers\CalleController;
 use App\Http\Controllers\CiudadController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CodigoDeAreaController;
+use App\Http\Controllers\ContratoController;
 use App\Http\Controllers\DireccionController;
 use App\Http\Controllers\EquipoController;
+use App\Http\Controllers\GatewayInterfaceController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Mail_groupController;
 use App\Http\Controllers\ModeloController;
@@ -18,6 +20,7 @@ use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ProveedoresController;
 use App\Http\Controllers\PruebaController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SiteController;
@@ -54,9 +57,7 @@ Route::get('/contratos', function (){return view('construcción', ['contratos' =
 Route::get('/charts', function (){return view('charts');});
 ####################
 ####### Gateway API rest Web services
-Route::get('/gateway/clients/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
-####################
-####### Panel test Web services
+//Route::get('/gateway/clients/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
 Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
 Route::get('/allPanels', [PruebaController::class, 'allPanels'])->middleware('auth');
 Route::get('/adminControlPanelNodos', [PruebaController::class, 'index'])->middleware('auth');
@@ -114,6 +115,9 @@ Route::get('/agregarModelo', [ModeloController::class, 'create'])->middleware('a
 Route::post('/agregarModelo', [ModeloController::class, 'store'])->middleware('auth');
 Route::get('/modificarModelo/{id}', [ModeloController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarModelo', [ModeloController::class, 'update'])->middleware('auth');
+#####################
+####### CRUD Contratos
+Route::get('/agregarContrato', [ContratoController::class, 'removeContratoGateway'])->middleware('auth');
 ####################
 ####### CRUD Antenas
 Route::get('/adminAntenas', [AntenaController::class, 'index'])->middleware('auth');
@@ -169,6 +173,15 @@ Route::patch('/equipoActivar', [EquipoController::class, 'activar'])->middleware
 Route::get('/agregarEquipo', [EquipoController::class, 'create'])->middleware('auth');
 Route::post('/agregarEquipo', [EquipoController::class, 'store'])->middleware('auth');
 ####################
+####### CRUD Interfaces 
+Route::get('/adminInterfaces', [GatewayInterfaceController::class, 'index'])->middleware('auth');
+Route::get('/modificarInterface/{interface_id}/{gateway_id}', [GatewayInterfaceController::class, 'editInterface'])->middleware('auth');
+Route::get('/modificarInterface/{interface_id}/{gateway_id}/{esVlan}', [GatewayInterfaceController::class, 'editInterface'])->middleware('auth');
+Route::patch('/modificarInterface', [GatewayInterfaceController::class, 'updateInterface'])->middleware('auth');
+Route::get('/agregarInterface/{gateway_id}', [GatewayInterfaceController::class, 'create'])->middleware('auth');
+Route::post('/agregarInterface', [GatewayInterfaceController::class, 'store'])->middleware('auth');
+Route::delete('/eliminarInterface/{interface_id}/{gateway_id}', [GatewayInterfaceController::class, 'destroy'])->middleware('auth');
+####################
 ####### CRUD Paneles 
 Route::get('/adminPaneles', [PanelController::class, 'index'])->middleware('auth');
 Route::get('/modificarPanel/{id}', [PanelController::class, 'edit'])->middleware('auth');
@@ -177,12 +190,23 @@ Route::get('/panelActivar/{id}', [PanelController::class, 'activar'])->middlewar
 Route::get('/agregarPanel', [PanelController::class, 'create'])->middleware('auth');
 Route::post('/agregarPanel', [PanelController::class, 'store'])->middleware('auth');
 ####################
+####### CRUD Proveedores
+Route::get('/adminProveedores', [ProveedoresController::class, 'index'])->middleware('auth');
+Route::get('/agregarProveedor', [ProveedoresController::class, 'preCreate'])->middleware('auth');
+Route::get('/agregarProveedor2', [ProveedoresController::class, 'create'])->middleware('auth');
+Route::post('/agregarProveedor3', [ProveedoresController::class, 'store'])->middleware('auth');
+Route::get('/actualizarGateway', [ProveedoresController::class, 'refreshGateway'])->middleware('auth');
+Route::get('/modificarProveedor/{id}', [ProveedoresController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarProveedor', [ProveedoresController::class, 'update'])->middleware('auth');
+Route::delete('/eliminarProveedor/{id}', [ProveedoresController::class, 'destroy'])->middleware('auth');
+####################
 ####### CRUD Planes
 Route::get('/adminPlanes', [PlanController::class, 'index'])->middleware('auth');
 Route::get('/modificarPlan/{id}', [PlanController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarPlan', [PlanController::class, 'update'])->middleware('auth');
 Route::get('/agregarPlan', [PlanController::class, 'create'])->middleware('auth');
 Route::post('/agregarPlan', [PlanController::class, 'store'])->middleware('auth');
+Route::delete('/eliminarPlan/{plan_id}', [PlanController::class, 'destroy'])->middleware('auth');
 ####################
 ####### CRUD Productos
 Route::get('/adminProductos', [ProductoController::class, 'index'])->middleware('auth');

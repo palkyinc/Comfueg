@@ -7,10 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
-## [0.5.4] - 2021-XX-XX
+## [0.6.0] - 2021-03-22
+### Added
+1.	CRUD de plan en gateway Mikrotik. (Falta baja de plan).
+2.	CRUD de Interfaces.
+3.	CRUD de Proveedores.
+4.	Se implementan funciones de CRUD de contratos hacia Mikrotik.
+
+### Changed
+### Removed
+
+
+## [0.5.4] - 2021-03-03
 ### Added
 1.	Se instala Laravel Charts. https://charts.erik.cat/
-2.	CRUD de plan en gateway Mikrotik. (Falta baja de plan).
 
 ### Changed
 1.	Se corrige problemas en la carga de archivos adjuntos en una Deuda Tecnica Nueva.
@@ -21,8 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6.	Se agregan comentarios del equipo en la vista de Nodo.
 7.	Se agrega cable fecha y cable tipo en Modificar y agregar Panel.
 8.	se agrega columna de activo a sitiopara que no se muestre en la vista de Nodos.
-
-### Removed
 
 ## [0.5.3] - 2021-02-25
 ### Added

@@ -5,7 +5,7 @@
 $mostrarSololectura = true;
 @endphp
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
-                        <h2 class="mx-3">Administración de Paneles</h2>
+                        <h2 class="mx-3">Administración de Dispositivos</h2>
                         <label for="ssid" class="mx-3">SSID</label>
                         <input type="text" name="ssid" class="form-control mx-3" id="ssid">
                         <label for="sitio" class="mx-3">Sitio</label>
@@ -29,7 +29,7 @@ $mostrarSololectura = true;
 <div class="table-responsive">
                 
                 <table class="table table-sm table-bordered table-hover">
-                    <caption>Listado de Paneles</caption>
+                    <caption>Listado de Dispositivos</caption>
                     <thead class="thead-light">
                         <tr>
                             <th scope="col"> Id </th>

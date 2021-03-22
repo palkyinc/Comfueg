@@ -1,6 +1,8 @@
 <?php
 namespace App\Custom;
 
+use App\Models\Contrato;
+
 class ClientMikrotik
 {
 	public $idContrato;
@@ -29,14 +31,14 @@ class ClientMikrotik
 			//bucar $contratoy en $dataArray['addressList'] y copiar los datos
 			$this->idContrato = $contrato;
 			foreach ($dataArray['addressList'] as $key => $value) {
-				if ($value['comment'] == $contrato)
+				if (isset($value['comment']) && $value['comment'] == $contrato)
 				{
 					$this->setAddressListData ($key, $value);
 				}
 			}
 			//bucar $idContratoy en $dataArray['hotspotUser'] y copiar los datos
 			foreach ($dataArray['hotspotUser'] as $key => $value) {
-				if ($value['comment'] == $contrato)
+				if (isset($value['comment']) && $value['comment'] == $contrato)
 				{
 					$this->setHotspotUserData($key, $value);
 				}
@@ -140,4 +142,6 @@ class ClientMikrotik
 		}
 
 	}
+
+	
 }

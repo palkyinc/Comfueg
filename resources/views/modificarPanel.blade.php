@@ -4,7 +4,7 @@
 @php
 $mostrarSololectura = true;
 @endphp
-<h3>Modificando Panel con ID: {{ $elemento->id }}</h3>
+<h3>Modificando Dispositivo con ID: {{ $elemento->id }}</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarPanel" method="post" enctype="multipart/form-data">
         @csrf

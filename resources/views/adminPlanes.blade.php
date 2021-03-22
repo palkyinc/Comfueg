@@ -18,6 +18,13 @@ $mostrarSololectura = true;
                 @endforeach
             </div>
         @endif
+        @if ($warning)
+            <div class="alert alert-warning">
+                @foreach ($warning as $item)
+                    {{ $item }} <br>
+                @endforeach
+            </div>
+        @endif
         
 <div class="table-responsive">
                 
@@ -39,9 +46,14 @@ $mostrarSololectura = true;
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody id="deleteFile">
                         @foreach ($planes as $plan)
-                            <tr>
+                            
+                            @if ($plan->reconcile)
+                                <tr class="alert alert-warning">
+                            @else
+                                <tr>
+                            @endif
                                 
                             <th scope="row"> {{$plan->id}}</th>
                             <td>{{$plan->nombre}}</td>
@@ -60,6 +72,18 @@ $mostrarSololectura = true;
                                 </a>
                                 @endcan
                             </td>
+                            <td>
+                                @can('planes_create')
+                                @if ($plan->gateway_id == null)
+                                    <form method="post" action="/eliminarPlan/{{ $plan->id }}">
+                                    @csrf
+                                            @method('delete')
+                                            <button type="submit"><img src="/imagenes/iconfinder_basket_1814090.svg" 
+                                            alt="imagen de basket borrar" height="20px" title="Borrar Plan"></button>
+                                        </form>
+                                    @endcan
+                                @endif
+                            </td>
                             
                             </tr>
                         @endforeach
@@ -67,6 +91,23 @@ $mostrarSololectura = true;
                 </table>
 </div>
         {{ $planes->links() }}
+
+    @can('planes_create')
+        @section('javascript')
+            <script>
+            const td = document.querySelector('#deleteFile');
+            let botones = td.getElementsByTagName('button');
+            for( let i=0; i< botones.length; i++) {
+                    botones[i].addEventListener('click', e => 
+                    {
+                        if (!confirm("¿Estás seguro de borrar este Plan?")) {
+                        e.preventDefault();
+                        }
+                    });
+            }
+            </script>
+        @endsection
+    @endcan
 @endcan    
 @include('sinPermiso')
 @endsection

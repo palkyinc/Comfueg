@@ -16,4 +16,9 @@ class Cliente extends Model
     public function relCodAreaCel () {
         return $this->belongsTo('App\Models\CodigoDeArea', 'cod_area_cel', 'id');
     }
+
+    public function getNomYApe ()
+    {
+        return $this->apellido . ', ' . $this->nombre;
+    }
 }// fin de la clase
