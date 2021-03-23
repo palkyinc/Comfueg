@@ -77,12 +77,12 @@ class Plan extends Model
                         if (isset($array['bajada']))
                         {
                             $answerType = $apiMikro->getTypeNumbers($this->id);
-                            $apiMikro->modificarPlanType(['numbers' => $answerType['down'], 'pcq-rate' => $this->bajada], null, 'set');
+                            $apiMikro->modificarPlanType(['numbers' => $answerType['down'], 'pcq-rate' => $this->bajada . 'K'], null, 'set');
                         }
                         if (isset($array['subida']))
                         {
                             $answerType = $apiMikro->getTypeNumbers($this->id);
-                            $apiMikro->modificarPlanType(null, ['numbers' => $answerType['up'], 'pcq-rate' => $this->subida], 'set');
+                            $apiMikro->modificarPlanType(null, ['numbers' => $answerType['up'], 'pcq-rate' => $this->subida . 'K'], 'set');
                         }
                     }else return false;
                     unset($apiMikro);
@@ -101,14 +101,14 @@ class Plan extends Model
                 unset($apiMikro);
                 foreach ($planesEnMikrotik['type'] as $value) {
                     if ($value['name'] == $this->id . '_up' && 
-                        $value['pcq-rate'] == $this->subida &&
+                        $value['pcq-rate'] == ($this->subida *1000) &&
                         $value['kind'] == 'pcq' &&
                         $value['pcq-classifier'] == 'src-address')
                     {
                         $type['subida'] = 1;
                     }
                     if ($value['name'] == $this->id . '_down' && 
-                        $value['pcq-rate'] == $this->bajada &&
+                        $value['pcq-rate'] == ($this->bajada *1000) &&
                         $value['kind'] == 'pcq' &&
                         $value['pcq-classifier'] == 'dst-address')
                     {

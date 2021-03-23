@@ -165,7 +165,8 @@ class GatewayMikrotik extends RouterosAPI
 													'mac-auth-mode' => 'mac-as-username']);
 			$this->comm('/ip/hotspot/add',[	'name' => 'hotspot1',
 											'interface' => $lanInterface,
-											'profile' => 'hsprof1']);
+											'profile' => 'hsprof1',
+											'disabled' => 'no']);
 			return true;
 		}
 		return false;
@@ -317,13 +318,13 @@ class GatewayMikrotik extends RouterosAPI
 		$this->comm('/queue/type/add', array(
 			"name"	=>	$nombre . "_up",
 			"kind"	=>	"pcq",
-			"pcq-rate" => $up,
+			"pcq-rate" => $up . 'K',
 			"pcq-classifier" => "src-address"
 		));
 		$this->comm('/queue/type/add', array(
 			'name'	=>	$nombre . "_down",
 			'kind'	=>	'pcq',
-			'pcq-rate' => $down,
+			'pcq-rate' => $down . 'K',
 			'pcq-classifier' => 'dst-address'
 		));
 	}
@@ -331,12 +332,14 @@ class GatewayMikrotik extends RouterosAPI
 	{
 		$this->comm('/queue/tree/add', array(
 			"name"	=> "DOWNLOAD_" . strtoupper($nombre),
+			"packet-markname"	=> "DOWNLOAD_" . strtoupper($nombre),
 			"parent"	=> $nombre == 'total' ? 'global' : 'DOWNLOAD_TOTAL',
 			"queue"	=> $nombre . "_down",
 			"comment"	=>  $id . "_down;Plan_id;addBySlam"
 		));
 		$this->comm('/queue/tree/add', array(
 			"name"	=> "UPLOAD_" . strtoupper($nombre),
+			"packet-mark"	=> "UPLOAD_" . strtoupper($nombre),
 			"parent"	=> ($nombre == 'total' ? 'global' : 'UPLOAD_TOTAL'),
 			"queue"	=> $nombre . "_up",
 			"comment"	=>  $id . "_up;Plan_id;addBySlam",
@@ -509,7 +512,7 @@ class GatewayMikrotik extends RouterosAPI
 		$this->write('/ip/firewall/nat/print');
 		$rtas = $this->parseResponse($this->read(false));
 		foreach ($rtas as $value) {
-			if ($value['out-interface-list'] === 'WAN' && $value['chain'] === 'srcnat' && $value['action'] === 'masquerade') {
+			if ( isset($value['out-interface-list']) && $value['out-interface-list'] === 'WAN' && $value['chain'] === 'srcnat' && $value['action'] === 'masquerade') {
 				return true;
 			}
 		}

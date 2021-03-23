@@ -7,15 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
+## [0.6.1] - 2021-XX-XX
+### Added
+
+### Changed
+1.	Cambiar en vista admin interfaces no parace el gateway seleccionado correctamente.
+2.		(Corregido) Corregir en programacion de Proveedores no graba con Kb.
+3.		(Corregido) Al crear un server Hotspot lo crea disabled.
+4.	Undefined variable: respuesta al borrar una vlan
+5.		(Corregido). Undefined index: out-interface-list al agregar un sergundo proveedor (C:\inetpub\wwwroot\Comfueg\app\Custom\GatewayMikrotik.php:512)
+6.	Al cambiar Gateway en plan falta verificar que no hay contratos con este plan.
+7.		(Corregido) Error al crear Plan tree faltaba setear: packet-mark.
+
+### Removed
+
 ## [0.6.0] - 2021-03-22
 ### Added
 1.	CRUD de plan en gateway Mikrotik. (Falta baja de plan).
 2.	CRUD de Interfaces.
 3.	CRUD de Proveedores.
 4.	Se implementan funciones de CRUD de contratos hacia Mikrotik.
-
-### Changed
-### Removed
 
 
 ## [0.5.4] - 2021-03-03

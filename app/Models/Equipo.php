@@ -81,4 +81,9 @@ class Equipo extends Model
         return $equipos;
     }
 
+    public function getResumida()
+    {
+        return ($this->nombre . ', ' . $this->relProducto->modelo . ', ' . $this->mac_address);
+    }
+
 }// finde la clase

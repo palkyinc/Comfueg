@@ -29,11 +29,14 @@ public function relBarrio ()
 {
     return $this->belongsTo('App\Models\Barrio', 'id_barrio', 'id');
 }
-
 ## relacion a tabla ciudades
 public function relCiudad () 
 {
     return $this->belongsTo('App\Models\Ciudad', 'id_ciudad', 'id');
+}
+public function getResumida()
+{
+    return ($this->numero . ', ' . $this->relCalle->nombre . ', ' . $this->relBarrio->nombre);
 }
 
 }//fin de la clase

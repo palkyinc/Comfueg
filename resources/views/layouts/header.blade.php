@@ -30,8 +30,8 @@
 		      <li class="nav-item {{  $principal ?? ''}}">
 		        <a class="nav-link" href="/inicio">Principal</a>
 		      </li>
-		      <li class="nav-item {{  $contratos ?? ''}}">
-		        <a class="nav-link disabled" href="/contratos">Contratos</a>
+		      <li class="nav-item {{  $contracts ?? ''}}">
+		        <a class="nav-link" href="/adminContratos">Contratos</a>
 		      </li>
 		      <li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle {{  $nodos ?? ''}}" href="#" id="nodosNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

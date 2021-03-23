@@ -27,4 +27,8 @@ class Panel extends Model
     {
         return $this->belongsToMany(Barrio::class, 'Panel_has_barrios', 'panel_id', 'barrio_id');
     }
+    public function getResumida()
+    {
+        return $this->ssid . ', ' . $this->relEquipo->ip;
+    }
 }// fin de la clase

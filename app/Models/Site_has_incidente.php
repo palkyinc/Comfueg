@@ -110,7 +110,6 @@ class Site_has_incidente extends Model
     {
         $respuesta = explode('+', date("c", strtotime($date)));
         return ($respuesta[0]);
-
     }
     public function inicioDateTimeLocal ()
     {

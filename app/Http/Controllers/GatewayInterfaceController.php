@@ -264,6 +264,7 @@ class GatewayInterfaceController extends Controller
                 $apiMikro->modifyInterfaceListMember(['numbers' => $numbers], 'remove');
             }
             $apiMikro->modifyVlan(['numbers' => $elemento['.id']], 'remove');
+            $respuesta[] = $elemento['name'] . ' eliminada correctamente';
         } 
         else 
             {
