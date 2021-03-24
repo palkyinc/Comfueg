@@ -79,17 +79,19 @@ $mostrarSololectura = true;
                     <label for="created_at">Alta: </label>
                     <input id="created_at" type="datetime-local" name="created_at" value="{{$elemento->inicioDateTimeLocal()}}" class="form-control">
                 </div>
+                <div class="form-group col-md-4">
+                    <label for="coordenadas">Coordenadas: </label>
+                    <input id="coordenadas" type="text" name="coordenadas" value="{{$elemento->relDireccion->coordenadas}}" class="form-control">
+                </div>
                 <div class="form-group col-md-2">
                 </div>
             <div class="form-group col-md-2">
+                @if ($elemento->activo)
+                    <input class="form-check-input" type="checkbox" name="activo" id="flexSwitchCheckChecked" checked>
+                @else
+                    <input class="form-check-input" type="checkbox" name="activo" id="flexSwitchCheckChecked">
+                @endif
                 <label class="form-check-label" for="flexSwitchCheckChecked">Habilitado:</label>
-                <div class="form-check col-4">
-                    @if ($elemento->activo)
-                        <input class="form-check-input" type="checkbox" name="activo" id="flexSwitchCheckChecked" checked>
-                    @else
-                        <input class="form-check-input" type="checkbox" name="activo" id="flexSwitchCheckChecked">
-                    @endif
-                </div>
             </div>
         </div>
             <input type="text" name="id" value="{{$elemento->id}}" hidden>

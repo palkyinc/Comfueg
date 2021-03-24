@@ -7,19 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
-## [0.6.1] - 2021-XX-XX
+## [0.6.4] - 2021-XX-XX
 ### Added
-
+1.	Implemetar baja de Plan
 ### Changed
 1.	Cambiar en vista admin interfaces no parace el gateway seleccionado correctamente.
-2.		(Corregido) Corregir en programacion de Proveedores no graba con Kb.
-3.		(Corregido) Al crear un server Hotspot lo crea disabled.
-4.	Undefined variable: respuesta al borrar una vlan
-5.		(Corregido). Undefined index: out-interface-list al agregar un sergundo proveedor (C:\inetpub\wwwroot\Comfueg\app\Custom\GatewayMikrotik.php:512)
-6.	Al cambiar Gateway en plan falta verificar que no hay contratos con este plan.
-7.		(Corregido) Error al crear Plan tree faltaba setear: packet-mark.
-
+2.	Undefined variable: respuesta al borrar una vlan
+3.	Al cambiar Gateway en plan falta verificar que no hay contratos con este plan.
+5.	al crear o midificar cliente no cambia el nom y ape a mayusculas.
 ### Removed
+
+## [0.6.3] - 2021-03-24
+### Added
+1.	Vista modificar contratos se agrega campo de coordenadas
+### Changed
+2.	Vista modificar contratos se restringe Equipos Cliente al propio o a los no asignados.
+
+## [0.6.1] - 2021-03-23
+### Added
+1. Agregar y modificar Contratos.
+### Changed
+1.	(Corregido) Corregir en programacion de Proveedores no graba con Kb.
+2.	(Corregido) Al crear un server Hotspot lo crea disabled.
+3.	(Corregido). Undefined index: out-interface-list al agregar un sergundo proveedor(C:\inetpub\wwwroot\Comfueg\app\Custom\GatewayMikrotik.php:512)
+4.	(Corregido) Error al crear Plan tree faltaba setear: packet-mark.
+
 
 ## [0.6.0] - 2021-03-22
 ### Added

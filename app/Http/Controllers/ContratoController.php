@@ -38,11 +38,18 @@ class ContratoController extends Controller
         dd($equipos);
     }
 
-    public function getDataCreateEdit ()
+    public function getDataCreateEdit ($id_equipo = null)
     {
         $clientes = Cliente::orderBy('apellido')->get();
         $direcciones = Direccion::orderBy('numero')->get();
         $equipos = Equipo::where('ip', '>', '10.10.1.0')->where('fecha_baja', null)->orderBy('nombre')->get();
+        foreach ($equipos as $key => $equipo)
+        {
+            if ( $id_equipo != $equipo->id && (Contrato::where('num_equipo', $equipo->id)->first()))
+            {
+                unset($equipos[$key]);
+            }
+        }
         $paneles = Panel::where('activo', true)->where('rol', 'PANEL')->orderBy('num_site')->get();
         $planes = Plan::where('gateway_id', '!=', null)->get();
         return ['contracts' => 'active', 'clientes' => $clientes, 'direcciones' => $direcciones,
@@ -89,6 +96,10 @@ class ContratoController extends Controller
         {
             $aValidar['activo'] = 'required';
         }
+        if (isset($request['coordenadas']))
+        {
+            $aValidar['coordenadas'] = 'required|min:22|max:26';
+        }
         $request->validate($aValidar);
     }
 
@@ -111,8 +122,8 @@ class ContratoController extends Controller
      */
     public function edit($id)
     {
-        $datos = $this->getDataCreateEdit();
         $elemento = Contrato::find($id);
+        $datos = $this->getDataCreateEdit($elemento->num_equipo);
         $datos['elemento'] =  $elemento;
         return view('modificarContrato', $datos);
         dd($elemento);
@@ -136,6 +147,12 @@ class ContratoController extends Controller
         $contrato->num_plan = $request['num_plan'];
         $contrato->created_at = $request['created_at'];
         $contrato->activo = (isset($request['activo']) && $request['activo'] == 'on') ? true : false;
+        if ($contrato->relDireccion->coordenadas !== $request['coordenadas'])
+        {
+            $direccion = Direccion::find($contrato->id_direccion);
+            $direccion->coordenadas = $request['coordenadas'];
+            $direccion->save();
+        }
         $respuesta[] = 'Se cambió con exito:';
         if ($contrato->num_cliente != $contrato->getOriginal()['num_cliente']) {
             $respuesta[] = ' Cliente: ' . $contrato->getOriginal()['num_cliente'] . ' POR ' . $contrato->num_cliente;
