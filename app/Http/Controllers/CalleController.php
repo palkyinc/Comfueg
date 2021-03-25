@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Calle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CalleController extends Controller
 {
@@ -68,6 +69,68 @@ class CalleController extends Controller
     {
         $Calle = Calle::find($id);
         return view('modificarCalle', ['elemento' => $Calle, 'datos' => 'active']);
+    }
+
+    public function prepararNombre ($candidata)
+    {
+        $letras = array('á', 'é', 'í', 'ó', 'ú', 'ñ', 'Ñ', 'º', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ü', 'ü', 'ö', 'Ö');
+        foreach ($letras as $letra)
+        {
+            if (stripos($candidata, $letra))
+            {
+                $explode = explode($letra, $candidata);
+                $masLargo = 0;
+                for ($i=0; $i < count($explode); $i++) 
+                {
+                    if (strlen($explode[$i]) > $masLargo)
+                    {
+                        $candidata = $explode[$i];
+                        $masLargo = strlen($explode[$i]);
+                    }
+                }
+            }
+        }
+        return strtolower($candidata);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Calle  $calle
+     * @return \Illuminate\Http\Response
+     */
+    public function updateGeneral ()
+    {
+        $file = fopen('calles.txt', 'r');
+        if ($file)
+        {
+            while(!feof($file))
+            {
+                $candidatas[] = explode(';', fgets($file))[0];
+            }
+            fclose($file);
+            foreach ($candidatas as $key => $candidata) 
+            {
+                $nombre = $this->prepararNombre($candidata);
+                if (Calle::whereRaw("LOWER(nombre) LIKE (?)", ["%{$nombre}%"])->first())
+                {
+                    unset($candidatas[$key]);
+                }
+            }
+            foreach ($candidatas as $candidata)
+            {
+                $calle = new Calle;
+                $calle->nombre = $candidata;
+                $calle->save();
+            }
+            $respuesta[] = 'Se agregaron: ' . (count($candidatas)) . ' Calles nuevas.';
+        }
+        else
+        {
+            $respuesta[] = 'Error al abrir el archcivo calles.txt';
+        }
+        return redirect('adminCalles')->with('mensaje', $respuesta);
     }
 
     /**

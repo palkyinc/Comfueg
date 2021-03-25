@@ -145,6 +145,7 @@ Route::get('/modificarCalle/{id}', [CalleController::class, 'edit'])->middleware
 Route::patch('/modificarCalle', [CalleController::class, 'update'])->middleware('auth');
 Route::get('/agregarCalle', [CalleController::class, 'create'])->middleware('auth');
 Route::post('/agregarCalle', [CalleController::class, 'store'])->middleware('auth');
+Route::get('/updateCalle', [CalleController::class, 'updateGeneral'])->middleware('auth');
 ####################
 ####### CRUD Ciudades
 Route::get('/adminCiudades', [CiudadController::class, 'index'])->middleware('auth');
