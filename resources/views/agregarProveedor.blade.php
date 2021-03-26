@@ -36,7 +36,7 @@ $mostrarSololectura = true;
                     </select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="bajada">Bajada (Kb.): </label>
+                    <label for="bajada">Bajada (Kb.)(Multiplos de 5Mb): </label>
                     <input type="number" name="bajada" value="{{old('bajada')}}" class="form-control">
                 </div>
                 <div class="form-group col-md-3">

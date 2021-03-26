@@ -16,11 +16,22 @@ class Proveedor extends Model
         return $this->belongsTo('App\Models\Panel', 'gateway_id', 'id');
     }
 
-    public function getProveedoresQuantity() // tambien Next Classifier
+    public function getProveedoresQuantity() // tambien Next Classifier|
     {
         $proveedores = Proveedor::select('classifier')->where('estado', true)->get();
         return count($proveedores);
         dd(count($proveedores));
+    }
+
+    public function getClassifiersQuantity() // tambien Next Classifier|
+    {
+        $proveedores = Proveedor::select('bajada')->where('estado', true)->get();
+        $total = 0;
+        foreach ($proveedores as $proveedor)
+        {
+            $total += $proveedor->bajada;
+        }
+        return round($total/5120);
     }
 
     public function getNextInterface ()
@@ -78,5 +89,16 @@ class Proveedor extends Model
             $tot_subida += $value->subida; 
         }
         return ['bajada' => $tot_bajada, 'subida' => $tot_subida];
+    }
+
+    public function getInterfaceName ()
+    {
+        $apiMikro = GatewayMikrotik::getConnection($this->relGateway->relEquipo->ip, $this->relGateway->relEquipo->getUsuario(), $this->relGateway->relEquipo->getPassword());
+        if ($apiMikro)
+        {
+            $interface = $apiMikro->getDatosEthernet($this->interface, $this->esVlan)['name'];
+            unset($apiMikro);
+            return($interface);
+        }
     }
 }

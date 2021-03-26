@@ -17,9 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5.	al crear o midificar cliente no cambia el nom y ape a mayusculas.
 ### Removed
 
+## [0.6.4] - 2021-XX-XX
+### Changed
+1. 	Se arreglaron bugs en agregar y modificar proveedores.
+2.	Se implemento Classifiers para proveedores con base de 5Mb.
+
 ## [0.6.3] - 2021-03-24
 ### Added
-1.	Vista modificar contratos se agrega campo de coordenadas
+1.	Vista modificar contratos se agrega campo de coordenadas.
+2.	Agregado updateCalles con archivo calles.txt.
 ### Changed
 2.	Vista modificar contratos se restringe Equipos Cliente al propio o a los no asignados.
 

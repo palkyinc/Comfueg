@@ -122,6 +122,7 @@ Route::get('/agregarContrato', [ContratoController::class, 'create'])->middlewar
 Route::post('/agregarContrato', [ContratoController::class, 'store'])->middleware('auth');
 Route::get('/modificarContrato/{id}', [ContratoController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarContrato', [ContratoController::class, 'update'])->middleware('auth');
+Route::get('/tareaProgramada', [ContratoController::class, 'cronTask']);
 ####################
 ####### CRUD Antenas
 Route::get('/adminAntenas', [AntenaController::class, 'index'])->middleware('auth');

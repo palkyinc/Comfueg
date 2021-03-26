@@ -80,7 +80,7 @@ class ProveedoresController extends Controller
         $request->validate(
             [
                 'nombre' => 'required|min:2|max:30',
-                'interface' => 'required|min:1|max:4',
+                'interface' => 'required|min:1|max:6',
                 'estado' => 'required|boolean',
                 'bajada' => 'required|min:1|max:99999',
                 'subida' => 'required|min:1|max:99999',
@@ -236,6 +236,7 @@ class ProveedoresController extends Controller
         {
             $sinActualizar->reordenarClassifiers();
             $totales = $sinActualizar->reordenarTotales();
+            $totalClassifiers = $sinActualizar->getClassifiersQuantity();
             $gateway = Panel::find($sinActualizar->gateway_id);
             $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
             if ($apiMikro) 
@@ -245,15 +246,18 @@ class ProveedoresController extends Controller
                                                 ['numbers' => $numbers['up'], 'pcq-rate' => $totales['subida'] . 'K'], 'set');
                 $respuesta[] = ($apiMikro->checkNat() ? 'Regla de NAT confirmada.' : 'Se creó regla de NAT.');
                 $apiMikro->removeAllProveedores();
-                $proveedoresActualizar = Proveedor::where('gateway_id', $sinActualizar->gateway_id)->get();
+                $proveedoresActualizar = Proveedor::where('gateway_id', $sinActualizar->gateway_id)
+                                                    ->where('estado', true)
+                                                    ->get();
+                $pointerClassifier = 0;
                 foreach ($proveedoresActualizar as $proveedor)
                 {
-                    if ($proveedor->estado)
-                    {
-                        $apiMikro->modifyProveedor($proveedor, 'add');
-                    }
+                    $cantClassifiers = round($proveedor->bajada/5120);
+                    //dd($cantClassifiers);
+			        $apiMikro->modifyProveedor($proveedor, 'add', $totalClassifiers, $cantClassifiers, $pointerClassifier);
                     $proveedor->sinActualizar = false;
                     $proveedor->save();
+                    $pointerClassifier += $cantClassifiers;
                 }
                 $respuesta[] = 'Gateways Actualizados!!';
                 unset($apiMikro);

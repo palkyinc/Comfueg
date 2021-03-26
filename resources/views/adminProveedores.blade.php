@@ -41,6 +41,7 @@ $mostrarSololectura = true;
                             <th scope="col"> Nombre </th>
                             <th scope="col"> Bajada/Subida (Kb)</th>
                             <th scope="col"> Interface </th>
+                            <th scope="col"> DNS recursión </th>
                             <th scope="col"> Gateway </th>
                             <th scope="col"> Estado </th>
                             <th scope="col"> En Linea </th>
@@ -62,7 +63,8 @@ $mostrarSololectura = true;
                             <th scope="row"> {{$proveedor->id}}</th>
                             <td>{{$proveedor->nombre}}</td>
                             <td>{{$proveedor->bajada}}/{{$proveedor->subida}}</td>
-                            <td>{{$proveedor->interface}}</td>
+                            <td>{{$proveedor->getInterfaceName()}}</td>
+                            <td>{{$proveedor->dns}}</td>
                             <td>{{$proveedor->relGateway->relEquipo->nombre}}</td>
                             @if ($proveedor->estado)
                                 <td>Habilitado</td>

@@ -524,7 +524,7 @@ class GatewayMikrotik extends RouterosAPI
 
 	#########   PROVEEDORES 	#####################
 
-	public function modifyProveedor(Proveedor $proveedor, $action)
+	public function modifyProveedor(Proveedor $proveedor, $action, $totalClassifiers, $cantClassifiers, $pointerClassifier)
 	{
 		if ($action == 'add')
 		{
@@ -541,16 +541,20 @@ class GatewayMikrotik extends RouterosAPI
 															'new-connection-mark' => $interface . '_conn',
 															'passthrough' => 'yes',
 															'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam' ]);
-			$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'prerouting',
+			for ($i=0; $i < $cantClassifiers; $i++)
+			{ 
+				$this->comm('/ip/firewall/mangle/' . $action, [	
+															'chain' => 'prerouting',
 															'src-address' => '10.10.0.0/16',
 															'in-interface-list' => 'LAN',
 															'connection-state' => 'established,related,new',
-															'per-connection-classifier' => 'both-addresses:' . $proveedor->getProveedoresQuantity() . '/' . $proveedor->classifier,
+															'per-connection-classifier' => 'both-addresses:' . $totalClassifiers . '/' . ($pointerClassifier + $i),
 															'dst-address-type' => '!local',
 															'action' => 'mark-connection',
 															'new-connection-mark' => $interface . '_conn',
 															'passthrough' => 'yes',
 															'comment' => $proveedor->id . ';proveedor_id;B;addedBySlam']);
+			}
 			$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'prerouting',
 															'in-interface-list' => 'LAN',
 															'connection-mark' => $interface . '_conn',
