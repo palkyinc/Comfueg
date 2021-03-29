@@ -43,7 +43,7 @@ class GatewayInterfaceController extends Controller
                     }
                 }
             }
-        return view('adminInterfaces', ['gateways' => $gateways, 'datos' => 'active', 'elementos' => $elementos['rtas'], 'vlans' => $elementos['vlans'], 'gateway_id' => $gateway_id]);
+        return view('adminInterfaces', ['gateways' => $gateways, 'providers' => 'active', 'elementos' => $elementos['rtas'], 'vlans' => $elementos['vlans'], 'gateway_id' => $gateway_id]);
         dd($elementos);
     }
 
@@ -63,7 +63,7 @@ class GatewayInterfaceController extends Controller
             dd('error al conectarse al gateway');
         }
         unset($apiMikro);
-        return view('agregarInterface', ['interfaces' => $interfaces, 'datos' => 'active', 'gateway_id' => $gateway_id]);
+        return view('agregarInterface', ['interfaces' => $interfaces, 'providers' => 'active', 'gateway_id' => $gateway_id]);
         dd($gateway_id);
     }
 
@@ -163,7 +163,7 @@ class GatewayInterfaceController extends Controller
                 dd('error al conectarse al gateway');
             }
         //dd($elemento);
-        return view('modificarInterface', ['interfaces' => $interfaces , 'elemento' => $elemento, 'datos' => 'active', 'gateway_id' =>$gateway_id, 'esVlan' => $esVlan]);
+        return view('modificarInterface', ['interfaces' => $interfaces , 'elemento' => $elemento, 'providers' => 'active', 'gateway_id' =>$gateway_id, 'esVlan' => $esVlan]);
     }
 
     /**

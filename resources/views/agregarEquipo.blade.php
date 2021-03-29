@@ -14,7 +14,7 @@ $mostrarSololectura = true;
             <input type="text" name="nombre" value="{{old('nombre')}}" maxlength="45" class="form-control" id="nombre">
         </div>
         <div class="form-group col-md-3">
-            <label for="num_dispositivo">Dispositivo: </label>
+            <label for="num_dispositivo">Artículo: </label>
             <select class="form-control" name="num_dispositivo" id="num_dispositivo">
                 <option value="">Seleccione un Dispositivo...</option>
                 @foreach ($dispositivos as $dispositivo)

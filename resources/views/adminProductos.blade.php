@@ -5,7 +5,7 @@
 $mostrarSololectura = true;
 @endphp
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
-                        <h2 class="mx-3">Administración de Productos</h2>
+                        <h2 class="mx-3">Administración de Artículos</h2>
                         <label for="modelo" class="mx-3">Modelo</label>
                         <input type="text" name="modelo" class="form-control mx-3" id="modelo">
                         <label for="cod_comfueg" class="mx-3">Código comfueg</label>
@@ -24,7 +24,7 @@ $mostrarSololectura = true;
 <div class="table-responsive">
                 
                 <table class="table table-sm table-bordered table-hover">
-                    <caption>Listado de Productos</caption>
+                    <caption>Listado de Artículos</caption>
                     <thead class="thead-light">
                         <tr>
                             <th scope="col"> Id </th>

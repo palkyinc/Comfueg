@@ -31,7 +31,6 @@ class PruebaController extends Controller
         $panel->clientes = $status['wireless']['count'];
         $panel->canal = substr($status['wireless']['frequency'], 0, 4);
         $panel->save();
-        $prueba->ip_equipo = $panel->relEquipo->ip;
         $statusLAN = 3;
         $rta =  [
             'status' => $prueba->contactado = 1,
@@ -64,10 +63,12 @@ class PruebaController extends Controller
             'statusLan' => $statusLAN
         ];
         $prueba->lan_conectado = ($statusLAN === 0) ? 0 : 1;
-        $prueba->user_id = auth()->user()->id ?? null;
     } else {
+        $prueba->ip_equipo = 
         $rta = ['status' => $prueba->contactado = 0];
     }
+    $prueba->user_id = auth()->user()->id ?? null;
+    $prueba->ip_equipo = $panel->relEquipo->ip;
     $prueba->save();
     return $rta;
     }

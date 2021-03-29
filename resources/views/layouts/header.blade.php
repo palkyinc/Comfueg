@@ -25,16 +25,21 @@
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 			</button>
-		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		  <div class="collapse navbar-collapse">
 		    <ul class="navbar-nav mr-auto">
 		      <li class="nav-item {{  $principal ?? ''}}">
 		        <a class="nav-link" href="/inicio">Principal</a>
 		      </li>
-		      <li class="nav-item {{  $contracts ?? ''}}">
-		        <a class="nav-link" href="/adminContratos">Contratos</a>
-		      </li>
+		    <li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle {{  $contracts ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Contratos
+				</a>
+				<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
+					<a class="dropdown-item" href="/adminContratos">Contratos</a>
+				</div>
+			</li>	
 		      <li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle {{  $nodos ?? ''}}" href="#" id="nodosNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<a class="nav-link dropdown-toggle {{  $nodos ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				Nodos
 				</a>
 				<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
@@ -45,7 +50,17 @@
 				</div>
 			</li>
 			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle {{ $datos ?? ''}}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<a class="nav-link dropdown-toggle {{  $providers ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Proveedores
+				</a>
+				<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
+					<a class="dropdown-item" href="/adminInterfaces">Interfaces</a>
+					<a class="dropdown-item" href="/adminProveedores">Proveedores</a>
+					<a class="dropdown-item" href="/adminPlanes">Planes</a>
+				</div>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle {{ $datos ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Datos
 		        </a>
 		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -57,18 +72,15 @@
 		          <a class="dropdown-item" href="/adminCodigosDeArea">Códigos de Área</a>
 		          <a class="dropdown-item" href="/adminDirecciones">Direcciones</a>
 		          <a class="dropdown-item" href="/adminEquipos">Equipos</a>
-		          <a class="dropdown-item" href="/adminInterfaces">Interfaces</a>
 		          <a class="dropdown-item" href="/adminPaneles">Dispositivos</a>
-		          <a class="dropdown-item" href="/adminProductos">Productos</a>
-		          <a class="dropdown-item" href="/adminProveedores">Proveedores</a>
-		          <a class="dropdown-item" href="/adminPlanes">Planes</a>
+		          <a class="dropdown-item" href="/adminProductos">Artículos</a>
 		          <a class="dropdown-item" href="/adminSites">Sitios</a>
 		          <div class="dropdown-divider"></div>
 		          <a class="dropdown-item" href="/adminClientes">Clientes</a>
 		        </div>
 			</li>
 			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle {{ $sistema ?? ''}}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<a class="nav-link dropdown-toggle {{ $sistema ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Sistema
 		        </a>
 		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -82,7 +94,7 @@
 		      </li>
 		    </ul>
 		  </div>
-		    <div class="collapse navbar-collapse" id="navbarSupportedContent2">
+		    <div class="collapse navbar-collapse">
 		  	<a class="navbar-brand" href="#">
 			    <img src="/img/miniLogoCF.jpg" width="30" height="30" class="d-inline-block align-top" alt="logotipo" loading="lazy">
 			    Comunicaciones Fueguinas SRL
@@ -98,7 +110,7 @@
 				@endif
 			@else
 				<div class="nav-item dropdown">
-					<a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
 						{{ Auth::user()->name }}
 					</a>
 

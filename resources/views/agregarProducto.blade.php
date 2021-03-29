@@ -4,7 +4,7 @@
 @php
 $mostrarSololectura = true;
 @endphp
-<h3>Agregar Producto nuevo</h3>
+<h3>Agregar Artículo nuevo</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarProducto" method="post">
         @csrf

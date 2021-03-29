@@ -27,7 +27,7 @@ class PlanController extends Controller
                 $respuesta[] = 'El plan ' . $plan->nombre . ' debe reconciliarse. Debe borrar el gateway y volver a configurarlo.';
             }
         }
-        return view('adminPlanes', ['planes' => $planes, 'datos' => 'active', 'warning' => $respuesta]);
+        return view('adminPlanes', ['planes' => $planes, 'providers' => 'active', 'warning' => $respuesta]);
     }
 
     /**
@@ -37,7 +37,7 @@ class PlanController extends Controller
      */
     public function create()
     {
-        return view('agregarPlan', ['datos' => 'active']);
+        return view('agregarPlan', ['providers' => 'active']);
     }
 
     /**
@@ -80,7 +80,7 @@ class PlanController extends Controller
     {
         $Plan = Plan::find($id);
         $gateway = Panel::where('rol','GATEWAY')->get();
-        return view('modificarPlan', ['elemento' => $Plan, 'gateways' => $gateway, 'datos' => 'active']);
+        return view('modificarPlan', ['elemento' => $Plan, 'gateways' => $gateway, 'providers' => 'active']);
     }
 
     public function validar(Request $request)

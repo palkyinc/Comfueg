@@ -115,8 +115,8 @@ class ClienteController extends Controller
      */
     public function update(Request $request)
     {
-        $nombre = $request->input('nombre');
-        $apellido = $request->input('apellido');
+        $nombre = ucfirst(strtolower($request->input('nombre')));
+        $apellido = strtoupper($request->input('apellido'));
         $cod_area_tel = $request->input('cod_area_tel');
         $telefono = $request->input('telefono');
         $cod_area_cel = $request->input('cod_area_cel');

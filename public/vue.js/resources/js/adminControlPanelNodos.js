@@ -16,6 +16,7 @@ const vm = new Vue({
 				tabla.deleteRow(i);
 			}
 			this.listaPaneles.forEach(element => {
+				//console.log(this.flagBuscando);
 				this.flagBuscando--;
 				fetch('http://' + website + '/panelTest/' + element.ip)
 				.then(response => response.json())

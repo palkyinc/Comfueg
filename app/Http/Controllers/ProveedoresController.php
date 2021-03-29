@@ -32,7 +32,7 @@ class ProveedoresController extends Controller
             }
         }
         $gateways = Panel::where('rol', 'GATEWAY')->get();
-        return view('adminProveedores', ['datos' => 'active', 'proveedores' => $proveedores, 'gateways' => $gateways, 'actualizar' => $actualizar]);
+        return view('adminProveedores', ['providers' => 'active', 'proveedores' => $proveedores, 'gateways' => $gateways, 'actualizar' => $actualizar]);
     }
 
     /**
@@ -43,7 +43,7 @@ class ProveedoresController extends Controller
     public function preCreate()
     {
         $gateways = Panel::where('rol', 'GATEWAY')->get();
-        return view ('agregarProveedorGateway', ['datos' => 'active', 'gateways' => $gateways]);
+        return view ('agregarProveedorGateway', ['providers' => 'active', 'gateways' => $gateways]);
     }
     /**
      * Show the form for creating a new resource.
@@ -72,7 +72,7 @@ class ProveedoresController extends Controller
                 }
             }
         }
-        return view ('agregarProveedor', ['interfaces' => $interfaces[0],'datos' => 'active', 'gateway' => $gateway]);
+        return view ('agregarProveedor', ['interfaces' => $interfaces[0],'providers' => 'active', 'gateway' => $gateway]);
     }
 
     public function validar(Request $request)
@@ -161,7 +161,7 @@ class ProveedoresController extends Controller
                 }
             }
         }
-        return view('modificarProveedor', ['interfaces' => $interfaces[0], 'proveedor' => $proveedor, 'datos' => 'active']);
+        return view('modificarProveedor', ['interfaces' => $interfaces[0], 'proveedor' => $proveedor, 'providers' => 'active']);
     }
 
     /**

@@ -70,7 +70,7 @@ class DireccionController extends Controller
         if ($existe = Direccion::select('id')->where([['id_calle', $Direccion->id_calle ], ['numero', $Direccion->numero]])->first())
         {
             //dd($existe->id);
-            $respuesta[] = 'Dirección ya EXISTE. Es la ID: ' . $existe->id;
+            $respuesta[] = 'La dirección ya EXISTE. Es la ID: ' . $existe->id;
         } else  {
                 $Direccion->save();
                 $respuesta[] = 'Dirección se creo correctamente';
