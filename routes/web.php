@@ -51,8 +51,8 @@ Route::get('/test/{palabra}', function ($palabra) {
     dd($desencriptado);
 });
 ### Route index
-Route::get('/', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);});
-Route::get('/inicio', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos(), 'principal' => 'active']);});
+Route::get('/', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
+Route::get('/inicio', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos(), 'principal' => 'active']);})->middleware('auth');
 Route::get('/contratos', function (){return view('construcción', ['contratos' => 'active']);});
 Route::get('/charts', function (){return view('charts');});
 ####################
@@ -61,6 +61,8 @@ Route::get('/charts', function (){return view('charts');});
 Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
 Route::get('/allPanels', [PruebaController::class, 'allPanels'])->middleware('auth');
 Route::get('/adminControlPanelNodos', [PruebaController::class, 'index'])->middleware('auth');
+Route::get('/adminPanelLogs', [PruebaController::class, 'indexLogs'])->middleware('auth');
+
 ####################
 ####### Panel tiene Barrio CRUD
 Route::get('/adminPanelhasBarrio', [Panel_has_barrioController::class, 'index'])->middleware('auth');
@@ -122,7 +124,6 @@ Route::get('/agregarContrato', [ContratoController::class, 'create'])->middlewar
 Route::post('/agregarContrato', [ContratoController::class, 'store'])->middleware('auth');
 Route::get('/modificarContrato/{id}', [ContratoController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarContrato', [ContratoController::class, 'update'])->middleware('auth');
-Route::get('/tareaProgramada', [ContratoController::class, 'cronTask']);
 ####################
 ####### CRUD Antenas
 Route::get('/adminAntenas', [AntenaController::class, 'index'])->middleware('auth');

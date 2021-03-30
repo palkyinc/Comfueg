@@ -7,17 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
-## [0.6.4] - 2021-XX-XX
+## [0.6.x] - 2021-XX-XX
 ### Added
 1.	Implemetar baja de Plan
 ### Changed
 1.	Cambiar en vista admin interfaces no parace el gateway seleccionado correctamente.
 2.	Undefined variable: respuesta al borrar una vlan
 3.	Al cambiar Gateway en plan falta verificar que no hay contratos con este plan.
-5.	al crear o midificar cliente no cambia el nom y ape a mayusculas.
 ### Removed
 
-## [0.6.4] - 2021-XX-XX
+## [0.6.6] - 2021-03-30
+### Added
+1. Vista de Historial de test panel.
+2. se agrega cron para captura de datos de trafico de navegación de contratos. Se debe configurar tarea para correr readBytes.bat una vez por minuto en el servidor.
+
+## [0.6.5] - 2021-03-29
+### Changed
+1.	Se corrige bug en Status Paneles que generaba errores al momento de grabar en base de datos.
+
+## [0.6.4] - 2021-03-26
 ### Changed
 1. 	Se arreglaron bugs en agregar y modificar proveedores.
 2.	Se implemento Classifiers para proveedores con base de 5Mb.

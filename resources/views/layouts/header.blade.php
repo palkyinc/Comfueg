@@ -36,6 +36,8 @@
 				</a>
 				<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
 					<a class="dropdown-item" href="/adminContratos">Contratos</a>
+					<a class="dropdown-item disabled" href="">Alta de Contratos</a>
+					<a class="dropdown-item disabled" href="">Status de Contrato</a>
 				</div>
 			</li>	
 		      <li class="nav-item dropdown">
@@ -44,6 +46,7 @@
 				</a>
 				<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
 					<a class="dropdown-item" href="/adminControlPanelNodos">Status Paneles</a>
+					<a class="dropdown-item" href="/adminPanelLogs">Historial Test Paneles</a>
 					<a class="dropdown-item" href="/adminNodos">Nodos Info</a>
 					<a class="dropdown-item" href="/adminIncidencias">Incidencias Globales</a>
 				  	<a class="dropdown-item" href="/adminDeudasTecnica">Deuda Técnica</a>
@@ -89,7 +92,7 @@
 					<a class="dropdown-item" href="/adminPermissions">Permisos</a>
 					<a class="dropdown-item" href="/adminMailGroups">Grupos de Mail</a>
 					<a class="dropdown-item" href="/adminModelos">Entidades</a>
-					<a class="dropdown-item disabled" href="/adminLogs">Logs</a>
+					<a class="dropdown-item disabled" href="/adminLogs">Logs de Sistema</a>
 		        </div>
 		      </li>
 		    </ul>

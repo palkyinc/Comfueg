@@ -11,6 +11,8 @@ use App\Models\Equipo;
 use App\Models\Panel;
 use App\Models\Plan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 
 class ContratoController extends Controller
 {
@@ -324,61 +326,5 @@ class ContratoController extends Controller
                 $respuesta = 'ERROR: No se pudo realizar el cambio.';
             }
         return($respuesta);
-    }
-    
-    ################# Tareas programadas  #########################
-
-    public function cronTask()
-    {
-        
-        $gateways = $this->getGateways();
-        foreach ($gateways as $elemento)
-        {
-            $gateway = Panel::find($elemento);
-            $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
-            if ($apiMikro) 
-            {
-                $allData = $apiMikro->getGatewayData();
-                dd($allData);
-            }
-            else {
-                    {
-                        return false;
-                    }
-            }
-        }
-        /* $file = fopen('/inetpub/wwwroot/Comfueg/public/Crons/cron.txt', 'w+');
-        fwrite($file, 'Hola 3');
-        fclose($file); */
-    }
-
-    public function getGateways ()
-    {
-        $planes = Plan::select('gateway_id')->where('gateway_id', '!=', null)->get();
-        $gateways = null;
-        foreach ($planes as $plan)
-        {
-            if ($gateways === null)
-            {
-                $gateways[] = $plan->gateway_id;
-            }
-            else
-                {
-                    $existe = false;
-                    foreach ($gateways as $gateway)
-                    {
-                        if ($gateway == $plan->gateway_id)
-                        {
-                            $existe = true;
-                        }
-                    }
-                    if (!$existe)
-                    {
-                        $gateways[] = $plan->gateway_id;
-                    }
-
-                }
-        }
-        return $gateways;
     }
 }

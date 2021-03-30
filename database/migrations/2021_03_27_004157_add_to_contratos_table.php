@@ -16,7 +16,7 @@ class AddToContratosTable extends Migration
         Schema::table('contratos', function (Blueprint $table)
         {
             $table->boolean('baja');
-            $table->unsignedSmallInteger('router_id');
+            $table->unsignedSmallInteger('router_id')->nullable();
             $table->foreign('router_id')->references('id')->on('equipos')->constrained()->onUpdate('cascade')
             ->onDelete('restrict');
         });

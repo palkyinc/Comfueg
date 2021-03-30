@@ -182,6 +182,25 @@ class PruebaController extends Controller
             'vuejs' => Config::get('constants.VUEJS_VERSION')
         ]);
     }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexLogs(Request $request) 
+    {
+        $logs = Prueba::where('ip_equipo', $request['panel_ip'])->orderBy('created_at', 'DESC')->get();
+        //dd($logs);
+        $actual = $request['panel_ip'];
+        $paneles = Panel::whereIn('rol', ['PANEL', 'PTPAP', 'PTPST'])->orderBy('num_site')->get();
+        return view('adminPanelLogs', [
+            'nodos' => 'active',
+            'paneles' => $paneles,
+            'logs' => $logs,
+            'actual' => $actual
+            ]);
+    }
 
     /**
      * Show the form for creating a new resource.
