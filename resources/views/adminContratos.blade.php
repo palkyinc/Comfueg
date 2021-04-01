@@ -56,9 +56,12 @@ $mostrarSololectura = true;
                                 <td>
                                     @can('contratos_edit')
                                     <a href="/modificarContrato/{{ $contrato->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
-                                    <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                        <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                     </a>
                                     @endcan
+                                    <a href="#" class="margenAbajo btn btn-link" data-toggle="modal" data-target="#staticBackdrop{{$contrato->id}}" title="Consumo Descargas">
+                                        <img src="imagenes/iconfinder_graph_3338898.svg" alt="imagen de cosumo cliente" height="20px">
+                                    </a>
                                 </td>
                             
                             </tr>
@@ -67,6 +70,7 @@ $mostrarSololectura = true;
                 </table>
 </div>
         {{ $contratos->links() }}
+@include('modals.consumosCliente')
 @endcan
 @include('sinPermiso')
 @endsection

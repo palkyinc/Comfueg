@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 3.	Al cambiar Gateway en plan falta verificar que no hay contratos con este plan.
 ### Removed
 
+## [0.6.7] - 2021-03-31
+### Added
+1. Se agrega boton de visualizar datos de navegacion en Contratos para poder ver navegación del cliente.
+
 ## [0.6.6] - 2021-03-30
 ### Added
 1. Vista de Historial de test panel.

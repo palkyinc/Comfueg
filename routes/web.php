@@ -29,6 +29,8 @@ use App\Http\Controllers\SiteHasIncidenteController;
 use App\Models\Site_has_incidente;
 ####TEST
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\File;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,16 +42,13 @@ use Illuminate\Support\Facades\Crypt;
 |
 */
 ## Route Inicial Default
-Route::get('/test/{palabra}', function ($palabra) {
-    $encriptado = Crypt::encrypt($palabra);
-    dd($encriptado);
-    try {
-        $desencriptado = Crypt::decrypt($encriptado);
-    } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
-        dd($e);
-    }
-    dd($desencriptado);
-});
+Route::get('/test', function () {
+        $fecha_actual = date('Ymd');
+        dd(date('Ymd', strtotime($fecha_actual."- 1 days")));
+        dd(date('Ymd', strtotime($fecha_actual."- 1 week")));
+        dd(date('Ymd', strtotime($fecha_actual."- 1 month")));
+        dd(date('Ymd', strtotime($fecha_actual."- 1 year")));
+       });
 ### Route index
 Route::get('/', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/inicio', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos(), 'principal' => 'active']);})->middleware('auth');
