@@ -7,8 +7,13 @@ $mostrarSololectura = true;
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración de Interfaces</h2>
                         <select class="form-control" name="gateway_id" id="gateway_id">
+                            <option value="">Seleccione un Gateway</option>
                             @foreach ($gateways as $gateway)
+                                @if ($gateway_id && $gateway_id == $gateway->id)
+                                    <option value="{{$gateway->id}}" selected>{{$gateway->relEquipo->nombre}}</option>
+                                @else
                                     <option value="{{$gateway->id}}">{{$gateway->relEquipo->nombre}}</option>
+                                @endif
                             @endforeach
                         </select>
                         <button type="submit" class="btn btn-primary mx-3">Buscar</button>
@@ -25,7 +30,7 @@ $mostrarSololectura = true;
 <div class="table-responsive">
                 
                 <table class="table table-sm table-bordered table-hover">
-                    <caption>Listado de Interfaces Físicas</caption>
+                    <caption>Listado de Interfaces </caption>
                     <thead class="thead-light">
                         <tr>
                             <th scope="col"> Id </th>

@@ -32,7 +32,6 @@ $mostrarSololectura = true;
                     <caption>Listado de planes</caption>
                     <thead class="thead-light">
                         <tr>
-                            <th scope="col"> Id </th>
                             <th scope="col"> Nombre </th>
                             <th scope="col"> Bajada (Kb) </th>
                             <th scope="col"> Subida (Kb)</th>
@@ -55,36 +54,35 @@ $mostrarSololectura = true;
                                 <tr>
                             @endif
                                 
-                            <th scope="row"> {{$plan->id}}</th>
-                            <td>{{$plan->nombre}}</td>
-                            <td>{{$plan->bajada}}</td>
-                            <td>{{$plan->subida}}</td>
-                            <td>{{$plan->descripcion}}</td>
-                            @if (isset($plan->gateway_id))
-                                <td>{{$plan->relPanel->relEquipo->nombre}}</td>
-                            @else
-                                <td>No asignado</td>    
-                            @endif
-                            <td> 
-                                @can('planes_edit')
-                                <a href="/modificarPlan/{{$plan->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
-                                <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
-                                </a>
-                                @endcan
-                            </td>
-                            <td>
-                                @can('planes_create')
-                                @if ($plan->gateway_id == null)
-                                    <form method="post" action="/eliminarPlan/{{ $plan->id }}">
-                                    @csrf
-                                            @method('delete')
-                                            <button type="submit"><img src="/imagenes/iconfinder_basket_1814090.svg" 
-                                            alt="imagen de basket borrar" height="20px" title="Borrar Plan"></button>
-                                        </form>
-                                    @endcan
+                                <th  scope="row">{{$plan->nombre}}</th>
+                                <td>{{$plan->bajada}}</td>
+                                <td>{{$plan->subida}}</td>
+                                <td>{{$plan->descripcion}}</td>
+                                @if (isset($plan->gateway_id))
+                                    <td>{{$plan->relPanel->relEquipo->nombre}}</td>
+                                @else
+                                    <td>No asignado</td>    
                                 @endif
-                            </td>
-                            
+                                <td> 
+                                    @can('planes_edit')
+                                        <a href="/modificarPlan/{{$plan->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
+                                            <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                        </a>
+                                    @endcan
+                                </td>
+                                <td>
+                                    @can('planes_create')
+                                        @if ($plan->gateway_id == null)
+                                            <form method="post" action="/eliminarPlan/{{ $plan->id }}">
+                                            @csrf
+                                                @method('delete')
+                                                <button type="submit">
+                                                    <img src="/imagenes/iconfinder_basket_1814090.svg" alt="imagen de basket borrar" height="20px" title="Borrar Plan">
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @endcan
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

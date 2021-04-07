@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Panel;
 use App\Models\Plan;
+use App\Models\Contrato;
 use Illuminate\Http\Request;
 
 class PlanController extends Controller
@@ -80,7 +81,8 @@ class PlanController extends Controller
     {
         $Plan = Plan::find($id);
         $gateway = Panel::where('rol','GATEWAY')->get();
-        return view('modificarPlan', ['elemento' => $Plan, 'gateways' => $gateway, 'providers' => 'active']);
+        $gatewayReadonly = (count(Contrato::where('num_plan', $Plan->id)->get())) ? true : false;
+        return view('modificarPlan', ['elemento' => $Plan, 'gateways' => $gateway, 'providers' => 'active', 'gatewayReadonly' => $gatewayReadonly]);
     }
 
     public function validar(Request $request)
@@ -162,6 +164,5 @@ class PlanController extends Controller
         $respuesta[] = ' Se eliminó correctamente el plan: ' . $Plan->nombre;
         $Plan->delete();
         return redirect('adminPlanes')->with('mensaje', $respuesta);
-        dd($plan_id);
     }
 }

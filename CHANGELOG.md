@@ -9,12 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.6.x] - 2021-XX-XX
 ### Added
-1.	Implemetar baja de Plan
 ### Changed
-1.	Cambiar en vista admin interfaces no parace el gateway seleccionado correctamente.
 2.	Undefined variable: respuesta al borrar una vlan
-3.	Al cambiar Gateway en plan falta verificar que no hay contratos con este plan.
 ### Removed
+
+## [0.6.8] - 2021-04-06
+### Added
+1.	Implementa caja de rebusqueda en contratos.
+2.	Implementa Cron para generar archivo semanal.
+3.	Implemeta baja de Plan.
+4.	Implementa vista semanal de consumos.
+### Changed
+1.	CORREGIDO. Al cambiar Gateway en plan falta verificar que no hay contratos con este plan.
+2.	CORREGIDO. Cambiar en vista admin interfaces no parace el gateway seleccionado correctamente.
 
 ## [0.6.7] - 2021-03-31
 ### Added

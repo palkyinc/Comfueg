@@ -30,6 +30,8 @@ use App\Models\Site_has_incidente;
 ####TEST
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
+use App\Custom\CronFunciones;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -43,8 +45,10 @@ use Illuminate\Support\Facades\File;
 */
 ## Route Inicial Default
 Route::get('/test', function () {
-        $fecha_actual = date('Ymd');
-        dd(date('Ymd', strtotime($fecha_actual."- 1 days")));
+        dd(CronFunciones::getWeek());
+        for ($i=1; $i < 9; $i++) { 
+                (CronFunciones::generarArchivoSem($i));
+        }
         dd(date('Ymd', strtotime($fecha_actual."- 1 week")));
         dd(date('Ymd', strtotime($fecha_actual."- 1 month")));
         dd(date('Ymd', strtotime($fecha_actual."- 1 year")));
@@ -52,7 +56,7 @@ Route::get('/test', function () {
 ### Route index
 Route::get('/', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/inicio', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos(), 'principal' => 'active']);})->middleware('auth');
-Route::get('/contratos', function (){return view('construcción', ['contratos' => 'active']);});
+Route::get('/contratos', function (){return view('construccion', ['contratos' => 'active']);});
 Route::get('/charts', function (){return view('charts');});
 ####################
 ####### Gateway API rest Web services

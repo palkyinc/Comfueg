@@ -52,10 +52,8 @@ class AppServiceProvider extends ServiceProvider
             }
         });
         
-            $charts->register([
-                \App\Charts\SampleChart::class
-            ]);
-        
+        $charts->register([\App\Charts\SampleChart::class]);
+        $charts->register([\App\Charts\SemanalChart::class]);
     }
 
     private function implotar ($separador, $query)

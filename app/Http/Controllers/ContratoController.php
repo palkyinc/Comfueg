@@ -21,11 +21,30 @@ class ContratoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contratos = Contrato::paginate(10);
-        return view('adminContratos', ['contratos' => $contratos, 'contracts' => 'active']);
-        dd($clientes);
+        if(isset($request['cliente']))
+        {
+            $apellido = strtoupper($request->input('cliente'));
+            $clientes = Cliente::select("id")
+                ->whereRaw("UPPER(apellido) LIKE (?)", ["%{$apellido}%"])
+                ->get();
+            foreach ($clientes as $key => $cliente) 
+            {
+                if ($contrato = Contrato::where('num_cliente', $cliente->id)->first())
+                {
+                    $contratos[] = $contrato;
+                }
+            }
+            //dd($contratos);
+            $paginate = false;
+        }
+        else
+            {
+                $contratos = Contrato::paginate(10);
+                $paginate = true;
+            }
+        return view('adminContratos', ['contratos' => isset($contratos) ? $contratos : [], 'contracts' => 'active', 'paginate' => $paginate]);
     }
 
     /**

@@ -6,7 +6,7 @@ $mostrarSololectura = true;
 @endphp
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
                         <h2 class="mx-2">Administración de Contratos</h2>
-                        <label for="cliente" class="mx-2">Cliente</label>
+                        <label for="cliente" class="mx-2">Apellido del Cliente</label>
                         <input type="text" name="cliente" class="form-control mx-3" id="cliente">
                         <button type="submit" class="btn btn-primary mx-3">Enviar</button>
                     </form>
@@ -69,7 +69,9 @@ $mostrarSololectura = true;
                     </tbody>
                 </table>
 </div>
+    @if ($paginate)
         {{ $contratos->links() }}
+    @endif
 @include('modals.consumosCliente')
 @endcan
 @include('sinPermiso')

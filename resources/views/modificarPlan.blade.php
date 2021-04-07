@@ -27,10 +27,12 @@ $mostrarSololectura = true;
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-3">
-                <label for="gateway_id">Gateway: </label>
-                <select class="form-control" name="gateway_id">
-                    <option value="">Sin gateway</option>
+            <div class="form-group col-md-4">
+                <label for="gateway_id">Gateway:</label>
+                <select class="form-control" name="gateway_id" {{ ($gatewayReadonly) ? 'readonly' : ''}}>
+                    @if (!$gatewayReadonly)
+                        <option value="">Sin gateway</option>
+                    @endif
                     @foreach ($gateways as $gateway)
                         @if ($gateway->activo)
                             @if ($gateway->id != $elemento->gateway_id)
@@ -41,6 +43,7 @@ $mostrarSololectura = true;
                         @endif
                     @endforeach
                 </select>
+                <label for="gateway_id">{{ ($gatewayReadonly) ? '(Hay contratos con este plan)' : ''}}</label>
             </div>
         </div>    
         <div class="form-row">
