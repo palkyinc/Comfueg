@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
-## [0.6.x] - 2021-XX-XX
+## [0.6.9] - 2021-04-10
 ### Added
+1.	Implementa archivo total consumido en el mes.
 ### Changed
-2.	Undefined variable: respuesta al borrar una vlan
+1.	modifica Schedule para daily, le faltaba agregar el timezone.
+2.	Modifica problema al actualizar y borrar proveedores.
+3.	modifica problema al actualizar planes.
+4.	modificado problema al actualizar contratos.
 ### Removed
 
 ## [0.6.8] - 2021-04-06

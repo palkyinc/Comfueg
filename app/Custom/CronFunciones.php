@@ -102,6 +102,7 @@ abstract class CronFunciones
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $archivo = date('Ymd') . '.dat';
+        $archivoMes = date('Ym') . '-totMes.dat';
         $hora = date('H.i');
         $gateways = self::getGateways();
         foreach ($gateways as $elemento)
@@ -111,18 +112,37 @@ abstract class CronFunciones
             if ($apiMikro) 
             {
                 $allData = $apiMikro->getGatewayData();
+                unset($apiMikro);
+                ### abrir el archivo
+                ### leer el array -> convertor de json a array
+                if (file_exists('/inetpub/wwwroot/Comfueg/storage/Crons/' . $archivoMes))
+                {
+                        $file = fopen('/inetpub/wwwroot/Comfueg/storage/Crons/' . $archivoMes, 'r');
+                        $arrayTotMes = json_decode(fgets($file), true);
+                        fclose($file);
+                }
+                dd($arrayTotMes);
+                foreach ($allData['hotspotUser'] as $elemento)
+                {
+                        if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 
+                        {
+                                $arrayTotMes[$elemento['comment']] = $elemento['bytes-in'] + $elemento['bytes-out'];
+                                
+                        }
+                }
+                $file = fopen('/inetpub/wwwroot/Comfueg/storage/Crons/' . $archivoMes, 'w');
+                fwrite($file, json_encode($arrayTotMes));
+                fclose($file);
                 foreach ($allData['hotspotHost'] as $elemento)
                 {
                     if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 
                     {
-                        //dd($elemento['comment'] . ';' . $hora . ';' . $elemento['bytes-in'] . ';' . $elemento['bytes-out']);
                         File::append(
                                 storage_path('Crons/' . $archivo),
                                 $elemento['comment'] . ';' . $hora . ';' . $elemento['bytes-in'] . ';' . $elemento['bytes-out'] . PHP_EOL
                             );
                     }
                 }
-                unset($apiMikro);
             }
         }
     }

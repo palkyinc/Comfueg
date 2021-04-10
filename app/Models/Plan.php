@@ -76,6 +76,7 @@ class Plan extends Model
                         //si cambio nombre cargo
                         if (isset($array['bajada']))
                         {
+                            dd('hola');
                             $answerType = $apiMikro->getTypeNumbers($this->id);
                             $apiMikro->modificarPlanType(['numbers' => $answerType['down'], 'pcq-rate' => $this->bajada . 'K'], null, 'set');
                         }

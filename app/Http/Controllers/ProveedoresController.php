@@ -235,6 +235,7 @@ class ProveedoresController extends Controller
         while ($sinActualizar = Proveedor::where('sinActualizar', true)->first()) 
         {
             $sinActualizar->reordenarClassifiers();
+            //dd($sinActualizar);
             $totales = $sinActualizar->reordenarTotales();
             $totalClassifiers = $sinActualizar->getClassifiersQuantity();
             $gateway = Panel::find($sinActualizar->gateway_id);
@@ -259,6 +260,13 @@ class ProveedoresController extends Controller
                     $proveedor->save();
                     $pointerClassifier += $cantClassifiers;
                 }
+                $proveedoresActualizarUnable = Proveedor::where('gateway_id', $sinActualizar->gateway_id)
+                                                    ->where('estado', false)
+                                                    ->get();
+                foreach ($proveedoresActualizarUnable as $proveedor) {
+                    $proveedor->sinActualizar = false;
+                    $proveedor->save();
+                }
                 $respuesta[] = 'Gateways Actualizados!!';
                 unset($apiMikro);
             }
@@ -267,6 +275,7 @@ class ProveedoresController extends Controller
                 $respuesta [] = 'Error al instentar conectarse a ' . $gateway->relEquipo->nombre;
             }
         }
+        if (!isset($respuesta)) {$respuesta[] = 'Nada para actualizar';}
         return redirect('adminProveedores')->with('mensaje', $respuesta);
     }
 }

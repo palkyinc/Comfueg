@@ -176,19 +176,27 @@ class GatewayMikrotik extends RouterosAPI
 	{
 		$lanInterface = $this->getLanInterface();
 		$this->write('/ip/dhcp-server/print');
-		$dhcpServer = $this->parseResponse($this->read(false));
-		foreach ($dhcpServer as $value) {
-			if ($value['name'] == 'SlamServer' && $value['interface'] == $lanInterface)
+		$dhcpServers = $this->parseResponse($this->read(false));
+		foreach ($dhcpServers as $dhcpServer) {
+			if ($dhcpServer['name'] == 'SlamServer' && $dhcpServer['interface'] == $lanInterface)
 			{
 				$this->write('/ip/dhcp-server/network/print');
-				$network = $this->parseResponse($this->read(false));
-				foreach ($network as $value) {
-					if ($value['address'] == Config::get('constants.LAN_SEGMENT') && $value['gateway'] == $gateway_ip && $value['dns-server'] == $gateway_ip)
+				$networks = $this->parseResponse($this->read(false));
+				foreach ($networks as $network) {
+					if ($network['address'] == Config::get('constants.LAN_SEGMENT') && $network['gateway'] == $gateway_ip && $network['dns-server'] == $gateway_ip && $network['comment'] == 'addBySlam')
 					{
 						return true;
 					}
+					else
+						{
+							$this->comm('/ip/dhcp-server/network/remove', ['numbers' => $network['.id']]);
+						}
 				}
 			}
+			else
+				{
+					$this->comm('/ip/dhcp-server/network/remove', ['numbers' => $dhcpServer['.id']]);
+				}
 		}
 		if($lanInterface)
 		{
@@ -199,6 +207,7 @@ class GatewayMikrotik extends RouterosAPI
 												'disabled' => 'no']);
 			$this->comm('/ip/dhcp-server/network/add', ['address' => Config::get('constants.LAN_SEGMENT'),
 														'gateway' => $gateway_ip,
+														'comment' => 'addBySlam',
 														'dns-server' => $gateway_ip]);
 		}
 		return false;
@@ -332,7 +341,7 @@ class GatewayMikrotik extends RouterosAPI
 	{
 		$this->comm('/queue/tree/add', array(
 			"name"	=> "DOWNLOAD_" . strtoupper($nombre),
-			"packet-markname"	=> "DOWNLOAD_" . strtoupper($nombre),
+			"packet-mark"	=> "DOWNLOAD_" . strtoupper($nombre),
 			"parent"	=> $nombre == 'total' ? 'global' : 'DOWNLOAD_TOTAL',
 			"queue"	=> $nombre . "_down",
 			"comment"	=>  $id . "_down;Plan_id;addBySlam"

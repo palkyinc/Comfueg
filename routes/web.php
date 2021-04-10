@@ -45,9 +45,10 @@ use App\Custom\CronFunciones;
 */
 ## Route Inicial Default
 Route::get('/test', function () {
+        dd(CronFunciones::generarArchivoSem());
+        dd(CronFunciones::readDay());
         dd(CronFunciones::getWeek());
         for ($i=1; $i < 9; $i++) { 
-                (CronFunciones::generarArchivoSem($i));
         }
         dd(date('Ymd', strtotime($fecha_actual."- 1 week")));
         dd(date('Ymd', strtotime($fecha_actual."- 1 month")));

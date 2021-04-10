@@ -200,17 +200,16 @@ class ContratoController extends Controller
             $respuesta[] = ' Habilitado: ' . $contrato->getOriginal()['activo'] . ' POR ' . $contrato->activo;
             $momificar['activo'] = true;
         }
-        $contrato->save();
         if (isset($momificar['equipo']) || isset($momificar['plan']))
         {
-            $this->modifyContratoGateway($contrato);
+            $respuesta[] = $this->modifyContratoGateway($contrato);
         }
         if (isset($momificar['activo']))
         {
-            $this->changeStateContratoGateway($contrato);
+            $respuesta[] = $this->changeStateContratoGateway($contrato);
         }
+        $contrato->save();
         return redirect ('adminContratos')->with('mensaje', $respuesta);
-        dd($respuesta);
     }
 
     /**
@@ -255,7 +254,7 @@ class ContratoController extends Controller
             $apiMikro->addClient([
                 'name' => $contrato->relEquipo->ip,
                 'mac-address' => $contrato->relEquipo->mac_address,
-                'comment' => $contrato->id, ';contrati_id;A;addedBySlam',
+                'comment' => $contrato->id, ';contrato_id;A;addedBySlam',
                 'server' => 'hotspot1',
                 'list' => $contrato->relPlan->id
             ]);
@@ -265,10 +264,11 @@ class ContratoController extends Controller
                                                             'server' => 'SlamServer',
                                                             'comment' => $contrato->id]);
             $respuesta = 'Contrato de ' . $contrato->relCliente->getNomYApe() . ' creado con Exito en Gateway!!';
-        } else 
-        {
-            $respuesta = 'ERROR: No se pudo crear.';
-        }
+        } 
+        else 
+            {
+                $respuesta = 'ERROR al conectarse al Gateway: No se pudo crear.';
+            }
         return($respuesta);
     }
 
@@ -282,21 +282,31 @@ class ContratoController extends Controller
         if ($apiMikro = $this->openSessionGateway($contrato)) {
             $clientsDataGateway = $apiMikro->getGatewayData();
             $gatewayContract = new ClientMikrotik($contrato->id, $clientsDataGateway);
-            $apiMikro->setClient([
-                    'id_HotspotUser' => $gatewayContract->id_HotspotUser,
-                    'id_AddressList' => $gatewayContract->id_AddressList,
-                    'name' => $contrato->relEquipo->ip,
-                    'mac-address' => $contrato->relEquipo->mac_address,
-                    'comment' => $contrato->id,
-                    'server' => 'hotspot1',
-                    'list' => $contrato->relPlan->id]);
-            $apiMikro->comm('/ip/dhcp-server/lease/set', [  'numbers' => $apiMikro->getIdDhcpServer($contrato->id),
-                                                            'address' => $contrato->relEquipo->ip,
-                                                            'mac-address' => $contrato->relEquipo->mac_address]);
-            $respuesta = 'Contrato de ' . $contrato->relCliente->getNomYApe() . 'modificado con Exito!!';
-        } else {
-            $respuesta = 'ERROR: No se pudo modificar.';
-        }
+            if ($gatewayContract->id_AddressList && $gatewayContract->id_HotspotUser)
+            {
+                $apiMikro->setClient([
+                        'id_HotspotUser' => $gatewayContract->id_HotspotUser,
+                        'id_AddressList' => $gatewayContract->id_AddressList,
+                        'name' => $contrato->relEquipo->ip,
+                        'mac-address' => $contrato->relEquipo->mac_address,
+                        'comment' => $contrato->id,
+                        'server' => 'hotspot1',
+                        'list' => $contrato->relPlan->id]);
+                        $apiMikro->checkDhcpServer($contrato->relPlan->relPanel->relEquipo->ip);
+                        $apiMikro->comm('/ip/dhcp-server/lease/set', [  'numbers' => $apiMikro->getIdDhcpServer($contrato->id),
+                                                                        'address' => $contrato->relEquipo->ip,
+                                                                        'mac-address' => $contrato->relEquipo->mac_address]);
+                        $respuesta = 'Contrato de ' . $contrato->relCliente->getNomYApe() . ' modificado con Exito!!';
+            }
+            else
+                {
+                    $respuesta = $this->createContratoGateway($contrato);
+                }
+        } 
+        else 
+            {
+                $respuesta = 'ERROR al conectarse al Gateway: No se pudo modificar.';
+            }
         return ($respuesta);
     }
     

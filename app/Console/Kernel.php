@@ -27,8 +27,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->call(function(){$this->genSem();})->daily()->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->call(function(){$this->readDay();})->everyMinute();
-        $schedule->call(function(){$this->genSem();})->daily();
+        ### ->monthly(); //Run the task on the first day of every month at 00:00
     }
 
     /**

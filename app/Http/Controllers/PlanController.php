@@ -147,6 +147,7 @@ class PlanController extends Controller
         }
         else
         {
+            $respuesta = null;
             $respuesta[] = 'ERROR. Nada se ha actualizado.';
         }
         return redirect('adminPlanes')->with('mensaje', $respuesta);
