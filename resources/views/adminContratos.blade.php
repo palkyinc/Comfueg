@@ -28,8 +28,10 @@ $mostrarSololectura = true;
                             <th scope="col"> Id </th>
                             <th scope="col"> Cliente </th>
                             <th scope="col"> Plan </th>
+                            <th scope="col"> IP </th>
                             <th scope="col"> Equipo </th>
                             <th scope="col"> Panel </th>
+                            <th scope="col"> Barrio </th>
                             <th scope="col"> Estado </th>
                             <th scope="col" colspan="2">
                                 @can('contratos_create')
@@ -50,8 +52,12 @@ $mostrarSololectura = true;
                                 <th scope="row"> {{$contrato->id}}</th>
                                 <td>{{$contrato->relCliente->getNomYApe()}}</td>
                                 <td>{{$contrato->relPlan->nombre}}</td>
+                                <td>
+                                    <a href="http://{{$contrato->relEquipo->ip}}" target="_blank">{{$contrato->relEquipo->ip}}</a>
+                                </td>
                                 <td>{{$contrato->relEquipo->relProducto->modelo}}</td>
                                 <td>{{$contrato->relPanel->ssid}}</td>
+                                <td>{{$contrato->relDireccion->relBarrio->nombre}}</td>
                                 <td>{{($contrato->activo) ? 'Habilitado' : 'Suspendido'}}</td>
                                 <td>
                                     @can('contratos_edit')

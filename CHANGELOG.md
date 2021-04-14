@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
+## [0.6.10] - 2021-04-XX
+### Added
+1.	Mas Frases motivacionales.
+### Changed
+1.	Corregido el error que se generaba al actualizar Proveedores en el routing Mark con Distancia 2.
+2.	Se agrega IP y Barrio a la vista de Contratos.
+
 ## [0.6.9] - 2021-04-10
 ### Added
 1.	Implementa archivo total consumido en el mes.

@@ -121,7 +121,6 @@ abstract class CronFunciones
                         $arrayTotMes = json_decode(fgets($file), true);
                         fclose($file);
                 }
-                dd($arrayTotMes);
                 foreach ($allData['hotspotUser'] as $elemento)
                 {
                         if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 

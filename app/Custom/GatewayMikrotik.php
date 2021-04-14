@@ -531,7 +531,7 @@ class GatewayMikrotik extends RouterosAPI
 		return false;		
 	}
 
-	#########   PROVEEDORES 	#####################
+	#########   PROVEEDORES 	######################
 
 	public function modifyProveedor(Proveedor $proveedor, $action, $totalClassifiers, $cantClassifiers, $pointerClassifier)
 	{

@@ -36,7 +36,7 @@ class Proveedor extends Model
 
     public function getNextInterface ()
     {
-        $nextProveedor = Proveedor::where('classifier', $this->classifier + 1)->first();
+        $nextProveedor = Proveedor::where('classifier', $this->classifier + 1)->where('estado', true)->first();
         if (!$nextProveedor)
         {
             $nextProveedor = Proveedor::where('classifier', 0)->first();
@@ -51,6 +51,13 @@ class Proveedor extends Model
             $proveedores[$i]->classifier = $i;
             $proveedores[$i]->save();
         }
+        $proveedores = Proveedor::where('estado', false)->get();
+        foreach ($proveedores as $proveedor)
+        {
+            $proveedor->classifier = 1001;
+            $proveedor->save();
+        }
+        
     }
 
     public function enLinea()
