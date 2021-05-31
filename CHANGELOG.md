@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
-## [0.6.10] - 2021-04-XX
+## [0.6.11] - 2021-05-31
+### Added
+1.	Se agrega Complemento de putty. PSCP.exe
+2.	En vista de nuevo contrato agrega mac address al Panel de manera automática. (https://ixnfo.com/en/ubiquiti-ssh-management.html)
+3.	Vista adminContratos modificada para Dar de Baja contratos, agregar y quitar Mac Address automáticamente. Tambien en vista de editar contrato se agregan y quitan macs automatic.
+
+
+## [0.6.10] - 2021-04-13
 ### Added
 1.	Mas Frases motivacionales.
 ### Changed

@@ -114,7 +114,5 @@ $mostrarSololectura = true;
             }
         })
     }
-        
-    
 </script>
 @stop

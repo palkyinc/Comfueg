@@ -85,6 +85,26 @@
             .options({spanGaps: 1000 * 60 * 60 * 24, scales:{x:{type: 'time', display: true}}})
         });
     }
+    let zona = document.getElementById('zona');
+    let btnActivar = zona.getElementsByClassName('boton-Alta');
+    console.log(zona);
+    for (let i = 0; i < btnActivar.length; i++) {
+        btnActivar[i].addEventListener('click', e => {
+            if(!confirm("¿Seguro de Dar Alta?")) {
+                e.preventDefault()
+            }
+            
+        })
+    }
+    let btnDesactivar = zona.getElementsByClassName('boton-Baja');
+    console.log(btnDesactivar);
+    for (let i = 0; i < btnDesactivar.length; i++) {
+        btnDesactivar[i].addEventListener('click', e => {
+            if(!confirm("¿Seguro de Dar de Baja?")) {
+                e.preventDefault()
+            }
+        })
+    }
 </script>
 @foreach ($contratos as $contrato)
     <script>renderChartDaily({{$contrato->id}}, '{{$contrato->relCliente->getNomYApe()}}')</script>

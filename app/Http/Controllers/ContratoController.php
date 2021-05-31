@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Custom\ClientMikrotik;
 use App\Custom\GatewayMikrotik;
+use App\Custom\ubiquiti;
 use App\Models\Contrato;
 use App\Models\Cliente;
 use App\Models\Direccion;
@@ -13,6 +14,7 @@ use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class ContratoController extends Controller
 {
@@ -47,6 +49,19 @@ class ContratoController extends Controller
         return view('adminContratos', ['contratos' => isset($contratos) ? $contratos : [], 'contracts' => 'active', 'paginate' => $paginate]);
     }
 
+    public function getListadoContratosactivos ()
+    {
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+        $contratos = Contrato::where('baja', false)->get();
+        $newFile = fopen ('../storage/app/public/ListadoClientes-' . date('Ymd') . '.csv', 'w');
+        fwrite($newFile ,'APELLIDO, Nombre;Plan;Estado;Sistema' . PHP_EOL);
+        foreach ($contratos as $key => $value)
+        {
+            fwrite($newFile , $value->relCliente->getNomyApe() . ';' . $value->relPlan->nombre . ';' . ($value->activo ? 'Habilitado' : 'Deshabilitado') . ';SLAM' . PHP_EOL);
+        }
+        fclose($newFile);
+        return Storage::disk('public')->download('ListadoClientes-' . date('Ymd') . '.csv');
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -56,7 +71,6 @@ class ContratoController extends Controller
     {
         $datos = $this->getDataCreateEdit();
         return view ('agregarContrato', $datos);
-        dd($equipos);
     }
 
     public function getDataCreateEdit ($id_equipo = null)
@@ -93,9 +107,11 @@ class ContratoController extends Controller
         $contrato->num_plan = $request['num_plan'];
         $contrato->num_equipo = $request['num_equipo'];
         $contrato->activo = (isset($request['activo']) && $request['activo'] == 'on') ? true : false;
+        $contrato->baja = false;
         $contrato->save();
-        $respuesta[] = $this->createContratoGateway($contrato);
+        $respuesta[] = $this->modificarMac($contrato, 0);
         $respuesta[] = 'Contrato se creo correctamente';
+        $respuesta[] = $this->createContratoGateway($contrato);
         return redirect('/adminContratos')->with('mensaje', $respuesta);
     }
 
@@ -103,11 +119,12 @@ class ContratoController extends Controller
     {
         $aValidar = [
             'id' => 'nullable|numeric|min:1|max:99999',
-            'num_cliente' => 'required|min:1|max:99999',
-            'id_direccion' => 'required|min:1|max:99999',
-            'num_equipo' => 'required|min:1|max:99999',
-            'num_panel' => 'nullable|min:1|max:99999',
-            'num_plan' => 'required|min:1|max:99999'
+            'num_cliente' => 'required|numeric|min:1|max:99999',
+            'id_direccion' => 'required|numeric|min:1|max:2',
+            'num_equipo' => 'required|numeric|min:1|max:99999',
+            'num_panel' => 'required|numeric|min:1|max:99999',
+            'router_id' => 'nullable|numeric|min:1|max:99999',
+            'num_plan' => 'required|numeric|min:1|max:99999'
         ];
         if (isset($request['created_at']))
         {
@@ -147,7 +164,6 @@ class ContratoController extends Controller
         $datos = $this->getDataCreateEdit($elemento->num_equipo);
         $datos['elemento'] =  $elemento;
         return view('modificarContrato', $datos);
-        dd($elemento);
     }
 
     /**
@@ -164,7 +180,16 @@ class ContratoController extends Controller
         $contrato->num_cliente = $request['num_cliente'];
         $contrato->id_direccion = $request['id_direccion'];
         $contrato->num_equipo = $request['num_equipo'];
+        if ($contrato->relPlan->relEquipo->id != Plan::find($request['num_equipo'])->id)
+            {
+                $respuesta[] = $this->modificarMac($contrato, 1);
+            }
         $contrato->num_panel = $request['num_panel'];
+        if ($contrato->relPlan->relPanel->id != Plan::find($request['num_plan'])->gateway_id)
+            {
+                $respuesta[] = $this->removeContratoGateway($contrato);
+                $respuesta[] = $this->modificarMac($contrato, 1);
+            }
         $contrato->num_plan = $request['num_plan'];
         $contrato->created_at = $request['created_at'];
         $contrato->activo = (isset($request['activo']) && $request['activo'] == 'on') ? true : false;
@@ -200,15 +225,24 @@ class ContratoController extends Controller
             $respuesta[] = ' Habilitado: ' . $contrato->getOriginal()['activo'] . ' POR ' . $contrato->activo;
             $momificar['activo'] = true;
         }
+        $contrato->save();
+        unset($contrato);
+        ##Si hubo cambio de panel o equipo aca se deberia setear el nuevo mac.
+        if (isset($momificar['equipo']) || isset($momificar['panel']))
+        {
+            $contrato = Contrato::find($request['id']);
+        	$respuesta[] = $this->modificarMac($contrato, 0);
+        }
         if (isset($momificar['equipo']) || isset($momificar['plan']))
         {
-            $respuesta[] = $this->modifyContratoGateway($contrato);
+            $contrato = Contrato::find($request['id']);
+        	$respuesta[] = $this->modifyContratoGateway($contrato);
         }
         if (isset($momificar['activo']))
         {
-            $respuesta[] = $this->changeStateContratoGateway($contrato);
+            $contrato = Contrato::find($request['id']);
+        	$respuesta[] = $this->changeStateContratoGateway($contrato);
         }
-        $contrato->save();
         return redirect ('adminContratos')->with('mensaje', $respuesta);
     }
 
@@ -218,9 +252,34 @@ class ContratoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $contrato = Contrato::find($request['id']);
+        $respuesta[] = $this->removeContratoGateway($contrato);
+        $respuesta[] = $this->modificarMac($contrato, 1);
+        $contrato->activo = false;
+        $contrato->baja = true;
+        $contrato->save();
+        $respuesta[] = "Se dió de BAJA el contrato N° $contrato->id";
+        return redirect ('adminContratos')->with('mensaje', $respuesta);
+    }
+    
+    /**
+     * ReAdd the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function undestroy(Request $request)
+    {
+        $contrato = Contrato::find($request['id']);
+        $respuesta[] = $this->createContratoGateway($contrato);
+        $respuesta[] = $this->modificarMac($contrato, 0);
+        $contrato->activo = true;
+        $contrato->baja = false;
+        $contrato->save();
+        $respuesta[] = "Se dió de ALTA nuevamente el contrato N° $contrato->id";
+        return redirect ('adminContratos')->with('mensaje', $respuesta);
     }
 
     ################# Métodos de Gateway ####################################
@@ -279,7 +338,8 @@ class ContratoController extends Controller
      */
     public function modifyContratoGateway($contrato)
     {
-        if ($apiMikro = $this->openSessionGateway($contrato)) {
+        if ($apiMikro = $this->openSessionGateway($contrato))
+        {
             $clientsDataGateway = $apiMikro->getGatewayData();
             $gatewayContract = new ClientMikrotik($contrato->id, $clientsDataGateway);
             if ($gatewayContract->id_AddressList && $gatewayContract->id_HotspotUser)
@@ -302,6 +362,7 @@ class ContratoController extends Controller
                 {
                     $respuesta = $this->createContratoGateway($contrato);
                 }
+            unset($apiMikro);
         } 
         else 
             {
@@ -317,7 +378,8 @@ class ContratoController extends Controller
      */
     public function changeStateContratoGateway($contrato)
     {
-        if ($apiMikro = $this->openSessionGateway($contrato)) {
+        if ($apiMikro = $this->openSessionGateway($contrato))
+        {
             $clientsDataGateway = $apiMikro->getGatewayData();
             $gatewayContract = new ClientMikrotik($contrato->id, $clientsDataGateway);
             if ($contrato->activo)
@@ -330,6 +392,7 @@ class ContratoController extends Controller
                 $apiMikro->disableClient($gatewayContract);
                 $respuesta = 'Contrato de ' . $contrato->relCliente->getNomYApe() . ' fue deshabilitado con Exito!!';
             }
+            unset($apiMikro);
         } else {
             $respuesta = 'ERROR: No se pudo realizar el cambio.';
         }
@@ -348,12 +411,25 @@ class ContratoController extends Controller
             $gatewayContract = new ClientMikrotik($contrato->id, $clientsDataGateway);
             $apiMikro->removeClient($gatewayContract);
             $apiMikro->comm('/ip/dhcp-server/lease/remove', ['numbers' => $apiMikro->getIdDhcpServer($contrato->id)]);
-            $respuesta = 'Contrato de ' . $contrato->relCliente->getNomYApe() . ' fue habilitado con Exito!!';
-            
+            $respuesta = 'Contrato de ' . $contrato->relCliente->getNomYApe() . ' fue Removido con exito del Gateway!!';
+        	unset($apiMikro);
         } else 
             {
                 $respuesta = 'ERROR: No se pudo realizar el cambio.';
             }
         return($respuesta);
+    }
+
+    public function modificarMac (Contrato $contrato, $ope)
+    {
+        return ubiquiti::tratarMac(
+            [
+                'usuario' => $contrato->relPanel->relEquipo->getUsuario(),
+                'password' => $contrato->relPanel->relEquipo->getPassword(),
+                'ip' => $contrato->relPanel->relEquipo->ip,
+                'contrato' => $contrato->id,
+                'macaddress' => $contrato->relEquipo->mac_address,
+                'ope' => $ope
+            ]);
     }
 }

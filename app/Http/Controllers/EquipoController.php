@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Antena;
 use App\Models\Equipo;
 use App\Models\Producto;
+use App\Models\Contrato;
 use Illuminate\Http\Request;
 use Axiom\Rules\MacAddress;
 use DateTime;
@@ -122,7 +123,7 @@ class EquipoController extends Controller
                 'nombre' => 'required|min:2|max:45',
                 'num_dispositivo' => 'required|numeric|min:1|max:99999',
                 'num_antena' => 'required|numeric|min:1|max:99999',
-                'ip' => 'ipv4',
+                'ip' => 'required|ipv4',
                 'fecha_alta' => 'date',
                 'fecha_baja' => 'nullable|date',
                 'comentario' => 'max:65535'
@@ -200,6 +201,11 @@ class EquipoController extends Controller
         }
         if ($Equipo->ip != $Equipo->getOriginal()['ip']) {
             $respuesta[] = ' Ip: ' . $Equipo->getOriginal()['ip'] . ' POR ' . $Equipo->ip;
+            $contrato = Contrato::where('num_equipo', $Equipo->id)->where('baja', false)->first();
+            if ($contrato)
+            {
+                $respuesta[] = 'CUIDADO!! Equipo con contrato activo';
+            }
         }
         if ($Equipo->num_antena != $Equipo->getOriginal()['num_antena']) {
             $respuesta[] = ' Num Antena: ' . $Equipo->getOriginal()['num_antena'] . ' POR ' . $Equipo->num_antena;

@@ -124,10 +124,13 @@ Route::patch('/modificarModelo', [ModeloController::class, 'update'])->middlewar
 #####################
 ####### CRUD Contratos
 Route::get('/adminContratos', [ContratoController::class, 'index'])->middleware('auth');
+Route::get('/listadoContratos', [ContratoController::class, 'getListadoContratosactivos'])->middleware('auth');
 Route::get('/agregarContrato', [ContratoController::class, 'create'])->middleware('auth');
 Route::post('/agregarContrato', [ContratoController::class, 'store'])->middleware('auth');
 Route::get('/modificarContrato/{id}', [ContratoController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarContrato', [ContratoController::class, 'update'])->middleware('auth');
+Route::patch('/realtaContrato', [ContratoController::class, 'undestroy'])->middleware('auth');
+Route::delete('/eliminarContrato', [ContratoController::class, 'destroy'])->middleware('auth');
 ####################
 ####### CRUD Antenas
 Route::get('/adminAntenas', [AntenaController::class, 'index'])->middleware('auth');

@@ -37,8 +37,125 @@ class Ubiquiti{
                                 : 
                                 ('http://'.$ip);
 	}
+    /* 
+    * tratarMac([
+    *                     'usuario' => 'admincf',
+    *                     'password' => 'Earh@t18',
+    *                     'ip' => '10.10.0.4',
+    *                     'contrato' => 'MacRae',
+    *                     'macaddress' => '78:8A:20:16:99:8E',
+    *                     'ope' => 1
+    *     ])
+    */
+    public static function tratarMac ($datos)
+        {
+            shell_exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg C:/inetpub/wwwroot/Comfueg/public/configPanels/' . $datos['ip'] . '-old.cfg');
+            $oldFile = fopen ('configPanels/' . $datos['ip'] . '-old.cfg', 'r');
+            $newFile = fopen ('configPanels/' . $datos['ip'] . '.cfg', 'w');
+            while (!feof ($oldFile))
+            {
+                $linea = fgets($oldFile);
+                $datoLinea = explode('=', $linea);
+                $lineaExplotada = explode ('.', ($datoLinea[0]));
+                if ($lineaExplotada[0] == 'wireless' && $lineaExplotada[1] == '1' && $lineaExplotada[2] == 'mac_acl' && isset($lineaExplotada[4]))
+                {
+                    $listaMacs[$lineaExplotada[3]][$lineaExplotada[4]] = $datoLinea[1];
+                    if ($lineaExplotada[4] == 'mac' && trim($datoLinea[1]) == $datos['macaddress'])
+                    {
+                        $encontrado = $lineaExplotada[3];
+                    }
+                }
+                else
+                    {
+                    fwrite ($newFile, $linea);
+                    }
+            }
+            fclose($oldFile);
+            switch ($datos['ope']) 
+            {
+                case 0:
+                    if (!isset($listaMacs))
+                    {
+                        $largoArray = 0;
+                    }
+                    else 
+                    {
+                        $largoArray = count($listaMacs);
+                    }
+                    if (isset($encontrado))
+                    {
+                        if (
+                            $listaMacs[$encontrado]['comment'] != $datos['contrato'] . ';modifiedBySlam' . PHP_EOL &&
+                            $listaMacs[$encontrado]['comment'] != $datos['contrato'] . ';addBySlam' . PHP_EOL)
+                            {
+                                $listaMacs[$encontrado]['comment'] = $datos['contrato'] . ';modifiedBySlam' . PHP_EOL;
+                                $listaMacs[$encontrado]['status'] = 'enabled' . PHP_EOL;
+                            }
+                    }
+                    else    {
+                            $listaMacs[$largoArray + 1]['comment'] = $datos['contrato'] . ';addBySlam' . PHP_EOL;
+                            $listaMacs[$largoArray + 1]['mac'] = $datos['macaddress'] . PHP_EOL;
+                            $listaMacs[$largoArray + 1]['status'] = 'enabled' . PHP_EOL;
+                            }
+                    for ($i = 1; $i <= count($listaMacs); $i++) 
+                    {
+                        fwrite($newFile, 'wireless.1.mac_acl.' . $i . '.comment=' . $listaMacs[$i]['comment']);
+                        fwrite($newFile, 'wireless.1.mac_acl.' . $i . '.mac=' . $listaMacs[$i]['mac']);
+                        fwrite($newFile, 'wireless.1.mac_acl.' . $i . '.status=' . $listaMacs[$i]['status']);
+                    }
+                    fclose($newFile);
+                    shell_exec('echo y | pscp -scp -pw ' . $datos['password'] . ' C:/inetpub/wwwroot/Comfueg/public/configPanels/' . $datos['ip'] . '.cfg '  . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg' );                    
+                    shell_exec('echo y | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 addmac ' . $datos['macaddress']);
+                    shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m C:/inetpub/wwwroot/Comfueg/public/configPanels/save.txt');
+                    shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m C:/inetpub/wwwroot/Comfueg/public/configPanels/reboot.txt');
+                    return 'Mac Address Cargado OK.';
+                    break;
+            
+                case 1:
+                    if (isset($listaMacs))
+                    {
+                        if (isset($encontrado))
+                        {
+                            $largoArray = count($listaMacs);
+                            unset($listaMacs[$encontrado]);
+                            for ($i = $largoArray - 1; 0 < $i; $i--) 
+                            {
+                                if (isset($listaMacs[$largoArray]))
+                                {
+                                    fwrite($newFile, 'wireless.1.mac_acl.' . $i . '.comment=' . $listaMacs[$largoArray]['comment']);
+                                    fwrite($newFile, 'wireless.1.mac_acl.' . $i . '.mac=' . $listaMacs[$largoArray]['mac']);
+                                    fwrite($newFile, 'wireless.1.mac_acl.' . $i . '.status=' . $listaMacs[$largoArray]['status']);
+                                }
+                                    else
+                                    {
+                                        $i++;
+                                    }
+                                $largoArray--;
+                            }
+                            fclose($newFile);
+                            shell_exec('echo y | pscp -scp -pw ' . $datos['password'] . ' C:/inetpub/wwwroot/Comfueg/public/configPanels/' . $datos['ip'] . '.cfg '  . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg' );
+                            shell_exec('echo y | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 delmac ' . $datos['macaddress']);
+                            shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 kickmac ' . $datos['macaddress']);
+                            shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m C:/inetpub/wwwroot/Comfueg/public/configPanels/save.txt');
+                            shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m C:/inetpub/wwwroot/Comfueg/public/configPanels/reboot.txt');
+                            return 'Se eliminó Mac Address OK del Panel con IP:' . $datos['ip'];
+                        }
+                        
+                    }
+                    fclose($newFile);
+                    return 'No se encontró Mac Address para borrar en Panel con IP: ' . $datos['ip'];
+                    break;
+                
+                default:
+                    return "ERROR en el tipo de ope al tratar Mac en Panel";
+                    break;
+            }
+            shell_exec ("echo y | plink $usuario@$ip -pw $password iwpriv ath0 $command $macaddress > response.txt");
+            return true;
+        }
 
-	private function query($page, $timeout = false)
+
+    private function query($page, $timeout = false)
     {
 		if(!$timeout){
 			$timeout = $this->_timeout;
@@ -102,7 +219,8 @@ class Ubiquiti{
         return ($result);
 	}
 
-	private function login(){
+	private function login()
+    {
 		$exec	= $this->query('/');
 		if($exec){
 			return true;
@@ -111,7 +229,8 @@ class Ubiquiti{
 		}
 	}
 
-	public function stations($array = false){
+	public function stations($array = false)
+    {
 		if($result = $this->query('/sta.cgi')){
 			if($array){
 				$result = json_decode($result, true);
@@ -124,7 +243,8 @@ class Ubiquiti{
 		}
 	}
 
-    public function status($array = false){
+    public function status($array = false)
+    {
         if($result = $this->query('/status.cgi')){
             if($array){
                 $result = json_decode($result, true);
@@ -137,7 +257,8 @@ class Ubiquiti{
         }
     }
 
-    public function status_new($array = false){
+    public function status_new($array = false)
+    {
         if($result = $this->query('/status-new.cgi')){
             if($array){
                 $result = json_decode($result, true);
@@ -150,7 +271,8 @@ class Ubiquiti{
         }
     }
 
-    public function ifstats($array = false){
+    public function ifstats($array = false)
+    {
         if($result = $this->query('/ifstats.cgi')){
             if($array){
                 $result = json_decode($result, true);
@@ -163,7 +285,8 @@ class Ubiquiti{
         }
     }
 
-    public function iflist($array = false){
+    public function iflist($array = false)
+    {
         if($result = $this->query('/iflist.cgi')){
             if($array){
                 $result = json_decode($result, true);
@@ -176,7 +299,8 @@ class Ubiquiti{
         }
     }
 
-    public function brmacs($array = false){
+    public function brmacs($array = false)
+    {
         if($result = $this->query('/brmacs.cgi?brmacs=y')){
             if($array){
                 $result = json_decode($result, true);
@@ -189,7 +313,8 @@ class Ubiquiti{
         }
     }
 
-    public function station_kick($mac, $interface, $array = false){
+    public function station_kick($mac, $interface, $array = false)
+    {
         if($result = $this->query('/stakick.cgi?staid='.$mac.'&staif='.$interface)){
             if($array){
                 $result = json_decode($result, true);
@@ -202,7 +327,8 @@ class Ubiquiti{
         }
     }
 
-    public function spectrum($timeout = 10, $array = false){
+    public function spectrum($timeout = 10, $array = false)
+    {
         if($result = $this->query('/survey.json.cgi', $timeout)){
             if($array){
                 $result = json_decode($result, true);
@@ -215,7 +341,8 @@ class Ubiquiti{
         }
     }
 
-    public function signal($array = false){
+    public function signal($array = false)
+    {
         if($result = $this->query('/signal.cgi')){
             if($array){
                 $result = json_decode($result, true);
@@ -228,7 +355,8 @@ class Ubiquiti{
         }
     }
 
-    public function air_view($array = false){
+    public function air_view($array = false)
+    {
         if($result = $this->query('/air-view.cgi')){
             if($array){
                 $result = json_decode($result, true);
@@ -241,8 +369,11 @@ class Ubiquiti{
         }
     }
 
-	public function __destruct(){
+	public function __destruct()
+    {
 		curl_close($this->_ch);
 	}
+
+    
 
 }

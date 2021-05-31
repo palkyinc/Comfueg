@@ -84,11 +84,12 @@ $mostrarSololectura = true;
                                 </td>
                                 @if (!$proveedor->estado && !$actualizar)
                                     <td>
-                                        <form method="post" action="/eliminarProveedor/{{ $proveedor->id }}">
+                                        <form method="post" action="/eliminarProveedor/{{ $proveedor->id }}" class="margenAbajo">
                                             @csrf
                                                 @method('delete')
-                                                <button type="submit"><img src="/imagenes/iconfinder_basket_1814090.svg" 
-                                                    alt="imagen de basket borrar" height="20px" title="Borrar Proveedor"></button>
+                                                <button type="submit" class="btn btn-outline-secundary">
+                                                    <img src="/imagenes/iconfinder_basket_1814090.svg" alt="imagen de basket borrar" height="25px" title="Borrar Proveedor">
+                                                </button>
                                         </form>
                                     </td>
                                 @endif

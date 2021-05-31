@@ -33,6 +33,7 @@ $mostrarSololectura = true;
                             <th scope="col"> Panel </th>
                             <th scope="col"> Barrio </th>
                             <th scope="col"> Estado </th>
+                            <th scope="col"> Baja </th>
                             <th scope="col" colspan="2">
                                 @can('contratos_create')
                                 <a href="/agregarContrato" class="btn btn-dark">Agregar</a>
@@ -41,12 +42,16 @@ $mostrarSololectura = true;
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody id="zona">
                         @foreach ($contratos as $contrato)
                             @if ($contrato->activo)
                                 <tr>
                             @else
-                                <tr class="alert alert-light" role="alert">
+                                @if ($contrato->baja)
+                                    <tr class="alert alert-danger" role="alert">
+                                @else
+                                    <tr class="alert alert-warning" role="alert">
+                                @endif
                             @endif
                                 
                                 <th scope="row"> {{$contrato->id}}</th>
@@ -59,15 +64,35 @@ $mostrarSololectura = true;
                                 <td>{{$contrato->relPanel->ssid}}</td>
                                 <td>{{$contrato->relDireccion->relBarrio->nombre}}</td>
                                 <td>{{($contrato->activo) ? 'Habilitado' : 'Suspendido'}}</td>
-                                <td>
-                                    @can('contratos_edit')
-                                    <a href="/modificarContrato/{{ $contrato->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
-                                        <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
-                                    </a>
-                                    @endcan
+                                <td>{{($contrato->baja) ? 'Si' : 'No'}}</td>
+                                <td class="conFlex">
                                     <a href="#" class="margenAbajo btn btn-link" data-toggle="modal" data-target="#staticBackdrop{{$contrato->id}}" title="Consumo Descargas">
                                         <img src="imagenes/iconfinder_graph_3338898.svg" alt="imagen de cosumo cliente" height="20px">
                                     </a>
+                                    @can('contratos_edit')
+                                        <a href="/modificarContrato/{{ $contrato->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
+                                            <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                        </a>
+                                        @if ($contrato->baja)
+                                            <form action="/realtaContrato" method="post" class="margenAbajo">
+                                            @csrf
+                                            @method('patch')
+                                                <input type="hidden" name="id" value="{{$contrato->id}}">
+                                                <button class="btn btn-outline-secundary boton-Alta"  title="Dar de Alta">
+                                                    <img src="imagenes/iconfinder_Multimedia_Turn_on_off_power_button_interface_3841792.svg" alt="imagen de activar" height="20px">
+                                                </button>
+                                            </form>
+                                        @else
+                                            <form action="/eliminarContrato" method="post" class="margenAbajo">
+                                            @csrf
+                                            @method('delete')
+                                                <input type="hidden" name="id" value="{{$contrato->id}}">
+                                                <button class="btn btn-outline-secundary boton-Baja"  title="Dar de Baja">
+                                                    <img src="imagenes/iconfinder_Turn_On__Off_2134663.svg" alt="imagen de Desactivar" height="20px">
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @endcan
                                 </td>
                             
                             </tr>

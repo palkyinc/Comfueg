@@ -12,7 +12,8 @@
 .container {
     margin-top: 10%;
 }
-.margenAbajo {margin-bottom : 0;}
+.conFlex {display: flex; align-items: center;}
+.margenAbajo {margin-bottom : 0}
 .margin-10 {margin-top :10px; margin-bottom: 10px;}
 table thead tr th {
     position: stickey;
