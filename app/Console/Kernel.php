@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->call(function(){$this->resumenDeudas();})->weeklyOn(1, '09:00')->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->call(function(){$this->genSem();})->daily()->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->call(function(){$this->readDay();})->everyMinute();
         ### ->monthly(); //Run the task on the first day of every month at 00:00
@@ -44,6 +45,11 @@ class Kernel extends ConsoleKernel
         require base_path('routes/console.php');
     }
 
+    private function resumenDeudas ()
+    {
+        CronFunciones::enviarMailDeudasPendientes();
+    }
+    
     private function genSem ()
     {
         CronFunciones::generarArchivoSem();

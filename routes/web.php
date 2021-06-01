@@ -45,15 +45,8 @@ use App\Custom\CronFunciones;
 */
 ## Route Inicial Default
 Route::get('/test', function () {
-        dd(CronFunciones::generarArchivoSem());
-        dd(CronFunciones::readDay());
-        dd(CronFunciones::getWeek());
-        for ($i=1; $i < 9; $i++) { 
-        }
-        dd(date('Ymd', strtotime($fecha_actual."- 1 week")));
-        dd(date('Ymd', strtotime($fecha_actual."- 1 month")));
-        dd(date('Ymd', strtotime($fecha_actual."- 1 year")));
-       });
+        dd(CronFunciones::enviarMailDeudasPendientes());
+        });
 ### Route index
 Route::get('/', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/inicio', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos(), 'principal' => 'active']);})->middleware('auth');

@@ -4,9 +4,13 @@ namespace App\Custom;
 use Illuminate\Support\Facades\Config;
 use App\Models\Panel;
 use App\Models\Plan;
+use App\Models\Site_has_incidente;
+use App\Models\Mail_group;
 use App\Custom\ClientMikrotik;
 use App\Custom\GatewayMikrotik;
+use App\Mail\DeudaTecnicaResumen;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 
 
 abstract class CronFunciones
@@ -217,9 +221,13 @@ abstract class CronFunciones
             return($salida);
     }
     
-    public static function simularDia(&$salida)
+    public static function enviarMailDeudasPendientes ()
     {
-
+        $deudas = Site_has_incidente::where('tipo', 'DEUDA TECNICA')->where('final', null)->get();
+        //dd($deudas);
+        $toSend = new DeudaTecnicaResumen($deudas);
+        $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.DEUDAS_TECNICA_MAIL_GROUP'));
+        Mail::to($arrayCorreos)->send($toSend);
     }
 
     public static function borrarArchivos()

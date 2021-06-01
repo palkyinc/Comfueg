@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
+## [0.6.12] - 2021-05-31
+### Added
+1. 	Cron para envio de mail Resumen Deudas Tecnicas no finalizadas.
+
 ## [0.6.11] - 2021-05-31
 ### Added
 1.	Se agrega Complemento de putty. PSCP.exe

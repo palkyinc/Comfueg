@@ -39,12 +39,12 @@ class Ubiquiti{
 	}
     /* 
     * tratarMac([
-    *                     'usuario' => 'admincf',
-    *                     'password' => 'Earh@t18',
-    *                     'ip' => '10.10.0.4',
-    *                     'contrato' => 'MacRae',
-    *                     'macaddress' => '78:8A:20:16:99:8E',
-    *                     'ope' => 1
+    *                     'usuario' => '',
+    *                     'password' => '',
+    *                     'ip' => '',
+    *                     'contrato' => '',
+    *                     'macaddress' => '',
+    *                     'ope' => 1 = Del, 0 = Add
     *     ])
     */
     public static function tratarMac ($datos)
