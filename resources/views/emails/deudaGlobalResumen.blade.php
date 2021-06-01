@@ -11,7 +11,7 @@
 		}
 		table {
 			border: 1px solid #333;
-			width: 600px;
+			width: 800px;
 			border-collapse: collapse;
 		}
 		th {
@@ -40,12 +40,14 @@
         </thead>
         <tbody>
             @foreach ($deudas as $incidente)
-                <td>{{ $incidente->mensaje_clientes }}.</td>
-                <td>{{ $incidente->inicio }}</td>
-                <td>{{ $incidente->relPanel->relSite->nombre }}</td>
-                <td>{{ $incidente->causa }}</td>
-                <td>{{ $incidente->relUser->name }}</td>
-                <td>{{ $incidente->tiempoCaida() }}</td>
+                <tr>
+                    <td>{{ $incidente->mensaje_clientes }}.</td>
+                    <td>{{ $incidente->inicio }}</td>
+                    <td>{{ $incidente->relPanel->relSite->nombre }}</td>
+                    <td>{{ $incidente->causa }}</td>
+                    <td>{{ $incidente->relUser->name }}</td>
+                    <td>{{ $incidente->tiempoCaida() }}</td>
+                </tr>
         </tbody>
         @endforeach
     </table>
