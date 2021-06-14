@@ -120,7 +120,7 @@ class ContratoController extends Controller
         $aValidar = [
             'id' => 'nullable|numeric|min:1|max:99999',
             'num_cliente' => 'required|numeric|min:1|max:99999',
-            'id_direccion' => 'required|numeric|min:1|max:2',
+            'id_direccion' => 'required|numeric|min:1|max:99999',
             'num_equipo' => 'required|numeric|min:1|max:99999',
             'num_panel' => 'required|numeric|min:1|max:99999',
             'router_id' => 'nullable|numeric|min:1|max:99999',
@@ -179,17 +179,20 @@ class ContratoController extends Controller
         $contrato = Contrato::find($request['id']);
         $contrato->num_cliente = $request['num_cliente'];
         $contrato->id_direccion = $request['id_direccion'];
-        $contrato->num_equipo = $request['num_equipo'];
-        if ($contrato->relPlan->relEquipo->id != Plan::find($request['num_equipo'])->id)
+        ### Borro mac de panel si cambio Equipo o Panel.
+        if ( $contrato->relEquipo->id != Equipo::find($request['num_equipo'])->id ||
+             $contrato->relPanel->id != Panel::find($request['num_panel'])->id
+            )
             {
                 $respuesta[] = $this->modificarMac($contrato, 1);
             }
-        $contrato->num_panel = $request['num_panel'];
+        $contrato->num_equipo = $request['num_equipo'];
+        ### Borro contrato si cambió Plan
         if ($contrato->relPlan->relPanel->id != Plan::find($request['num_plan'])->gateway_id)
             {
                 $respuesta[] = $this->removeContratoGateway($contrato);
-                $respuesta[] = $this->modificarMac($contrato, 1);
             }
+        $contrato->num_panel = $request['num_panel'];
         $contrato->num_plan = $request['num_plan'];
         $contrato->created_at = $request['created_at'];
         $contrato->activo = (isset($request['activo']) && $request['activo'] == 'on') ? true : false;

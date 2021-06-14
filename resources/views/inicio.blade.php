@@ -9,16 +9,16 @@
                   switch (date ('N'))
                     {
                     case '1':
-                      echo "Lunes, Si estás triste, ponte una canción pop. Seguirás triste, pero podrás bailar mientras lloras...";
+                      echo "Si estás triste, ponte una canción pop. Seguirás triste, pero podrás bailar mientras lloras...";
                       break;
                     case '2':
-                      echo "Martes, No te tomes la vida demasiado en serio. No saldrás de ella con vida (Elbert Hubbard).";
+                      echo "No te tomes la vida demasiado en serio. No saldrás de ella con vida (Elbert Hubbard).";
                       break;
                     case '3':
-                      echo "Miercoles, Al que madruga, nadie le hace el desayuno.";
+                      echo "Al que madruga, nadie le hace el desayuno.";
                       break;
                     case '4':
-                      echo "Jueves, El tiempo sin ti es empo.";
+                      echo "El tiempo sin ti es empo.";
                       break;
                     case '5':
                       echo "Hoy es viernes, y un día no te quedará ningún diente... ¡así que sonríe ahora!.";
@@ -38,22 +38,22 @@
                 switch (date ('N'))
                     {
                     case '1':
-                      echo "Lunes, Sé buena persona, los desagradables ya no están de moda.";
+                      echo "Sé buena persona, los desagradables ya no están de moda.";
                       break;
                     case '2':
-                      echo "Martes, El amor es como el WiFi, está en el aire pero no todos tienen la clave.";
+                      echo "El amor es como el WiFi, está en el aire pero no todos tienen la clave.";
                       break;
                     case '3':
-                      echo "Miercoles, Si no puedes convencerlos, confúndelos.";
+                      echo "Si no puedes convencerlos, confúndelos.";
                       break;
                     case '4':
-                      echo "Jueves, Las mentes son como los paracaídas... solo funcionan cuando están abiertos.";
+                      echo "Las mentes son como los paracaídas... solo funcionan cuando están abiertos.";
                       break;
                     case '5':
                       echo "Que linda es la vida... ahora que es viernes...";
                       break;
                     case '6':
-                      echo "Hoy es sabado, Trabajar no es malo, lo malo es tener que trabajar (Don Ramón)";
+                      echo "Hoy es sabado y Trabajar no es malo, lo malo es tener que trabajar (Don Ramón)";
                       break;
                     case '7':
                       echo "Hoy es Domingo, NO deberias estar trabajando!!.";
@@ -67,16 +67,16 @@
                 switch (date ('N'))
                     {
                     case '1':
-                      echo "Lunes, Hay personas que te tratan como Google, solo te buscan cuando quieren algo.";
+                      echo "Hay personas que te tratan como Google, solo te buscan cuando quieren algo.";
                       break;
                     case '2':
-                      echo "Martes, Todo es divertido, siempre y cuando le ocurra a otra persona.";
+                      echo "Todo es divertido, siempre y cuando le ocurra a otra persona.";
                       break;
                     case '3':
-                      echo "Miercoles, Tener la conciencia limpia es señal de mala memoria (Steven Wright)";
+                      echo "Tener la conciencia limpia es señal de mala memoria (Steven Wright)";
                       break;
                     case '4':
-                      echo "Jueves, En la vida hay 10 tipos de personas, los que saben binario y los que no.";
+                      echo "En la vida hay 10 tipos de personas, los que saben binario y los que no.";
                       break;
                     case '5':
                       echo "Odio que hablen cuando interrumpo.";
@@ -100,7 +100,7 @@
                       echo "Hoy es lunes, el lado bueno del Lunes es que, la semana tiene un solo Lunes.";
                       break;
                     case '2':
-                      echo "Hoy es martes, Ríe y el mundo reirá contigo, ronca y dormirás solo. (Anthony Burgess).";
+                      echo "Ríe y el mundo reirá contigo, ronca y dormirás solo. (Anthony Burgess).";
                       break;
                     case '3':
                       echo "Si pudieras patear en el trasero al responsable de casi todos tus problemas, no podrías sentarte por un mes (Theodore Roosevelt)";

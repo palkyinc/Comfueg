@@ -45,7 +45,7 @@ use App\Custom\CronFunciones;
 */
 ## Route Inicial Default
 Route::get('/test', function () {
-        dd(CronFunciones::enviarMailDeudasPendientes());
+        dd(CronFunciones::buscarProveedoresCaidos());
         });
 ### Route index
 Route::get('/', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');

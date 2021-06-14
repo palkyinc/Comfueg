@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Custom\GatewayMikrotik;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 class Proveedor extends Model
 {
@@ -81,6 +82,19 @@ class Proveedor extends Model
         return false;
     }
 
+    public function enLineaSigueIgual() ### en Linea sigue igual??
+    {
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+        $estadoActual = $this->enLinea();
+        if ( $this->en_linea != $estadoActual)
+        {
+            $this->en_linea = $estadoActual;
+            $this->save();
+            return false;
+        }
+        return true;
+    }
+
     public static function tieneProveedor ($interface_id)
     {
         return Proveedor::where('interface', $interface_id)->first();
@@ -108,4 +122,10 @@ class Proveedor extends Model
             return($interface);
         }
     }
+
+    public function obtenerDominio ()
+    {
+        return Config::get('constants.DOMINIO_COMFUEG');
+    }
+
 }

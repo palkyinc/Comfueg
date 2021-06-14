@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
+## [0.6.13] - 2021-05-31
+### Added
+1. 	Agregado el campo de "limites" a la tabla Barrios.
+2.	Se modificó ContratoCOntroller cuando hace update por error al borrar mac address en cambio de plan. Debía borrarse en cambio de panel.
+3.	Cron de envio de mail de Caida de Proveedor. Chequea cada 1 minuto.
+
 ## [0.6.12] - 2021-05-31
 ### Added
 1. 	Cron para envio de mail Resumen Deudas Tecnicas no finalizadas.

@@ -27,6 +27,7 @@ $mostrarSololectura = true;
                 <tr>
                     <th scope="col"> Id </th>
                     <th scope="col"> Nombre </th>
+                    <th scope="col"> Límites </th>
                     <th scope="col" colspan="2">
                         @can('barrios_create')
                         <a href="/agregarBarrio" class="btn btn-dark">Agregar</a>
@@ -41,6 +42,7 @@ $mostrarSololectura = true;
                         
                     <th scope="row"> {{$barrio->id}}</th>
                     <td>{{$barrio->nombre}}</td>
+                    <td>{{$barrio->limites}}</td>
                     <td>
                         @can('barrios_edit')
                         <a href="/modificarBarrio/{{ $barrio->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">

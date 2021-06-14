@@ -4,11 +4,13 @@ namespace App\Custom;
 use Illuminate\Support\Facades\Config;
 use App\Models\Panel;
 use App\Models\Plan;
+use App\Models\Proveedor;
 use App\Models\Site_has_incidente;
 use App\Models\Mail_group;
 use App\Custom\ClientMikrotik;
 use App\Custom\GatewayMikrotik;
 use App\Mail\DeudaTecnicaResumen;
+use App\Mail\CambioDeEstadoEnProveedor;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 
@@ -219,6 +221,20 @@ abstract class CronFunciones
                 }
             }
             return($salida);
+    }
+
+    public static function buscarProveedoresCaidos ()
+    {
+            $proveedores = Proveedor::where('estado', true)->get();
+            foreach ($proveedores as $proveedor)
+            {
+                if (!$proveedor->enLineaSigueIgual())
+                {
+                        $toSend = new CambioDeEstadoEnProveedor($proveedor);
+                        $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.CAMBIO_ESTADO_PROVEEDOR_MAIL_GROUP'));
+                        Mail::to($arrayCorreos)->send($toSend);
+                }
+            }
     }
     
     public static function enviarMailDeudasPendientes ()

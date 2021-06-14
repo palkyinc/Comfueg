@@ -42,6 +42,7 @@ class BarrioController extends Controller
         $this->validar($request);
         $Barrio = new Barrio;
         $Barrio->nombre = $request->input('nombre');
+        $Barrio->limites = $request->input('limites');
         $Barrio->save();
         $respuesta[] = 'Barrio se creo correctamente';
         return redirect('/adminBarrios')->with('mensaje', $respuesta);
@@ -80,12 +81,17 @@ class BarrioController extends Controller
     public function update(Request $request)
     {
         $nombre = $request->input('nombre');
+        $limites = $request->input('limites');
         $barrio = Barrio::find($request->input('id'));
         $this->validar($request, $barrio->id);
         $barrio->nombre = $nombre;
+        $barrio->limites = $limites;
         $respuesta[] = 'Se cambió con exito:';
         if ($barrio->nombre != $barrio->getOriginal()['nombre']) {
             $respuesta[] = ' Nombre: ' . $barrio->getOriginal()['nombre'] . ' POR ' . $barrio->nombre;
+        }
+        if ($barrio->limites != $barrio->getOriginal()['limites']) {
+            $respuesta[] = ' Límites: ' . $barrio->getOriginal()['limites'] . ' POR ' . $barrio->limites;
         }
         $barrio->save();
         return redirect('adminBarrios')->with('mensaje', $respuesta);
@@ -100,7 +106,8 @@ class BarrioController extends Controller
         }
         $request->validate(
             [
-                'nombre' => $condicion
+                'nombre' => $condicion,
+                'limites' => 'nullable|min:2|max:500'
             ],
             [
                 'nombre.required' => 'El campo Nombre es obligatorio',

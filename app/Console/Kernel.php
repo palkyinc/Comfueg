@@ -58,6 +58,7 @@ class Kernel extends ConsoleKernel
     private function readDay()
     {
         CronFunciones::readDay();
+        CronFunciones::buscarProveedoresCaidos();
     }
     
 }

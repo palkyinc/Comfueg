@@ -20,6 +20,12 @@ $mostrarSololectura = true;
                 <input type="text" name="nombre" value="{{$elemento->nombre}}" maxlength="30"  class="form-control">
             </div>
         </div>
+        <div class="form-row">      
+            <div class="form-group col-md-12">
+                <label for="limites">Límites: </label>
+                <textarea name="limites" class="form-control">{{$elemento->limites}}</textarea>
+            </div>
+        </div>
             <input type="hidden" name="id" value="{{$elemento->id}}">
             <button type="submit" class="btn btn-primary" id="enviar">Modificar</button>
             <a href="/adminBarrios" class="btn btn-primary">volver</a>

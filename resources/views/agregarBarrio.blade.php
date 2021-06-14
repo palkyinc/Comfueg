@@ -14,6 +14,12 @@ $mostrarSololectura = true;
             <input type="text" name="nombre" value="{{old('nombre')}}" maxlength="30"  class="form-control">
             </div>
         </div>
+        <div class="form-row">      
+            <div class="form-group col-md-12">
+                <label for="limites">Límites: </label>
+                <textarea name="limites" class="form-control">{{old('limites')}}</textarea>
+            </div>
+        </div>
             <button type="submit" class="btn btn-primary" id="enviar">Crear Nuevo</button>
             <a href="/adminBarrios" class="btn btn-primary">volver</a>
         
