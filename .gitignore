@@ -4,6 +4,7 @@
 /storage/Crons
 /public/Crons
 /public/storage
+/log
 /public/imgUsuarios
 /storage/*.key
 /vendor
