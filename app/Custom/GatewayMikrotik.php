@@ -619,7 +619,7 @@ class GatewayMikrotik extends RouterosAPI
 		foreach ($rtas as $key => $value) {
 			if (isset($value['comment'])) {
 				$comment = (explode(';', $value['comment']));
-				if ($comment[1] == 'proveedor_id') 
+				if (isset($comment[1]) && $comment[1] == 'proveedor_id') 
 				{
 					if ($all)
 					{

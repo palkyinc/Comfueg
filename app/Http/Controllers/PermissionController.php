@@ -135,7 +135,7 @@ class PermissionController extends Controller
         if ($idPermission) {
             $condicion = 'required|min:2|max:255|unique:permissions,name,' . $idPermission;
         } else {
-            $condicion = 'required|min:2|max:255|unique:Permissions,name';
+            $condicion = 'required|min:2|max:255|unique:permissions,name';
         }
         $request->validate(
             [

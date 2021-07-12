@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
+## [0.6.14] - 2021-XX-XX
+### Added
+1. 	Aparace alerta en vista principal cuando un proveedor esta offline.
+### Changed
+1. 	Se corrige problema en CronFunciones que provocaba no ver historial de navegación semanal.
+https://github.com/romainsimon/vue-simple-search-dropdown
 
 ## [0.6.13] - 2021-05-31
 ### Added

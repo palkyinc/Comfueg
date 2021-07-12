@@ -30,3 +30,8 @@ Requisitos:
 - GET /panelTest/ip
 - GET /allPanels
 - GET /adminControlPanelNodos
+- GET /Cliente/id
+- GET /CodigoDeArea/{id}
+- GET /CodigoDeArea/ (todos los codigos)
+- GET /CodigoDeArea/Codigo/{codigo} (todos los codigos)
+

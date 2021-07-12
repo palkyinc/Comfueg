@@ -104,7 +104,10 @@ class Site_has_incidente extends Model
             } else {
                 $interval = $inicio->diff(new DateTime($this->final));
             }
-        return($interval->m . 'M ' . $interval->d . 'd ' . $interval->h . 'h ' . $interval->i . 'm');
+        return(($interval->m > 0 ? $interval->m . 'M ' : '') . 
+                ($interval->d > 0 ? $interval->d . 'd ' : '') . 
+                ($interval->h > 0 ? $interval->h . 'h ' : '') . 
+                $interval->i . 'm');
     }
     private function dateTimeLocal($date)
     {

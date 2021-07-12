@@ -33,7 +33,7 @@ class ContratoController extends Controller
                 ->get();
             foreach ($clientes as $key => $cliente) 
             {
-                if ($contrato = Contrato::where('num_cliente', $cliente->id)->first())
+                if ($contrato = Contrato::where('num_cliente', $cliente->id)->first()) // revisar aca cuando hay mas de un contrato del mismo cliente
                 {
                     $contratos[] = $contrato;
                 }
@@ -49,6 +49,15 @@ class ContratoController extends Controller
         return view('adminContratos', ['contratos' => isset($contratos) ? $contratos : [], 'contracts' => 'active', 'paginate' => $paginate]);
     }
 
+    public function vueIndex ()
+    {
+        return view('altaContrato', [
+            'nodos' => 'active',
+            'website' => Config::get('constants.DOMINIO_COMFUEG'),
+            'vuejs' => Config::get('constants.VUEJS_VERSION')
+        ]);
+    }
+
     public function getListadoContratosactivos ()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
@@ -57,7 +66,7 @@ class ContratoController extends Controller
         fwrite($newFile ,'APELLIDO, Nombre;Plan;Estado;Sistema' . PHP_EOL);
         foreach ($contratos as $key => $value)
         {
-            fwrite($newFile , $value->relCliente->getNomyApe() . ';' . $value->relPlan->nombre . ';' . ($value->activo ? 'Habilitado' : 'Deshabilitado') . ';SLAM' . PHP_EOL);
+            fwrite($newFile , $value->relCliente->id . ';' . $value->relCliente->getNomyApe() . ';' . $value->relPlan->nombre . ';' . ($value->activo ? 'Habilitado' : 'Deshabilitado') . ';SLAM' . PHP_EOL);
         }
         fclose($newFile);
         return Storage::disk('public')->download('ListadoClientes-' . date('Ymd') . '.csv');

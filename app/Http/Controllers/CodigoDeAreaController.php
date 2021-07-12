@@ -61,6 +61,37 @@ class CodigoDeAreaController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  Id_CodigoDeArea
+     * @return  JSON
+     */
+    public function search($id = null)
+    {
+        if ($id !== null)
+        {
+            $codArea = CodigoDeArea::select('id', 'codigoDeArea', 'provincia')->find($id);
+        }
+        else
+        {
+            $codArea = CodigoDeArea::select('id', 'codigoDeArea', 'provincia')->get();
+        }
+        return response()->json($codArea, 200);
+    }
+    
+    /**
+     * Display the specified resource.
+     *
+     * @param  CodigoDeArea
+     * @return  JSON
+     */
+    public function searchCodigo($codigo)
+    {
+            $codArea = CodigoDeArea::select('id', 'codigoDeArea', 'provincia')->where('codigoDeArea', $codigo)->first();
+        return response()->json($codArea, 200);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\CodigoDeArea  $codigoDeArea

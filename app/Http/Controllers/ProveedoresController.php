@@ -58,14 +58,14 @@ class ProveedoresController extends Controller
         {
             $interfaces[] = $apiMikro->getDatosInterfaces(); //Las No usadas
             foreach ($interfaces[0]['rtas'] as $key => $value) {
-                if (Proveedor::where('interface', $value['.id'])->first() ||
+                if (Proveedor::where('interface', $value['.id'])->where('gateway_id', $gateway->id)->first() ||
                     !isset($value['list']) || $value['list'] != 'WAN')
                 {
                     unset($interfaces[0]['rtas'][$key]);
                 }
             }
             foreach ($interfaces[0]['vlans'] as $key => $value) {
-                if (Proveedor::where('interface', $value['.id'])->first() ||
+                if (Proveedor::where('interface', $value['.id'])->where('gateway_id', $gateway->id)->first() ||
                     !isset($value['list']) || $value['list'] != 'WAN')
                 {
                     unset($interfaces[0]['vlans'][$key]);
@@ -113,6 +113,7 @@ class ProveedoresController extends Controller
         $proveedor->gateway_id = $request->input('gateway_id');
         $proveedor->ipGateway = $request->input('ipGateway');
         $proveedor->sinActualizar = true;
+        $proveedor->en_linea = false;
         $proveedor->save();
         $respuesta[] = 'Proveedor se creo correctamente';
         return redirect('/adminProveedores')->with('mensaje', $respuesta);

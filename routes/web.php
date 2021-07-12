@@ -27,6 +27,7 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SiteHasIncidenteController;
 use App\Models\Site_has_incidente;
+use App\Models\Proveedor;
 ####TEST
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
@@ -48,8 +49,8 @@ Route::get('/test', function () {
         dd(CronFunciones::buscarProveedoresCaidos());
         });
 ### Route index
-Route::get('/', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
-Route::get('/inicio', function (){return view('inicio', ['incidentes' => Site_has_incidente::incidentesAbiertos(), 'principal' => 'active']);})->middleware('auth');
+Route::get('/', function (){return view('inicio', [ 'frase' => true, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
+Route::get('/inicio', function (){return view('inicio', [ 'frase' => false, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/contratos', function (){return view('construccion', ['contratos' => 'active']);});
 Route::get('/charts', function (){return view('charts');});
 ####################
@@ -117,6 +118,7 @@ Route::patch('/modificarModelo', [ModeloController::class, 'update'])->middlewar
 #####################
 ####### CRUD Contratos
 Route::get('/adminContratos', [ContratoController::class, 'index'])->middleware('auth');
+Route::get('/altaContrato', [ContratoController::class, 'vueIndex'])->middleware('auth');
 Route::get('/listadoContratos', [ContratoController::class, 'getListadoContratosactivos'])->middleware('auth');
 Route::get('/agregarContrato', [ContratoController::class, 'create'])->middleware('auth');
 Route::post('/agregarContrato', [ContratoController::class, 'store'])->middleware('auth');
@@ -162,6 +164,10 @@ Route::get('/modificarCodigoDeArea/{id}', [CodigoDeAreaController::class, 'edit'
 Route::patch('/modificarCodigoDeArea', [CodigoDeAreaController::class, 'update'])->middleware('auth');
 Route::get('/agregarCodigoDeArea', [CodigoDeAreaController::class, 'create'])->middleware('auth');
 Route::post('/agregarCodigoDeArea', [CodigoDeAreaController::class, 'store'])->middleware('auth');
+### API-rest
+Route::get('/CodigoDeArea/', [CodigoDeAreaController::class, 'search'])->middleware('auth');
+Route::get('/CodigoDeArea/{id}', [CodigoDeAreaController::class, 'search'])->middleware('auth');
+Route::get('/CodigoDeArea/Codigo/{codigo}', [CodigoDeAreaController::class, 'searchCodigo'])->middleware('auth');
 ####################
 ####### CRUD Direcciones
 Route::get('/adminDirecciones', [DireccionController::class, 'index'])->middleware('auth');
@@ -236,6 +242,8 @@ Route::get('/modificarCliente/{id}', [ClienteController::class, 'edit'])->middle
 Route::patch('/modificarCliente', [ClienteController::class, 'update'])->middleware('auth');
 Route::get('/agregarCliente', [ClienteController::class, 'create'])->middleware('auth');
 Route::post('/agregarCliente', [ClienteController::class, 'store'])->middleware('auth');
+### API-rest
+Route::get('/Cliente/{id}', [ClienteController::class, 'search'])->middleware('auth');
 ####################
 ####### CRUD Users
 Route::get('/adminUsers', [UserController::class, 'index'])->middleware('auth');

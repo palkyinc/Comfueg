@@ -30,8 +30,8 @@ abstract class CronFunciones
                 $linea = explode(';', trim(fgets($file)));
                 if (isset($linea[2]))
                 {
-                        $salida[$linea[0]]['up'][$linea[1]] = $linea[2];
-                        $salida[$linea[0]]['down'][$linea[1]] = $linea[3];
+                        $salida[$linea[0]]['up'][$linea[1]] = isset($linea[2]) ? $linea[2] : 0;
+                        $salida[$linea[0]]['down'][$linea[1]] = isset($linea[3]) ? $linea[3] : 0;
                 }
         }
         fclose($file);
@@ -210,14 +210,7 @@ abstract class CronFunciones
                 }
                 else
                 {
-                        dd($fecha);
-                
-                        for ($h=0; $h < 24; $h++)
-                        { 
-                                for ($m=0; $m < 60; $m++)
-                                {
-                                }
-                        } 
+                        dd('Error no encuentra archivo: ' . $dayTarget);
                 }
             }
             return($salida);

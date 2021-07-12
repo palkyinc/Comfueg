@@ -6,6 +6,9 @@ use App\Custom\GatewayMikrotik;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
+use Carbon\Carbon;
+use DateTime;
+
 
 class Proveedor extends Model
 {
@@ -89,6 +92,7 @@ class Proveedor extends Model
         if ( $this->en_linea != $estadoActual)
         {
             $this->en_linea = $estadoActual;
+            $estadoActual ? ($this->online_date = Carbon::now()->toDateTimeString()) : ($this->offline_date = Carbon::now()->toDateTimeString());
             $this->save();
             return false;
         }
@@ -128,4 +132,20 @@ class Proveedor extends Model
         return Config::get('constants.DOMINIO_COMFUEG');
     }
 
+    public static function provedoresCaidos ()
+    {
+        return (Proveedor::where('en_linea', false)->where('estado', true)->get());
+    }
+
+    public function tiempoCaida ()
+    {
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+        $hoy = new DateTime();
+        $inicio = new DateTime($this->offline_date);
+        $interval = $inicio->diff($hoy);
+        return( ($interval->m > 0 ? $interval->m . 'M ' : '') . 
+                ($interval->d > 0 ? $interval->d . 'd ' : '') . 
+                ($interval->h > 0 ? $interval->h . 'h ' : '') . 
+                $interval->i . 'm');
+    }
 }

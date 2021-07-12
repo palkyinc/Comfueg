@@ -70,6 +70,23 @@ class ClienteController extends Controller
     }
 
     /**
+     * Return the specified resource.
+     *
+     * @param  Id_Cliente
+     * @return  JSON
+     */
+    public function search($id)
+    {
+        $cliente = Cliente::select('id','nombre', 'apellido','cod_area_tel', 'telefono', 'cod_area_cel', 'celular', 'email')->find($id);
+        if ($cliente)
+        {
+            $cliente->cod_area_tel = CodigoDeArea::select('id', 'codigoDeArea', 'provincia')->find($cliente->cod_area_tel);
+            $cliente->cod_area_cel = CodigoDeArea::select('id', 'codigoDeArea', 'provincia')->find($cliente->cod_area_cel);
+        }
+        return response()->json($cliente, 200);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Cliente  $cliente
