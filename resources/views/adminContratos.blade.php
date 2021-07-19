@@ -31,7 +31,7 @@ $mostrarSololectura = true;
                             <th scope="col"> IP </th>
                             <th scope="col"> Equipo </th>
                             <th scope="col"> Panel </th>
-                            <th scope="col"> Barrio </th>
+                            <th scope="col"> Ubicación </th>
                             <th scope="col"> Estado </th>
                             <th scope="col"> Baja </th>
                             <th scope="col" colspan="2">
@@ -55,20 +55,40 @@ $mostrarSololectura = true;
                             @endif
                                 
                                 <th scope="row"> {{$contrato->id}}</th>
-                                <td>{{$contrato->relCliente->getNomYApe()}}</td>
+                                <td title="{{$contrato->relCliente->relCodAreaCel->codigoDeArea}}-15-{{$contrato->relCliente->celular}}">{{$contrato->relCliente->getNomYApe()}}</td>
                                 <td>{{$contrato->relPlan->nombre}}</td>
                                 <td>
                                     <a href="http://{{$contrato->relEquipo->ip}}" target="_blank">{{$contrato->relEquipo->ip}}</a>
                                 </td>
-                                <td>{{$contrato->relEquipo->relProducto->modelo}}</td>
+                                <td title="{{$contrato->relEquipo->mac_address}}"> 
+                                    @can('equipos_edit')
+                                    <a href="/modificarEquipo/{{$contrato->num_equipo}}" target="_blank">
+                                    @endcan
+                                    {{$contrato->relEquipo->relProducto->modelo}}
+                                    @can('equipos_edit')
+                                    </a>
+                                    @endcan
+                                </td>
                                 <td>{{$contrato->relPanel->ssid}}</td>
-                                <td>{{$contrato->relDireccion->relBarrio->nombre}}</td>
+                                <td
+title="Dirección: 
+{{$contrato->relDireccion->relCalle->nombre}}, {{$contrato->relDireccion->numero}}
+EntreCalles:
+{{$contrato->relDireccion->relEntrecalle1->nombre ?? ''}}/{{$contrato->relDireccion->relEntrecalle2->nombre ?? ''}}">
+                                    {{$contrato->relDireccion->relBarrio->nombre}}
+                                </td>
                                 <td>{{($contrato->activo) ? 'Habilitado' : 'Suspendido'}}</td>
                                 <td>{{($contrato->baja) ? 'Si' : 'No'}}</td>
                                 <td class="conFlex">
                                     <a href="#" class="margenAbajo btn btn-link" data-toggle="modal" data-target="#staticBackdrop{{$contrato->id}}" title="Consumo Descargas">
                                         <img src="imagenes/iconfinder_graph_3338898.svg" alt="imagen de cosumo cliente" height="20px">
                                     </a>
+                                    @if ($contrato->relDireccion->coordenadas != '')
+                                        <a href="https://www.google.com/maps/place/{{$contrato->relDireccion->coordenadas}}" target="_blank"
+                                            class="margenAbajo btn btn-link" title="Ver en Google maps">
+                                            <img src="imagenes/pin_location.svg" alt="Pin en mapa" height="20px">
+                                        </a>
+                                    @endif
                                     @can('contratos_edit')
                                         <a href="/modificarContrato/{{ $contrato->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                             <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">

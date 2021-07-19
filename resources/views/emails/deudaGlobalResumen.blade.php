@@ -36,6 +36,8 @@
                 <th>Causa</th>
                 <th>Creada</th>
                 <th>Tiempo s/resolver</th>
+                <th>Programada</th>
+                <th>Prioridad</th>
             </tr>
         </thead>
         <tbody>
@@ -47,6 +49,22 @@
                     <td>{{ $incidente->causa }}</td>
                     <td>{{ $incidente->relUser->name }}</td>
                     <td>{{ $incidente->tiempoCaida() }}</td>
+                    <td>{{ $incidente->fecha_tentativa }}</td>
+                    <td>
+                        @switch($incidente->prioridad)
+                            @case(1)
+                                Alta
+                                @break
+                            @case(2)
+                                Media
+                                @break
+                            @case(3)
+                                Baja
+                                @break
+                            @default
+                                Sin Datos
+                        @endswitch
+                    </td>
                 </tr>
         </tbody>
         @endforeach

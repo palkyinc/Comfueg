@@ -232,7 +232,7 @@ abstract class CronFunciones
     
     public static function enviarMailDeudasPendientes ()
     {
-        $deudas = Site_has_incidente::where('tipo', 'DEUDA TECNICA')->where('final', null)->get();
+        $deudas = Site_has_incidente::where('tipo', 'DEUDA TECNICA')->where('final', null)->orderByDesc('prioridad')->get();
         //dd($deudas);
         $toSend = new DeudaTecnicaResumen($deudas);
         $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.DEUDAS_TECNICA_MAIL_GROUP'));

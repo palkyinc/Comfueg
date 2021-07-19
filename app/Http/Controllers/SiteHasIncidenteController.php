@@ -123,7 +123,8 @@ class SiteHasIncidenteController extends Controller
     public function createDeuda()
     {
         $paneles = Panel::all();
-        return view('agregarSiteHasDeuda', ['paneles' => $paneles, 'completo' => 0, 'nodos' => 'activate']);
+        $deudas = Site_has_incidente::where('tipo', 'DEUDA TECNICA')->where('final', null)->get();
+        return view('agregarSiteHasDeuda', ['deudas' => $deudas, 'paneles' => $paneles, 'completo' => 0, 'nodos' => 'activate']);
     }
 
     public function createArchivoIncidente($id)
@@ -141,6 +142,9 @@ class SiteHasIncidenteController extends Controller
         $deuda->causa = $request->input('causa');
         $deuda->mensaje_clientes = $request->input('mensaje_clientes');
         $deuda->user_creator = auth()->user()->id;
+        $deuda->precedencia = $request->input('precedencia');
+        $deuda->fecha_tentativa = $request->input('fecha_tentativa');
+        $deuda->prioridad = $request->input('prioridad');
         $deuda->save();
         $deuda->enviarMail(false, true);
         if ($request->hasfile('scheme_file')) {
@@ -221,8 +225,10 @@ class SiteHasIncidenteController extends Controller
             [
                 'tipo' => 'required|min:9|max:13',
                 'inicio' => 'required|date',
+                'fecha_tentativa' => 'nullable|date',
                 'afectado' => 'required|numeric|min:1|max:99999',
                 'causa' => 'required|min:2|max:255',
+                'prioridad' => 'required|numeric|min:1|max:10',
                 'mensaje_clientes' => $mensajeClientes
             ]
         );
@@ -339,8 +345,8 @@ class SiteHasIncidenteController extends Controller
     {
         $incidente = Site_has_incidente::find($id);
         $archivos = Entity_has_file::where('modelo_id', 3)->where('entidad_id', $id)->get();
-        //dd(date("c", strtotime($incidente->inicio)));
-        return view('modificarSIteHasDeuda', ['archivos' => $archivos, 'incidente' => $incidente, 'nodos' => 'active']);
+        $deudas = Site_has_incidente::where('tipo', 'DEUDA TECNICA')->where('final', null)->get();
+        return view('modificarSiteHasDeuda', ['deudas' => $deudas , 'archivos' => $archivos, 'incidente' => $incidente, 'nodos' => 'active']);
     }
     
     /**
@@ -353,7 +359,7 @@ class SiteHasIncidenteController extends Controller
     {
         $incidente = Site_has_incidente::find($id);
         $archivos = Entity_has_file::where('modelo_id', 3)->where('entidad_id', $id)->paginate();
-        return view('adminArchivosincidente', ['files' => $archivos, 'incidente' => $incidente, 'nodos' => 'active']);
+        return view('adminArchivosIncidente', ['files' => $archivos, 'incidente' => $incidente, 'nodos' => 'active']);
     }
     
     /**
@@ -403,6 +409,9 @@ class SiteHasIncidenteController extends Controller
         $this->updateValidar ($request, true);
         $incidente->inicio = $request->input('inicio');
         $incidente->final = $request->input('final');
+        $incidente->fecha_tentativa = $request->input('fecha_tentativa');
+        $incidente->prioridad = $request->input('prioridad');
+        $incidente->precedencia = $request->input('precedencia');
         $actualizacion = new Incidente_has_mensaje();
         $actualizacion->mensaje = $request->input('actualizacion');
         $actualizacion->incidente_id = $incidente->id;
@@ -459,6 +468,8 @@ class SiteHasIncidenteController extends Controller
                     [
                         'inicio' => 'required|date',
                         'final' => 'nullable|date',
+                        'fecha_tentativa' => 'nullable|date',
+                        'prioridad' => 'required|numeric|min:1|max:10',
                         'actualizacion' => 'required|min:2|max:500',
                     ]
                 );

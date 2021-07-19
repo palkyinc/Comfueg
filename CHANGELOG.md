@@ -3,15 +3,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+https://github.com/romainsimon/vue-simple-search-dropdown
 
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
+
 ## [0.6.14] - 2021-XX-XX
 ### Added
 1. 	Aparace alerta en vista principal cuando un proveedor esta offline.
+2.	En vista "Administracion de Contratos":
+		a- Aparece celualr de cliente al pararse sobre el nombre.
+		b- Si se posee permiso de edicion de equipos, el nombre de equipo aparece con un hipervínculo que abrirá pestaña de esdicion de equipo.
+		c-La columna "Barrio" se combio por "Ubicación" al pararse sobre el barrio aparecerá la direccion del contrato
+		d-Si están cargadas las coordenadas de la ubicación del contrato, aparece icono sobre el cual se puede abrir pestaña que nos llega a google map con la ubicación.
+3.	En Deudas tecnicas:
+		a-	Se agregan los siguientes: Prioridad, fecha tentiva y precedencia
+		b-	Se modifican las vistas de admin, agregar y modificar
+		c-	Se modifica tabla en mail semanal de duedas tecnicas pendientes
 ### Changed
 1. 	Se corrige problema en CronFunciones que provocaba no ver historial de navegación semanal.
-https://github.com/romainsimon/vue-simple-search-dropdown
 
 ## [0.6.13] - 2021-05-31
 ### Added

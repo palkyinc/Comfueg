@@ -40,7 +40,7 @@
 				</a>
 				<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
 					<a class="dropdown-item" href="/adminContratos">Contratos</a>
-					<a class="dropdown-item" href="/altaContrato">Alta de Contratos</a>
+					<a class="dropdown-item disabled" href="/altaContrato">Alta de Contratos</a>
 					<a class="dropdown-item disabled" href="">Status de Contrato</a>
 				</div>
 			</li>	

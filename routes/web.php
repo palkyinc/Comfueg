@@ -26,12 +26,17 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SiteHasIncidenteController;
+use App\Http\Controllers\SessionController;
 use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
+use App\Models\Mail_group;
 ####TEST
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use App\Custom\CronFunciones;
+use Illuminate\Support\Facades\Mail;
+
 
 
 /*
@@ -45,10 +50,11 @@ use App\Custom\CronFunciones;
 |
 */
 ## Route Inicial Default
-Route::get('/test', function () {
-        dd(CronFunciones::buscarProveedoresCaidos());
-        });
+/* Route::get('/test', function () {
+        dd(CronFunciones::enviarMailDeudasPendientes());
+        }); */
 ### Route index
+Route::post('/test', function () {return 'OK';});
 Route::get('/', function (){return view('inicio', [ 'frase' => true, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/inicio', function (){return view('inicio', [ 'frase' => false, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/contratos', function (){return view('construccion', ['contratos' => 'active']);});
@@ -60,7 +66,9 @@ Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel'])->middlewar
 Route::get('/allPanels', [PruebaController::class, 'allPanels'])->middleware('auth');
 Route::get('/adminControlPanelNodos', [PruebaController::class, 'index'])->middleware('auth');
 Route::get('/adminPanelLogs', [PruebaController::class, 'indexLogs'])->middleware('auth');
-
+Route::put('/Session', [SessionController::class, 'store'])->middleware('auth');
+Route::get('/Session/{id}', [SessionController::class, 'show'])->middleware('auth');
+Route::delete('/Session/{id}', [SessionController::class, 'destroy'])->middleware('auth');
 ####################
 ####### Panel tiene Barrio CRUD
 Route::get('/adminPanelhasBarrio', [Panel_has_barrioController::class, 'index'])->middleware('auth');
@@ -242,8 +250,10 @@ Route::get('/modificarCliente/{id}', [ClienteController::class, 'edit'])->middle
 Route::patch('/modificarCliente', [ClienteController::class, 'update'])->middleware('auth');
 Route::get('/agregarCliente', [ClienteController::class, 'create'])->middleware('auth');
 Route::post('/agregarCliente', [ClienteController::class, 'store'])->middleware('auth');
-### API-rest
+### Cliente API-rest
 Route::get('/Cliente/{id}', [ClienteController::class, 'search'])->middleware('auth');
+Route::post('/Cliente', [ClienteController::class, 'storeApi'])->middleware('auth');
+Route::patch('/Cliente', [ClienteController::class, 'updateApi'])->middleware('auth');
 ####################
 ####### CRUD Users
 Route::get('/adminUsers', [UserController::class, 'index'])->middleware('auth');

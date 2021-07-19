@@ -34,6 +34,18 @@ class ClienteController extends Controller
         $codigosArea = CodigoDeArea::all();
         return view('agregarCliente', ['codigosArea' =>$codigosArea, 'datos' => 'active']);
     }
+   
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeApi(Request $request)
+    {
+        $this->storeInBase($request);
+        return response()->json(true, 200);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -43,19 +55,33 @@ class ClienteController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validar($request);
-        $Cliente = new Cliente;
-        $Cliente->id = $request->input('id');
-        $Cliente->nombre = ucfirst(strtolower($request->input('nombre')));
-        $Cliente->apellido = strtoupper($request->input('apellido'));
-        $Cliente->cod_area_tel = $request->input('cod_area_tel');
-        $Cliente->telefono = $request->input('telefono');
-        $Cliente->cod_area_cel = $request->input('cod_area_cel');
-        $Cliente->celular = $request->input('celular');
-        $Cliente->email = $request->input('email');
-        $Cliente->save();
+        $this->storeInBase($request);
         $respuesta[] = 'Cliente se creo correctamente';
         return redirect('/adminClientes')->with('mensaje', $respuesta);
+    }
+
+    private function storeInBase (Request $request) {
+        $this->validar($request);
+        $cliente = new Cliente;
+        $cliente->id = $request->input('id');
+        $cliente->nombre = $this->primerasMayusculas($request->input('nombre'));
+        $cliente->apellido = strtoupper(trim($request->input('apellido')));
+        $cliente->cod_area_tel = $request->input('cod_area_tel');
+        $cliente->telefono = $request->input('telefono');
+        $cliente->cod_area_cel = $request->input('cod_area_cel');
+        $cliente->celular = $request->input('celular');
+        $cliente->email = $request->input('email');
+        $cliente->es_empresa = ($request->input('es_empresa') == 'true' || $request->input('es_empresa') == 'on') ? true : false;
+        $cliente->save();
+    }
+
+    private function primerasMayusculas ($string) {
+        $words = explode (' ', strtolower(trim($string)));
+        $string = '';
+        foreach ($words as $word) {
+            $string = $string . ' ' . ucfirst($word);
+        }
+        return $string;
     }
 
     /**
@@ -77,7 +103,7 @@ class ClienteController extends Controller
      */
     public function search($id)
     {
-        $cliente = Cliente::select('id','nombre', 'apellido','cod_area_tel', 'telefono', 'cod_area_cel', 'celular', 'email')->find($id);
+        $cliente = Cliente::select('id','nombre', 'apellido','cod_area_tel', 'telefono', 'cod_area_cel', 'celular', 'email', 'es_empresa')->find($id);
         if ($cliente)
         {
             $cliente->cod_area_tel = CodigoDeArea::select('id', 'codigoDeArea', 'provincia')->find($cliente->cod_area_tel);
@@ -110,17 +136,86 @@ class ClienteController extends Controller
             $longTel = 20;
             $longCel = 20;
         }
+        if ($request->es_empresa == 'true'){
+            $celular = 'nullable|numeric|digits:' . $longCel;
+        }else {
+            $celular = 'required|numeric|digits:' . $longCel;
+        }
         $aValidar = [
             'id' => 'required|numeric|min:1|max:99999',
             'nombre' => 'nullable|min:2|max:45',
             'apellido' => 'required|min:2|max:45',
             'cod_area_tel' => 'required',
             'cod_area_cel' => 'required',
-            'celular' => 'required|numeric|digits:' . $longCel,
+            'celular' => $celular,
             'telefono' => 'nullable|numeric|digits:' . $longTel,
             'email' => 'nullable|email:rfc,dns'
         ];
         $request->validate($aValidar);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateApi(Request $request)
+    {
+        $this->updateInBase($request, false);
+        return response()->json(true, 200);
+    }
+
+    private function updateInBase( Request $request, $noEsApi)
+    {
+        $nombre = $this->primerasMayusculas($request->input('nombre'));
+        $apellido = strtoupper(trim($request->input('apellido')));
+        $cod_area_tel = $request->input('cod_area_tel');
+        $telefono = $request->input('telefono');
+        $cod_area_cel = $request->input('cod_area_cel');
+        $celular = $request->input('celular');
+        $email = $request->input('email');
+        $cliente = Cliente::find($request->input('id'));
+        $this->validar($request);
+        $cliente->nombre = $nombre;
+        $cliente->apellido = $apellido;
+        $cliente->cod_area_tel = $cod_area_tel;
+        $cliente->telefono = $telefono;
+        $cliente->cod_area_cel = $cod_area_cel;
+        $cliente->celular = $celular;
+        $cliente->email = $email;
+        $cliente->es_empresa = ($request->input('es_empresa') == 'true' || $request->input('es_empresa') == 'on') ? true : false;
+        if ($noEsApi)
+        {
+            $respuesta[] = 'Se cambió con exito:';
+            if ($cliente->nombre != $cliente->getOriginal()['nombre']) {
+                $respuesta[] = ' Nombre: ' . $cliente->getOriginal()['nombre'] . ' POR ' . $cliente->nombre;
+            }
+            if ($cliente->apellido != $cliente->getOriginal()['apellido']) {
+                $respuesta[] = ' Apellido: ' . $cliente->getOriginal()['apellido'] . ' POR ' . $cliente->apellido;
+            }
+            if ($cliente->cod_area_tel != $cliente->getOriginal()['cod_area_tel']) {
+                $respuesta[] = ' Código área Teléfono: ' . $cliente->getOriginal()['cod_area_tel'] . ' POR ' . $cliente->cod_area_tel;
+            }
+            if ($cliente->telefono != $cliente->getOriginal()['telefono']) {
+                $respuesta[] = ' Teléfono: ' . $cliente->getOriginal()['telefono'] . ' POR ' . $cliente->telefono;
+            }
+            if ($cliente->cod_area_cel != $cliente->getOriginal()['cod_area_cel']) {
+                $respuesta[] = ' Código área Celular: ' . $cliente->getOriginal()['cod_area_cel'] . ' POR ' . $cliente->cod_area_cel;
+            }
+            if ($cliente->celular != $cliente->getOriginal()['celular']) {
+                $respuesta[] = ' Celular: ' . $cliente->getOriginal()['celular'] . ' POR ' . $cliente->celular;
+            }
+            if ($cliente->email != $cliente->getOriginal()['email']) {
+                $respuesta[] = ' email: ' . $cliente->getOriginal()['email'] . ' POR ' . $cliente->email;
+            }
+            if ($cliente->es_empresa != $cliente->getOriginal()['es_empresa']) {
+                $respuesta[] = ' Empresa: ' . $cliente->getOriginal()['es_empresa'] . ' POR ' . $cliente->es_empresa;
+            }
+            $cliente->save();
+            return $respuesta;
+        }
+        $cliente->save();
     }
 
     /**
@@ -132,46 +227,7 @@ class ClienteController extends Controller
      */
     public function update(Request $request)
     {
-        $nombre = ucfirst(strtolower($request->input('nombre')));
-        $apellido = strtoupper($request->input('apellido'));
-        $cod_area_tel = $request->input('cod_area_tel');
-        $telefono = $request->input('telefono');
-        $cod_area_cel = $request->input('cod_area_cel');
-        $celular = $request->input('celular');
-        $email = $request->input('email');
-        $cliente = Cliente::find($request->input('id'));
-        $this->validar($request, $cliente);
-        $cliente->nombre = $nombre;
-        $cliente->apellido = $apellido;
-        $cliente->cod_area_tel = $cod_area_tel;
-        $cliente->telefono = $telefono;
-        $cliente->cod_area_cel = $cod_area_cel;
-        $cliente->celular = $celular;
-        $cliente->email = $email;
-        $respuesta[] = 'Se cambió con exito:';
-        if ($cliente->nombre != $cliente->getOriginal()['nombre']) {
-            $respuesta[] = ' Nombre: ' . $cliente->getOriginal()['nombre'] . ' POR ' . $cliente->nombre;
-        }
-        if ($cliente->apellido != $cliente->getOriginal()['apellido']) {
-            $respuesta[] = ' Apellido: ' . $cliente->getOriginal()['apellido'] . ' POR ' . $cliente->apellido;
-        }
-        if ($cliente->cod_area_tel != $cliente->getOriginal()['cod_area_tel']) {
-            $respuesta[] = ' Código área Teléfono: ' . $cliente->getOriginal()['cod_area_tel'] . ' POR ' . $cliente->cod_area_tel;
-        }
-        if ($cliente->telefono != $cliente->getOriginal()['telefono']) {
-            $respuesta[] = ' Teléfono: ' . $cliente->getOriginal()['telefono'] . ' POR ' . $cliente->telefono;
-        }
-        if ($cliente->cod_area_cel != $cliente->getOriginal()['cod_area_cel']) {
-            $respuesta[] = ' Código área Celular: ' . $cliente->getOriginal()['cod_area_cel'] . ' POR ' . $cliente->cod_area_cel;
-        }
-        if ($cliente->celular != $cliente->getOriginal()['celular']) {
-            $respuesta[] = ' Celular: ' . $cliente->getOriginal()['celular'] . ' POR ' . $cliente->celular;
-        }
-        if ($cliente->email != $cliente->getOriginal()['email']) {
-            $respuesta[] = ' email: ' . $cliente->getOriginal()['email'] . ' POR ' . $cliente->email;
-        }
-        $cliente->save();
-        return redirect('adminClientes')->with('mensaje', $respuesta);
+        return redirect('adminClientes')->with('mensaje', $this->updateInBase($request, true));
     }
 
     /**

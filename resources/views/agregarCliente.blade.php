@@ -13,6 +13,10 @@ $mostrarSololectura = true;
                 <label for="id">ID Genesys: </label>
                 <input type="text" name="id" value="{{old('id')}}" maxlength="45"  class="form-control">
             </div>
+            <div class="custom-control custom-switch m-4">
+                <input type="checkbox" class="custom-control-input" id="customSwitch1" name="es_empresa">
+                <label class="custom-control-label" for="customSwitch1">Es Empresa</label>
+            </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">

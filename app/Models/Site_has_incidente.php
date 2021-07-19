@@ -122,5 +122,9 @@ class Site_has_incidente extends Model
     {
         return str_split($this->dateTimeLocal($this->final), 16)[0];
     }
+    public function fecha_tentativaDateTimeLocal ()
+    {
+        return str_split($this->dateTimeLocal($this->fecha_tentativa), 16)[0];
+    }
 
 }

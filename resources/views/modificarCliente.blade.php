@@ -14,6 +14,12 @@ $mostrarSololectura = true;
         @method('patch')
 
         <div class="form-row">
+            <div class="custom-control custom-switch m-4">
+                <input type="checkbox" class="custom-control-input" id="customSwitch1" name="es_empresa" {{$elemento->es_empresa ? 'checked' : ''}}>
+                <label class="custom-control-label" for="customSwitch1">Es Empresa</label>
+            </div>
+        </div>
+        <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="nombre">Nombre: </label>
                 <input type="text" name="nombre" value="{{$elemento->nombre}}" maxlength="45"  class="form-control">

@@ -61,6 +61,8 @@ $mostrarSololectura = true;
                             <th scope="col"> Finalizada </th>
                             <th scope="col"> Afectado </th>
                             <th scope="col"> Sitio </th>
+                            <th scope="col"> Prioridad </th>
+                            <th scope="col"> Programado </th>
                             <th scope="col"> Creado por </th>
                             <th scope="col" colspan="2">
                                 @can('SiteHasIncidente_create')
@@ -89,6 +91,26 @@ $mostrarSololectura = true;
                             </td>
                             <td>{{$incidente->relPanel->relEquipo->nombre}}</td>
                             <td>{{$incidente->relPanel->relSite->nombre}}</td>
+                            <td> @switch($incidente->prioridad)
+                                @case(1)
+                                    Alta
+                                    @break
+                                @case(2)
+                                    Media
+                                    @break
+                                @case(3)
+                                    Baja
+                                    @break
+                                @default
+                                    Sin Datos
+                            @endswitch
+                            </td>
+                            <td> @if ($incidente->fecha_tentativa)
+                                {{$incidente->fecha_tentativa}}    
+                            @else
+                                Sin Datos
+                            @endif
+                            </td>
                             <td>{{$incidente->relUser->name}}</td>
                             <td>
                                 @can('SiteHasIncidente_edit')
@@ -96,7 +118,7 @@ $mostrarSololectura = true;
                                         <a href="/modificarSiteHasDeuda/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                             <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                         </a>
-                                        <a href="/adminArchivosDeuda/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar archivoss">
+                                        <a href="/adminArchivosDeuda/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar archivos">
                                             <img src="imagenes/iconfinder_document-text-file-sheet-doc_2931167.svg" alt="imagen editar archivo" height="20px">
                                         </a>
                                     @endif
