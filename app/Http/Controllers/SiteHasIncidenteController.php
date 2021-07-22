@@ -217,9 +217,11 @@ class SiteHasIncidenteController extends Controller
         if (!$esDeuda)
         {
             $mensajeClientes = 'required|min:2|max:255';
+            $prioridad = 'nullable|numeric|min:1|max:10';
         } else
             {
                 $mensajeClientes = 'required|min:2|max:40';
+                $prioridad = 'required|numeric|min:1|max:10';
             }
         $request->validate(
             [
@@ -228,7 +230,7 @@ class SiteHasIncidenteController extends Controller
                 'fecha_tentativa' => 'nullable|date',
                 'afectado' => 'required|numeric|min:1|max:99999',
                 'causa' => 'required|min:2|max:255',
-                'prioridad' => 'required|numeric|min:1|max:10',
+                'prioridad' => $prioridad,
                 'mensaje_clientes' => $mensajeClientes
             ]
         );

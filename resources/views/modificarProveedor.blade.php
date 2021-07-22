@@ -14,7 +14,16 @@ $mostrarSololectura = true;
                     <label for="nombre">Nombre: </label>
                     <input type="text" name="nombre" value="{{$proveedor->nombre}}" maxlength="30" class="form-control">
                 </div>
-                
+                <div class="form-group col-md-3">
+                    <label for="ipProveedor">IP Proveedor: (*)</label>
+                    <input type="text" name="ipProveedor" value="{{$proveedor->ipProveedor}}" maxlength="15" class="form-control">
+                    <p>(*)Vacio para DHCP</p>
+                <div class="form-group col-md-3">
+                    <label for="maskProveedor">Máscara Proveedor: (*)</label>
+                    <input type="text" name="maskProveedor" value="{{$proveedor->maskProveedor}}" maxlength="15" class="form-control">
+                    <p>(*)Vacio para DHCP</p>
+                </div>
+                </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">

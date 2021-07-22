@@ -8,7 +8,12 @@ https://github.com/romainsimon/vue-simple-search-dropdown
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
-## [0.6.14] - 2021-XX-XX
+## [0.6.14] - 2021-07-18
+### Changed
+1. 	Se resuelve problema con los classifiers al momento de modificar proveedores.
+2.	Se corrije el problema de agragar un solo proveedor y con ip fija.
+
+## [0.6.14] - 2021-07-18
 ### Added
 1. 	Aparace alerta en vista principal cuando un proveedor esta offline.
 2.	En vista "Administracion de Contratos":

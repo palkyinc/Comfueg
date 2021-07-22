@@ -36,7 +36,7 @@ class ProveedoresController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Vista para la selección de Gateway.
      *
      * @return \Illuminate\Http\Response
      */
@@ -86,6 +86,8 @@ class ProveedoresController extends Controller
                 'subida' => 'required|min:1|max:99999',
                 'dns' => 'ipv4',
                 'ipGateway' => 'ipv4',
+                'ipProveedor' => 'nullable|ipv4',
+                'maskProveedor' => 'nullable|ipv4',
                 'gateway_id' => 'required|min:0|max:99999'
             ]
         );
@@ -112,6 +114,8 @@ class ProveedoresController extends Controller
         $proveedor->dns = $request->input('dns');
         $proveedor->gateway_id = $request->input('gateway_id');
         $proveedor->ipGateway = $request->input('ipGateway');
+        $proveedor->ipProveedor = $request->input('ipProveedor');
+        $proveedor->maskProveedor = $request->input('maskProveedor');
         $proveedor->sinActualizar = true;
         $proveedor->en_linea = false;
         $proveedor->save();
@@ -185,6 +189,8 @@ class ProveedoresController extends Controller
         $proveedor->subida = $request['subida'];
         $proveedor->dns = $request['dns'];
         $proveedor->ipGateway = $request['ipGateway'];
+        $proveedor->ipProveedor = $request['ipProveedor'];
+        $proveedor->maskProveedor = $request['maskProveedor'];
         $proveedor->sinActualizar = true;
         if ($proveedor->nombre != $proveedor->getOriginal()['nombre']) {
             $respuesta[] = ' Nombre: ' . $proveedor->getOriginal()['nombre'] . ' POR ' . $proveedor->nombre;
@@ -206,6 +212,12 @@ class ProveedoresController extends Controller
         }
         if ($proveedor->ipGateway != $proveedor->getOriginal()['ipGateway']) {
             $respuesta[] = ' IP del Default Gateway: ' . $proveedor->getOriginal()['ipGateway'] . ' POR ' . $proveedor->ipGateway;
+        }
+        if ($proveedor->ipProveedor != $proveedor->getOriginal()['ipProveedor']) {
+            $respuesta[] = ' IP Proveedor: ' . $proveedor->getOriginal()['ipProveedor'] . ' POR ' . $proveedor->ipProveedor;
+        }
+        if ($proveedor->maskProveedor != $proveedor->getOriginal()['maskProveedor']) {
+            $respuesta[] = ' Mask Proveedor: ' . $proveedor->getOriginal()['maskProveedor'] . ' POR ' . $proveedor->maskProveedor;
         }
         $proveedor->save();
         return redirect('adminProveedores')->with('mensaje', $respuesta);
@@ -236,18 +248,23 @@ class ProveedoresController extends Controller
         while ($sinActualizar = Proveedor::where('sinActualizar', true)->first()) 
         {
             $sinActualizar->reordenarClassifiers();
-            //dd($sinActualizar);
             $totales = $sinActualizar->reordenarTotales();
             $totalClassifiers = $sinActualizar->getClassifiersQuantity();
+            //dd($totalClassifiers);
             $gateway = Panel::find($sinActualizar->gateway_id);
             $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
             if ($apiMikro) 
             {
-                $numbers = $apiMikro->getTypeNumbers();
+                if (($numbers = $apiMikro->getTypeNumbers()) == null){
+                    $apiMikro->modificarPlanType(   ['name' => 'total_down', 'kind' => 'pcq', 'pcq-classifier' => 'dst-address'], 
+                                                ['name' => 'total_up', 'kind' => 'pcq', 'pcq-classifier' => 'src-address'], 'add');
+                    $numbers = $apiMikro->getTypeNumbers();
+                }
                 $apiMikro->modificarPlanType(   ['numbers' => $numbers['down'], 'pcq-rate' => $totales['bajada'] . 'K'], 
                                                 ['numbers' => $numbers['up'], 'pcq-rate' => $totales['subida'] . 'K'], 'set');
                 $respuesta[] = ($apiMikro->checkNat() ? 'Regla de NAT confirmada.' : 'Se creó regla de NAT.');
                 $apiMikro->removeAllProveedores();
+                //dd($numbers);
                 $proveedoresActualizar = Proveedor::where('gateway_id', $sinActualizar->gateway_id)
                                                     ->where('estado', true)
                                                     ->get();
@@ -273,7 +290,7 @@ class ProveedoresController extends Controller
             }
             else
             {
-                $respuesta [] = 'Error al instentar conectarse a ' . $gateway->relEquipo->nombre;
+                $respuesta [] = 'Error al intentar conectarse a ' . $gateway->relEquipo->nombre;
             }
         }
         if (!isset($respuesta)) {$respuesta[] = 'Nada para actualizar';}

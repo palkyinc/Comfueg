@@ -538,11 +538,20 @@ class GatewayMikrotik extends RouterosAPI
 		if ($action == 'add')
 		{
 			$interface = $this->getDatosEthernet($proveedor->interface, $proveedor->esVlan)['name'];
-			$this->comm('/ip/dhcp-client/add', ['add-default-route' => $proveedor->getProveedoresQuantity() == 1 ? 'yes' : 'no',
-												'use-peer-dns' => 'no',
-												'interface' => $interface,
-												'disabled' => 'no',
-												'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam']);
+			if ($proveedor->ipProveedor){
+				$this->comm('/ip/address/add', ['address' => $proveedor->ipProveedor,
+													'netmask' => $proveedor->maskProveedor,
+													'interface' => $interface,
+													'disabled' => 'no',
+													'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam']);
+			}else {
+				$this->comm('/ip/dhcp-client/add', ['add-default-route' => $proveedor->getProveedoresQuantity() == 1 ? 'yes' : 'no',
+													'use-peer-dns' => 'no',
+													'interface' => $interface,
+													'disabled' => 'no',
+													'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam']);
+			}
+			//dd($proveedor->getProveedoresQuantity());
 			$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'prerouting',
 															'in-interface' => $interface,
 															'connection-mark' => 'no-mark',
@@ -577,9 +586,6 @@ class GatewayMikrotik extends RouterosAPI
 															'new-routing-mark' => 'to_' . $interface,
 															'passthrough' => 'no',
 															'comment' => $proveedor->id . ';proveedor_id;D;addedBySlam']);
-			if ($proveedor->getProveedoresQuantity() > 1)
-			{
-				### Set routes con recusividad
 				$this->comm('/ip/route/' . $action, [	'dst-address' => $proveedor->dns,
 														'gateway' => $proveedor->ipGateway,
 														'check-gateway' => 'ping',
@@ -594,6 +600,8 @@ class GatewayMikrotik extends RouterosAPI
 														'target-scope' => '10',
 														'routing-mark' => 'to_' . $interface,
 														'comment' => $proveedor->id . ';proveedor_id;B;addedBySlam']);
+			if ($proveedor->getProveedoresQuantity() > 1)
+			{
 				$this->comm('/ip/route/' . $action, [	'dst-address' => '0.0.0.0/0',
 														'gateway' => $proveedor->dns,
 														'check-gateway' => 'ping',

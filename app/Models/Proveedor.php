@@ -22,14 +22,14 @@ class Proveedor extends Model
 
     public function getProveedoresQuantity() // tambien Next Classifier|
     {
-        $proveedores = Proveedor::select('classifier')->where('estado', true)->get();
+        $proveedores = Proveedor::select('classifier')->where('estado', true)->where('gateway_id', $this->gateway_id)->get();
         return count($proveedores);
         dd(count($proveedores));
     }
 
     public function getClassifiersQuantity() // tambien Next Classifier|
     {
-        $proveedores = Proveedor::select('bajada')->where('estado', true)->get();
+        $proveedores = Proveedor::select('bajada')->where('estado', true)->where('gateway_id', $this->gateway_id)->get();
         $total = 0;
         foreach ($proveedores as $proveedor)
         {
@@ -50,12 +50,12 @@ class Proveedor extends Model
 
     public function reordenarClassifiers()
     {
-        $proveedores = Proveedor::where('estado', true)->get();
+        $proveedores = Proveedor::where('estado', true)->where('gateway_id', $this->gateway_id)->get();
         for ($i=0; $i < count($proveedores); $i++) { 
             $proveedores[$i]->classifier = $i;
             $proveedores[$i]->save();
         }
-        $proveedores = Proveedor::where('estado', false)->get();
+        $proveedores = Proveedor::where('estado', false)->where('gateway_id', $this->gateway_id)->get();
         foreach ($proveedores as $proveedor)
         {
             $proveedor->classifier = 1001;
