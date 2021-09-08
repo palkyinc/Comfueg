@@ -179,8 +179,8 @@ class PruebaController extends Controller
     {
         return view('adminControlPanelNodos', [
             'nodos' => 'active',
-            'website' => Config::get('constants.DOMINIO_COMFUEG'),
-            'vuejs' => Config::get('constants.VUEJS_VERSION')
+            'website' => env('DOMINIO_COMFUEG'),
+            'vuejs' => env('VUEJS_VERSION')
         ]);
     }
     

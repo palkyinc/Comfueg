@@ -7,6 +7,7 @@ use App\Models\Plan;
 use App\Models\Proveedor;
 use App\Models\Site_has_incidente;
 use App\Models\Mail_group;
+use App\Models\Contadores_mensuales;
 use App\Custom\ClientMikrotik;
 use App\Custom\GatewayMikrotik;
 use App\Mail\DeudaTecnicaResumen;
@@ -17,6 +18,26 @@ use Illuminate\Support\Facades\Mail;
 
 abstract class CronFunciones
 {
+
+    public static function resetCounter($mensual = false)
+    {
+        $gateways = self::getGateways();
+        foreach ($gateways as $elemento) 
+        {
+            $gateway = Panel::find($elemento);
+            $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
+            if ($apiMikro) 
+            { 
+                if ($mensual)
+                {
+                        $apiMikro->resetCounterMensual();
+                }
+                else   {
+                                $apiMikro->resetCounter();
+                        }    
+            }
+        }
+    }
 
     public static function generarArchivoSem($dias = 1)
     {
@@ -120,24 +141,23 @@ abstract class CronFunciones
                 $allData = $apiMikro->getGatewayData();
                 unset($apiMikro);
                 ### abrir el archivo
-                ### leer el array -> convertor de json a array
-                if (file_exists('/inetpub/wwwroot/Comfueg/storage/Crons/' . $archivoMes))
-                {
-                        $file = fopen('/inetpub/wwwroot/Comfueg/storage/Crons/' . $archivoMes, 'r');
-                        $arrayTotMes = json_decode(fgets($file), true);
-                        fclose($file);
-                }
+                ### leer el array -> convertir de json a array
                 foreach ($allData['hotspotUser'] as $elemento)
                 {
                         if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 
                         {
-                                $arrayTotMes[$elemento['comment']] = $elemento['bytes-in'] + $elemento['bytes-out'];
-                                
+                                $contador_mensual = Contadores_mensuales::where('contrato_id', $elemento['comment'])->first();
+                                if (!$contador_mensual)
+                                {
+                                        $contador_mensual = new Contadores_mensuales();
+                                        $contador_mensual->contrato_id = $elemento['comment'];
+                                }
+                                $contador_mensual->anio = date('Y');
+                                $contador_mensual->ultimo_mes = date('m');
+                                $contador_mensual->setMounthCounter($elemento['bytes-in'] + $elemento['bytes-out']);
+                                $contador_mensual->save();
                         }
                 }
-                $file = fopen('/inetpub/wwwroot/Comfueg/storage/Crons/' . $archivoMes, 'w');
-                fwrite($file, json_encode($arrayTotMes));
-                fclose($file);
                 foreach ($allData['hotspotHost'] as $elemento)
                 {
                     if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 
@@ -152,7 +172,7 @@ abstract class CronFunciones
         }
     }
 
-        private static function getGateways ()
+    private static function getGateways ()
     {
         $planes = Plan::select('gateway_id')->where('gateway_id', '!=', null)->get();
         $gateways = null;
@@ -201,10 +221,6 @@ abstract class CronFunciones
                                         $salida['up'][] = $allData[$contrato_id]['up'][$key];
                                         $salida['down'][] = $allData[$contrato_id]['down'][$key];
                                 }
-                        }
-                        else
-                        {
-                                ### selft::simularDia()                
                         }
                         fclose($file);
                 }

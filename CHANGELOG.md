@@ -8,7 +8,7 @@ https://github.com/romainsimon/vue-simple-search-dropdown
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
-## [0.6.14] - 2021-07-18
+## [0.6.15] - 2021-07-19
 ### Changed
 1. 	Se resuelve problema con los classifiers al momento de modificar proveedores.
 2.	Se corrije el problema de agragar un solo proveedor y con ip fija.

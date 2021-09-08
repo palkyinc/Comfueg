@@ -11,6 +11,7 @@ use App\Models\Direccion;
 use App\Models\Equipo;
 use App\Models\Panel;
 use App\Models\Plan;
+use App\Models\Contadores_mensuales;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
@@ -38,23 +39,24 @@ class ContratoController extends Controller
                     $contratos[] = $contrato;
                 }
             }
-            //dd($contratos);
             $paginate = false;
         }
         else
-            {
-                $contratos = Contrato::paginate(10);
-                $paginate = true;
-            }
-        return view('adminContratos', ['contratos' => isset($contratos) ? $contratos : [], 'contracts' => 'active', 'paginate' => $paginate]);
+        {
+            $contratos = Contrato::paginate(10);
+            $paginate = true;
+        }
+        $conteos = Contadores_mensuales::get();
+        //dd($conteos);
+        return view('adminContratos', ['contratos' => isset($contratos) ? $contratos : [], 'internet' => 'active', 'paginate' => $paginate, 'conteos' => $conteos]);
     }
 
     public function vueIndex ()
     {
         return view('altaContrato', [
-            'nodos' => 'active',
-            'website' => Config::get('constants.DOMINIO_COMFUEG'),
-            'vuejs' => Config::get('constants.VUEJS_VERSION')
+            'contracts' => 'active',
+            'website' => env('DOMINIO_COMFUEG'),
+            'vuejs' => env('VUEJS_VERSION')
         ]);
     }
 
@@ -96,7 +98,7 @@ class ContratoController extends Controller
         }
         $paneles = Panel::where('activo', true)->where('rol', 'PANEL')->orderBy('num_site')->get();
         $planes = Plan::where('gateway_id', '!=', null)->get();
-        return ['contracts' => 'active', 'clientes' => $clientes, 'direcciones' => $direcciones,
+        return ['internet' => 'active', 'clientes' => $clientes, 'direcciones' => $direcciones,
                     'equipos' => $equipos, 'paneles' => $paneles, 'planes' => $planes];
     }
 

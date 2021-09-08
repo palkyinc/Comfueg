@@ -129,7 +129,7 @@ class Proveedor extends Model
 
     public function obtenerDominio ()
     {
-        return Config::get('constants.DOMINIO_COMFUEG');
+        return env('VUEJS_VERSION');
     }
 
     public static function provedoresCaidos ()

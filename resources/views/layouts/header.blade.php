@@ -39,8 +39,16 @@
 					Contratos
 				</a>
 				<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
+					<a class="dropdown-item disabled" href="/altaContrato">Alta</a>
+					<a class="dropdown-item disabled" href="">Consulta</a>
+				</div>
+			</li>	
+		    <li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle {{  $internet ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Internet
+				</a>
+				<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
 					<a class="dropdown-item" href="/adminContratos">Contratos</a>
-					<a class="dropdown-item disabled" href="/altaContrato">Alta de Contratos</a>
 					<a class="dropdown-item disabled" href="">Status de Contrato</a>
 				</div>
 			</li>	
@@ -74,14 +82,14 @@
 					<a class="dropdown-item" href="/adminAntenas">Antenas</a>
 					<a class="dropdown-item" href="/adminBarrios">Barrios</a>
 					<a class="dropdown-item" href="/adminPanelhasBarrio">Barrios por panel</a>
-		          <a class="dropdown-item" href="/adminCalles">Calles</a>
-		          <a class="dropdown-item" href="/adminCiudades">Ciudades</a>
-		          <a class="dropdown-item" href="/adminCodigosDeArea">Códigos de Área</a>
-		          <a class="dropdown-item" href="/adminDirecciones">Direcciones</a>
-		          <a class="dropdown-item" href="/adminEquipos">Equipos</a>
-		          <a class="dropdown-item" href="/adminPaneles">Dispositivos</a>
-		          <a class="dropdown-item" href="/adminProductos">Artículos</a>
-		          <a class="dropdown-item" href="/adminSites">Sitios</a>
+		        	<a class="dropdown-item" href="/adminCalles">Calles</a>
+		        	<a class="dropdown-item" href="/adminCiudades">Ciudades</a>
+		        	<a class="dropdown-item" href="/adminCodigosDeArea">Códigos de Área</a>
+		        	<a class="dropdown-item" href="/adminDirecciones">Direcciones</a>
+		        	<a class="dropdown-item" href="/adminEquipos">Equipos</a>
+		        	<a class="dropdown-item" href="/adminPaneles">Dispositivos</a>
+		        	<a class="dropdown-item" href="/adminProductos">Artículos</a>
+		        	<a class="dropdown-item" href="/adminSites">Sitios</a>
 		          <div class="dropdown-divider"></div>
 		          <a class="dropdown-item" href="/adminClientes">Clientes</a>
 		        </div>
@@ -96,6 +104,7 @@
 					<a class="dropdown-item" href="/adminPermissions">Permisos</a>
 					<a class="dropdown-item" href="/adminMailGroups">Grupos de Mail</a>
 					<a class="dropdown-item" href="/adminModelos">Entidades</a>
+					<a class="dropdown-item" href="/adminContractTypes">Tipos de Contratos</a>
 					<a class="dropdown-item disabled" href="/adminLogs">Logs de Sistema</a>
 		        </div>
 		      </li>

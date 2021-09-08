@@ -95,6 +95,24 @@ class GatewayMikrotik extends RouterosAPI
 		}
    	}
 
+	public function resetCounter ()
+	{
+		$clienteMikrotik = $this->getGatewayData();
+		//dd($clienteMikrotik);
+		foreach ($clienteMikrotik['hotspotHost'] as $value)
+		{
+			$this->comm("/ip/hotspot/host/remove", array(
+				"numbers"     => $value['.id']
+			));
+			//dd($value['.id']);
+		}
+	}
+
+	public function resetCounterMensual ()
+	{
+			$this->comm("/ip/hotspot/user/reset-counters");
+	}
+
    	public function disableClient ($clienteMikrotik)
    	{
    		$this->comm("/ip/hotspot/user/disable", array (
@@ -112,22 +130,21 @@ class GatewayMikrotik extends RouterosAPI
    	}
 	
 	public function enableClient ($clienteMikrotik)
-	   	{
-	   		$this->comm("/ip/hotspot/user/enable", array (
-	   			"numbers" => $clienteMikrotik->id_HotspotUser,
-	   		));
-	   		$this->comm("/ip/firewall/address-list/enable", array (
-	   			"numbers" => $clienteMikrotik->id_AddressList,
-	   		));
-	   		if ($clienteMikrotik->id_HotspotHost) 
-			{
-				$this->comm("/ip/hotspot/host/remove", array(
-						     "numbers"     => $clienteMikrotik->id_HotspotHost
-						   ));
-			}
-	   	}
-
-		   
+	{
+		$this->comm("/ip/hotspot/user/enable", array (
+			"numbers" => $clienteMikrotik->id_HotspotUser,
+		));
+		$this->comm("/ip/firewall/address-list/enable", array (
+			"numbers" => $clienteMikrotik->id_AddressList,
+		));
+		if ($clienteMikrotik->id_HotspotHost) 
+		{
+			$this->comm("/ip/hotspot/host/remove", array(
+							"numbers"     => $clienteMikrotik->id_HotspotHost
+						));
+		}
+	}
+	   
 	public function getGatewayData ()
 	{
 		$this->write('/ip/hotspot/host/print');
@@ -337,6 +354,7 @@ class GatewayMikrotik extends RouterosAPI
 			'pcq-classifier' => 'dst-address'
 		));
 	}
+
 	public function crearPlanTree($nombre = 'total', $id = 'total')
 	{
 		$this->comm('/queue/tree/add', array(

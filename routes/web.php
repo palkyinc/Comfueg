@@ -27,6 +27,7 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SiteHasIncidenteController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\Contract_typeController;
 use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
 use App\Models\Mail_group;
@@ -51,10 +52,10 @@ use Illuminate\Support\Facades\Mail;
 */
 ## Route Inicial Default
 /* Route::get('/test', function () {
-        dd(CronFunciones::enviarMailDeudasPendientes());
+        dd(CronFunciones::resetCounter(true));
         }); */
 ### Route index
-Route::post('/test', function () {return 'OK';});
+Route::get('/test', function () {CronFunciones::readDay();});
 Route::get('/', function (){return view('inicio', [ 'frase' => true, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/inicio', function (){return view('inicio', [ 'frase' => false, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/contratos', function (){return view('construccion', ['contratos' => 'active']);});
@@ -69,6 +70,16 @@ Route::get('/adminPanelLogs', [PruebaController::class, 'indexLogs'])->middlewar
 Route::put('/Session', [SessionController::class, 'store'])->middleware('auth');
 Route::get('/Session/{id}', [SessionController::class, 'show'])->middleware('auth');
 Route::delete('/Session/{id}', [SessionController::class, 'destroy'])->middleware('auth');
+Route::get('/SessionDeleteAll', [SessionController::class, 'destroyAll'])->middleware('auth');
+####################
+####### Contract types
+Route::get('/adminContractTypes', [Contract_typeController::class, 'index'])->middleware('auth');
+Route::get('/agregarContractType', [Contract_typeController::class, 'create'])->middleware('auth');
+Route::post('/agregarContractType', [Contract_typeController::class, 'store'])->middleware('auth');
+Route::get('/modificarContractType/{id}', [Contract_typeController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarContractType', [Contract_typeController::class, 'update'])->middleware('auth');
+####### Contract types API REST
+Route::get('/ContractTypes', [Contract_typeController::class, 'indexRest'])->middleware('auth');
 ####################
 ####### Panel tiene Barrio CRUD
 Route::get('/adminPanelhasBarrio', [Panel_has_barrioController::class, 'index'])->middleware('auth');

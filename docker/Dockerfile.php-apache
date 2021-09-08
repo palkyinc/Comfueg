@@ -1,0 +1,2 @@
+FROM webdevops/php-apache-dev:7.4-alpine
+COPY slam.conf /opt/docker/etc/httpd/conf.d/10-server.conf

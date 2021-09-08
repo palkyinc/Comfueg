@@ -1,0 +1,26 @@
+version: '2'
+services:
+  web:
+    hostname: slam-php-apache
+    container_name: slam-php-apache
+    image: "cont-php-apache"
+    ports:
+      - "0.0.0.0:80:80"
+      ##- "0.0.0.0:443:80"
+    volumes:
+      - "/media/storage/Comfueg/:/app/"
+    restart: unless-stopped
+    network_mode: bridge
+
+  database:
+    hostname: slam-mysql
+    container_name: slam-mysql
+    image: "cont-mysql:1"
+    ports:
+      - "3306:3306"
+    volumes:
+      - "/media/storage/mysql/data:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+    restart: unless-stopped
+    network_mode: bridge

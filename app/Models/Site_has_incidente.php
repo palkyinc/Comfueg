@@ -66,7 +66,7 @@ class Site_has_incidente extends Model
     }
     public function obtenerDominio ()
     {
-        return Config::get('constants.DOMINIO_COMFUEG');
+        return env('DOMINIO_COMFUEG');
     }
     public function incidente_has_mensaje ()
     {

@@ -34,4 +34,9 @@ Requisitos:
 - GET /CodigoDeArea/{id}
 - GET /CodigoDeArea/ (todos los codigos)
 - GET /CodigoDeArea/Codigo/{codigo} (todos los codigos)
+- GET /ContractTypes (todos los tipos de contrato)
+- GET /Sesssion/{id}
+- PUT /Session
+- DELETE /Session/{id}
+- GET /SessionDeleteAll
 

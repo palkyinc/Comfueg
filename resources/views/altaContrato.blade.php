@@ -13,7 +13,9 @@ $mostrarSololectura = true;
                         <script src="vue.js/vendor/js/vuex.js"></script>
                         <script> website = '{{$website}}'</script>
                         <meta name="csrf-token" content="{{ csrf_token() }}">
-                        <script src="vue.js/resources/js/direccion.js"></script>
+                        <script src="vue.js/resources/js/subirArchivo.js"></script>
+                        <script src="vue.js/resources/js/numeroCarpeta.js"></script>
+                        <script src="vue.js/resources/js/tipoContrato.js"></script>
                         <script src="vue.js/resources/js/cliente.js"></script>
                         <script src="vue.js/resources/js/altaContrato.js"></script>
                     @endsection

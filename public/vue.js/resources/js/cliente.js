@@ -3,11 +3,13 @@ Vue.component('cliente',
     template: //html
 `
 <div>
-    <div class="container alert alert-info m-2 p-2" :class="class_cliente_seleccionado" role="alert">
-        <div class="row">
-        <div class="col-9 pr-2" v-if="esempresa">ID: {{id_cliente}} | {{apellido}}</div>
-            <div class="col-9 pr-2" v-else>Cliente: ID: {{id_cliente}} | {{apellido}}, {{nombre}} | {{cod_area_cel}} 15 {{celular}}</div>
-            <button type="button" class="btn btn-secondary col-2" @click="deseleccionar_cliente" >Editar</button>
+    <div class="container alert alert-info mx-auto m-2 p-2" :class="class_cliente_seleccionado" role="alert">
+        <div class="row justify-content-between">
+            <div class="col-8 pr-2" v-if="esempresa">ID: {{id_cliente}} | {{apellido}}</div>
+            <div class="col-8 pr-2" v-else>Cliente: ID: {{id_cliente}} | {{apellido}}, {{nombre}} | {{cod_area_cel}} 15 {{celular}}</div>
+            <div class="col-1 pl-2">
+                <button type="button" class="btn btn-secondary" @click="deseleccionar_cliente" >Editar</button>
+            </div>
         </div>
     </div>
     <div class="alert bg-light border col-6 mx-auto p-4 m-1" :class="class_formulario_cliente">
@@ -186,8 +188,6 @@ Vue.component('cliente',
             class_seleccionar_button_cliente: 'ocultar',
             class_guardar_button_cliente: 'ocultar',
             class_cambiar_button_cliente: 'ocultar',
-            class_cliente_seleccionado: 'ocultar',
-            class_formulario_cliente: '',
             mostrar_cliente: '',
             mostrar_empresa: 'ocultar',
 
@@ -218,6 +218,27 @@ Vue.component('cliente',
             },
             set: function (newVal) {
                 store.state.esempresa = newVal;
+            }
+        },
+        class_cliente_seleccionado: {
+            get: function () {
+                if (store.state.formulario_cliente){
+                    return 'ocultar';
+                } else {
+                    return '';
+                }
+            }
+        },
+        class_formulario_cliente: {
+            get: function () {
+                if(store.state.formulario_cliente){
+                    return '';
+                } else {
+                    return 'ocultar';
+                }
+            },
+            set: function (newVal) {
+                store.state.formulario_cliente = newVal;
             }
         }
     },
@@ -289,11 +310,9 @@ Vue.component('cliente',
                         this.mensaje_id_cliente = '';
                         this.error_cliente.id_cliente = false;
                         if (store.state.formulario_cliente){
-                            this.class_formulario_cliente = '';
-                            this.class_cliente_seleccionado = 'ocultar';
+                            this.class_formulario_cliente = true;
                         }else {
-                            this.class_formulario_cliente = 'ocultar';
-                            this.class_cliente_seleccionado = '';
+                            this.class_formulario_cliente = false;
                             this.seleccionar_cliente();
                         }
                     };
@@ -437,7 +456,6 @@ Vue.component('cliente',
             }
         },
         checkError_cliente() {
-            //console.log(this.error_cliente);
             this.class_seleccionar_button_cliente = 'ocultar';
             if ((this.error_cliente.nombre && !this.esempresa) || this.error_cliente.apellido || this.error_cliente.telefono || this.error_cliente.celular || this.error_cliente.email) {
                 this.mensaje_cliente = 'Completar los datos';
@@ -615,18 +633,16 @@ Vue.component('cliente',
                 this.mensaje_cliente = (data.message)
             } else if (data === true) {
                 this.mensaje_cliente = '';
-                this.class_formulario_cliente = 'ocultar';
-                this.class_cliente_seleccionado = '';
-                store.state.formulario_cliente = false;
+                this.class_formulario_cliente = false;
+                store.state.div_tipoContrato = true;
             } else {
                 this.mensaje_cliente = 'Algo salió mal...';
                 console.log('Algo salió mal...' + data);
             }
         },
         deseleccionar_cliente() {
-            this.class_formulario_cliente = '';
-            this.class_cliente_seleccionado = 'ocultar';
-            store.state.formulario_cliente = true;
+            this.class_formulario_cliente = true;
+            store.state.div_tipoContrato = false;
         }
     }
 })

@@ -28,6 +28,7 @@ $mostrarSololectura = true;
                             <th scope="col"> Id </th>
                             <th scope="col"> Cliente </th>
                             <th scope="col"> Plan </th>
+                            <th scope="col"> Conteo </th>
                             <th scope="col"> IP </th>
                             <th scope="col"> Equipo </th>
                             <th scope="col"> Panel </th>
@@ -57,6 +58,13 @@ $mostrarSololectura = true;
                                 <th scope="row"> {{$contrato->id}}</th>
                                 <td title="{{$contrato->relCliente->relCodAreaCel->codigoDeArea}}-15-{{$contrato->relCliente->celular}}">{{$contrato->relCliente->getNomYApe()}}</td>
                                 <td>{{$contrato->relPlan->nombre}}</td>
+                                <td>
+                                    @foreach ($conteos as $conteo)
+                                        @if ($conteo->contrato_id == $contrato->id)
+                                            {{$conteo->imprimirActual()}}
+                                        @endif
+                                    @endforeach
+                                </td>
                                 <td>
                                     <a href="http://{{$contrato->relEquipo->ip}}" target="_blank">{{$contrato->relEquipo->ip}}</a>
                                 </td>

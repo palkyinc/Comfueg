@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class SessionController extends Controller
+class Contadores_mensualesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,17 +34,7 @@ class SessionController extends Controller
      */
     public function store(Request $request)
     {
-        $datos = $request->input('datos');
-        if ($datos)
-        {
-            session_start();
-            foreach ($datos as $key => $dato) {
-                $_SESSION[$key] = $dato;
-            }
-            return response()->json(true, 200);
-        }else {
-            return response()->json(false, 200);
-        }
+        //
     }
 
     /**
@@ -55,12 +45,7 @@ class SessionController extends Controller
      */
     public function show($id)
     {
-        session_start();
-        if (isset($_SESSION[$id])){
-            return response()->json($_SESSION[$id], 200);
-        }else {
-            return response()->json(false, 200);
-        }
+        //
     }
 
     /**
@@ -86,13 +71,6 @@ class SessionController extends Controller
         //
     }
 
-    public function destroyAll()
-    {
-        session_start();
-        session_destroy();
-        return response()->json( true , 200);
-    }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -101,15 +79,6 @@ class SessionController extends Controller
      */
     public function destroy($id)
     {
-        if (!session_status() === PHP_SESSION_ACTIVE)
-        {
-            session_start();
-        }
-        if (isset($_SESSION[$id])){
-            unset($_SESSION[$id]);
-            return response()->json(true, 200);
-        }else {
-            return response()->json(false, 200);
-        }
+        //
     }
 }
