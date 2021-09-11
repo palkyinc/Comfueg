@@ -4,7 +4,7 @@ return [
     'DEUDAS_TECNICA_MAIL_GROUP' => 2,
     'CAMBIO_ESTADO_PROVEEDOR_MAIL_GROUP' => 3,
     'USO_HORARIO_ARG' => 'America/Argentina/Buenos_Aires',
-    'SLAM_VERSION' => '0.6.16',
+    'SLAM_VERSION' => '0.7.0',
     'PANEL_USER' => 'admincf',
     'PANEL_PASS' => 'Earh@t18',
     'LAN_SEGMENT' => '10.10.0.0/16'

@@ -48,8 +48,9 @@
 					Internet
 				</a>
 				<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
-					<a class="dropdown-item" href="/adminContratos">Contratos</a>
+					<a class="dropdown-item" href="/adminContratos">Abonos</a>
 					<a class="dropdown-item disabled" href="">Status de Contrato</a>
+					<a class="dropdown-item" href="/adminIssues">Tickets</a>
 				</div>
 			</li>	
 		      <li class="nav-item dropdown">
@@ -105,6 +106,7 @@
 					<a class="dropdown-item" href="/adminMailGroups">Grupos de Mail</a>
 					<a class="dropdown-item" href="/adminModelos">Entidades</a>
 					<a class="dropdown-item" href="/adminContractTypes">Tipos de Contratos</a>
+					<a class="dropdown-item" href="/adminIssuesTitles">Títulos de Tickets</a>
 					<a class="dropdown-item disabled" href="/adminLogs">Logs de Sistema</a>
 		        </div>
 		      </li>

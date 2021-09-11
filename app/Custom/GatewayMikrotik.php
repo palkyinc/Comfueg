@@ -98,13 +98,13 @@ class GatewayMikrotik extends RouterosAPI
 	public function resetCounter ()
 	{
 		$clienteMikrotik = $this->getGatewayData();
-		//dd($clienteMikrotik);
 		foreach ($clienteMikrotik['hotspotHost'] as $value)
 		{
-			$this->comm("/ip/hotspot/host/remove", array(
-				"numbers"     => $value['.id']
-			));
-			//dd($value['.id']);
+			if (isset($value['comment']) && is_numeric($value['comment']))
+			{
+			$this->comm("/ip/hotspot/host/remove", array("numbers" => $value['.id']));
+
+			}
 		}
 	}
 

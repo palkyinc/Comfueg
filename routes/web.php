@@ -28,6 +28,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SiteHasIncidenteController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\Contract_typeController;
+use App\Http\Controllers\IssueController;
+use App\Http\Controllers\Issue_titleController;
 use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
 use App\Models\Mail_group;
@@ -55,7 +57,7 @@ use Illuminate\Support\Facades\Mail;
         dd(CronFunciones::resetCounter(true));
         }); */
 ### Route index
-Route::get('/test', function () {CronFunciones::readDay();});
+/* Route::get('/test', function () {CronFunciones::readDay();}); */
 Route::get('/', function (){return view('inicio', [ 'frase' => true, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/inicio', function (){return view('inicio', [ 'frase' => false, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/contratos', function (){return view('construccion', ['contratos' => 'active']);});
@@ -81,10 +83,24 @@ Route::patch('/modificarContractType', [Contract_typeController::class, 'update'
 ####### Contract types API REST
 Route::get('/ContractTypes', [Contract_typeController::class, 'indexRest'])->middleware('auth');
 ####################
+####### Issues Titles
+Route::get('/adminIssuesTitles', [Issue_titleController::class, 'index'])->middleware('auth');
+Route::get('/agregarIssueTitle', [Issue_titleController::class, 'create'])->middleware('auth');
+Route::post('/agregarIssueTitle', [Issue_titleController::class, 'store'])->middleware('auth');
+Route::get('/modificarIssueTitle/{id}', [Issue_titleController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarIssueTitle', [Issue_titleController::class, 'update'])->middleware('auth');
+####################
 ####### Panel tiene Barrio CRUD
 Route::get('/adminPanelhasBarrio', [Panel_has_barrioController::class, 'index'])->middleware('auth');
 Route::get('/modificarPanelHasBarrio/{id}', [Panel_has_barrioController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarPanelHasBarrio', [Panel_has_barrioController::class, 'update'])->middleware('auth');
+####################
+####### Issue
+Route::get('/adminIssues', [IssueController::class, 'index'])->middleware('auth');
+Route::get('/adminIssuesRebusqueda', [IssueController::class, 'indexDeudasRebusqueda'])->middleware('auth');
+Route::get('/agregarIssue', [IssueController::class, 'create'])->middleware('auth');
+Route::post('/agregarIssue', [IssueController::class, 'store'])->middleware('auth');
+Route::post('/buscarIssueCliente', [IssueController::class, 'buscarCliente'])->middleware('auth');
 ####################
 ####### Deuda
 Route::get('/adminDeudasTecnica', [SiteHasIncidenteController::class, 'indexDeuda'])->middleware('auth');

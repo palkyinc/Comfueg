@@ -8,6 +8,15 @@ https://github.com/romainsimon/vue-simple-search-dropdown
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
+## [0.7.0] - 2021-09-XX
+### Added
+1. 	se agrega laravelcollective/html para manejo de formularios.
+
+## [0.6.16] - 2021-09-08
+### Added
+1. 	Se agrega conteo de datos.
+2. 	Reset de contadores de los mikrotik el primero de mes
+
 ## [0.6.15] - 2021-07-19
 ### Changed
 1. 	Se resuelve problema con los classifiers al momento de modificar proveedores.
