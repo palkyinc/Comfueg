@@ -7,7 +7,7 @@ $mostrarSololectura = true;
 <h3>Seleccionando Cliente:</h3>
 <div class="alert bg-light border col-8 mx-auto p-4">
     @foreach ($clientes as $cliente)
-        <div class="form-row">
+        <div class="form-row border">
             <div class="form-group col-md-6">
                 {{$cliente->getNomYApe()}}
             </div>

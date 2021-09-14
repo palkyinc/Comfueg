@@ -8,14 +8,14 @@ https://github.com/romainsimon/vue-simple-search-dropdown
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 
-## [0.7.0] - 2021-09-XX
+## [0.7.0] - 2021-09-14
 ### Added
-1. 	se agrega laravelcollective/html para manejo de formularios.
+1. 	Se modulo Pedidos de asistencia tecnica de Clientes.
 
 ## [0.6.16] - 2021-09-08
 ### Added
 1. 	Se agrega conteo de datos.
-2. 	Reset de contadores de los mikrotik el primero de mes
+2. 	Reset de contadores de los mikrotik el primero de mes.
 
 ## [0.6.15] - 2021-07-19
 ### Changed
@@ -26,7 +26,7 @@ https://github.com/romainsimon/vue-simple-search-dropdown
 ### Added
 1. 	Aparace alerta en vista principal cuando un proveedor esta offline.
 2.	En vista "Administracion de Contratos":
-		a- Aparece celualr de cliente al pararse sobre el nombre.
+		a- Aparece celular de cliente al pararse sobre el nombre.
 		b- Si se posee permiso de edicion de equipos, el nombre de equipo aparece con un hipervínculo que abrirá pestaña de esdicion de equipo.
 		c-La columna "Barrio" se combio por "Ubicación" al pararse sobre el barrio aparecerá la direccion del contrato
 		d-Si están cargadas las coordenadas de la ubicación del contrato, aparece icono sobre el cual se puede abrir pestaña que nos llega a google map con la ubicación.
@@ -52,7 +52,6 @@ https://github.com/romainsimon/vue-simple-search-dropdown
 1.	Se agrega Complemento de putty. PSCP.exe
 2.	En vista de nuevo contrato agrega mac address al Panel de manera automática. (https://ixnfo.com/en/ubiquiti-ssh-management.html)
 3.	Vista adminContratos modificada para Dar de Baja contratos, agregar y quitar Mac Address automáticamente. Tambien en vista de editar contrato se agregan y quitan macs automatic.
-
 
 ## [0.6.10] - 2021-04-13
 ### Added

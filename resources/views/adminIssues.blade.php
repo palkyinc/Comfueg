@@ -4,22 +4,23 @@
 @php
 $mostrarSololectura = true;
 @endphp
-                    <form class="form-inline mx-4 margin-10" action="adminIssuesRebusqueda" method="get">
+                    <form class="form-inline mx-4 margin-10" action="adminIssues" method="get">
                         <div class="conteiner">
                             <div class="row">
                                 <div class="col-6">
-                                    <h2 class="mx-3">Tickets / Pedidos de asistencia técnica de Clientes</h2>
+                                    <h2 class="mx-3">Tickets / Pedidos de asistencia técnica</h2>
                                 </div>
                                 <div class="form-check form-switch col-2">
-                                    @if ($abiertas)
+                                    @if ($abiertas == 'on')
                                         <input class="form-check-input" type="checkbox" name="abiertas" id="flexSwitchCheckChecked" checked>
                                     @else
                                         <input class="form-check-input" type="checkbox" name="abiertas" id="flexSwitchCheckChecked">
                                     @endif
+                                    <input type="hidden" name="rebusqueda" value="on">
                                     <label class="form-check-label" for="flexSwitchCheckChecked">Solo Abiertas</label>
                                 </div>
                                 <div class="col-3">
-                                    <select class="form-control" name="sitio" id="sitio">
+                                    <select class="form-control" name="usuario" id="usuario">
                                         @if (!$userSelected)
                                             <option value="" selected>Todos los Usuarios</option>
                                         @else
@@ -82,7 +83,13 @@ $mostrarSololectura = true;
                             <td>{{$incidente->relAsignado->name}}</td>
                             <td>{{$incidente->relCliente->getNomYApe()}}</td>
                             <td>{{$incidente->getVencida()}}</td>
-                            <td>{{$incidente->relContrato->id}}</td>
+                            <td>
+                                @if ($incidente->contrato_id != null)
+                                    {{$incidente->relContrato->id}}
+                                @else
+                                    Sin Contrato.    
+                                @endif
+                            </td>
                             <td>{{$incidente->relCreator->name}}</td>
                             <td>
                                 @can('issues_edit')
@@ -90,14 +97,14 @@ $mostrarSololectura = true;
                                         <a href="/modificarIssue/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                             <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                         </a>
-                                        <a href="/adminArchivosIssue/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar archivoss">
+                                        {{-- <a href="/adminArchivosIssue/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar archivoss">
                                             <img src="imagenes/iconfinder_document-text-file-sheet-doc_2931167.svg" alt="imagen editar archivo" height="20px">
-                                        </a>
+                                        </a> --}}
                                     @endif
                                 @endcan
-                                <a href="#" class="margenAbajo btn btn-outline-secundary" data-toggle="modal" data-target="#staticBackdrop{{$incidente->id}}" title="Ver">
+                                {{-- <a href="#" class="margenAbajo btn btn-outline-secundary" data-toggle="modal" data-target="#staticBackdrop{{$incidente->id}}" title="Ver">
                                         <img src="imagenes/iconfinder_VIEW_eye_2738306.svg" alt="imagen de ojo para ver" height="20px">
-                                </a>
+                                </a> --}}
                             </td>
                             
                             </tr>
@@ -105,7 +112,7 @@ $mostrarSololectura = true;
                     </tbody>
                 </table>
 </div>
-        {{ $incidentes->links() }}
+        {{ $incidentes->appends(['usuario' => $userSelected, 'abiertas' => $abiertas])->links() }}
 @include('modals.incidentes')
 @endcan
 @include('sinPermiso')

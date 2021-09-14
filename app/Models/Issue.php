@@ -4,15 +4,80 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Models\Contrato;
 use App\Models\Cliente;
 use App\Models\Issue_title;
+use App\Models\Issues_update;
+use App\Mail\TicketNuevo;
+use App\Mail\TicketActualizado;
+use App\Mail\TicketCerrado;
 
 class Issue extends Model
 {
     use HasFactory;
 
+    ##----------
+    ### $tipo = 1 ->nuevo
+    ### $tipo = 2 ->actualizacion
+    ### $tipo = 3 ->cerrado
+    ##----------
+    public function enviarMail ($tipo)
+    {
+        $arrayAsignado = [$this->relAsignado->email];
+        $arrayViewers = $this->getArrayViewers();
+        switch ($tipo) {
+            case 1:
+                $toSend = new TicketNuevo($this);
+                break;
+            case 2:
+                $toSend = new TicketActualizado($this);
+                break;
+            case 3:
+                $toSend = new TicketCerrado($this);
+                break;
+            default:
+                return ('error en tipo de mail');
+                break;
+        }
+        Mail::to($arrayAsignado)->cc($arrayViewers)->send($toSend);
+    }
+
+    public function issues_update ()
+    {
+        return $this->hasMany(issues_update::class, 'issue_id');
+    }
+
+    private function getArrayViewers ()
+    {
+        foreach ( (($this->viewers != 'null' && $this->viewers != null) ? json_decode($this->viewers) :[]) as $value)
+        {
+            $usuario = User::find($value);
+            $respuesta[] = $usuario->email;
+        }
+        //dd($respuesta);
+        return isset($respuesta) ? $respuesta : [];
+    }
+    
+    public function scopeAsignado($query, $asignado)
+    {
+        if($asignado)
+            return $query->where('asignado_id', $asignado);
+    }
+    
+    public function scopeCliente($query, $cliente)
+    {
+        if($cliente)
+            return $query->where('cliente_id', $cliente);
+    }
+    
+    public function scopeAbierta($query, $abierta)
+    {
+        if($abierta == 'on')
+            return $query->where('closed', false);
+    }
+    
     public function relTitle()
     {
         return $this->belongsTo(Issue_title::class, 'titulo_id', 'id');
@@ -40,6 +105,12 @@ class Issue extends Model
 
     public function getVencida()
     {
-        return 'Proximamente';
+        return 'A Implementar';
     }
+
+    public function obtenerDominio ()
+    {
+        return env('DOMINIO_COMFUEG');
+    }
+    
 }

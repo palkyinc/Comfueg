@@ -90,7 +90,7 @@ $mostrarSololectura = true;
                     </tbody>
                 </table>
 </div>
-        {{ $equipos->links() }}
+        {{ $equipos->render() }}
 @endcan    
 @include('sinPermiso')
 @endsection

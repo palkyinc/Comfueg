@@ -56,6 +56,11 @@ use Illuminate\Support\Facades\Mail;
 /* Route::get('/test', function () {
         dd(CronFunciones::resetCounter(true));
         }); */
+Route::get('/mailable', function () {
+    $ticket = App\Models\Issue::find(7);
+    $ticket->enviarMail(3);
+    return new App\Mail\TicketCerrado($ticket);
+});
 ### Route index
 /* Route::get('/test', function () {CronFunciones::readDay();}); */
 Route::get('/', function (){return view('inicio', [ 'frase' => true, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
@@ -97,10 +102,11 @@ Route::patch('/modificarPanelHasBarrio', [Panel_has_barrioController::class, 'up
 ####################
 ####### Issue
 Route::get('/adminIssues', [IssueController::class, 'index'])->middleware('auth');
-Route::get('/adminIssuesRebusqueda', [IssueController::class, 'indexDeudasRebusqueda'])->middleware('auth');
 Route::get('/agregarIssue', [IssueController::class, 'create'])->middleware('auth');
 Route::post('/agregarIssue', [IssueController::class, 'store'])->middleware('auth');
 Route::post('/buscarIssueCliente', [IssueController::class, 'buscarCliente'])->middleware('auth');
+Route::get('/modificarIssue/{id}', [IssueController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarIssue', [IssueController::class, 'update'])->middleware('auth');
 ####################
 ####### Deuda
 Route::get('/adminDeudasTecnica', [SiteHasIncidenteController::class, 'indexDeuda'])->middleware('auth');

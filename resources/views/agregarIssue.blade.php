@@ -84,6 +84,13 @@ $mostrarSololectura = true;
                 <a href="/adminIssues" class="btn btn-primary">Volver</a>
             </form>    
     @else
+        @if ( session('mensaje') )
+            <div class="alert alert-info">
+                @foreach (session('mensaje') as $item)
+                    {{ $item }} <br>
+                @endforeach
+            </div>
+        @endif
         <form action="/buscarIssueCliente" method="post">
             @csrf
             <div class="form-row">
