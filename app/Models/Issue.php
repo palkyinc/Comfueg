@@ -41,12 +41,25 @@ class Issue extends Model
                 return ('error en tipo de mail');
                 break;
         }
-        Mail::to($arrayAsignado)->cc($arrayViewers)->send($toSend);
+        try
+        {
+            Mail::to($arrayAsignado)->cc($arrayViewers)->send($toSend);
+        }catch (Exception $e)
+            {
+                echo 'Error al enviar correo<br>';
+                echo $e . '<br>';
+                echo '<a href="/inicio" class="btn btn-primary">Inicio</a>';
+            }
     }
 
     public function issues_update ()
     {
         return $this->hasMany(issues_update::class, 'issue_id');
+    }
+
+    public function cant_updates()
+    {
+        return Issues_update::where('issue_id', $this->id)->count();
     }
 
     private function getArrayViewers ()

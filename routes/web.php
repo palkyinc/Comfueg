@@ -56,16 +56,18 @@ use Illuminate\Support\Facades\Mail;
 /* Route::get('/test', function () {
         dd(CronFunciones::resetCounter(true));
         }); */
-Route::get('/mailable', function () {
-    $ticket = App\Models\Issue::find(7);
-    $ticket->enviarMail(3);
-    return new App\Mail\TicketCerrado($ticket);
-});
+Route::get('/archivoSem/{dias}', function ($dias) {
+dd(CronFunciones::generarArchivoSem($dias));
+}); 
+/*Route::get('/mailable', function () {
+    $ticket = App\Models\Issue::find(1986);
+    $ticket->enviarMail(2);
+    return new App\Mail\TicketActualizado($ticket);
+});*/
 ### Route index
 /* Route::get('/test', function () {CronFunciones::readDay();}); */
 Route::get('/', function (){return view('inicio', [ 'frase' => true, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/inicio', function (){return view('inicio', [ 'frase' => false, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
-Route::get('/contratos', function (){return view('construccion', ['contratos' => 'active']);});
 Route::get('/charts', function (){return view('charts');});
 ####################
 ####### Gateway API rest Web services

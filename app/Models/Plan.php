@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Custom\GatewayMikrotik;
+use App\Models\Contrato;
 
 class Plan extends Model
 {
@@ -15,6 +16,11 @@ class Plan extends Model
     public function relPanel ()
     {
         return $this->belongsTo('App\Models\Panel', 'gateway_id', 'id');
+    }
+
+    public function getContractCount()
+    {
+        return Contrato::where('num_plan', $this->id)->where('activo', true)->count();
     }
 
     public function modifyMikrotik ($array)

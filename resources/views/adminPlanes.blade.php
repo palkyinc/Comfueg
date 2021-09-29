@@ -35,8 +35,9 @@ $mostrarSololectura = true;
                             <th scope="col"> Nombre </th>
                             <th scope="col"> Bajada (Kb) </th>
                             <th scope="col"> Subida (Kb)</th>
-                            <th scope="col"> Descripcion </th>
+                            <th scope="col"> Descripción </th>
                             <th scope="col"> Gateway </th>
+                            <th scope="col"> Contratos </th>
                             <th scope="col" colspan="2">
                                 @can('planes_create')
                                 <a href="/agregarPlan" class="btn btn-dark">Agregar</a>
@@ -63,6 +64,7 @@ $mostrarSololectura = true;
                                 @else
                                     <td>No asignado</td>    
                                 @endif
+                                <td>{{$plan->getContractCount()}}</td>
                                 <td> 
                                     @can('planes_edit')
                                         <a href="/modificarPlan/{{$plan->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">

@@ -63,8 +63,11 @@ $mostrarSololectura = true;
                             <td>{{$cliente->email}}</td>
                             <td>
                                 @can('clientes_edit')
-                                <a href="/modificarCliente/{{$cliente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
-                                <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                <a href="/modificarCliente/{{$cliente->id}}" title="Editar Cliente">
+                                    <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="30px">
+                                </a>
+                                <a href="adminIssues/?rebusqueda=on&usuario=todos&cliente={{$cliente->id}}" title="Historial tickets" >
+                                    <img src="imagenes/iconfinder_cinema_ticket_film_media_movie_icon.svg" alt="imganen ticket" height="30px">
                                 </a>
                                 @endcan
                             </td>

@@ -4,11 +4,11 @@
 @php
 $mostrarSololectura = true;
 @endphp
-                    <form class="form-inline mx-4 margin-10" action="adminIssues" method="get">
+                    <form class="form-inline mx-2 margin-10" action="adminIssues" method="get">
                         <div class="conteiner">
                             <div class="row">
                                 <div class="col-6">
-                                    <h2 class="mx-3">Tickets / Pedidos de asistencia técnica</h2>
+                                    <h2 class="mx-3">Pedidos de asistencias Técnicas</h2>
                                 </div>
                                 <div class="form-check form-switch col-2">
                                     @if ($abiertas == 'on')
@@ -17,14 +17,16 @@ $mostrarSololectura = true;
                                         <input class="form-check-input" type="checkbox" name="abiertas" id="flexSwitchCheckChecked">
                                     @endif
                                     <input type="hidden" name="rebusqueda" value="on">
-                                    <label class="form-check-label" for="flexSwitchCheckChecked">Solo Abiertas</label>
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">
+                                        Solo Abiertas
+                                    </label>
                                 </div>
                                 <div class="col-3">
                                     <select class="form-control" name="usuario" id="usuario">
                                         @if (!$userSelected)
-                                            <option value="" selected>Todos los Usuarios</option>
+                                            <option value="todos" selected>Todos los Usuarios</option>
                                         @else
-                                            <option value="">Todos los Usuarios</option>
+                                            <option value="todos">Todos los Usuarios</option>
                                         @endif
                                         @foreach ($usuarios as $usuario)
                                             @if ($usuario->id == $userSelected)
@@ -35,6 +37,9 @@ $mostrarSololectura = true;
                                         @endforeach
                                     </select>
                                 </div>
+                                <!-- <div class="col-2">
+                                    
+                                </div> -->
                                 <div class="col-1">
                                     <button type="submit" class="btn btn-primary mx-3">Buscar</button>
                                 </div>
@@ -63,6 +68,7 @@ $mostrarSololectura = true;
                             <th scope="col"> Vence en:</th>
                             <th scope="col"> N° Contrato </th>
                             <th scope="col"> Creado por: </th>
+                            <th scope="col"> Novedades</th>
                             <th scope="col" colspan="2">
                                 @can('issues_create')
                                 <a href="/agregarIssue" class="btn btn-dark">Agregar</a>
@@ -91,6 +97,7 @@ $mostrarSololectura = true;
                                 @endif
                             </td>
                             <td>{{$incidente->relCreator->name}}</td>
+                            <td>{{ $incidente->cant_updates() }}</td>
                             <td>
                                 @can('issues_edit')
                                     @if (!$incidente->closed)
@@ -112,7 +119,7 @@ $mostrarSololectura = true;
                     </tbody>
                 </table>
 </div>
-        {{ $incidentes->appends(['usuario' => $userSelected, 'abiertas' => $abiertas])->links() }}
+        {{ $incidentes->appends(['usuario' => $userSelected, 'abiertas' => $abiertas, 'cliente' => $cliente])->links() }}
 @include('modals.incidentes')
 @endcan
 @include('sinPermiso')

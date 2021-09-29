@@ -46,14 +46,18 @@
                     <td>{{$issue->relCliente->getNomYApe()}}<br>
                         {{$issue->relCliente->relCodAreaCel->codigoDeArea}} - 15 - {{$issue->relCliente->celular}}</td>
                     <td>
-                        {{  $issue->relContrato->relDireccion->relCalle->nombre . ' ' . 
-                            $issue->relContrato->relDireccion->numero . ', ' . 
-                            $issue->relContrato->relDireccion->relBarrio->nombre}}
-                        @if ($issue->relContrato->relDireccion->coordenadas != '')
-                            <a href="https://www.google.com/maps/place/{{$issue->relContrato->relDireccion->coordenadas}}" target="_blank"
-                                class="margenAbajo btn btn-link" title="Ver en Google maps">
-                                (ver mapa)
-                            </a>
+                        @if ($issue->contrato_id != null)
+                            {{  $issue->relContrato->relDireccion->relCalle->nombre . ' ' . 
+                                $issue->relContrato->relDireccion->numero . ', ' . 
+                                $issue->relContrato->relDireccion->relBarrio->nombre}}
+                            @if ($issue->relContrato->relDireccion->coordenadas != '')
+                                <a href="https://www.google.com/maps/place/{{$issue->relContrato->relDireccion->coordenadas}}" target="_blank"
+                                    class="margenAbajo btn btn-link" title="Ver en Google maps">
+                                    (ver mapa)
+                                </a>
+                            @endif
+                        @else
+                            Sin contrato
                         @endif
                     </td>
                     <td>{{$issue->relAsignado->name}}</td>
@@ -66,7 +70,11 @@
                 <tr>
                     <td class="centrado">{{$issue->relTitle->title}}</td>
                     <td>Creado {{$issue->created_at}} por {{$issue->relCreator->name}}</td>
-                    <td class="centrado">{{$issue->relContrato->relPlan->nombre}}</td>
+                    @if ($issue->contrato_id != null)
+                        <td class="centrado">{{$issue->relContrato->relPlan->nombre}}</td>
+                    @else
+                        <td>Sin Contrato</td>
+                    @endif
                 </tr>
                 <tr class="titulo">
                     <td class="centrado" colspan="3">Descripción del Problema</td>

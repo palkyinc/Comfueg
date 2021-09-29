@@ -106,7 +106,7 @@ class PanelController extends Controller
                 'cable_fecha' => 'nullable|date',
                 'cable_tipo' => 'max:50',
                 'activo' => 'boolean',
-                'comentario' => 'max:65535'
+                'comentario' => 'max:100'
             ]
         );
     }

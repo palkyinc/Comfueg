@@ -21,15 +21,21 @@ class IssueController extends Controller
     public function index(Request $request)
     {
         $usuarios = User::get();
-        $userSelected = (isset($request->usuario)) ? $request->usuario : null;
+        $userSelected = (isset($request->usuario)) ? (($request->usuario != 'todos') ? $request->usuario : null) : auth()->user()->id;
         $abiertas = isset($request->abiertas) ? 'on' : (isset($request->rebusqueda ) ? 'off' : 'on' );
-        //dd($request->request);
-        $incidentes = Issue::asignado($userSelected)->abierta($abiertas)->paginate(10);
+        //dd($request->rebusqueda);
+        $cliente = isset($request->cliente) ? $request->cliente : null;
+        $incidentes = Issue::asignado($userSelected)
+                        ->abierta($abiertas)
+                        ->cliente($cliente)
+                        ->orderBy('id', 'DESC')
+                        ->paginate(10);
         return view('adminIssues',    [ 'incidentes' => $incidentes, 
                                         'userSelected' => $userSelected, 
-                                        'usuarios' => $usuarios , 
+                                        'usuarios' => $usuarios, 
+                                        'cliente' => $cliente, 
                                         'abiertas' => $abiertas, 
-                                        'internet' => 'activate']);
+                                        'internet' => 'active']);
     }
 
 
@@ -57,7 +63,7 @@ class IssueController extends Controller
         $titulos = Issue_title::get();
         $usuarios = User::get();
         return view ('agregarIssue', [
-                                        'internet' => 'activate',
+                                        'internet' => 'active',
                                         'titulos' => $titulos,
                                         'contrato' => $contrato,
                                         'contratos' => $contratos,
@@ -144,7 +150,7 @@ class IssueController extends Controller
             ->get();
         if (count($clientes) > 0)
         {
-            return view ('agregarIssue2', ['internet' => 'activate', 'clientes' => $clientes]);
+            return view ('agregarIssue2', ['internet' => 'active', 'clientes' => $clientes]);
         }
         else {
             return redirect('agregarIssue')->with('mensaje', ['No se encontraron coincidencias.']);
@@ -173,7 +179,7 @@ class IssueController extends Controller
         $usuarios = User::get();
         $contratos = Contrato::where('num_cliente', $issue->cliente_id)->get();
         $issue_updates = Issues_update::where('issue_id', $id)->get();
-        return view ('modificarIssue', ['internet' => 'activate',
+        return view ('modificarIssue', ['internet' => 'active',
                                         'issue' => $issue,
                                         'contratos' => $contratos,
                                         'issues_updates' => $issue_updates,
