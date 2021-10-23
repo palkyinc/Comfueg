@@ -40,7 +40,9 @@ class Proveedor extends Model
 
     public function getNextInterface ()
     {
-        $nextProveedor = Proveedor::where('classifier', $this->classifier + 1)->where('estado', true)->first();
+        $nextProveedor = Proveedor::where('classifier', $this->classifier + 1)
+                                    ->where('gateway_id', $this->gateway_id)
+                                    ->where('estado', true)->first();
         if (!$nextProveedor)
         {
             $nextProveedor = Proveedor::where('classifier', 0)->first();

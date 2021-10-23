@@ -79,6 +79,12 @@ class Issue extends Model
             return $query->where('asignado_id', $asignado);
     }
     
+    public function scopeContrato($query, $contrato)
+    {
+        if($contrato)
+            return $query->where('contrato_id', $contrato);
+    }
+    
     public function scopeCliente($query, $cliente)
     {
         if($cliente)

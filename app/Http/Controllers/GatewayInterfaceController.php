@@ -42,6 +42,11 @@ class GatewayInterfaceController extends Controller
                         }
                     }
                 }
+                else
+                {
+                    return 'No se pudo contactar Gateway';
+
+                }
             }
         return view('adminInterfaces', ['gateways' => $gateways, 'providers' => 'active', 'elementos' => $elementos['rtas'], 'vlans' => $elementos['vlans'], 'gateway_id' => $gateway_id]);
         dd($elementos);

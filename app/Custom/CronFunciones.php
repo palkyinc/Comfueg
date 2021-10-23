@@ -142,7 +142,7 @@ abstract class CronFunciones
                 unset($apiMikro);
                 ### abrir el archivo
                 ### leer el array -> convertir de json a array
-                foreach ($allData['hotspotUser'] as $elemento)
+                /*foreach ($allData['hotspotUser'] as $elemento)
                 {
                         if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 
                         {
@@ -157,7 +157,7 @@ abstract class CronFunciones
                                 $contador_mensual->setMounthCounter($elemento['bytes-in'] + $elemento['bytes-out']);
                                 $contador_mensual->save();
                         }
-                }
+                }*/
                 foreach ($allData['hotspotHost'] as $elemento)
                 {
                     if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 

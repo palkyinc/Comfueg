@@ -102,8 +102,7 @@ class GatewayMikrotik extends RouterosAPI
 		{
 			if (isset($value['comment']) && is_numeric($value['comment']))
 			{
-			$this->comm("/ip/hotspot/host/remove", array("numbers" => $value['.id']));
-
+				$this->comm("/ip/hotspot/host/remove", array("numbers" => $value['.id']));
 			}
 		}
 	}
@@ -471,8 +470,8 @@ class GatewayMikrotik extends RouterosAPI
 	{
 		$this->write('/interface/list/member/print');
 		$lists = $this->parseResponse($this->read(false));
+		//if (!isset($value['name'])) dd($value);
 		foreach ($lists as $list) {
-			//dd($list);
 			if ($list['interface'] == $value['name']) {
 				$value['list'] = $list['list'];
 				if ($retornarId)
@@ -584,7 +583,7 @@ class GatewayMikrotik extends RouterosAPI
 															'src-address' => '10.10.0.0/16',
 															'in-interface-list' => 'LAN',
 															'connection-state' => 'established,related,new',
-															'per-connection-classifier' => 'both-addresses:' . $totalClassifiers . '/' . ($pointerClassifier + $i),
+															'per-connection-classifier' => 'both-addresses-and-ports:' . $totalClassifiers . '/' . ($pointerClassifier + $i),
 															'dst-address-type' => '!local',
 															'action' => 'mark-connection',
 															'new-connection-mark' => $interface . '_conn',

@@ -34,10 +34,11 @@ class ContratoController extends Controller
                 ->get();
             foreach ($clientes as $key => $cliente) 
             {
-                if ($contrato = Contrato::where('num_cliente', $cliente->id)->first()) // revisar aca cuando hay mas de un contrato del mismo cliente
-                {
-                    $contratos[] = $contrato;
-                }
+                $contrato = Contrato::where('num_cliente', $cliente->id)->get();
+                foreach ($contrato as $item)
+                    {
+                        $contratos[] = $item;
+                    }
             }
             $paginate = false;
         }

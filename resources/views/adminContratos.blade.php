@@ -34,7 +34,6 @@ $mostrarSololectura = true;
                             <th scope="col"> Panel </th>
                             <th scope="col"> Ubicación </th>
                             <th scope="col"> Estado </th>
-                            <th scope="col"> Baja </th>
                             <th scope="col" colspan="2">
                                 @can('contratos_create')
                                 <a href="/agregarContrato" class="btn btn-dark">Agregar</a>
@@ -80,16 +79,16 @@ $mostrarSololectura = true;
                                 <td>{{$contrato->relPanel->ssid}}</td>
                                 <td
 title="Dirección: 
-{{$contrato->relDireccion->relCalle->nombre}}, {{$contrato->relDireccion->numero}}
-EntreCalles:
-{{$contrato->relDireccion->relEntrecalle1->nombre ?? ''}}/{{$contrato->relDireccion->relEntrecalle2->nombre ?? ''}}">
+{{$contrato->relDireccion->relCalle->nombre}}, {{$contrato->relDireccion->numero}}">
                                     {{$contrato->relDireccion->relBarrio->nombre}}
                                 </td>
-                                <td>{{($contrato->activo) ? 'Habilitado' : 'Suspendido'}}</td>
-                                <td>{{($contrato->baja) ? 'Si' : 'No'}}</td>
+                                <td>{{($contrato->activo) ? 'Habilitado' : (($contrato->baja) ? 'Dado baja' : 'Suspendido' )}}</td>
                                 <td class="conFlex">
                                     <a href="#" class="margenAbajo btn btn-link" data-toggle="modal" data-target="#staticBackdrop{{$contrato->id}}" title="Consumo Descargas">
                                         <img src="imagenes/iconfinder_graph_3338898.svg" alt="imagen de cosumo cliente" height="20px">
+                                    </a>
+                                    <a href="adminIssues?rebusqueda=on&usuario=todos&contrato={{$contrato->id}}" title="Historial tickets" >
+                                    <img src="imagenes/iconfinder_cinema_ticket_film_media_movie_icon.svg" alt="imganen ticket" height="30px">
                                     </a>
                                     @if ($contrato->relDireccion->coordenadas != '')
                                         <a href="https://www.google.com/maps/place/{{$contrato->relDireccion->coordenadas}}" target="_blank"

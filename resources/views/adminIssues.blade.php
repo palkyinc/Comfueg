@@ -107,11 +107,12 @@ $mostrarSololectura = true;
                                         {{-- <a href="/adminArchivosIssue/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar archivoss">
                                             <img src="imagenes/iconfinder_document-text-file-sheet-doc_2931167.svg" alt="imagen editar archivo" height="20px">
                                         </a> --}}
+                                    @else
+                                        <a href="/modificarIssue/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Ver">
+                                                <img src="imagenes/iconfinder_VIEW_eye_2738306.svg" alt="imagen de ojo para ver" height="20px">
+                                        </a>
                                     @endif
                                 @endcan
-                                {{-- <a href="#" class="margenAbajo btn btn-outline-secundary" data-toggle="modal" data-target="#staticBackdrop{{$incidente->id}}" title="Ver">
-                                        <img src="imagenes/iconfinder_VIEW_eye_2738306.svg" alt="imagen de ojo para ver" height="20px">
-                                </a> --}}
                             </td>
                             
                             </tr>

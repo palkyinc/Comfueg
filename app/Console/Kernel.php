@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function(){$this->semanal();})->weeklyOn(1, '09:00')->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->call(function(){$this->diario();})->daily()->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->call(function(){$this->cadaMinuto();})->everyMinute();
+        $schedule->call(function(){$this->cadaCincoMinutos();})->everyFiveMinutes();
         $schedule->call(function(){$this->mensual();})->monthly()->timezone(Config::get('constants.USO_HORARIO_ARG'));
         ### ->monthly(); //Run the task on the first day of every month at 00:00
     }
@@ -46,6 +47,11 @@ class Kernel extends ConsoleKernel
         require base_path('routes/console.php');
     }
 
+    private function cadaCincoMinutos()
+    {
+        CronFunciones::buscarProveedoresCaidos();
+    }
+
     private function mensual ()
     {
         CronFunciones::resetCounter(true);
@@ -57,15 +63,14 @@ class Kernel extends ConsoleKernel
     
     private function diario ()
     {
+        CronFunciones::resetCounter();
         CronFunciones::generarArchivoSem();
         //reset todos los contadores de todos los gateways
-        CronFunciones::resetCounter();
     }
 
     private function cadaMinuto()
     {
         CronFunciones::readDay();
-        CronFunciones::buscarProveedoresCaidos();
     }
     
 }
