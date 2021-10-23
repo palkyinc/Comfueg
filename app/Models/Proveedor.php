@@ -93,12 +93,36 @@ class Proveedor extends Model
         $estadoActual = $this->enLinea();
         if ( $this->en_linea != $estadoActual)
         {
-            $this->en_linea = $estadoActual;
-            $estadoActual ? ($this->online_date = Carbon::now()->toDateTimeString()) : ($this->offline_date = Carbon::now()->toDateTimeString());
-            $this->save();
-            return false;
+            if ($this->contaOffline > 0)
+            {
+                  $this->contaOffline--;
+                  $this->save();
+            }
+            else
+            {
+                $this->en_linea = $estadoActual;
+                $estadoActual ? ($this->pasaOnline()) : ($this->pasaOffline());
+                $this->save();
+                return false;
+            }
+        }
+        elseif ($this->contaOffline != 4 && $estadoActual)
+        {
+                $this->contaOffline = 4;
+                $this->save();
         }
         return true;
+    }
+
+    private function pasaOnline ()
+    {
+        $this->online_date = Carbon::now()->toDateTimeString();
+        $this->contaOffline = 4;
+    }
+
+    private function pasaOffline ()
+    {
+        $this->offline_date = Carbon::now()->toDateTimeString();
     }
 
     public static function tieneProveedor ($interface_id)

@@ -49,7 +49,7 @@ class Kernel extends ConsoleKernel
 
     private function cadaCincoMinutos()
     {
-        CronFunciones::buscarProveedoresCaidos();
+        // funcion
     }
 
     private function mensual ()
@@ -71,6 +71,7 @@ class Kernel extends ConsoleKernel
     private function cadaMinuto()
     {
         CronFunciones::readDay();
+        CronFunciones::buscarProveedoresCaidos();
     }
     
 }

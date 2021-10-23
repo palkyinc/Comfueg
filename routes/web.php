@@ -53,9 +53,9 @@ use Illuminate\Support\Facades\Mail;
 |
 */
 ## Route Inicial Default
-/* Route::get('/test', function () {
-        dd(CronFunciones::resetCounter(true));
-        }); */
+ Route::get('/test', function () {
+        dd(CronFunciones::buscarProveedoresCaidos());
+        }); 
 Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
 }); 
