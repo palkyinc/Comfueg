@@ -27,7 +27,20 @@ class Issue extends Model
     {
         $arrayAsignado = [$this->relAsignado->email];
         $arrayViewers = $this->getArrayViewers();
-        switch ($tipo) {
+        if(auth()->user()->id != $this->asignado_id)
+        {
+            $this->subEnviarEmail($arrayAsignado, $arrayViewers, $tipo);
+        }
+        elseif ($arrayViewers != [])
+            {
+                $this->subEnviarEmail($arrayViewers, [], $tipo);      
+            }
+    }
+
+    private function subEnviarEmail ($arrayAsignado, $arrayViewers, $tipo)
+    {
+        switch ($tipo)
+        {
             case 1:
                 $toSend = new TicketNuevo($this);
                 break;
