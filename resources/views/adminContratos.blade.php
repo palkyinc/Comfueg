@@ -90,6 +90,9 @@ title="Dirección:
                                     <a href="adminIssues?rebusqueda=on&usuario=todos&contrato={{$contrato->id}}" title="Historial tickets" >
                                     <img src="imagenes/iconfinder_cinema_ticket_film_media_movie_icon.svg" alt="imganen ticket" height="30px">
                                     </a>
+                                    <a href="testContrato/{{$contrato->id}}" title="Test/Dashboard" >
+                                    <img src="imagenes/7638092_exam_test_checklist_online learning_education_icon.svg" alt="imganen ticket" height="30px">
+                                    </a>
                                     @if ($contrato->relDireccion->coordenadas != '')
                                         <a href="https://www.google.com/maps/place/{{$contrato->relDireccion->coordenadas}}" target="_blank"
                                             class="margenAbajo btn btn-link" title="Ver en Google maps">

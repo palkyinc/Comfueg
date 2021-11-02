@@ -118,6 +118,7 @@ class ProveedoresController extends Controller
         $proveedor->maskProveedor = $request->input('maskProveedor');
         $proveedor->sinActualizar = true;
         $proveedor->en_linea = false;
+        $proveedor->contaOffline = 4;
         $proveedor->save();
         $respuesta[] = 'Proveedor se creo correctamente';
         return redirect('/adminProveedores')->with('mensaje', $respuesta);

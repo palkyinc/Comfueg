@@ -6,6 +6,8 @@ use App\Models\Prueba;
 use Illuminate\Http\Request;
 use App\Custom\ubiquiti;
 use App\Models\Panel;
+use App\Models\Equipo;
+use App\Models\Contrato;
 use Illuminate\Support\Facades\Config;
 
 class PruebaController extends Controller
@@ -17,7 +19,8 @@ class PruebaController extends Controller
      */
     public function testPanel($ip)
     {
-        $ubiquiti   = new Ubiquiti($ip, $this->getPanelUser($ip), $this->getPanelPassword($ip));
+        $equipo = Equipo::getUserPassword(null, $ip);
+        $ubiquiti   = new Ubiquiti($ip, $equipo->usuario, $equipo->password);
         
         return response()->json($this->getStatusSignal($ubiquiti, $this->getPanelPorId($ip)), 200);
     }
@@ -85,11 +88,11 @@ class PruebaController extends Controller
         }
         return(null);
     }
-    private function getPanelUser($ip){
-        return Config::get('constants.PANEL_USER');
+    private function getUser(){
+        return Config::get('constants.CLIENT_USER');
     }
-    private function getPanelPassword($ip){
-        return Config::get('constants.PANEL_PASS');
+    private function getPassword(){
+        return Config::get('constants.CLIENT_PASS');
     }
 
     private function lanspeed ($status, &$statusLAN)
@@ -201,6 +204,87 @@ class PruebaController extends Controller
             'logs' => $logs,
             'actual' => $actual
             ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     * Status 0 = red/desconectado | 1 = green/ok | 2 = orange/warning | 3 = sinColor/No Aplica
+     * @return \Illuminate\Http\Response
+     */
+    public function testClient($ip)
+    {
+        $ubiquiti   = new Ubiquiti($ip, $this->getUser(), $this->getPassword(),false, 80);
+        return response()->json($this->getStatusSignalClient($ubiquiti), 200);
+    }
+    public function testContract($contrato_id)
+    {
+        $contrato = Contrato::find($contrato_id);
+        $ubiquiti   = new Ubiquiti($contrato->relEquipo->ip, $this->getUser(), $this->getPassword(),false, 80);
+        return response()->json($this->getStatusSignalClient($ubiquiti, $contrato_id), 200);
+    }
+
+    private function getStatusSignalClient ($ubiquiti, $contrato_id = null)
+    {
+    date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+    $status = ($ubiquiti->status(true));
+    $prueba = New Prueba();
+    if ($status) {
+        $signal = ($ubiquiti->signal(true));
+        $stations = $ubiquiti->stations(true);
+        $internet = $ubiquiti->getTestinternet('dns.google.com');
+        if (!isset($internet['Ping_AVG']) || $internet['Ping_AVG'] > 150) $gateway = $ubiquiti->getTestinternet('10.10.0.245');
+        $statusLAN = 3;
+        $rta =  [
+            'status' => $prueba->contactado = 1,
+            'Uptime' => ($this->uptime($status['host']['uptime'])),
+            'Temperature' => ((isset($status['host']['temperature'])) ? $status['host']['temperature'] . "°C" : 'N/A '),
+            'Hostname' => $prueba->nom_equipo = $status['host']['hostname'],
+            'MacAdrress' => $prueba->mac_address = $status['wireless']['apmac'],
+            'Firmware' => $prueba->firmware = ($status['host']['fwprefix'] ?? '') . $status['host']['fwversion'],
+            'DevModel' => $prueba->dispositivo = $status['host']['devmodel'],
+            'NetRole' => $status['host']['netrole'],
+            'SSID' => $prueba->ssid = $status['wireless']['essid'],
+            'Signal' => $prueba->senial = ($signal['signal'] ?? '0') . 'dBm',
+            'statusSignal' => (isset($signal['signal'])) ? (($signal['signal'] < -68) ? (($signal['signal'] < -73) ? 0 : 2) : 1) : 3,
+            'Remote' => $prueba->remote = $stations[0]['remote']['signal'] . 'dBm',
+            'statusRemote' => (isset($stations[0]['remote']['signal'])) ? (($stations[0]['remote']['signal'] < -68) ? (($stations[0]['remote']['signal'] < -73) ? 0 : 2) : 1) : 3,
+            'NoiseFloor' => $prueba->ruido = ($signal['noisef'] ?? '0') . 'dBm',
+            'ChannelWidth' => ((isset($signal['chwidth'])) ? $signal['chwidth'] : $signal['chbw']) . 'Mhz',
+            'Frecuency' => $prueba->canal = $status['wireless']['frequency'],
+            'CCQ' => $prueba->ccq = ($status['wireless']['ccq'] ?? 'N/A'),
+            'statusCCQ' => (isset($status['wireless']['ccq'])) ? (($status['wireless']['ccq'] < 700) ? (($status['wireless']['ccq'] < 600) ? 0 : 2) : 1) : 3,
+            'CpuUse' => $prueba->uso_cpu = (isset($status['host']['cpuload'])) ? (round($status['host']['cpuload']) . "%") : 'N/A ',
+            'statusCpuUse' => (isset($status['host']['cpuload'])) ? ((round($status['host']['cpuload']) > 50) ? ((round($status['host']['cpuload']) > 85) ? 0 : 2) : 1) : 3,
+            'MemFree' => $prueba->mem_libre = (isset($status['host']['freeram'])) ? (round(($status['host']['freeram'] / $status['host']['totalram']) * 100) . "%") : 'N/A',
+            'statusMemFree' => (isset($status['host']['freeram'])) ? ((round($status['host']['freeram'] / $status['host']['totalram']) < 0.5) ? 0 : 1) : 3,
+            'TX' => $prueba->tx = ($status['wireless']['txrate'] ?? ''),
+            'statusTX' => (isset($status['wireless']['txrate']) ? (($status['wireless']['txrate'] < 20) ? 0 : 1) : 3),
+            'RX' => $prueba->rx = ($status['wireless']['rxrate'] ?? ''),
+            'statusRX' => (isset($status['wireless']['rxrate']) ? (($status['wireless']['rxrate'] < 20) ? 0 : 1) : 3),
+            'LanSpeed' => $prueba->lan_velocidad = ($this->lanspeed($status, $statusLAN)),
+            'statusLan' => $statusLAN,
+            'InternetLoss' => $prueba->internet_lost = ($internet['Ping_Loss'] ?? null),
+            'statusInternet' => (($internet['Ping_Loss'] < 100) ? (($internet['Ping_Loss'] == 0) ? 1 : 2) : 0),
+            'InternetAvg' => $prueba->internet_avg = $internet['Ping_AVG'] ?? null,
+            'statusInternetAVG' => isset($internet['Ping_AVG']) ? (($internet['Ping_AVG'] <= 250) ? (($internet['Ping_AVG'] < 120) ? 1 : 2) : 0) : 0,
+            'Gateway' => $prueba->wispro_lost = ($gateway['Ping_Loss'] ?? null),
+            'statusGateway' => isset($gateway['Ping_Loss']) ? (($gateway['Ping_Loss'] < 100) ? (($gateway['Ping_Loss'] == 0) ? 1 : 2) : 0) : 3,
+            'gatewayAvg' => $prueba->wispro_avg = $gateway['Ping_AVG'] ?? null,
+            'statusGatewayAVG' => isset($gateway['Ping_AVG']) ? (($gateway['Ping_AVG'] <= 25) ? (($gateway['Ping_AVG'] < 12) ? 1 : 2) : 0) : 3
+        ];
+        $prueba->lan_conectado = ($statusLAN === 0) ? 0 : 1;
+    } else {
+        $prueba->ip_equipo = 
+        $rta = ['status' => $prueba->contactado = 0];
+    }
+    $prueba->user_id = auth()->user()->id ?? null;
+    $prueba->ip_equipo = $ubiquiti->getIp();
+    $prueba->contrato_id = $contrato_id;
+    //dd($rta);
+    if ($contrato_id){
+        $prueba->save();
+    }
+    return $rta;
     }
 
     /**

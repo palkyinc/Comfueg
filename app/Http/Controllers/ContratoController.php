@@ -44,12 +44,17 @@ class ContratoController extends Controller
         }
         else
         {
-            $contratos = Contrato::paginate(10);
-            $paginate = true;
+            $contratos = null; //Contrato::paginate(10);
+            $paginate = false;
         }
         $conteos = Contadores_mensuales::get();
         //dd($conteos);
-        return view('adminContratos', ['contratos' => isset($contratos) ? $contratos : [], 'internet' => 'active', 'paginate' => $paginate, 'conteos' => $conteos]);
+        return view('adminContratos', [ 'contratos' => isset($contratos) ? $contratos : [], 
+                                        'internet' => 'active', 
+                                        'paginate' => $paginate,
+                                        'conteos' => $conteos,
+                                        'website' => env('DOMINIO_COMFUEG'),
+                                        'vuejs' => env('VUEJS_VERSION')]);
     }
 
     public function vueIndex ()
@@ -66,7 +71,7 @@ class ContratoController extends Controller
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $contratos = Contrato::where('baja', false)->get();
         $newFile = fopen ('../storage/app/public/ListadoClientes-' . date('Ymd') . '.csv', 'w');
-        fwrite($newFile ,'APELLIDO, Nombre;Plan;Estado;Sistema' . PHP_EOL);
+        fwrite($newFile ,'ID Genesys;APELLIDO, Nombre;Plan;Estado;Sistema' . PHP_EOL);
         foreach ($contratos as $key => $value)
         {
             fwrite($newFile , $value->relCliente->id . ';' . $value->relCliente->getNomyApe() . ';' . $value->relPlan->nombre . ';' . ($value->activo ? 'Habilitado' : 'Deshabilitado') . ';SLAM' . PHP_EOL);
@@ -295,6 +300,14 @@ class ContratoController extends Controller
         $contrato->save();
         $respuesta[] = "Se dió de ALTA nuevamente el contrato N° $contrato->id";
         return redirect ('adminContratos')->with('mensaje', $respuesta);
+    }
+
+    public function test ($id)
+    {
+        $contrato = Contrato::find($id);
+        return view ('testContrato', ['internet' => 'active', 'contrato' => $contrato, 'website' => env('DOMINIO_COMFUEG'),
+            'vuejs' => env('VUEJS_VERSION')]);
+        dd($id);
     }
 
     ################# Métodos de Gateway ####################################

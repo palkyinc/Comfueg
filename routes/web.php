@@ -73,6 +73,8 @@ Route::get('/charts', function (){return view('charts');});
 ####### Gateway API rest Web services
 //Route::get('/gateway/clients/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
 Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
+Route::get('/clientTest/{ip}', [PruebaController::class, 'testClient'])->middleware('auth');
+Route::get('/contractTest/{contrato}', [PruebaController::class, 'testContract'])->middleware('auth');
 Route::get('/allPanels', [PruebaController::class, 'allPanels'])->middleware('auth');
 Route::get('/adminControlPanelNodos', [PruebaController::class, 'index'])->middleware('auth');
 Route::get('/adminPanelLogs', [PruebaController::class, 'indexLogs'])->middleware('auth');
@@ -166,6 +168,7 @@ Route::get('/listadoContratos', [ContratoController::class, 'getListadoContratos
 Route::get('/agregarContrato', [ContratoController::class, 'create'])->middleware('auth');
 Route::post('/agregarContrato', [ContratoController::class, 'store'])->middleware('auth');
 Route::get('/modificarContrato/{id}', [ContratoController::class, 'edit'])->middleware('auth');
+Route::get('/testContrato/{id}', [ContratoController::class, 'test'])->middleware('auth');
 Route::patch('/modificarContrato', [ContratoController::class, 'update'])->middleware('auth');
 Route::patch('/realtaContrato', [ContratoController::class, 'undestroy'])->middleware('auth');
 Route::delete('/eliminarContrato', [ContratoController::class, 'destroy'])->middleware('auth');

@@ -665,4 +665,25 @@ class GatewayMikrotik extends RouterosAPI
 		$this->removeProveedor('/ip/firewall/mangle/print', '/ip/firewall/mangle/remove', 0, true);
 		$this->removeProveedor('/ip/dhcp-client/print', '/ip/dhcp-client/remove', 0, true);
 	}
+	
+	public function setClock()
+	{
+		date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+		$date = date('M/d/Y');
+		$time = date('H:i:s');
+		//dd($time);
+        $this->comm('/system/clock/set',
+    				['date' => $date,
+    				 'time' => $time]);
+	}
+
+	public function resetGateway()
+	{
+		$this->comm('/system/reboot');
+	}
+
+	public function makeBackup ()
+	{
+		$this->comm('/system/backup/save', ['dont-encrypt' => 'yes', 'name' => 'BKP_Diary']);
+	}
 }

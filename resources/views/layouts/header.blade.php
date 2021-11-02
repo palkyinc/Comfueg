@@ -7,20 +7,20 @@
 	<link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
 	
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-	<link rel="stylesheet" href="cssboot/easy-autocomplete.min.css">
+	<link rel="stylesheet" href="/cssboot/easy-autocomplete.min.css">
 	<link rel="stylesheet" href="/css/estilos.css">
 	
 </head>
 <body>
-	<script src="js/Vendor/sweetalert2@10.js"></script>
-	<script src="js/Vendor/jquery-3.5.1.slim.min.js"></script>
-	<script src="jsboot/jquery.easy-autocomplete.min.js"></script>
-    <script src="js/Vendor/popper.min.js"></script>
-    <script src="js/Vendor/bootstrap.min.js"></script>
+	<script src="/js/Vendor/sweetalert2@10.js"></script>
+	<script src="/js/Vendor/jquery-3.5.1.slim.min.js"></script>
+	<script src="/jsboot/jquery.easy-autocomplete.min.js"></script>
+    <script src="/js/Vendor/popper.min.js"></script>
+    <script src="/js/Vendor/bootstrap.min.js"></script>
 	<!-- Charting library -->
-    <script src="js/Vendor/echarts.min.js"></script>
+    <script src="/js/Vendor/echarts.min.js"></script>
     <!-- Chartisan -->
-    <script src="js/Vendor/chartisan_echarts.js"></script>
+    <script src="/js/Vendor/chartisan_echarts.js"></script>
 	
 	<header>
 

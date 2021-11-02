@@ -12,9 +12,16 @@ class Equipo extends Model
     use HasFactory;
     public $timestamps = false;
     
-    public static function getUserPassword($id)
+    public static function getUserPassword($id, $ip = null)
     {
-        $equipo = Equipo::find($id);
+        if (!$ip)
+        {
+            $equipo = Equipo::find($id);
+        }
+        else 
+            {
+                $equipo = Equipo::where('ip', $ip)->first();
+            }
         try {
             $equipo->usuario = ($equipo->usuario) ? Crypt::decrypt($equipo->usuario) : null;
         } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
@@ -60,6 +67,9 @@ class Equipo extends Model
     }
     public function relAntena () {
         return $this->belongsTo('App\Models\Antena', 'num_antena', 'id');
+    }
+    public function relContrato () {
+        return $this->belongsTo('App\Models\Contrato', 'num_equipo', 'id');
     }
     public static function equiposSinAgregar ()
     {

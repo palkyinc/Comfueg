@@ -47,6 +47,49 @@ class Ubiquiti{
     *                     'ope' => 1 = Del, 0 = Add
     *     ])
     */
+
+    public function getIp()
+    {
+        return $this->_ip;
+    }
+
+    public function getTestinternet ($direccion)
+    {
+        $comando = 'echo y | plink -pw '. $this->_password . ' '  . $this->_username . '@' . $this->_ip . ' ping ' . $direccion . ' -c 10 > putty.log';
+        //dd(shell_exec($comando));
+        $output = shell_exec($comando);
+        $file = fopen("putty.log", "r");
+        while(!feof($file)) 
+            {
+                $linea = fgets($file);
+                //echo "$linea <br>\n";
+                if (substr($linea,0,10)==='10 packets')
+                    $dato["Ping_Loss"] = $this->between('ved, ','%',$linea);
+                if (substr($linea,0,10)==='round-trip')
+                    {
+                    $dato["Ping_AVG"] = $this->between('/','/', $this->after ('=', $linea));
+                    }
+            } 
+        fclose($file);
+        return isset($dato) ? $dato : null;
+    }
+
+    private function between ($esto, $that, $inthat)
+    {
+        return $this->before($that, $this->after($esto, $inthat));
+    }
+
+    private function before ($esto, $inthat)
+    {
+        return substr($inthat, 0, strpos($inthat, $esto));
+    }
+
+    private function after ($esto, $inthat)
+    {
+        if (!is_bool(strpos($inthat, $esto)))
+        return substr($inthat, strpos($inthat,$esto)+strlen($esto));
+    }
+
     public static function tratarMac ($datos)
         {
             shell_exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg C:/inetpub/wwwroot/Comfueg/public/configPanels/' . $datos['ip'] . '-old.cfg');

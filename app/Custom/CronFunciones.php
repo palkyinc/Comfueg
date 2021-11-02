@@ -19,7 +19,22 @@ use Illuminate\Support\Facades\Mail;
 abstract class CronFunciones
 {
 
-    public static function resetCounter($mensual = false)
+    public static function setClockAndResetGateway ()
+    {
+        $gateways = self::getGateways();
+        foreach ($gateways as $elemento)
+        {
+            $gateway = Panel::find($elemento);
+            $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
+            if ($apiMikro)
+            {
+                $apiMikro->setClock();
+                $apiMikro->makeBackup();
+                $apiMikro->resetGateway();
+            }
+        }
+    }
+        public static function resetCounter($mensual = false)
     {
         $gateways = self::getGateways();
         foreach ($gateways as $elemento) 
