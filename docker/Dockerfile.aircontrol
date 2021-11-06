@@ -1,0 +1,15 @@
+#sudo docker run --rm --name slam-airControl2 -p 9081:9081 -v /media/proyectos/aircontrol/pgsql/data/:/opt/Ubiquiti/AirControl2/pgsql/data/ -p 9082:9082 -d cont-aircontrol:1
+# -v /media/storage/pgsql/data/:/opt/Ubiquiti/AirControl2/pgsql/data
+FROM openjdk:8
+EXPOSE 9081
+EXPOSE 9082
+RUN apt-get update
+RUN printf "y\n" | apt-get install systemd systemd-sysv
+RUN wget https://dl.ui.com/aircontrol2/aircontrol-v2.1-180316-1259-unix64.bin
+RUN printf "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1\n\n1\nadmincf\n@dmiN1234\n@dmiN1234\n\n\ny\n\n@dmiN1234\n@dmiN1234\ncomfueg\n\nComfueg0426@\n" | sh aircontrol-v2.1-180316-1259-unix64.bin
+RUN systemctl enable postgresql-9.5.service
+RUN systemctl enable airControl2Server.service
+COPY supervisor.sh supervisor.sh
+COPY java.security /usr/local/openjdk-8/jre/lib/security/java.security
+RUN rm aircontrol-v2.1-180316-1259-unix64.bin
+CMD /supervisor.sh
