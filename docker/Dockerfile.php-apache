@@ -1,2 +1,8 @@
 FROM webdevops/php-apache-dev:7.4-alpine
 COPY slam.conf /opt/docker/etc/httpd/conf.d/10-server.conf
+RUN apk add putty
+RUN cp /usr/share/zoneinfo/America/Buenos_Aires /etc/localtime
+COPY cron.sh /etc/periodic
+RUN chmod +x /etc/periodic/cron.sh
+COPY slam.cron /etc/periodic
+RUN crontab /etc/periodic/slam.cron 

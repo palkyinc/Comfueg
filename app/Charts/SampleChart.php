@@ -63,7 +63,7 @@ class SampleChart extends BaseChart
 
     private function getDatosDelDia($dia, $datos, $cliente)
     {
-        $file = fopen('/inetpub/wwwroot/Comfueg/storage/Crons/' . $dia, 'r');
+        $file = fopen('../storage/Crons/' . $dia, 'r');
         $downAnterior = null;
         $upAnterior = null;
         while (!feof($file))

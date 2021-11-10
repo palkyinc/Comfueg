@@ -58,9 +58,9 @@ abstract class CronFunciones
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $ayer = date('Ymd', strtotime(date('Ymd')."- $dias days"));
-        if (file_exists('/inetpub/wwwroot/Comfueg/storage/Crons/' . $ayer . '.dat'))
+        if (file_exists('../storage/Crons/' . $ayer . '.dat'))
         {
-        $file = fopen('/inetpub/wwwroot/Comfueg/storage/Crons/' . $ayer . '.dat', 'r');
+        $file = fopen('../storage/Crons/' . $ayer . '.dat', 'r');
         while(!feof($file))
         {
                 $linea = explode(';', trim(fgets($file)));
@@ -130,7 +130,7 @@ abstract class CronFunciones
                 $salida[$cliente]['up'] = $up;
                 $salida[$cliente]['down'] = $down;
         }
-        $file = fopen('/inetpub/wwwroot/Comfueg/storage/Crons/' . $ayer . '-sem.dat', 'w');
+        $file = fopen('../storage/Crons/' . $ayer . '-sem.dat', 'w');
         fwrite($file, json_encode($salida));
         fclose($file);
         }
@@ -224,9 +224,9 @@ abstract class CronFunciones
                 date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
                 $dayTarget = date('Ymd', strtotime(date('Ymd').'- ' . $day . ' days'));
                 $fecha = date('D', strtotime(date('Ymd').'- ' . $day . ' days'));
-                if (file_exists('/inetpub/wwwroot/Comfueg/storage/Crons/' . $dayTarget . '-sem.dat'))
+                if (file_exists('../storage/Crons/' . $dayTarget . '-sem.dat'))
                 {
-                        $file = fopen('/inetpub/wwwroot/Comfueg/storage/Crons/' . $dayTarget . '-sem.dat', 'r');
+                        $file = fopen('../storage/Crons/' . $dayTarget . '-sem.dat', 'r');
                         $allData = json_decode(fgets($file), true);
                         if (isset($allData[$contrato_id]))
                         {
@@ -274,9 +274,9 @@ abstract class CronFunciones
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $paraBorrar = date('Ymd', strtotime(date('Ymd')."- 9 days"));
-        if (file_exists('/inetpub/wwwroot/Comfueg/storage/Crons/' . $paraBorrar . '-sem.dat'))
+        if (file_exists('../storage/Crons/' . $paraBorrar . '-sem.dat'))
         {
-                unlink('/inetpub/wwwroot/Comfueg/storage/Crons/' . $paraBorrar . '-sem.dat');
+                unlink('../storage/Crons/' . $paraBorrar . '-sem.dat');
         }
     }
 }

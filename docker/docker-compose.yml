@@ -3,7 +3,7 @@ services:
   web:
     hostname: slam-php-apache
     container_name: slam-php-apache
-    image: "image.php-apache:1.0"
+    image: "image.php-apache:1.2"
     ports:
       - "0.0.0.0:80:80"
       ##- "0.0.0.0:443:80"
@@ -11,6 +11,9 @@ services:
       - "/media/proyectos/Comfueg/:/app/"
     restart: unless-stopped
     network_mode: bridge
+    links:
+      - database
+
   aircontrol:
     hostname: slam-aircontrol
     container_name: aircontrol
@@ -22,12 +25,13 @@ services:
       - "/media/proyectos/aircontrol/pgsql/data/:/opt/Ubiquiti/AirControl2/pgsql/data/"
     restart: unless-stopped
     network_mode: bridge
+
   database:
     hostname: slam-mysql
     container_name: mysql
     image: "image.mysql:1.0"
     ports:
-      - "0.0.0.0:3306:3306"
+      - "3306:3306"
     volumes:
       - "/media/proyectos/mysql/Data:/var/lib/mysql"
     environment:

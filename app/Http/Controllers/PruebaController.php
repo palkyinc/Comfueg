@@ -264,7 +264,7 @@ class PruebaController extends Controller
             'LanSpeed' => $prueba->lan_velocidad = ($this->lanspeed($status, $statusLAN)),
             'statusLan' => $statusLAN,
             'InternetLoss' => $prueba->internet_lost = ($internet['Ping_Loss'] ?? null),
-            'statusInternet' => (($internet['Ping_Loss'] < 100) ? (($internet['Ping_Loss'] == 0) ? 1 : 2) : 0),
+            'statusInternet' => isset($internet['Ping_Loss']) ?  (($internet['Ping_Loss'] < 100) ? (($internet['Ping_Loss'] == 0) ? 1 : 2) : 0) :3,
             'InternetAvg' => $prueba->internet_avg = $internet['Ping_AVG'] ?? null,
             'statusInternetAVG' => isset($internet['Ping_AVG']) ? (($internet['Ping_AVG'] <= 250) ? (($internet['Ping_AVG'] < 120) ? 1 : 2) : 0) : 0,
             'Gateway' => $prueba->wispro_lost = ($gateway['Ping_Loss'] ?? null),
