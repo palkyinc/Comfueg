@@ -5,7 +5,8 @@
 /public/Crons
 /public/storage
 /log
-/public/imgUsuarios
+ public/imgUsuarios
+ public/imgUsuarios/photos
 /storage/*.key
 /vendor
 .env
