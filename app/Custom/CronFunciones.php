@@ -60,84 +60,84 @@ abstract class CronFunciones
         $ayer = date('Ymd', strtotime(date('Ymd')."- $dias days"));
         if (file_exists('../storage/Crons/' . $ayer . '.dat'))
         {
-        $file = fopen('../storage/Crons/' . $ayer . '.dat', 'r');
-        while(!feof($file))
-        {
-                $linea = explode(';', trim(fgets($file)));
-                if (isset($linea[2]))
+                $file = fopen('../storage/Crons/' . $ayer . '.dat', 'r');
+                while(!feof($file))
                 {
-                        $salida[$linea[0]]['up'][$linea[1]] = isset($linea[2]) ? $linea[2] : 0;
-                        $salida[$linea[0]]['down'][$linea[1]] = isset($linea[3]) ? $linea[3] : 0;
+                        $linea = explode(';', trim(fgets($file)));
+                        if (isset($linea[2]))
+                        {
+                                $salida[$linea[0]]['up'][$linea[1]] = isset($linea[2]) ? $linea[2] : 0;
+                                $salida[$linea[0]]['down'][$linea[1]] = isset($linea[3]) ? $linea[3] : 0;
+                        }
                 }
-        }
-        fclose($file);
-        foreach ($salida as $cliente => $elemento)
-        {
-                ###      completar con 0 si le faltan datos
-                if (count($elemento['down']) < 1440)
+                fclose($file);
+                foreach ($salida as $cliente => $elemento)
                 {
-                        for ($h=0; $h < 24; $h++)
-                        { 
-                                for ($m=0; $m < 60; $m++)
+                        ###      completar con 0 si le faltan datos
+                        if (count($elemento['down']) < 1440)
+                        {
+                                for ($h=0; $h < 24; $h++)
                                 { 
-                                        $horaTest = str_pad(strval($h), 2, '0', STR_PAD_LEFT) . '.' . str_pad(strval($m), 2, '0', STR_PAD_LEFT);
-                                        if (!isset($elemento['down'][$horaTest]))
-                                        {
-                                                $elemento['down'][$horaTest] = "0";
+                                        for ($m=0; $m < 60; $m++)
+                                        { 
+                                                $horaTest = str_pad(strval($h), 2, '0', STR_PAD_LEFT) . '.' . str_pad(strval($m), 2, '0', STR_PAD_LEFT);
+                                                if (!isset($elemento['down'][$horaTest]))
+                                                {
+                                                        $elemento['down'][$horaTest] = "0";
+                                                }
+                                                if (!isset($elemento['up'][$horaTest]))
+                                                {
+                                                        $elemento['up'][$horaTest] = "0";
+                                                }
                                         }
-                                        if (!isset($elemento['up'][$horaTest]))
+                                }
+                                ksort($elemento['up']);
+                                ksort($elemento['down']);
+                        }
+                        $up = null;
+                        $down = null;
+                        $time = null;
+                        $upAnterior = null;
+                        $downAnterior = null;
+                        $i = 0;
+                        $gapMinuto = 7;
+                        foreach ($elemento['down'] as $hora => $value)
+                        {
+                                if ($i == 0)
+                                {
+                                        if (!($upAnterior) && !($downAnterior))
                                         {
-                                                $elemento['up'][$horaTest] = "0";
+                                                $up[$hora] = 0;
+                                                $down[$hora] = 0;
+                                                $i = $gapMinuto;
                                         }
+                                        else
+                                        {
+                                                $up[$hora] = ($dato = ($elemento['up'][$hora] - $upAnterior)*8/1024/1024/(60*$gapMinuto)) > 0 ? round($dato, 3) : 0;
+                                                $down[$hora] = ($dato = ($elemento['down'][$hora] - $downAnterior)*8/1024/1024/(60*$gapMinuto)) > 0 ? round($dato, 3) : 0;
+                                                $i = $gapMinuto;
+                                        }
+                                        $upAnterior = $elemento['up'][$hora];
+                                        $downAnterior = $elemento['down'][$hora];
                                 }
-                        }
-                        ksort($elemento['up']);
-                        ksort($elemento['down']);
-                }
-                $up = null;
-                $down = null;
-                $time = null;
-                $upAnterior = null;
-                $downAnterior = null;
-                $i = 0;
-                $gapMinuto = 7;
-                foreach ($elemento['down'] as $hora => $value)
-                {
-                        if ($i == 0)
-                        {
-                                if (!($upAnterior) && !($downAnterior))
+                                else   
                                 {
-                                        $up[$hora] = 0;
-                                        $down[$hora] = 0;
-                                        $i = $gapMinuto;
+                                        unset($elemento['up'][$hora]);
+                                        unset($elemento['down'][$hora]);
                                 }
-                                else
-                                {
-                                        $up[$hora] = ($dato = ($elemento['up'][$hora] - $upAnterior)*8/1024/1024/(60*$gapMinuto)) > 0 ? round($dato, 3) : 0;
-                                        $down[$hora] = ($dato = ($elemento['down'][$hora] - $downAnterior)*8/1024/1024/(60*$gapMinuto)) > 0 ? round($dato, 3) : 0;
-                                        $i = $gapMinuto;
-                                }
-                                $upAnterior = $elemento['up'][$hora];
-                                $downAnterior = $elemento['down'][$hora];
+                                $i--;
                         }
-                        else   
-                        {
-                                unset($elemento['up'][$hora]);
-                                unset($elemento['down'][$hora]);
-                        }
-                        $i--;
+                        $salida[$cliente]['up'] = $up;
+                        $salida[$cliente]['down'] = $down;
                 }
-                $salida[$cliente]['up'] = $up;
-                $salida[$cliente]['down'] = $down;
-        }
-        $file = fopen('../storage/Crons/' . $ayer . '-sem.dat', 'w');
-        fwrite($file, json_encode($salida));
-        fclose($file);
+                $file = fopen('../storage/Crons/' . $ayer . '-sem.dat', 'w');
+                fwrite($file, json_encode($salida));
+                fclose($file);
         }
         else {
-                return false;
+                return 'Error al abrir el archivo ../storage/Crons/ de ayer';
         }
-        return true;
+        return 'true';
     }
 
     public static function readDay()

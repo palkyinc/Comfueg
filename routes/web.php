@@ -15,7 +15,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Mail_groupController;
 use App\Http\Controllers\ModeloController;
 use App\Http\Controllers\NodoController;
-use App\Http\Controllers\panel_has_barrioController;
+use App\Http\Controllers\Panel_has_barrioController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PlanController;

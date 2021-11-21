@@ -1,8 +1,20 @@
 FROM webdevops/php-apache-dev:7.4-alpine
-COPY slam.conf /opt/docker/etc/httpd/conf.d/10-server.conf
+COPY slam-test.conf /opt/docker/etc/httpd/conf.d/10-server.conf
 RUN apk add putty
 RUN cp /usr/share/zoneinfo/America/Buenos_Aires /etc/localtime
 COPY cron.sh /etc/periodic
 RUN chmod +x /etc/periodic/cron.sh
 COPY slam.cron /etc/periodic
-RUN crontab /etc/periodic/slam.cron 
+RUN crontab /etc/periodic/slam.cron
+RUN curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip
+RUN unzip rclone-current-linux-amd64.zip
+RUN cp /rclone-v1.57.0-linux-amd64/rclone /usr/bin/
+RUN chown root:root /usr/bin/rclone
+RUN chmod 755 /usr/bin/rclone
+RUN mkdir -p /usr/share/man/man1
+RUN cp /rclone-v1.57.0-linux-amd64/rclone.1 /usr/share/man/man1/
+# config directory /root/.config/rclone/
+RUN mkdir /datarclone
+RUN rm rclone-current-linux-amd64.zip
+RUN rm -Rf rclone-v1.57.0-linux-amd64
+RUN apk add mysql-client

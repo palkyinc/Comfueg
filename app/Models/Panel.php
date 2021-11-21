@@ -25,7 +25,7 @@ class Panel extends Model
     }
     public function barrios () 
     {
-        return $this->belongsToMany(Barrio::class, 'Panel_has_barrios', 'panel_id', 'barrio_id');
+        return $this->belongsToMany('App\Models\Barrio', 'panel_has_barrios', 'panel_id', 'barrio_id');
     }
     public function getResumida()
     {

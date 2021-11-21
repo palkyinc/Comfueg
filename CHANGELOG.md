@@ -1,12 +1,38 @@
 # Changelog
-All notable changes to this project will be documented in this file.
+Todos los cambios notables serán registrados en este archivo.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-https://github.com/romainsimon/vue-simple-search-dropdown
-
 ## [Unreleased]
-1. haruncpi/laravel-user-activity
+1.	haruncpi/laravel-user-activity
+2.	https://github.com/romainsimon/vue-simple-search-dropdown
+
+Secuencia de arctualización en server desarrollo:
+1.	Actualizar version en el archivo constants.php
+2.	Realizar los cambios en Changelog.md actualizando la fecha de la versión.
+3.	add y commit en el branch develop
+4.	pasar a Master y luego realizar push de la versión con el tag si corresponde.
+5.	volver develop.
+
+Secuencia de arctualización en server producción:
+1.	si corresponde realizar un git restore.
+1.	realizar el git push
+3.	Si corresponde realizar un docker build y editar el .yml con la nueva version de la imagen y correr docker-compose.
+2.	realizar un migrate y un compose update.
+
+
+## [0.7.2] - 2021-11-21
+### Added
+1.	https://github.com/zanysoft/laravel-zip Se instala manejo de archivos zip desde laravel.
+2.	https://spatie.be/docs/laravel-backup/v7/installation-and-setup Se instala complemento para automatizar backup de la aplicación.
+3.	Se configura backup para DB y carpetas con archivos de usuarios.
+
+## [0.7.1] - 2021-11-10
+### Changed
+1. 	Se realizan parches por cambio de servidor, nuevo servidor Alpine Linux.
+2.	Se agrega test antena Cliente
+3.	Se realizan correcciones en mikrotik en per-connection-classifier pasado src address
+4.	Se pasa envio de email por caida de proveedores a 5 Min.
 
 ## [0.7.0] - 2021-09-14
 ### Added

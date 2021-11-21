@@ -334,7 +334,7 @@ class SiteHasIncidenteController extends Controller
         $incidente = Site_has_incidente::find($id);
         $archivos = Entity_has_file::where('modelo_id', 3)->where('entidad_id', $id)->get();
         //dd(date("c", strtotime($incidente->inicio)));
-        return view('modificarSIteHasincidente', ['archivos' => $archivos, 'incidente' => $incidente, 'nodos' => 'active']);
+        return view('modificarSitehasIncidente', ['archivos' => $archivos, 'incidente' => $incidente, 'nodos' => 'active']);
     }
     
     /**

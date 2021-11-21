@@ -30,6 +30,6 @@ class IncidenciaGlobalActualizacion extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.IncidenteGlobalActualizacion');
+        return $this->view('emails.incidenteGlobalActualizacion');
     }
 }

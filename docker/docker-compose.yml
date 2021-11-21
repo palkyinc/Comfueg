@@ -6,9 +6,11 @@ services:
     image: "image.php-apache:1.2"
     ports:
       - "0.0.0.0:80:80"
-      ##- "0.0.0.0:443:80"
+      #- "0.0.0.0:53682:53682"
     volumes:
       - "/media/proyectos/Comfueg/:/app/"
+      - "/media/proyectos/Comfueg/docker/rclone:/root/.config/rclone "
+      - "/media/proyectos/Comfueg/storage/app/Comfueg-Slam:/datarclone"
     restart: unless-stopped
     network_mode: bridge
     links:

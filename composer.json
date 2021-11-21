@@ -15,10 +15,14 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^8.0",
+        "laravel/slack-notification-channel": "^2.3",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.1",
         "mattkingshott/axiom": "^3.1",
-        "spatie/laravel-permission": "^3.17"
+        "spatie/db-dumper": "^2.21",
+        "spatie/laravel-backup": "^6.16",
+        "spatie/laravel-permission": "^3.17",
+        "zanysoft/laravel-zip": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
