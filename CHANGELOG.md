@@ -21,6 +21,12 @@ Secuencia de arctualización en server producción:
 2.	realizar un migrate y un compose update.
 
 
+## [0.7.3] - 2021-XX-XX
+### Added
+1.	
+### Changed
+1.	correciones en console/kernel.php y docker-compose.yml.
+
 ## [0.7.2] - 2021-11-21
 ### Added
 1.	https://github.com/zanysoft/laravel-zip Se instala manejo de archivos zip desde laravel.

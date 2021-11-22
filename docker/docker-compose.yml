@@ -9,8 +9,8 @@ services:
       #- "0.0.0.0:53682:53682"
     volumes:
       - "/media/proyectos/Comfueg/:/app/"
-      - "/media/proyectos/Comfueg/docker/rclone:/root/.config/rclone "
-      - "/media/proyectos/Comfueg/storage/app/Comfueg-Slam:/datarclone"
+      - "/media/proyectos/Comfueg/docker/rclone/:/root/.config/rclone/ "
+      - "/media/proyectos/Comfueg/storage/app/Comfueg-SLAM/:/datarclone/"
     restart: unless-stopped
     network_mode: bridge
     links:
