@@ -56,14 +56,13 @@ use Illuminate\Support\Facades\Mail;
 /* Route::get('/test', function () {
         dd(CronFunciones::buscarProveedoresCaidos());
         }); */
-Route::get('/archivoSem/{dias}', function ($dias) {
+/* Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
 }); 
-/*Route::get('/mailable', function () {
-    $ticket = App\Models\Issue::find(1986);
-    $ticket->enviarMail(2);
-    return new App\Mail\TicketActualizado($ticket);
-});*/
+Route::get('/borrar', function () {
+dd(CronFunciones::borrarArchivos());
+});  */
+
 ### Route index
 /* Route::get('/test', function () {CronFunciones::readDay();}); */
 Route::get('/', function (){return view('inicio', [ 'frase' => true, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');

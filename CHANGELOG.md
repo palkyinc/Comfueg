@@ -21,6 +21,10 @@ Secuencia de arctualización en server producción:
 2.	realizar un migrate y un compose update.
 
 
+## [0.7.4] - 2021-11-23
+### Added
+1.	Se agregó schedule para borrar archivos de Crons más antiguos de 7 días.
+
 ## [0.7.3] - 2021-11-22
 ### Added
 1.	Se agrega tarea por schedule para sincronizar backup en server con Google Drive.

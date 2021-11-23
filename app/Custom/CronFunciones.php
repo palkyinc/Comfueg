@@ -13,6 +13,7 @@ use App\Custom\GatewayMikrotik;
 use App\Mail\DeudaTecnicaResumen;
 use App\Mail\CambioDeEstadoEnProveedor;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -58,9 +59,9 @@ abstract class CronFunciones
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $ayer = date('Ymd', strtotime(date('Ymd')."- $dias days"));
-        if (file_exists('../storage/Crons/' . $ayer . '.dat'))
+        if (file_exists('storage/Crons/' . $ayer . '.dat'))
         {
-                $file = fopen('../storage/Crons/' . $ayer . '.dat', 'r');
+                $file = fopen('storage/Crons/' . $ayer . '.dat', 'r');
                 while(!feof($file))
                 {
                         $linea = explode(';', trim(fgets($file)));
@@ -130,12 +131,12 @@ abstract class CronFunciones
                         $salida[$cliente]['up'] = $up;
                         $salida[$cliente]['down'] = $down;
                 }
-                $file = fopen('../storage/Crons/' . $ayer . '-sem.dat', 'w');
+                $file = fopen('storage/Crons/' . $ayer . '-sem.dat', 'w');
                 fwrite($file, json_encode($salida));
                 fclose($file);
         }
         else {
-                return 'Error al abrir el archivo ../storage/Crons/ de ayer';
+                return 'Error al abrir el archivo storage/Crons/ de ayer';
         }
         return 'true';
     }
@@ -273,10 +274,15 @@ abstract class CronFunciones
     public static function borrarArchivos()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
-        $paraBorrar = date('Ymd', strtotime(date('Ymd')."- 9 days"));
-        if (file_exists('../storage/Crons/' . $paraBorrar . '-sem.dat'))
-        {
-                unlink('../storage/Crons/' . $paraBorrar . '-sem.dat');
+        $paraBorrar = date('Ymd', strtotime(date('Ymd')."- 7 days"));
+        $archivos = Storage::disk('crons')->files();
+        foreach ($archivos as $archivo) {
+                if ((str_split($archivo,8)[0]) < $paraBorrar)
+                {
+                        //echo 'borrar ' . $archivo . '<br>';
+                        Storage::disk('crons')->delete($archivo);
+                }
         }
+        return true;
     }
 }

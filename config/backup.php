@@ -20,6 +20,7 @@ return [
                 'include' => [
                     base_path('public/imgUsuarios'),
                     base_path('public/configPanels'),
+                    base_path('storage/Crons'),
                 ],
 
                 /*

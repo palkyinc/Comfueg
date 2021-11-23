@@ -47,6 +47,11 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
+        
+        'crons' => [
+            'driver' => 'local',
+            'root' => storage_path('Crons'),
+        ],
 
         'public' => [
             'driver' => 'local',
@@ -80,6 +85,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('crons') => storage_path('Crons'),
     ],
 
 ];
