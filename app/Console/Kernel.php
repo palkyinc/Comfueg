@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\syncGdrive::class
     ];
 
     /**
@@ -28,9 +28,10 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->call(function(){$this->semanal();})->weeklyOn(1, '09:00')->timezone(Config::get('constants.USO_HORARIO_ARG'));
-        $schedule->call(function(){$this->diario();})->dailyAt('00:00')->timezone(Config::get('constants.USO_HORARIO_ARG'))->emailOutputTo('migvicpereyra@hotmail.com');
+        $schedule->call(function(){$this->diario();})->dailyAt('00:01')->timezone(Config::get('constants.USO_HORARIO_ARG'))->emailOutputTo('migvicpereyra@hotmail.com');
         $schedule->command('backup:clean')->daily()->at('04:30')->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->command('backup:run')->daily()->at('05:00')->timezone(Config::get('constants.USO_HORARIO_ARG'));
+        $schedule->command('palky:syncGdrive UP')->daily()->at('05:30')->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->call(function(){$this->diario01();})->dailyAt('06:00')->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->call(function(){$this->cadaMinuto();})->everyMinute();
         //$schedule->call(function(){$this->cadaCincoMinutos();})->everyFiveMinutes();
@@ -72,7 +73,7 @@ class Kernel extends ConsoleKernel
     private function diario ()
     {
         CronFunciones::resetCounter();
-        return (CronFunciones::generarArchivoSem(1));
+        return (CronFunciones::generarArchivoSem());
         //reset todos los contadores de todos los gateways
     }
 

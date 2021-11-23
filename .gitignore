@@ -1,7 +1,9 @@
 /node_modules
 /public/hot
+/public/backup
 /public/configPanels
 /storage/Crons
+/storage/app/Comfueg-SLAM
 /public/Crons
 /public/storage
 /log

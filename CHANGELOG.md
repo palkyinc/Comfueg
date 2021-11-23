@@ -21,9 +21,9 @@ Secuencia de arctualización en server producción:
 2.	realizar un migrate y un compose update.
 
 
-## [0.7.3] - 2021-XX-XX
+## [0.7.3] - 2021-11-22
 ### Added
-1.	
+1.	Se agrega tarea por schedule para sincronizar backup en server con Google Drive.
 ### Changed
 1.	correciones en console/kernel.php y docker-compose.yml.
 
