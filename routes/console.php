@@ -19,5 +19,9 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Artisan::command('syncGdrive', function () {
-    $this->info('This command is by console @Palkyinc');
+$this->info('This command is by console @Palkyinc');
 })->purpose('Sync contra o desde Gdrive by Palky');
+
+Artisan::command('restoreMysql', function () {
+$this->info('This command is by console @Palkyinc');
+})->purpose('Restore Slam database from backup to MySql by Palky');

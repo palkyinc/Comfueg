@@ -3,7 +3,7 @@ services:
   web:
     hostname: slam-php-apache
     container_name: slam-php-apache
-    image: "image.php-apache:1.2"
+    image: "image.php-apache:1.4"
     ports:
       - "0.0.0.0:80:80"
       #- "0.0.0.0:53682:53682"

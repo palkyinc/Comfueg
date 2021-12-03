@@ -246,7 +246,7 @@ class PruebaController extends Controller
             'SSID' => $prueba->ssid = $status['wireless']['essid'],
             'Signal' => $prueba->senial = ($signal['signal'] ?? '0') . 'dBm',
             'statusSignal' => (isset($signal['signal'])) ? (($signal['signal'] < -68) ? (($signal['signal'] < -73) ? 0 : 2) : 1) : 3,
-            'Remote' => $prueba->remote = $stations[0]['remote']['signal'] . 'dBm',
+            'Remote' => isset($stations[0]['remote']['signal']) ?  $prueba->remote = $stations[0]['remote']['signal'] . 'dBm' : $prueba->remote = 0,
             'statusRemote' => (isset($stations[0]['remote']['signal'])) ? (($stations[0]['remote']['signal'] < -68) ? (($stations[0]['remote']['signal'] < -73) ? 0 : 2) : 1) : 3,
             'NoiseFloor' => $prueba->ruido = ($signal['noisef'] ?? '0') . 'dBm',
             'ChannelWidth' => ((isset($signal['chwidth'])) ? $signal['chwidth'] : $signal['chbw']) . 'Mhz',

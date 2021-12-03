@@ -106,6 +106,7 @@
 						<a class="dropdown-item" href="/adminModelos">Entidades</a>
 						<a class="dropdown-item" href="/adminContractTypes">Tipos de Contratos</a>
 						<a class="dropdown-item" href="/adminIssuesTitles">Títulos de Tickets</a>
+						<a class="dropdown-item" href="/adminBackups">Backups</a>
 						<a class="dropdown-item disabled" href="/adminLogs">Logs de Sistema</a>
 			        </div>
 			      </li>

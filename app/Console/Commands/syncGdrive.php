@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Custom\ShellCommands;
 
 class syncGdrive extends Command
 {
@@ -40,19 +41,19 @@ class syncGdrive extends Command
     {
         switch ($this->argument('action')) {
             case 'UP':
-                $comando = 'rclone sync /datarclone gdrive:Comfueg-SLAM';
+                $comando = 'rclone sync --config="/app/docker/rclone/rclone.conf" /datarclone gdrive:Comfueg-SLAM';
                 break;
             
             case 'DOWN':
-                $comando = 'rclone sync gdrive:Comfueg-SLAM /datarclone';
+                $comando = 'rclone sync --config="/app/docker/rclone/rclone.conf" gdrive:Comfueg-SLAM /datarclone';
                 break;
             
             case 'DELETESERVER':
-                $comando = 'rclone delete --rmdirs /datarclone';
+                $comando = 'rclone delete --config="/app/docker/rclone/rclone.conf" --rmdirs /datarclone';
                 break;
             
             case 'DELETECLOUD':
-                $comando = 'rclone delete --rmdirs gdrive:Comfueg-SLAM';
+                $comando = 'rclone delete --config="/app/docker/rclone/rclone.conf" --rmdirs gdrive:Comfueg-SLAM';
                 break;
             
             default:
@@ -65,7 +66,8 @@ class syncGdrive extends Command
             $comando = $comando . ' --progress';
         }
         $this->info('Ejecutando...' . $this->argument('action'));
-        $this->info(exec($comando));
+        $output = new ShellCommands($comando);
+        while ($output->status()){}
         $this->info('Finalizado');
         return Command::SUCCESS;
     }

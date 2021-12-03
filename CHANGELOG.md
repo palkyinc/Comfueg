@@ -16,10 +16,16 @@ Secuencia de arctualización en server desarrollo:
 
 Secuencia de arctualización en server producción:
 1.	si corresponde realizar un git restore.
-1.	realizar el git push
+1.	realizar el git pull
 3.	Si corresponde realizar un docker build y editar el .yml con la nueva version de la imagen y correr docker-compose.
 2.	realizar un migrate y un compose update.
 
+
+## [0.7.5] - 2021-12-02
+### Added
+1.	Comando restore de backup.
+### Changed
+1.	Arreglo en metodos de grabado de datos en paneles Ubiquiti.
 
 ## [0.7.4] - 2021-11-23
 ### Added

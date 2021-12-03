@@ -1,0 +1,1 @@
+cfgmtd -f /tmp/system.cfg -w

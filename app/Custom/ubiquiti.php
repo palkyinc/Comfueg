@@ -37,17 +37,7 @@ class Ubiquiti{
                                 : 
                                 ('http://'.$ip);
 	}
-    /* 
-    * tratarMac([
-    *                     'usuario' => '',
-    *                     'password' => '',
-    *                     'ip' => '',
-    *                     'contrato' => '',
-    *                     'macaddress' => '',
-    *                     'ope' => 1 = Del, 0 = Add
-    *     ])
-    */
-
+    
     public function getIp()
     {
         return $this->_ip;
@@ -56,10 +46,9 @@ class Ubiquiti{
     public function getTestinternet ($direccion)
     {
         $comando = 'echo y | plink -pw '. $this->_password . ' '  . $this->_username . '@' . $this->_ip . ' ping ' . $direccion . ' -c 10 > putty.log';
-        //dd(shell_exec($comando));
         $output = shell_exec($comando);
         $file = fopen("putty.log", "r");
-        while(!feof($file)) 
+        while(!feof($file))
             {
                 $linea = fgets($file);
                 //echo "$linea <br>\n";
@@ -90,9 +79,19 @@ class Ubiquiti{
         return substr($inthat, strpos($inthat,$esto)+strlen($esto));
     }
 
+    /* 
+    * tratarMac([
+    *                     'usuario' => '',
+    *                     'password' => '',
+    *                     'ip' => '',
+    *                     'contrato' => '',
+    *                     'macaddress' => '',
+    *                     'ope' => 1 = Del, 0 = Add
+    *     ])
+    */
     public static function tratarMac ($datos)
         {
-            shell_exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg C:/inetpub/wwwroot/Comfueg/public/configPanels/' . $datos['ip'] . '-old.cfg');
+            shell_exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg configPanels/' . $datos['ip'] . '-old.cfg  2>&1');
             $oldFile = fopen ('configPanels/' . $datos['ip'] . '-old.cfg', 'r');
             $newFile = fopen ('configPanels/' . $datos['ip'] . '.cfg', 'w');
             while (!feof ($oldFile))
@@ -147,10 +146,10 @@ class Ubiquiti{
                         fwrite($newFile, 'wireless.1.mac_acl.' . $i . '.status=' . $listaMacs[$i]['status']);
                     }
                     fclose($newFile);
-                    shell_exec('echo y | pscp -scp -pw ' . $datos['password'] . ' C:/inetpub/wwwroot/Comfueg/public/configPanels/' . $datos['ip'] . '.cfg '  . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg' );                    
-                    shell_exec('echo y | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 addmac ' . $datos['macaddress']);
-                    shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m C:/inetpub/wwwroot/Comfueg/public/configPanels/save.txt');
-                    shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m C:/inetpub/wwwroot/Comfueg/public/configPanels/reboot.txt');
+                    shell_exec('echo y | pscp -scp -pw ' . $datos['password'] . ' configPanels/' . $datos['ip'] . '.cfg '  . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg 2>&1' );
+                    shell_exec('echo y | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 addmac ' . $datos['macaddress'] . ' 2>&1');
+                    shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m save.sh 2>&1');
+                    shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m reboot.sh 2>&1');
                     return 'Mac Address Cargado OK.';
                     break;
             
@@ -176,11 +175,11 @@ class Ubiquiti{
                                 $largoArray--;
                             }
                             fclose($newFile);
-                            shell_exec('echo y | pscp -scp -pw ' . $datos['password'] . ' C:/inetpub/wwwroot/Comfueg/public/configPanels/' . $datos['ip'] . '.cfg '  . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg' );
-                            shell_exec('echo y | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 delmac ' . $datos['macaddress']);
-                            shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 kickmac ' . $datos['macaddress']);
-                            shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m C:/inetpub/wwwroot/Comfueg/public/configPanels/save.txt');
-                            shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m C:/inetpub/wwwroot/Comfueg/public/configPanels/reboot.txt');
+                            shell_exec('echo y | pscp -scp -pw ' . $datos['password'] . ' configPanels/' . $datos['ip'] . '.cfg '  . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg 2>&1' );
+                            shell_exec('echo y | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 delmac ' . $datos['macaddress'] . ' 2>&1');
+                            shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 kickmac ' . $datos['macaddress'] . ' 2>&1');
+                            shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m save.sh 2>&1');
+                            shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m reboot.sh 2>&1');
                             return 'Se eliminó Mac Address OK del Panel con IP:' . $datos['ip'];
                         }
                         
@@ -193,10 +192,9 @@ class Ubiquiti{
                     return "ERROR en el tipo de ope al tratar Mac en Panel";
                     break;
             }
-            shell_exec ("echo y | plink $usuario@$ip -pw $password iwpriv ath0 $command $macaddress > response.txt");
+            shell_exec ("echo y | plink $usuario@$ip -pw $password iwpriv ath0 $command $macaddress > response.txt 2>&1");
             return true;
         }
-
 
     private function query($page, $timeout = false)
     {

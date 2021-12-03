@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\syncGdrive::class
+        Commands\syncGdrive::class,
+        Commands\restoreBkpSlam::class
     ];
 
     /**

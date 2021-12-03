@@ -30,15 +30,16 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\Contract_typeController;
 use App\Http\Controllers\IssueController;
 use App\Http\Controllers\Issue_titleController;
+use App\Http\Controllers\BackupController;
 use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
 use App\Models\Mail_group;
 ####TEST
-use Illuminate\Support\Facades\Crypt;
+/* use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use App\Custom\CronFunciones;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Mail; */
 
 
 
@@ -64,7 +65,6 @@ dd(CronFunciones::borrarArchivos());
 });  */
 
 ### Route index
-/* Route::get('/test', function () {CronFunciones::readDay();}); */
 Route::get('/', function (){return view('inicio', [ 'frase' => true, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/inicio', function (){return view('inicio', [ 'frase' => false, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/charts', function (){return view('charts');});
@@ -230,6 +230,10 @@ Route::patch('/modificarEquipoUserPass', [EquipoController::class, 'updateUserPa
 Route::patch('/equipoActivar', [EquipoController::class, 'activar'])->middleware('auth');
 Route::get('/agregarEquipo', [EquipoController::class, 'create'])->middleware('auth');
 Route::post('/agregarEquipo', [EquipoController::class, 'store'])->middleware('auth');
+####################
+####### CRUD Backups 
+Route::get('/adminBackups', [BackupController::class, 'index'])->middleware('auth');
+Route::get('/adminBackupsSync', [BackupController::class, 'syncCloud'])->middleware('auth');
 ####################
 ####### CRUD Interfaces 
 Route::get('/adminInterfaces', [GatewayInterfaceController::class, 'index'])->middleware('auth');

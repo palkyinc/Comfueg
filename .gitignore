@@ -1,14 +1,13 @@
+/public/imgUsuarios
+/public/storage
+/public/Crons
 /node_modules
 /public/hot
 /public/backup
 /public/configPanels
 /storage/Crons
 /storage/app/Comfueg-SLAM
-/public/Crons
-/public/storage
 /log
-/public/imgUsuarios
-/public/imgUsuarios/photos
 /storage/*.key
 /vendor
 .env

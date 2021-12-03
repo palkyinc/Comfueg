@@ -97,7 +97,7 @@ class ClientMikrotik
 					$this->status = true;
 				} else
 					{
-						echo 'borraando Key'. $key . 'de hotspotHost... <br> ';
+						echo 'borrando Key'. $key . 'de hotspotHost... <br> ';
 						$this->deleteClientFromHost($key, $API);
    					}
 			}

@@ -1,0 +1,1 @@
+/usr/etc/rc.d/rc.softrestart save
