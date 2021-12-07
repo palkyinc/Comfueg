@@ -1,0 +1,1 @@
+docker run --name slam-mysql-startup -p 3306:3306 -v /media/storage/mysql/Data2:/var/lib/mysql --env=MYSQL_ROOT_PASSWORD=@ndres0426 --env=MYSQL_DATABASE=slam --rm cont-mysql:1
