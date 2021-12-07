@@ -1,0 +1,17 @@
+{
+  "description": "Prueba No activar",
+
+  "zone": {
+    "loc": { "iface": "eth0" },
+    "inet": { "iface": "eth1" }
+  },
+
+  "policy": [
+    { "in": "_fw", "action": "accept" },
+    { "in": "loc", "out": "inet", "action": "accept" }
+  ],
+
+  "snat": [
+    { "out": "inet" }
+  ]
+}

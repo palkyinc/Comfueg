@@ -1,0 +1,21 @@
+{
+  "description": "Base zones and policies",
+
+  "zone": {
+    "LAN": { "iface": "eth0" },
+    "WAN": { "iface": "eth1" }
+  },
+
+  "policy": [
+     { "in": "LAN", "action": "drop" },
+     { "out": "LAN", "action": "accept" },
+     { "in": "_fw", "action": "accept" },
+     { "in": "_fw", "out":  "WAN" , "action": "accept" },
+     { "in": "WAN", "action": "drop" }
+  ],
+
+  "snat": [ { "out": "WAN" } ],
+
+  "clamp-mss": [ { "out": "WAN" } ]
+
+}

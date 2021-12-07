@@ -59,15 +59,13 @@ use Illuminate\Support\Facades\Mail; */
         }); */
 /* Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
-}); 
-Route::get('/borrar', function () {
-dd(CronFunciones::borrarArchivos());
-});  */
+}); */ 
+Route::get('/sarasa', function () {dd('Hola Domun');});
 
 ### Route index
 Route::get('/', function (){return view('inicio', [ 'frase' => true, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/inicio', function (){return view('inicio', [ 'frase' => false, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
-Route::get('/charts', function (){return view('charts');});
+Route::get('/charts', function (){dd('Hola Domun');return view('charts');});
 ####################
 ####### Gateway API rest Web services
 //Route::get('/gateway/clients/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');

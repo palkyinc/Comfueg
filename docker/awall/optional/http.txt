@@ -1,0 +1,12 @@
+{
+  "description": "Allow rate-limited http on LAN",
+
+  "filter": [
+    {
+      "in": "LAN",
+      "out": "_fw",
+      "service": "http",
+      "action": "accept"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "description": "Hostname aliases",
+
+  "variable": {
+    "WISPRO": "10.10.0.1"
+  }
+
+}

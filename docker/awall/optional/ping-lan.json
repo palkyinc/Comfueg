@@ -1,0 +1,14 @@
+{
+
+  "description": "Allow rate-limited ping on LAN",
+
+  "filter": [
+    {
+      "in": "LAN",
+      "out": "_fw",
+      "service": "ping",
+      "action": "accept",
+      "flow-limit": { "count": 10, "interval": 6 }
+    }
+  ]
+}

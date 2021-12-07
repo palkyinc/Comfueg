@@ -1,0 +1,13 @@
+{
+  "description": "Allow rate-limited Aircontrol on LAN",
+
+  "filter": [
+    {
+      "in": "LAN",
+      "out": "_fw",
+      "service": "aircontrol",
+      "action": "accept",
+      "conn-limit": { "count": 3, "interval": 20 }
+    }
+  ]
+}

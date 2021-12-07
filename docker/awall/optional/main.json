@@ -1,0 +1,6 @@
+{
+  "description": "Main firewall",
+
+  "import": [ "base", "aliases", "custom-services" ]
+
+}

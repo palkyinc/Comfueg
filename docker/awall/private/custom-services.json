@@ -1,0 +1,28 @@
+{
+    "service": {
+
+        "putty": [
+            { "proto": "udp", "port": 2233 },
+            { "proto": "tcp", "port": 2233 }
+        ],
+	"aircontrol": [
+		{ "proto": "udp", "port": 9081 },
+	        { "proto": "tcp", "port": 9081 },
+		{ "proto": "udp", "port": 9082 },
+            	{ "proto": "tcp", "port": 9082 }	
+	],
+       	"mysql": [
+            { "proto": "udp", "port": 3306 },
+            { "proto": "tcp", "port": 3306 }
+        ],
+	"http": [
+            { "proto": "udp", "port": 80 },
+            { "proto": "tcp", "port": 80 }
+        ],
+	"https": [
+            { "proto": "udp", "port": 443 },
+            { "proto": "tcp", "port": 443 }
+        ]
+
+    }
+}

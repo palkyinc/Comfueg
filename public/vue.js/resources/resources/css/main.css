@@ -1,0 +1,20 @@
+.boton {
+    background: red;
+    padding: 15px;
+    border: 0;
+    color: white;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    outline: none;
+    cursor: pointer;
+}
+
+.boton-enter {
+    padding: 20px;
+    transition: padding 200ms;
+}
+
+.boton-leave {
+    padding: 15px;
+    transition: padding 200ms;
+}
