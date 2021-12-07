@@ -1,6 +1,10 @@
 @extends('layouts.plantilla')
 
 @section('contenido')
+@can('backups_index')
+@php
+$mostrarSololectura = true;
+@endphp
 <div class="container">
     @if ( session('mensaje') )
         <div class="alert alert-success">
@@ -19,7 +23,9 @@
                     <th scope="col" class="text-center">Archivo</th>
                     <th scope="col" class="text-center">Tamaño</th>
                     <th scope="col" class="text-center">
-                        <a href="#" class="btn btn-dark" data-toggle="modal" data-target="#staticBackdropSyncCloud" title="Sincroniza Cloud contra Server">Sync desde Cloud</a>
+                        @can('backups_create')
+                            <a href="#" class="btn btn-dark" data-toggle="modal" data-target="#staticBackdropSyncCloud" title="Sincroniza Cloud contra Server">Sync desde Cloud</a>
+                        @endcan
                     </th>
                     </tr>
                 </thead>
@@ -30,7 +36,9 @@
                             <td class="text-center">{{$archivo['name']}}</td>
                             <td class="text-right">{{$archivo['size']}} bytes</td>
                             <td class="text-center">
-                                <a href="" class="btn btn-warning">Restaurar</a>
+                                @can('backups_create')
+                                    <a href="restoreFile/{{$key}}" class="btn btn-warning" title="Restaura Backup de zip al servidor">Restaurar</a>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach
@@ -39,5 +47,7 @@
         </div>
     </div>
 </div>
+@endcan
+@include('sinPermiso')
 @endsection
 @include('modals.backups')

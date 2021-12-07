@@ -21,6 +21,10 @@ Secuencia de arctualización en server producción:
 2.	realizar un migrate y un compose update.
 
 
+## [0.7.6] - 2021-12-06
+### Added
+1.	Se agrega restore de backup desde sistema/backup.
+
 ## [0.7.5] - 2021-12-02
 ### Added
 1.	Comando restore de backup.

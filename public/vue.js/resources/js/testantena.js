@@ -10,7 +10,7 @@ Vue.component('testantena',
             <h4 class="alert alert-danger">Equipo apagado o desasociado del Panel</h4>
             <div class="col-12 pl-2">
                 <button type="button" class="btn btn-secondary" @click="volver_probar_cliente" >Nueva Prueba</button>
-                <a href="/adminContratos" class="btn btn-primary">Volver Contratos</a>
+                <a v-bind:href="url" class="btn btn-primary m-1">Volver Abono</a>
             </div>
         </div>
         <div :class="class_escaneado">
@@ -113,13 +113,14 @@ Vue.component('testantena',
             </table>
             <div class="col-12 pl-2">
                 <button type="button" class="btn btn-secondary" @click="volver_probar_cliente" >Nueva Prueba</button>
-                <a href="/adminContratos" class="btn btn-primary">Volver Contratos</a>
+                <a v-bind:href="url" class="btn btn-primary m-1">Volver Abono</a>
             </div>
         </div>
     </div>
     `,
     data(){
         return{
+            url: '/adminContratos?contrato=' + contrato,
             CCQ: '',
             ChannelWidth: '',
             CpuUse: '',

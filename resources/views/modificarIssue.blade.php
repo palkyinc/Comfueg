@@ -159,7 +159,9 @@ $mostrarSololectura = true;
             @if (!$issue->closed)
                 <button type="submit" class="btn btn-primary m-1" id="enviar">Modificar</button>
             @endif
-            <a href="/adminIssues" class="btn btn-primary m-1">Volver</a>
+            <a href="/adminIssues" class="btn btn-primary m-1">Mis tickes</a>
+            <a href="/adminIssues?rebusqueda=on&usuario=todos&contrato={{$issue->contrato_id}}" class="btn btn-primary m-1">Tickes {{$issue->relCliente->getNomYApe()}}</a>
+            <a href="/adminContratos?contrato={{$issue->contrato_id}}" class="btn btn-primary m-1">Volver Abono</a>
         </div>
     </div>
 </form>    

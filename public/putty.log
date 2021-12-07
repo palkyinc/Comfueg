@@ -1,15 +1,15 @@
-PING dns.google.com (8.8.8.8): 56 data bytes
-64 bytes from 8.8.8.8: seq=0 ttl=115 time=87.108 ms
-64 bytes from 8.8.8.8: seq=1 ttl=115 time=55.145 ms
-64 bytes from 8.8.8.8: seq=2 ttl=115 time=45.111 ms
-64 bytes from 8.8.8.8: seq=3 ttl=115 time=46.127 ms
-64 bytes from 8.8.8.8: seq=4 ttl=115 time=52.782 ms
-64 bytes from 8.8.8.8: seq=5 ttl=115 time=61.382 ms
-64 bytes from 8.8.8.8: seq=6 ttl=115 time=49.686 ms
-64 bytes from 8.8.8.8: seq=7 ttl=115 time=55.303 ms
-64 bytes from 8.8.8.8: seq=8 ttl=115 time=44.414 ms
-64 bytes from 8.8.8.8: seq=9 ttl=115 time=44.642 ms
+PING dns.google.com (8.8.4.4): 56 data bytes
+64 bytes from 8.8.4.4: seq=0 ttl=113 time=44.018 ms
+64 bytes from 8.8.4.4: seq=1 ttl=113 time=44.297 ms
+64 bytes from 8.8.4.4: seq=2 ttl=113 time=42.796 ms
+64 bytes from 8.8.4.4: seq=3 ttl=113 time=42.018 ms
+64 bytes from 8.8.4.4: seq=4 ttl=113 time=42.971 ms
+64 bytes from 8.8.4.4: seq=5 ttl=113 time=42.338 ms
+64 bytes from 8.8.4.4: seq=6 ttl=113 time=41.481 ms
+64 bytes from 8.8.4.4: seq=7 ttl=113 time=44.340 ms
+64 bytes from 8.8.4.4: seq=8 ttl=113 time=45.584 ms
+64 bytes from 8.8.4.4: seq=9 ttl=113 time=45.983 ms
 
 --- dns.google.com ping statistics ---
 10 packets transmitted, 10 packets received, 0% packet loss
-round-trip min/avg/max = 44.414/54.170/87.108 ms
+round-trip min/avg/max = 41.481/43.582/45.983 ms

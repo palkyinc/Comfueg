@@ -119,6 +119,11 @@ $mostrarSololectura = true;
                         @endforeach
                     </tbody>
                 </table>
+                <div class="col-2">
+                    @if ($contrato)
+                        <a href="/adminContratos?contrato={{$contrato}}" class="btn btn-primary m-1">Volver Abono</a>
+                    @endif
+                </div>
 </div>
         {{ $incidentes->appends(['usuario' => $userSelected, 'abiertas' => $abiertas, 'cliente' => $cliente])->links() }}
 @include('modals.incidentes')

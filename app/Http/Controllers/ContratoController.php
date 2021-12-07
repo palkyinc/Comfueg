@@ -42,8 +42,11 @@ class ContratoController extends Controller
             }
             $paginate = false;
         }
-        else
-        {
+        elseif (isset($request['contrato'])){
+            $contratos = Contrato::where('id', $request->input('contrato'))->get();
+            $paginate = false;
+            //dd($contrato);
+        }else{
             $contratos = null; //Contrato::paginate(10);
             $paginate = false;
         }
@@ -281,7 +284,7 @@ class ContratoController extends Controller
         $contrato->baja = true;
         $contrato->save();
         $respuesta[] = "Se dió de BAJA el contrato N° $contrato->id";
-        return redirect ('adminContratos')->with('mensaje', $respuesta);
+        return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
     }
     
     /**

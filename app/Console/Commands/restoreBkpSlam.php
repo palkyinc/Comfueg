@@ -20,7 +20,7 @@ class restoreBkpSlam extends Command
      *
      * @var string
      */
-    protected $description = 'Restaura base de datos de Backup para SLAM @Palkyinc.';
+    protected $description = 'Restaura archivo zip de Backup de SLAM @Palkyinc.';
 
     /**
      * Create a new command instance.
@@ -39,8 +39,16 @@ class restoreBkpSlam extends Command
      */
     public function handle()
     {
-        //$this->info(env('DB_HOST'));
-        $carpeta = 'storage/app/';
+        if (shell_exec('pwd') == "/app/public\n")
+        {
+            $carpeta = '../storage/app/';
+            $destino1 = '/app/public/';
+            $destino2 = '/app/storage/';
+        }else{
+            $carpeta = 'storage/app/';
+            $destino1 = 'public/';
+            $destino2 = 'storage/';
+        }
         if ( $file = $this->option('file'))
         {
             if (file_exists( $carpeta . '/Comfueg-SLAM/' . $file)) {
@@ -51,14 +59,14 @@ class restoreBkpSlam extends Command
                     return Command::FAILURE;
                 }
                 $zip = Zip::open($carpeta . '/Comfueg-SLAM/' . $file);
-                exec('rm -Rf storage/app/backup-temp', $output, $status);
+                exec('rm -Rf ' . $carpeta . '/backup-temp', $output, $status);
                 if ($status) {
                     $this->info('ERROR: al borrar carpeta backup-temp');
                     return Command::FAILURE;
                 }
-                $zip->extract('storage/app/backup-temp');
+                $zip->extract( $carpeta . '/backup-temp');
                 ## Restaurar Base de datos
-                $comando = 'mysql --host=' . env('DB_HOST') . ' --port=' . env('DB_PORT') . ' --user=' . env('DB_USERNAME') . ' --password=' . env('DB_PASSWORD') . ' --database=slam < storage/app/backup-temp/db-dumps/mysql-slam.sql';
+                $comando = 'mysql --host=' . env('DB_HOST') . ' --port=' . env('DB_PORT') . ' --user=' . env('DB_USERNAME') . ' --password=' . env('DB_PASSWORD') . ' --database=slam < ' . $carpeta . '/backup-temp/db-dumps/mysql-slam.sql';
                 $this->info('Restaurando Base de datos....');
                 exec($comando, $output, $status);
                 if ($status) {
@@ -67,12 +75,12 @@ class restoreBkpSlam extends Command
                 }
                 $this->info('EXITO: al restaurar la Base de datos Slam');
                 ## Copiar archivo a ubicaciones originales
-                exec('cp -RT ' . $carpeta . '/backup-temp/app/public/ public/', $output, $status);
+                exec('cp -RT ' . $carpeta . '/backup-temp/app/public/ ' . $destino1, $output, $status);
                 if ($status) {
                     $this->info('ERROR: al copiar carpeta Public');
                     return Command::FAILURE;
                 }
-                exec('cp -RT ' . $carpeta . '/backup-temp/app/storage/ storage/', $output, $status);
+                exec('cp -RT ' . $carpeta . '/backup-temp/app/storage/ ' . $destino2, $output, $status);
                 if ($status) {
                     $this->info('ERROR: al copiar carpeta Storage');
                     return Command::FAILURE;

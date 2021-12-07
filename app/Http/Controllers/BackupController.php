@@ -16,11 +16,17 @@ class BackupController extends Controller
      */
     public function index()
     {
+        $archivos = $this->getArchivos();
+        return view ('adminBackups', ['archivos' => $archivos, 'sistema' => 'active']);
+    }
+
+    private function getArchivos ()
+    {
         $archivos = Storage::disk('local')->files('/Comfueg-SLAM');
         foreach ($archivos as $key => $archivo) {
-            $archivos[$key] = ['name' => $archivo, 'size' => Storage::size($archivo)];
+            $archivos[$key] = ['name' => explode("/", $archivo)[1], 'size' => Storage::size($archivo)];
         }
-        return view ('adminBackups', ['archivos' => $archivos]);
+        return $archivos;
     }
     
     public function syncCloud()
@@ -34,6 +40,22 @@ class BackupController extends Controller
         return redirect('/adminBackups')->with('mensaje', $respuesta);
     }
 
+    public function restoreBackup(Request $request)
+    {
+        $archivos = $this->getArchivos();
+        if (Artisan::call('palky:restoreBkpSlam', ['--file' => $archivos[$request['file']]['name']]))
+        {
+            $respuesta[] = 'Error: Al restaurar Backup.';
+        }else{
+            $respuesta[] = 'Exito: Restauración Completada.';
+        }
+        return redirect('/adminBackups')->with('mensaje', $respuesta);
+    }
+
+    public function restoreFile ($file)
+    {
+        return view ('restoreBackup', ['archivo' => $file, 'sistema' => 'active']);
+    }
     /**
      * Show the form for creating a new resource.
      *

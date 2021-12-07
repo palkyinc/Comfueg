@@ -234,6 +234,8 @@ Route::post('/agregarEquipo', [EquipoController::class, 'store'])->middleware('a
 ####### CRUD Backups 
 Route::get('/adminBackups', [BackupController::class, 'index'])->middleware('auth');
 Route::get('/adminBackupsSync', [BackupController::class, 'syncCloud'])->middleware('auth');
+Route::post('/adminBackupRestore', [BackupController::class, 'restoreBackup'])->middleware('auth');
+Route::get('/restoreFile/{file}', [BackupController::class, 'restoreFile'])->middleware('auth');
 ####################
 ####### CRUD Interfaces 
 Route::get('/adminInterfaces', [GatewayInterfaceController::class, 'index'])->middleware('auth');

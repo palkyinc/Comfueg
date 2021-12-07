@@ -37,6 +37,7 @@ class IssueController extends Controller
                                         'usuarios' => $usuarios, 
                                         'cliente' => $cliente, 
                                         'abiertas' => $abiertas, 
+                                        'contrato' => $contrato, 
                                         'internet' => 'active']);
     }
 
