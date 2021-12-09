@@ -31,28 +31,18 @@ Requisitos:
 21. reboot
 
 ## Descargar proyecto
-1.  Crear la carpeta donde descargaremos el proyecto:
-    a.  sudo mkdir /media/proyectos
+1.  Ingresar con root y contraseña seteada en el punto 12 anterior.
+2.  Crear la carpeta donde descargaremos el proyecto:
+    a.  mkdir /media/proyectos
     b.  cd /media/proyectos
-    c.  sudo apk add git
+    c.  apk add git
     d.  git clone https://github.com/palkyinc/Comfueg.git
 
 ## Habilitar ssh y crear usuario para acceso.
-1.  Ingresar con root y contraseña seteada en el punto 12 anterior.
-2.  Escribir: vi /etc/ssh/sshd_config
-3.  editar el archivo de la sgiuiente manera:
-    a.  presionar i
-    b.  buscar y descomentar la linea que contiene: UseDNS no
-    c.  Linea: #Port22 => editarla a. Port 2233
-    d. Salir y guardar con la siguiente secuencia: ESC : w q enter
-    d. En caso quere salir sin guardar, usar la siguiente secuencia: ESC : q ! enter
-4.  Probar conexion utilizando Putty al 10.10.0.245 puerto 2233. Aceptar el nuevo host key.
-5.  Agregar un nuevo usuario: adduser -g "Usuario Soporte" soporte. Setear una nueva contraseña. Registrarla y mantenerla segura.
-6.  Agregamos permisos sudo al usuario soporte:
-    a. apk add sudo
-    b. echo '%wheel ALL=(ALL) ALL' > /etc/sudoers.d/wheel
-    c. adduser soporte wheel
-7.  Comporbacion de que funcionan los permisos sudo:
+1.  cd Comfueg/docker
+    sh install-ssh.sh
+    ATENCION: Escribir para el usuario soporte. Mantenerga segura y a resguardo.
+2.  Comporbacion de que funcionan los permisos sudo:
     a.  iniciar conexion con Putty (IP 10.10.0.245 puerto 2233)
     b.  login con las credenciales de soporte
     c.  corre el siguiente comando: apk update
@@ -62,10 +52,15 @@ Conclusiones:
 1.  A partir de ahora todo se puede trabajar a traves de PuTTY. No usar mas la consola con teclado y monitor.
 2.  El usuario root no tiene permisos para conectarse por PuTTy, solo por consola. hay que usar el usuario soporte.
 
-
-
-
 ## Habilitar Firewall
+    sudo sh /media/proyectos/Comfueg/docker/install-awall.sh
+
+## Crear las imagenes y contenedores de Docker
+    sudo sh /media/proyectos/Comfueg/docker/install-dockerfile.sh
+    sudo sh /media/proyectos/Comfueg/docker/install-dockerfile2.sh
+    sudo sh mysql.sh
+    sudo sh mysql2.sh
+
 ## Descargar backup y restaurar
 
 ## Rest Resources
