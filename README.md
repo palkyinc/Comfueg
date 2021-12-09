@@ -5,6 +5,7 @@ Requisitos:
 -Alpine Linux instalable. CD, DVD o pendrive. https://dl-cdn.alpinelinux.org/alpine/v3.15/releases/x86_64/alpine-extended-3.15.0-x86_64.iso
 -Conexión a internet
 -Putty instalado en PC de Administración
+-CSargar mac address del nuevo servidor en los Mikrotiks.
 
 
 ## Instalación Alpine
@@ -57,11 +58,20 @@ Conclusiones:
 
 ## Crear las imagenes y contenedores de Docker
     sudo sh /media/proyectos/Comfueg/docker/install-dockerfile.sh
+        Atención: este comando reinicia el servidor.
     sudo sh /media/proyectos/Comfueg/docker/install-dockerfile2.sh
     sudo sh mysql.sh
+    Atención: Al observar la linea: "ready for connections. Version: '8.0.25'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL."
+    Abrir otra ventana con Putty como en el punto XX
     sudo sh mysql2.sh
+    exit en la segunda ventana
 
 ## Descargar backup y restaurar
+    sudo apk add curl
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+    sudo docker-compose up –d
 
 ## Rest Resources
 - GET /panelTest/ip
