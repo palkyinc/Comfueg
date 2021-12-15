@@ -62,6 +62,13 @@ class restoreBkpSlam extends Command
                     return Command::FAILURE;
                 }
                 $zip->extract( $carpeta . '/backup-temp');
+                ## Copiar archivo a ubicaciones originales
+                exec('cp -RT ' . $carpeta . '/backup-temp/app/ ' . $destino, $output, $status);
+                if ($status) {
+                    $this->info('ERROR: al Restaurar archivos');
+                    return Command::FAILURE;
+                }
+                $this->info('EXITO: al restaurar Archivos!');
                 ## Restaurar Base de datos
                 $comando = 'mysql --host=' . env('DB_HOST') . ' --port=' . env('DB_PORT') . ' --user=' . env('DB_USERNAME') . ' --password=' . env('DB_PASSWORD') . ' --database=slam < ' . $carpeta . '/backup-temp/db-dumps/mysql-slam.sql';
                 $this->info('Restaurando Base de datos....');
@@ -71,13 +78,6 @@ class restoreBkpSlam extends Command
                     return Command::FAILURE;
                 }
                 $this->info('EXITO: al restaurar la Base de datos Slam');
-                ## Copiar archivo a ubicaciones originales
-                exec('cp -RT ' . $carpeta . '/backup-temp/app/ ' . $destino, $output, $status);
-                if ($status) {
-                    $this->info('ERROR: al Restaurar archivos');
-                    return Command::FAILURE;
-                }
-                $this->info('EXITO: al restaurar Archivos!');
                 return Command::SUCCESS;
             }
             else {

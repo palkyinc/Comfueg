@@ -1,5 +1,4 @@
 docker/rclone/rclone.conf
-docker/rclone/original.rclone.conf
 /public/imgUsuarios
 /public/storage
 /public/Crons
