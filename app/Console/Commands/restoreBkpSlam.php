@@ -42,13 +42,10 @@ class restoreBkpSlam extends Command
         if (shell_exec('pwd') == "/app/public\n")
         {
             $carpeta = '../storage/app/';
-            $destino1 = '/app/public/';
-            $destino2 = '/app/storage/';
         }else{
             $carpeta = 'storage/app/';
-            $destino1 = 'public/';
-            $destino2 = 'storage/';
         }
+        $destino = '/app/';
         if ( $file = $this->option('file'))
         {
             if (file_exists( $carpeta . '/Comfueg-SLAM/' . $file)) {
@@ -75,14 +72,9 @@ class restoreBkpSlam extends Command
                 }
                 $this->info('EXITO: al restaurar la Base de datos Slam');
                 ## Copiar archivo a ubicaciones originales
-                exec('cp -RT ' . $carpeta . '/backup-temp/app/public/ ' . $destino1, $output, $status);
+                exec('cp -RT ' . $carpeta . '/backup-temp/app/ ' . $destino, $output, $status);
                 if ($status) {
-                    $this->info('ERROR: al copiar carpeta Public');
-                    return Command::FAILURE;
-                }
-                exec('cp -RT ' . $carpeta . '/backup-temp/app/storage/ ' . $destino2, $output, $status);
-                if ($status) {
-                    $this->info('ERROR: al copiar carpeta Storage');
+                    $this->info('ERROR: al Restaurar archivos');
                     return Command::FAILURE;
                 }
                 $this->info('EXITO: al restaurar Archivos!');

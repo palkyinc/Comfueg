@@ -5,7 +5,7 @@ Requisitos:
 -Alpine Linux instalable. CD, DVD o pendrive. https://dl-cdn.alpinelinux.org/alpine/v3.15/releases/x86_64/alpine-extended-3.15.0-x86_64.iso
 -Conexión a internet
 -Putty instalado en PC de Administración
--CSargar mac address del nuevo servidor en los Mikrotiks.
+-Cargar mac address del nuevo servidor en los Mikrotiks.
 
 
 ## Instalación Alpine
@@ -28,50 +28,48 @@ Requisitos:
 17. Enter mirror number: r
 18. Which SSH server: enter
 19. Which disk: sda
-20. How would you like use it?: sys
-21. reboot
+20. How would you like use it?: sys. NOTA: si se realizan preguntas "Proceed anyway?" responder con "y" y "enter".
+21. retirar el disco/pendrive de instalación. Tipear "reboot" y "enter"
 
 ## Descargar proyecto
-1.  Ingresar con root y contraseña seteada en el punto 12 anterior.
-2.  Crear la carpeta donde descargaremos el proyecto:
+22.  Ingresar con root y contraseña seteada en el punto 12 anterior.
+23.  Crear la carpeta donde descargaremos el proyecto:
     a.  mkdir /media/proyectos
     b.  cd /media/proyectos
     c.  apk add git
     d.  git clone https://github.com/palkyinc/Comfueg.git
 
 ## Habilitar ssh y crear usuario para acceso.
-1.  cd Comfueg/docker
-    sh install-ssh.sh
-    ATENCION: Escribir para el usuario soporte. Mantenerga segura y a resguardo.
-2.  Comporbacion de que funcionan los permisos sudo:
+24. cd Comfueg/docker
+25. sh install-ssh.sh
+    a.  ATENCION: Escribir para el usuario soporte. Mantenerga segura y a resguardo.
+26. Comporbacion de que funcionan los permisos sudo:
     a.  iniciar conexion con Putty (IP 10.10.0.245 puerto 2233)
     b.  login con las credenciales de soporte
-    c.  corre el siguiente comando: apk update
+    c.  corre el siguiente comando: sudo apk update
     d.  Solicitará que se ingrese la contraseña sudo que la misma de soporte.
     e.  Si corre sin ningun error de sudo que es que todo está OK.
-Conclusiones:
-1.  A partir de ahora todo se puede trabajar a traves de PuTTY. No usar mas la consola con teclado y monitor.
-2.  El usuario root no tiene permisos para conectarse por PuTTy, solo por consola. hay que usar el usuario soporte.
+## Conclusiones:
+    a.  A partir de ahora todo se puede trabajar a traves de PuTTY. No usar mas la consola con teclado y monitor.
+    b.  El usuario root no tiene permisos para conectarse por PuTTy, solo por consola. hay que usar el usuario soporte.
 
 ## Habilitar Firewall
-    sudo sh /media/proyectos/Comfueg/docker/install-awall.sh
+27. sudo sh /media/proyectos/Comfueg/docker/install-awall.sh
+    NOTA: Presionar ENTER cuando lo solicite para la configuracion inicial.
+    NOTA2: al finalizar el script reinicia automaticamente el server. Confirmar mediante un ping.
+28. Luego del reboot loguearse segun punto 26-a y 26-b. 
 
 ## Crear las imagenes y contenedores de Docker
-    sudo sh /media/proyectos/Comfueg/docker/install-dockerfile.sh
-        Atención: este comando reinicia el servidor.
-    sudo sh /media/proyectos/Comfueg/docker/install-dockerfile2.sh
+29. cd /media/proyectos/Comfueg/docker
+30. sudo sh install-dockerfile.sh
     sudo sh mysql.sh
-    Atención: Al observar la linea: "ready for connections. Version: '8.0.25'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL."
-    Abrir otra ventana con Putty como en el punto XX
-    sudo sh mysql2.sh
-    exit en la segunda ventana
+        Atención: Al observar la linea: "ready for connections. Version: '8.0.25'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL." Continuar con el siguiente punto.
+32. Abrir otra ventana con Putty como en el punto XX
+33. sudo sh mysql2.sh
+34. exit en la segunda ventana
 
 ## Descargar backup y restaurar
-    sudo apk add curl
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-    sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-    sudo docker-compose up –d
+    
 
 ## Rest Resources
 - GET /panelTest/ip

@@ -1,3 +1,5 @@
+docker/rclone/rclone.conf
+docker/rclone/original.rclone.conf
 /public/imgUsuarios
 /public/storage
 /public/Crons
@@ -11,7 +13,6 @@
 /storage/*.key
 /vendor
 .env
-.env.backup
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml

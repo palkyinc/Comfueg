@@ -21,6 +21,8 @@ return [
                     base_path('public/imgUsuarios'),
                     base_path('public/configPanels'),
                     base_path('storage/Crons'),
+                    base_path('.env'),
+                    base_path('docker/rclone/rclone.conf'),
                 ],
 
                 /*

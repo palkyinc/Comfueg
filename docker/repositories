@@ -1,7 +1,9 @@
 #/media/cdrom/apks
-http://mirror.ette.biz/alpine/v3.12/main
+http://dl-cdn.alpinelinux.org/alpine/v3.12/community
+http://dl-cdn.alpinelinux.org/alpine/v3.12/main
+#http://mirror.ette.biz/alpine/v3.12/main
 #http://mirror.ette.biz/alpine/v3.12/community
 #http://mirror.ette.biz/alpine/edge/main
 #http://mirror.ette.biz/alpine/edge/community
 #http://mirror.ette.biz/alpine/edge/testing
-http://dl-cdn.alpinelinux.org/alpine/latest-stable/community
+#http://dl-cdn.alpinelinux.org/alpine/latest-stable/community
