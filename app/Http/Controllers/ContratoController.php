@@ -45,9 +45,8 @@ class ContratoController extends Controller
         elseif (isset($request['contrato'])){
             $contratos = Contrato::where('id', $request->input('contrato'))->get();
             $paginate = false;
-            //dd($contrato);
         }else{
-            $contratos = null; //Contrato::paginate(10);
+            $contratos = null;
             $paginate = false;
         }
         $conteos = Contadores_mensuales::get();
@@ -260,6 +259,7 @@ class ContratoController extends Controller
         {
             $contrato = Contrato::find($request['id']);
         	$respuesta[] = $this->modifyContratoGateway($contrato);
+            $respuesta[] = $this->renewIPAntenaClient($contrato);
         }
         if (isset($momificar['activo']))
         {
@@ -315,6 +315,16 @@ class ContratoController extends Controller
 
     ################# Métodos de Gateway ####################################
 
+    public function renewIPAntenaClient($contrato){
+        if ($contrato->relEquipo->getUsuario() === null){
+                $contrato->relEquipo->setUsPassInicial();
+        }
+        $ubiquiti = new Ubiquiti($contrato->relEquipo->ip, $contrato->relEquipo->getUsuario(), $contrato->relEquipo->getPassword(), false, 80, 5);
+        if ($ubiquiti->setRenewDhcp()){
+            return 'EXITO: IP antena cliente renovado OK.';
+        }
+        return 'ERROR: al renovar IP antena cliente.';
+    }
     /**
      * Show the form for creating a new resource.
      *

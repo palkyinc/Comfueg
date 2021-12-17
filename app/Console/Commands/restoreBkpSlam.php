@@ -49,12 +49,6 @@ class restoreBkpSlam extends Command
         if ( $file = $this->option('file'))
         {
             if (file_exists( $carpeta . '/Comfueg-SLAM/' . $file)) {
-                ##Comprobar Si existe la BD Slam
-                exec('mysql --host=' . env('DB_HOST') . ' --port=' . env('DB_PORT') . ' --user=' . env('DB_USERNAME') . ' --password=' . env('DB_PASSWORD') . " -e 'use slam'", $output, $status);
-                if ($status) {
-                    $this->info('ERROR: al conectar a la Base de datos Slam');
-                    return Command::FAILURE;
-                }
                 $zip = Zip::open($carpeta . '/Comfueg-SLAM/' . $file);
                 exec('rm -Rf ' . $carpeta . '/backup-temp', $output, $status);
                 if ($status) {
@@ -69,6 +63,12 @@ class restoreBkpSlam extends Command
                     return Command::FAILURE;
                 }
                 $this->info('EXITO: al restaurar Archivos!');
+                ##Comprobar Si existe la BD Slam
+                exec('mysql --host=' . env('DB_HOST') . ' --port=' . env('DB_PORT') . ' --user=' . env('DB_USERNAME') . ' --password=' . env('DB_PASSWORD') . " -e 'use slam'", $output, $status);
+                if ($status) {
+                    $this->info('ERROR: al conectar a la Base de datos Slam');
+                    return Command::FAILURE;
+                }
                 ## Restaurar Base de datos
                 $comando = 'mysql --host=' . env('DB_HOST') . ' --port=' . env('DB_PORT') . ' --user=' . env('DB_USERNAME') . ' --password=' . env('DB_PASSWORD') . ' --database=slam < ' . $carpeta . '/backup-temp/db-dumps/mysql-slam.sql';
                 $this->info('Restaurando Base de datos....');

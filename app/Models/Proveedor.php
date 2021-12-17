@@ -35,7 +35,7 @@ class Proveedor extends Model
         {
             $total += $proveedor->bajada;
         }
-        return round($total/5120);
+        return round($total/$this->relGateway->div_classifier);
     }
 
     public function getNextInterface ()

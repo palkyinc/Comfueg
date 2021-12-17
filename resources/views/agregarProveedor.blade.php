@@ -5,6 +5,7 @@
 $mostrarSololectura = true;
 @endphp
 <h3>Agregando Proveedor 2/2</h3>
+<h4 class="pb-2">Gateway: {{$gateway->relEquipo->nombre}}</h4>
     <div class="alert bg-light border col-8 mx-auto p-4">
         <form action="/agregarProveedor3" method="post"">
             @csrf
@@ -55,13 +56,17 @@ $mostrarSololectura = true;
                 </div>
                 
                 <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label for="dns">DNS para recursión: </label>
                         <input type="text" name="dns" value="{{old('dns')}}" maxlength="15" class="form-control">
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label for="ipGateway">IP defalut Gateway Router: </label>
                         <input type="text" name="ipGateway" value="{{old('ipGateway')}}" maxlength="15" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="div_classifier">Divisor para Classifier: </label>
+                        <input type="text" name="div_classifier" value="{{$gateway->div_classifier}}" maxlength="15" class="form-control">
                     </div>
                 </div>
 

@@ -6,11 +6,15 @@ $mostrarSololectura = true;
 @endphp
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de Proveedores</h2>
-                        <label for="sitio" class="mx-3">Sitio</label>
-                        <select class="form-control" name="sitio" id="sitio">
-                            <option value="">Seleccione un Sitio...</option>
+                        <label for="sitio" class="mx-3">Gateway</label>
+                        <select class="form-control" name="gateway_id">
+                            <option value="">Seleccione un Gateway...</option>
                             @foreach ($gateways as $gateway)
+                                @if ($gateway->id == $gateway_id)
+                                    <option value="{{$gateway->id}}" selected>{{$gateway->relEquipo->nombre}}</option>
+                                @else
                                     <option value="{{$gateway->id}}">{{$gateway->relEquipo->nombre}}</option>
+                                @endif
                             @endforeach
                         </select>
                         <button type="submit" class="btn btn-primary mx-3">Enviar</button>
@@ -47,7 +51,11 @@ $mostrarSololectura = true;
                             <th scope="col"> En Linea </th>
                             <th scope="col" colspan="2">
                                 @can('proveedores_create')
-                                <a href="/agregarProveedor" class="btn btn-dark">Agregar</a>
+                                    @if (!$gateway_id)
+                                        <a href="/agregarProveedor" class="btn btn-dark">Agregar</a>
+                                    @else
+                                        <a href="/agregarProveedor2?gateway_id={{$gateway_id}}" class="btn btn-dark">Agregar</a>
+                                    @endif
                                 @endcan
                             </th>
                         </tr>
@@ -100,7 +108,9 @@ $mostrarSololectura = true;
                     </tbody>
                 </table>
 </div>
-        {{ $proveedores->links() }}
+        @if ($paginate)
+            {{ $proveedores->links() }}
+        @endif
         @can('planes_create')
             @section('javascript')
                 <script>

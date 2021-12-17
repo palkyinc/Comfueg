@@ -44,7 +44,8 @@ class Equipo extends Model
     
     public function getPassword()
     {
-                return (($this->password) ? Crypt::decrypt($this->password) : null);
+        dd(Crypt::decrypt($this->password));
+        return (($this->password) ? Crypt::decrypt($this->password) : null);
     }
     public function setPassword($palabra)
     {
@@ -60,6 +61,12 @@ class Equipo extends Model
     {
         $this->usuario = Crypt::encrypt($palabra);
         $this->save();
+    }
+
+    public function setUsPassInicial()
+    {
+        $this->setPassword(Config::get('constants.CLIENT_PASS'));
+        $this->setUsuario(Config::get('constants.CLIENT_USER'));
     }
     
     public function relProducto () {

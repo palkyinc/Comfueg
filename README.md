@@ -5,6 +5,7 @@
 -Conexión a internet
 -Putty instalado en PC de Administración
 -Cargar mac address del nuevo servidor en los Mikrotiks.
+-Piedrabuena0426
 
 
 ## Instalación Alpine
@@ -72,11 +73,14 @@
 
 ## Descargar backup y restaurar
 35. sudo docker-compose up -d
+36. sudo unzip -P TuClave rclone.zip -d rclone/
+    NOTA: Reemplazar Tu Clave por la password.
 36. sudo docker exec -it slam-php-apache sh
 37. cd app
 38. composer update
-39. php
-    
+39. php artisan palky:syncGdrive DOWN
+40.  php artisan palky:restoreBkpSlam -f NombreDelArchivo.zip
+    NOTA:    
 
 ## Rest Resources
 - GET /panelTest/ip

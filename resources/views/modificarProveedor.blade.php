@@ -5,6 +5,7 @@
 $mostrarSololectura = true;
 @endphp
 <h3>Modificando Proveedor ID# {{$proveedor->id}}</h3>
+<h4 class="pb-2">Gateway: {{$proveedor->relGateway->relEquipo->nombre}}</h4>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/modificarProveedor" method="post"">
         @csrf
@@ -18,11 +19,11 @@ $mostrarSololectura = true;
                     <label for="ipProveedor">IP Proveedor: (*)</label>
                     <input type="text" name="ipProveedor" value="{{$proveedor->ipProveedor}}" maxlength="15" class="form-control">
                     <p>(*)Vacio para DHCP</p>
+                </div>
                 <div class="form-group col-md-3">
                     <label for="maskProveedor">Máscara Proveedor: (*)</label>
                     <input type="text" name="maskProveedor" value="{{$proveedor->maskProveedor}}" maxlength="15" class="form-control">
                     <p>(*)Vacio para DHCP</p>
-                </div>
                 </div>
             </div>
             <div class="form-row">
@@ -68,13 +69,17 @@ $mostrarSololectura = true;
             </div>
             
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="dns">DNS para recursión: </label>
                     <input type="text" name="dns" value="{{$proveedor->dns}}" maxlength="15" class="form-control">
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="ipGateway">IP defalut Gateway Router: </label>
                     <input type="text" name="ipGateway" value="{{$proveedor->ipGateway}}" maxlength="15" class="form-control">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="div_classifier">Divisor para Classifier: </label>
+                    <input type="text" name="div_classifier" value="{{$proveedor->relGateway->div_classifier}}" maxlength="15" class="form-control">
                 </div>
             </div>
 

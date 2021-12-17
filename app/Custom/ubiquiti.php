@@ -1,5 +1,6 @@
 <?php
 namespace App\Custom;
+
 /*
  * Usage example:
  * $ubiquiti   = new Ubiquiti('10.10.6.34', 'ubnt', 'S1mon3d@', true, '80', 3);
@@ -43,9 +44,20 @@ class Ubiquiti{
         return $this->_ip;
     }
 
+    public function setRenewDhcp ()
+    {
+        if ($this->status()){
+            $comando = 'echo y\n | plink -pw ' . $this->_password . ' '  . $this->_username . '@' . $this->_ip . ' killall udhcpc  2>&1';
+            $output = shell_exec($comando);
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     public function getTestinternet ($direccion)
     {
-        $comando = 'echo y | plink -pw '. $this->_password . ' '  . $this->_username . '@' . $this->_ip . ' ping ' . $direccion . ' -c 10 > putty.log';
+        $comando = 'echo y | plink -pw '. $this->_password . ' '  . $this->_username . '@' . $this->_ip . ' ping ' . $direccion . ' -c 10 > putty.log  2>&1';
         $output = shell_exec($comando);
         $file = fopen("putty.log", "r");
         while(!feof($file))

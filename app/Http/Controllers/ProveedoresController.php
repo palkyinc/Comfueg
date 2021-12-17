@@ -14,25 +14,31 @@ class ProveedoresController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($gateway_id = null)
+    public function index(Request $request)
     {
-        if (!$gateway_id)
+        $paginate = false;
+        $actualizar = false;
+        $gateways = Panel::where('rol', 'GATEWAY')->get();
+        if (!$gateway_id = isset($request['gateway_id']) ? $request['gateway_id'] : null)
         {
-            $proveedores = Proveedor::paginate(10);
+            $proveedores = [];
         }
         else 
         {
-            $proveedores = Proveedor::where('gateway_id', $gateway_id)->paginate(10);
-        }
-        $actualizar = false;
-        foreach ($proveedores as $proveedor) {
-            if ($proveedor->sinActualizar)
-            {
-                $actualizar = true;
+            $proveedores = Proveedor::where('gateway_id', $gateway_id)->get();
+            foreach ($proveedores as $proveedor) {
+                if ($proveedor->sinActualizar)
+                {
+                    $actualizar = true;
+                }
             }
         }
-        $gateways = Panel::where('rol', 'GATEWAY')->get();
-        return view('adminProveedores', ['providers' => 'active', 'proveedores' => $proveedores, 'gateways' => $gateways, 'actualizar' => $actualizar]);
+        return view('adminProveedores',['paginate' => $paginate, 
+                                        'providers' => 'active', 
+                                        'proveedores' => $proveedores, 
+                                        'gateways' => $gateways,
+                                        'gateway_id' => $gateway_id,    
+                                        'actualizar' => $actualizar]);
     }
 
     /**
@@ -72,7 +78,9 @@ class ProveedoresController extends Controller
                 }
             }
         }
-        return view ('agregarProveedor', ['interfaces' => $interfaces[0],'providers' => 'active', 'gateway' => $gateway]);
+        return view ('agregarProveedor',[   'interfaces' => $interfaces[0],
+                                            'providers' => 'active',
+                                            'gateway' => $gateway]);
     }
 
     public function validar(Request $request)
@@ -88,6 +96,7 @@ class ProveedoresController extends Controller
                 'ipGateway' => 'ipv4',
                 'ipProveedor' => 'nullable|ipv4',
                 'maskProveedor' => 'nullable|ipv4',
+                'div_classifier' => 'required|min:1|max:99999',
                 'gateway_id' => 'required|min:0|max:99999'
             ]
         );
@@ -119,10 +128,23 @@ class ProveedoresController extends Controller
         $proveedor->sinActualizar = true;
         $proveedor->en_linea = false;
         $proveedor->contaOffline = 4;
+        $this->setDivClassifier($request->gateway_id, $request->div_classifier);
         $proveedor->save();
         $respuesta[] = 'Proveedor se creo correctamente';
-        return redirect('/adminProveedores')->with('mensaje', $respuesta);
+        return redirect('/adminProveedores?gateway_id=' . $request->gateway_id)->with('mensaje', $respuesta);
        
+    }
+
+    private function setDivClassifier($gateway_id, $div_classifier)
+    {
+        $gateway = Panel::find($gateway_id);
+        if ($div_classifier != $gateway->div_classifier) {
+            # cambiar div_classifier y grabar
+            $gateway->div_classifier = $div_classifier;
+            $gateway->save();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -167,7 +189,9 @@ class ProveedoresController extends Controller
                 }
             }
         }
-        return view('modificarProveedor', ['interfaces' => $interfaces[0], 'proveedor' => $proveedor, 'providers' => 'active']);
+        return view('modificarProveedor', [ 'interfaces' => $interfaces[0], 
+                                            'proveedor' => $proveedor,
+                                            'providers' => 'active']);
     }
 
     /**
@@ -193,6 +217,9 @@ class ProveedoresController extends Controller
         $proveedor->ipProveedor = $request['ipProveedor'];
         $proveedor->maskProveedor = $request['maskProveedor'];
         $proveedor->sinActualizar = true;
+        if ($this->setDivClassifier($request->gateway_id, $request->div_classifier)) {
+            $respuesta[] = 'Divisor Classifier: ' . $proveedor->relGateway->div_classifier . ' POR ' . $request->div_classifier;
+        }
         if ($proveedor->nombre != $proveedor->getOriginal()['nombre']) {
             $respuesta[] = ' Nombre: ' . $proveedor->getOriginal()['nombre'] . ' POR ' . $proveedor->nombre;
         }
@@ -221,7 +248,7 @@ class ProveedoresController extends Controller
             $respuesta[] = ' Mask Proveedor: ' . $proveedor->getOriginal()['maskProveedor'] . ' POR ' . $proveedor->maskProveedor;
         }
         $proveedor->save();
-        return redirect('adminProveedores')->with('mensaje', $respuesta);
+        return redirect('adminProveedores?gateway_id=' . $proveedor->gateway_id)->with('mensaje', $respuesta);
     }
 
     /**
@@ -233,9 +260,10 @@ class ProveedoresController extends Controller
     public function destroy($id)
     {
         $proveedor = Proveedor::find($id);
+        $gateway_id = $proveedor->relGateway->id;
         $respuesta[] = 'Se eliminó Proveedor: ' . $proveedor->nombre;
         $proveedor->delete();
-        return redirect('adminProveedores')->with('mensaje', $respuesta);
+        return redirect('adminProveedores?gateway_id=' . $gateway_id)->with('mensaje', $respuesta);
     }
 
     /**
@@ -272,7 +300,7 @@ class ProveedoresController extends Controller
                 $pointerClassifier = 0;
                 foreach ($proveedoresActualizar as $proveedor)
                 {
-                    $cantClassifiers = round($proveedor->bajada/5120);
+                    $cantClassifiers = round($proveedor->bajada/$proveedor->relGateway->div_classifier);
                     //dd($cantClassifiers);
 			        $apiMikro->modifyProveedor($proveedor, 'add', $totalClassifiers, $cantClassifiers, $pointerClassifier);
                     $proveedor->sinActualizar = false;
@@ -295,6 +323,6 @@ class ProveedoresController extends Controller
             }
         }
         if (!isset($respuesta)) {$respuesta[] = 'Nada para actualizar';}
-        return redirect('adminProveedores')->with('mensaje', $respuesta);
+        return redirect('adminProveedores?gateway_id=' . (isset($gateway->id) ? $gateway->id : ''))->with('mensaje', $respuesta);
     }
 }

@@ -21,6 +21,13 @@ Secuencia de arctualización en server producción:
 2.	realizar un migrate y un compose update.
 
 
+## [0.7.7] - 2021-12-16
+### Changed
+1.	Se agrega div_classifier para poder optimizar los mangles de mikrotik
+2.	Se mejora vistas de proveedores, agregar, modificar y adminProveedores
+3.	Se agrega renew de IP en antena de cliente al realizar un cambio de plan.
+5.	Cambios varios en los archivos de DCP.
+
 ## [0.7.6] - 2021-12-06
 ### Added
 1.	Se agrega restore de backup desde sistema/backup.

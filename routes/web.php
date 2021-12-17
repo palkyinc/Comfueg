@@ -35,8 +35,9 @@ use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
 use App\Models\Mail_group;
 ####TEST
-/* use Illuminate\Support\Facades\Crypt;
+use App\Models\Contrato;
 use Illuminate\Support\Facades\Config;
+/* use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use App\Custom\CronFunciones;
 use Illuminate\Support\Facades\Mail; */
@@ -60,7 +61,9 @@ use Illuminate\Support\Facades\Mail; */
 /* Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
 }); */ 
-Route::get('/sarasa', function () {dd('Hola Domun');});
+Route::get('/sarasa', function () {
+        dd('Estas metiendo los dedos donde no van!');
+});
 
 ### Route index
 Route::get('/', function (){return view('inicio', [ 'frase' => true, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
