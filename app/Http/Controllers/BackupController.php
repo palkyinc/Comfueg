@@ -29,13 +29,24 @@ class BackupController extends Controller
         return $archivos;
     }
     
-    public function syncCloud()
+    public function syncCloud(Request $request)
     {
-        if (Artisan::call('palky:syncGdrive', ['action' => 'DOWN']))
+        if (Artisan::call('palky:syncGdrive', ['action' => ( isset($request->action) ? 'UP' : 'DOWN' ) ]))
         {
             $respuesta[] = 'Error al sincronizar.';
         }else{
             $respuesta[] = 'Sincronización finalizada.';
+        }
+        return redirect('/adminBackups')->with('mensaje', $respuesta);
+    }
+
+    public function backupManual ()
+    {
+        if (Artisan::call('backup:run'))
+        {
+            $respuesta[] = 'Error al realizar backup.';
+        }else{
+            $respuesta[] = 'Backup finalizada.';
         }
         return redirect('/adminBackups')->with('mensaje', $respuesta);
     }

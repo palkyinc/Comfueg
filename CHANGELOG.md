@@ -21,6 +21,12 @@ Secuencia de arctualización en server producción:
 2.	realizar un migrate y un compose update.
 
 
+## [0.7.8] - 2021-12-27
+### Added
+1.	Backup manual y subida de archivos manual a cloud.
+### Changed
+1.	Se arregla error el traer vlans de un gateway afectadas a algun proveedor.
+
 ## [0.7.7] - 2021-12-16
 ### Changed
 1.	Se agrega div_classifier para poder optimizar los mangles de mikrotik

@@ -67,7 +67,7 @@ $mostrarSololectura = true;
                                 <td colspan="2">
                                     @can('interfaces_edit')
                                     <a href="/modificarInterface/{{$elemento['.id']}}/{{$gateway_id}}" class="margenAbajo btn btn-outline-secundary" title="Editar">
-                                    <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                        <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                     </a>
                                     @endcan
                                 </td>
@@ -88,23 +88,23 @@ $mostrarSololectura = true;
                                 <td>{{$elemento['disabled'] == 'true' ? 'Si' : 'No'}}</td>
                                 <td>
                                     @can('interfaces_edit')
-                                    <a href="/modificarInterface/{{$elemento['.id']}}/{{$gateway_id}}/true" class="margenAbajo btn btn-outline-secundary" title="Editar">
-                                        <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
-                                    </a>
+                                        <a href="/modificarInterface/{{$elemento['.id']}}/{{$gateway_id}}/true" class="margenAbajo btn btn-outline-secundary" title="Editar">
+                                            <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                        </a>
                                     @endcan
                                 </td>
                                 @if (!$elemento['tieneVlan'])
-                                @can('interfaces_edit')
-                                <td>
-                                    <form method="post" action="/eliminarInterface/{{ $elemento['.id'] }}/{{$gateway_id}}">
-                                        @csrf
-                                        @method('delete')
-                                        <button type="submit"><img src="/imagenes/iconfinder_basket_1814090.svg" 
-                                        alt="imagen de basket borrar" height="20px" title="Borrar"></button>
-                                    </form>
-                                </td>
+                                    @can('interfaces_edit')
+                                    <td>
+                                        <form method="post" action="/eliminarInterface/{{ $elemento['.id'] }}/{{$gateway_id}}">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit"><img src="/imagenes/iconfinder_basket_1814090.svg" 
+                                            alt="imagen de basket borrar" height="20px" title="Borrar"></button>
+                                        </form>
+                                    </td>
                                     @endcan
-                                    @endif
+                                @endif
                                 </tr>
                         @endforeach
                     </tbody>

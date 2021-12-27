@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Panel;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Config;
 
 class Equipo extends Model
 {
@@ -44,7 +45,6 @@ class Equipo extends Model
     
     public function getPassword()
     {
-        dd(Crypt::decrypt($this->password));
         return (($this->password) ? Crypt::decrypt($this->password) : null);
     }
     public function setPassword($palabra)

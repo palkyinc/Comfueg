@@ -38,7 +38,7 @@ $mostrarSololectura = true;
 <div class="table-responsive">
                 
                 <table class="table table-sm table-bordered table-hover">
-                    <caption>Listado de Proveedores</caption>
+                    <caption>Total de Proveedores: {{count($proveedores)}}</caption>
                     <thead class="thead-light">
                         <tr>
                             <th scope="col"> Id </th>

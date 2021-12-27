@@ -24,7 +24,9 @@ $mostrarSololectura = true;
                     <th scope="col" class="text-center">Tamaño</th>
                     <th scope="col" class="text-center">
                         @can('backups_create')
-                            <a href="#" class="btn btn-dark" data-toggle="modal" data-target="#staticBackdropSyncCloud" title="Sincroniza Cloud contra Server">Sync desde Cloud</a>
+                            <a href="#" class="btn btn-dark" data-toggle="modal" data-target="#staticBackdropSyncCloud" title="Sincroniza Cloud hacia Server">Sync desde Cloud</a>
+                            <a href="#" class="btn btn-dark" data-toggle="modal" data-target="#staticBackdropSyncCloudUp" title="Sincroniza Server hacia Cloud">Sync hacia Cloud</a>
+                            <a href="#" class="btn btn-info" data-toggle="modal" data-target="#staticBackdropBackupNow" title="Realiza un reguardo manual ahora">Backup Manual</a>
                         @endcan
                     </th>
                     </tr>

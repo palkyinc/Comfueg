@@ -42,10 +42,14 @@ class Proveedor extends Model
     {
         $nextProveedor = Proveedor::where('classifier', $this->classifier + 1)
                                     ->where('gateway_id', $this->gateway_id)
-                                    ->where('estado', true)->first();
+                                    ->where('estado', true)
+                                    ->first();
         if (!$nextProveedor)
         {
-            $nextProveedor = Proveedor::where('classifier', 0)->first();
+            $nextProveedor = Proveedor::where('classifier', 0)
+                                        ->where('gateway_id', $this->gateway_id)
+                                        ->where('estado', true)
+                                        ->first();
         }
         return $nextProveedor;
     }
@@ -125,9 +129,11 @@ class Proveedor extends Model
         $this->offline_date = Carbon::now()->toDateTimeString();
     }
 
-    public static function tieneProveedor ($interface_id)
+    public static function tieneProveedor ($interface_id, $gateway_id)
     {
-        return Proveedor::where('interface', $interface_id)->first();
+        return Proveedor::where('interface', $interface_id)->
+                        where('gateway_id', $gateway_id)->
+                        first();
     }
 
     public function reordenarTotales()

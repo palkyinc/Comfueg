@@ -266,7 +266,7 @@ class ContratoController extends Controller
             $contrato = Contrato::find($request['id']);
         	$respuesta[] = $this->changeStateContratoGateway($contrato);
         }
-        return redirect ('adminContratos')->with('mensaje', $respuesta);
+        return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
     }
 
     /**

@@ -35,9 +35,9 @@ use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
 use App\Models\Mail_group;
 ####TEST
+/* use Illuminate\Support\Facades\Crypt;
 use App\Models\Contrato;
 use Illuminate\Support\Facades\Config;
-/* use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use App\Custom\CronFunciones;
 use Illuminate\Support\Facades\Mail; */
@@ -235,6 +235,7 @@ Route::post('/agregarEquipo', [EquipoController::class, 'store'])->middleware('a
 ####### CRUD Backups 
 Route::get('/adminBackups', [BackupController::class, 'index'])->middleware('auth');
 Route::get('/adminBackupsSync', [BackupController::class, 'syncCloud'])->middleware('auth');
+Route::get('/adminBackupsBkpManual', [BackupController::class, 'backupManual'])->middleware('auth');
 Route::post('/adminBackupRestore', [BackupController::class, 'restoreBackup'])->middleware('auth');
 Route::get('/restoreFile/{file}', [BackupController::class, 'restoreFile'])->middleware('auth');
 ####################

@@ -32,7 +32,7 @@ class GatewayInterfaceController extends Controller
                 {
                     $elementos = $apiMikro->getDatosinterfaces();
                     foreach ($elementos['vlans'] as $key => $value) {
-                        if (Proveedor::tieneProveedor($value['.id']))
+                        if (Proveedor::tieneProveedor($value['.id'], $gateway_id))
                         {
                             $elementos['vlans'][$key]['tieneVlan'] = true;
                         }

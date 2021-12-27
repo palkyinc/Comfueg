@@ -18,7 +18,7 @@ class ProveedoresController extends Controller
     {
         $paginate = false;
         $actualizar = false;
-        $gateways = Panel::where('rol', 'GATEWAY')->get();
+        $gateways = Panel::where('rol', 'GATEWAY')->where('activo', true)->get();
         if (!$gateway_id = isset($request['gateway_id']) ? $request['gateway_id'] : null)
         {
             $proveedores = [];

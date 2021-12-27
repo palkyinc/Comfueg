@@ -79,7 +79,8 @@
 37. cd app
 38. composer update
 39. php artisan palky:syncGdrive DOWN
-40.  php artisan palky:restoreBkpSlam -f NombreDelArchivo.zip
+    php artisan backup:list
+40. php artisan palky:restoreBkpSlam -f NombreDelArchivo.zip
     NOTA:    
 
 ## Rest Resources
