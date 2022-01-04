@@ -21,6 +21,11 @@ Secuencia de arctualización en server producción:
 2.	realizar un migrate y un compose update.
 
 
+## [0.7.9] - 2022-01-04
+### Changed
+1.	Se arregla captura de contadores de Mikrotik para lo contratos.
+2.	Modificaciones en archivos de DCP.
+
 ## [0.7.8] - 2021-12-27
 ### Added
 1.	Backup manual y subida de archivos manual a cloud.

@@ -35,7 +35,43 @@ abstract class CronFunciones
             }
         }
     }
-        public static function resetCounter($mensual = false)
+    public static function readCounterGateway()
+    {
+        $gateways = self::getGateways();
+        foreach ($gateways as $elemento)
+        {
+                $gateway = Panel::find($elemento);
+                $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
+                if ($apiMikro) 
+                {
+                        $allData = $apiMikro->getGatewayData();
+                        unset($apiMikro);
+                        ### abrir el archivo
+                        ### leer el array -> convertir de json a array
+                        foreach ($allData['hotspotUser'] as $elemento)
+                        {
+                                if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 
+                                {
+                                        $contador_mensual = Contadores_mensuales::where('contrato_id', $elemento['comment'])->first();
+                                        if (!$contador_mensual)
+                                        {
+                                                $contador_mensual = new Contadores_mensuales();
+                                                $contador_mensual->contrato_id = $elemento['comment'];
+                                        }
+                                        $contador_mensual->anio = date('Y');
+                                        $contador_mensual->ultimo_mes = date('m');
+                                        $contador_mensual->setMounthCounter($elemento['bytes-in'] + $elemento['bytes-out']);
+                                        $contador_mensual->save();
+                                }
+                        }
+                } else {
+                        return 'Error al contactar al Gateway' . $gateway->relEquipo->ip;
+                }
+        }
+        return false;
+    }
+
+    public static function resetCounter($mensual = false)
     {
         $gateways = self::getGateways();
         foreach ($gateways as $elemento) 
@@ -156,24 +192,6 @@ abstract class CronFunciones
             {
                 $allData = $apiMikro->getGatewayData();
                 unset($apiMikro);
-                ### abrir el archivo
-                ### leer el array -> convertir de json a array
-                /*foreach ($allData['hotspotUser'] as $elemento)
-                {
-                        if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 
-                        {
-                                $contador_mensual = Contadores_mensuales::where('contrato_id', $elemento['comment'])->first();
-                                if (!$contador_mensual)
-                                {
-                                        $contador_mensual = new Contadores_mensuales();
-                                        $contador_mensual->contrato_id = $elemento['comment'];
-                                }
-                                $contador_mensual->anio = date('Y');
-                                $contador_mensual->ultimo_mes = date('m');
-                                $contador_mensual->setMounthCounter($elemento['bytes-in'] + $elemento['bytes-out']);
-                                $contador_mensual->save();
-                        }
-                }*/
                 foreach ($allData['hotspotHost'] as $elemento)
                 {
                     if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 

@@ -28,7 +28,8 @@
 17. Enter mirror number: r
 18. Which SSH server: enter
 19. Which disk: sda
-20. How would you like use it?: sys. NOTA: si se realizan preguntas "Proceed anyway?" responder con "y" y "enter".
+20. How would you like use it?: sys. 
+    NOTA: si se realizan preguntas "Proceed anyway?" responder con "y" y "enter".
 21. retirar el disco/pendrive de instalación. Tipear "reboot" y "enter"
 
 ## Descargar proyecto
@@ -38,6 +39,7 @@
     b.  cd /media/proyectos
     c.  apk add git
     d.  git clone https://github.com/palkyinc/Comfueg.git
+    e.  sudo chmod -Rf ugo+rw Comfueg
 
 ## Habilitar ssh y crear usuario para acceso.
 24. cd Comfueg/docker
@@ -47,7 +49,7 @@
     a.  iniciar conexion con Putty (IP 10.10.0.245 puerto 2233)
     b.  login con las credenciales de soporte
     c.  corre el siguiente comando: sudo apk update
-    d.  Solicitará que se ingrese la contraseña sudo que la misma de soporte.
+    d.  Solicitará que se ingrese la contraseña sudo que la misma de soporte (punto 25).
     e.  Si corre sin ningun error de sudo que es que todo está OK.
 ## Conclusiones:
     a.  A partir de ahora todo se puede trabajar a traves de PuTTY. No usar mas la consola con teclado y monitor. Ventaja adicional, se puede hacer copia y pega en la consola PuTTy. Para pegar en Putty se debe utilizar "shift" + "INS".
@@ -57,7 +59,7 @@
 27. sudo sh /media/proyectos/Comfueg/docker/install-awall.sh
     NOTA: Presionar ENTER cuando solicite "Press RETURN" para la configuracion inicial.
     NOTA2: al finalizar el script reinicia automaticamente el server. Confirmar mediante un ping.
-28. Luego del reboot loguearse segun punto 26-a y 26-b. 
+28. Luego del reboot loguearse segun punto 26. 
 
 ## Crear las imagenes y contenedores de Docker
 29. cd /media/proyectos/Comfueg/docker
@@ -66,20 +68,21 @@
 
 ## Inicializar Base de datos.
 31. sudo sh mysql.sh
-        Atención: Al observar la linea: "ready for connections. Version: '8.0.25'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL." Continuar con el siguiente punto.
-32. Abrir otra ventana con Putty como en el punto XX
+        Atención: Al observar la linea: "ready for connections. Version: '8.0.25'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL." Continuar con el punto 32.
+32. Abrir otra ventana con Putty como en el punto 26.
+    cd /media/proyectos/Comfueg/docker
 33. sudo sh mysql2.sh
 34. exit en la segunda ventana
 
 ## Descargar backup y restaurar
 35. sudo docker-compose up -d
 36. sudo unzip -P TuClave rclone.zip -d rclone/
-    NOTA: Reemplazar Tu Clave por la password.
+    NOTA: Reemplazar TuClave por la password.
 36. sudo docker exec -it slam-php-apache sh
 37. cd app
 38. composer update
 39. php artisan palky:syncGdrive DOWN
-    php artisan backup:list
+    ls storage/app/Comfueg-SLAM/
 40. php artisan palky:restoreBkpSlam -f NombreDelArchivo.zip
     NOTA:    
 
