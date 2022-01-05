@@ -9,6 +9,7 @@
                     <div class="modal-body">
                         <div id="chartDay{{$contrato->id}}" style="height: 300px;"></div>
                         <div id="chartWeek{{$contrato->id}}" style="height: 300px;"></div>
+                        <div id="chartMonthly{{$contrato->id}}" style="height: 300px;"></div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -45,6 +46,35 @@
             .colors(['#4299E1','#FE0045','#C07EF1','#67C560','#ECC94B'])
             .datasets(['line', 'bar'])
             .title('Cliente: ' + nameApe + ' - Ultimas 24hs')
+            .legend({ position: 'left' })
+        });
+    }
+    function renderChartMounthly(id, conteo_id)
+    {
+        const chart = new Chartisan({
+            el: '#chartMonthly' + id,
+            url: "@chart('mounthly')",
+            options:{headers:{'conteo-id': conteo_id}},
+            loader: {
+                        color: '#ff00ff',
+                        size: [30, 30],
+                        type: 'bar',
+                        textColor: '#67C560',
+                        text: 'Cargando Gráfico...',
+                    },
+            error: {
+                        color: '#ff00ff',
+                        size: [30, 30],
+                        text: 'Uff! Hubo un error...',
+                        textColor: '#67C560',
+                        type: 'general',
+                        debug: true,
+                    },
+            hooks: new ChartisanHooks()
+            .legend(true)
+            .colors(['#67C560','#FE0045','#C07EF1','#ECC94B','#4299E1'])
+            .datasets(['bar', 'line'])
+            .title('Ultimo Año')
             .legend({ position: 'left' })
         });
     }
@@ -107,5 +137,10 @@
 @foreach ($contratos as $contrato)
     <script>renderChartDaily({{$contrato->id}}, '{{$contrato->relCliente->getNomYApe()}}')</script>
     <script>renderChartWeekly({{$contrato->id}})</script>
+    @foreach ($conteos as $conteo)
+        @if ($conteo->contrato_id === $contrato->id)
+            <script>renderChartMounthly({{$contrato->id}}, {{$conteo->id}})</script>
+        @endif
+    @endforeach
 @endforeach 
 @endsection

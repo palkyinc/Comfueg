@@ -20,6 +20,9 @@ Secuencia de arctualización en server producción:
 3.	Si corresponde realizar un docker build y editar el .yml con la nueva version de la imagen y correr docker-compose.
 2.	realizar un migrate y un compose update.
 
+## [0.7.10] - 2022-01-05
+### Added
+1.	Se agrega grafico de conteo mensual al modal de consumosCliente.
 
 ## [0.7.9] - 2022-01-04
 ### Changed

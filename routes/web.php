@@ -35,12 +35,13 @@ use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
 use App\Models\Mail_group;
 ####TEST
+/* use App\Models\Contadores_mensuales;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Contrato;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use App\Custom\CronFunciones;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Mail; */
 
 
 
@@ -55,14 +56,14 @@ use Illuminate\Support\Facades\Mail;
 |
 */
 ## Route Inicial Default
-Route::get('/test', function () {
+/* Route::get('/test', function () {
         dd(CronFunciones::readCounterGateway());
-        });
+        }); */
 /* Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
 }); */ 
 Route::get('/sarasa', function () {
-        dd('Estas metiendo los dedos donde no van!');
+        dd('Estas metiendo mal los dedos');
 });
 
 ### Route index
