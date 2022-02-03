@@ -80,7 +80,7 @@ class EquipoController extends Controller
      */
     public function show(Equipo $equipo)
     {
-        //
+        ##
     }
 
     /**
@@ -101,8 +101,8 @@ class EquipoController extends Controller
             'datos' => 'active'
         ]);
     }
-    //https://github.com/mattkingshott/axiom/blob/master/README.md
-    //,'unique:equipos,mac_address,' . $Equipo->id
+    ##https://github.com/mattkingshott/axiom/blob/master/README.md
+    ##,'unique:equipos,mac_address,' . $Equipo->id
     
     /**
      * Show the form for editing the specified resource.
@@ -244,7 +244,7 @@ class EquipoController extends Controller
      */
     public function destroy(Equipo $equipo)
     {
-        //
+       ##
     }
     /**
      * Activate o desactivate equipo.
@@ -274,4 +274,4 @@ class EquipoController extends Controller
         }
         return false;
     } 
-}//fin de la clase
+}##fin de la clase

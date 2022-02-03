@@ -103,7 +103,7 @@ class Equipo extends Model
         return $equipos;
     }
 
-    public static function ipLibrePaneles ($ip, $dispositivos) //si $dispositivos = true => buscan en paneles sino en contratos
+    public static function ipLibrePaneles ($ip, $dispositivos) ##si $dispositivos = true => buscan en paneles sino en contratos
     {
         if ($dispositivos)
         {
@@ -190,4 +190,4 @@ class Equipo extends Model
         return ($this->nombre . ', ' . $this->relProducto->modelo . ', ' . $this->mac_address);
     }
 
-}// finde la clase
+}## finde la clase

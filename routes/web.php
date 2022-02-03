@@ -35,8 +35,8 @@ use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
 use App\Models\Mail_group;
 ####TEST
-use Illuminate\Support\Facades\Config;
 /* use App\Models\Contadores_mensuales;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Contrato;
 use Illuminate\Support\Facades\File;
@@ -63,8 +63,7 @@ use Illuminate\Support\Facades\Mail; */
 dd(CronFunciones::generarArchivoSem($dias));
 }); */ 
 Route::get('/sarasa', function () {
-        //Config::set('constants.IP_ACTUAL', '10.10.20.1');
-        dd(Config::get('constants.IP_ACTUAL'));
+        echo 'Estas metiendo mal los dedos';
 });
 
 ### Route index

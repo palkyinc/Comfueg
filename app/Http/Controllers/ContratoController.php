@@ -135,8 +135,8 @@ class ContratoController extends Controller
         if ( $respuesta[] = $this->forzarAlta($equipo = Equipo::find($request['num_equipo'])) )
         {
             $equipo->save();
-            //$respuesta[] = $this->modificarMac($contrato, 0);
-            //$respuesta[] = $this->createContratoGateway($contrato);
+            $respuesta[] = $this->modificarMac($contrato, 0);
+            $respuesta[] = $this->createContratoGateway($contrato);
         } else 
             {
                 $equipo->fecha_baja = date('Y-m-d');
@@ -184,7 +184,7 @@ class ContratoController extends Controller
      */
     public function show($id)
     {
-        //
+        ##
     }
 
     /**
@@ -299,8 +299,8 @@ class ContratoController extends Controller
     public function destroy(Request $request)
     {
         $contrato = Contrato::find($request['id']);
-        //$respuesta[] = $this->removeContratoGateway($contrato);
-        //$respuesta[] = $this->modificarMac($contrato, 1);
+        $respuesta[] = $this->removeContratoGateway($contrato);
+        $respuesta[] = $this->modificarMac($contrato, 1);
         $contrato->activo = false;
         $contrato->baja = true;
         $contrato->save();
@@ -356,8 +356,8 @@ class ContratoController extends Controller
         $contrato = Contrato::find($request['id']);
         if($respuesta[] = $this->changeEquipoStatus($contrato->relEquipo->id))
         {
-            //$respuesta[] = $this->createContratoGateway($contrato);
-            //$respuesta[] = $this->modificarMac($contrato, 0);
+            $respuesta[] = $this->createContratoGateway($contrato);
+            $respuesta[] = $this->modificarMac($contrato, 0);
             $contrato->activo = true;
             $contrato->baja = false;
             $contrato->save();
