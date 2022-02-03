@@ -50,7 +50,6 @@ class ContratoController extends Controller
             $paginate = false;
         }
         $conteos = Contadores_mensuales::get();
-        //dd($conteos);
         return view('adminContratos', [ 'contratos' => isset($contratos) ? $contratos : [], 
                                         'internet' => 'active', 
                                         'paginate' => $paginate,
@@ -96,7 +95,11 @@ class ContratoController extends Controller
     {
         $clientes = Cliente::orderBy('apellido')->get();
         $direcciones = Direccion::orderBy('numero')->get();
-        $equipos = Equipo::where('ip', '>', '10.10.1.0')->where('fecha_baja', null)->orderBy('nombre')->get();
+        $equipos = Equipo::where('ip', '0.0.0.0')
+                            ->orwhere('ip', '>', '10.10.1.0')
+                            ->where('fecha_baja', null)
+                            ->orderBy('nombre')
+                            ->get();
         foreach ($equipos as $key => $equipo)
         {
             if ( $id_equipo != $equipo->id && (Contrato::where('num_equipo', $equipo->id)->first()))
@@ -128,10 +131,23 @@ class ContratoController extends Controller
         $contrato->activo = (isset($request['activo']) && $request['activo'] == 'on') ? true : false;
         $contrato->baja = false;
         $contrato->save();
-        $respuesta[] = $this->modificarMac($contrato, 0);
-        $respuesta[] = 'Contrato se creo correctamente';
-        $respuesta[] = $this->createContratoGateway($contrato);
-        return redirect('/adminContratos')->with('mensaje', $respuesta);
+        ## activar equipo si hay error dar de baja el contrato.
+        if ( $respuesta[] = $this->forzarAlta($equipo = Equipo::find($request['num_equipo'])) )
+        {
+            $equipo->save();
+            //$respuesta[] = $this->modificarMac($contrato, 0);
+            //$respuesta[] = $this->createContratoGateway($contrato);
+        } else 
+            {
+                $equipo->fecha_baja = date('Y-m-d');
+                $equipo->ip = '0.0.0.0';
+                $equipo->save();
+                $contrato->activo = false;
+                $contrato->baja = true;
+                $contrato->save();
+                $respuesta[] = 'Error al asignar IP. No hay IPs libres en el segmento.';
+            }
+        return redirect('/adminContratos?contrato=' . $contrato->id)->with('mensaje', $respuesta);
     }
 
     public function validar(Request $request)
@@ -231,6 +247,13 @@ class ContratoController extends Controller
         if ($contrato->num_equipo != $contrato->getOriginal()['num_equipo']) {
             $respuesta[] = ' Equipo: ' . $contrato->getOriginal()['num_equipo'] . ' POR ' . $contrato->num_equipo;
             $momificar['equipo'] = true;
+            ## activar equipo nuevo
+            if(!$respuesta[] = $this->changeEquipoStatus($contrato->num_equipo))
+            {
+                return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
+            }
+            ## desactivar equipo anterior
+            $respuesta[] = $this->changeEquipoStatus($contrato->getOriginal()['num_equipo']);
         }
         if ($contrato->num_panel != $contrato->getOriginal()['num_panel']) {
             $respuesta[] = ' Panel: ' . $contrato->getOriginal()['num_panel'] . ' POR ' . $contrato->num_panel;
@@ -250,21 +273,19 @@ class ContratoController extends Controller
         $contrato->save();
         unset($contrato);
         ##Si hubo cambio de panel o equipo aca se deberia setear el nuevo mac.
+        $contrato = Contrato::find($request['id']);
         if (isset($momificar['equipo']) || isset($momificar['panel']))
         {
-            $contrato = Contrato::find($request['id']);
-        	$respuesta[] = $this->modificarMac($contrato, 0);
+            $respuesta[] = $this->modificarMac($contrato, 0);
         }
         if (isset($momificar['equipo']) || isset($momificar['plan']))
         {
-            $contrato = Contrato::find($request['id']);
-        	$respuesta[] = $this->modifyContratoGateway($contrato);
+            $respuesta[] = $this->modifyContratoGateway($contrato);
             $respuesta[] = $this->renewIPAntenaClient($contrato);
         }
         if (isset($momificar['activo']))
         {
-            $contrato = Contrato::find($request['id']);
-        	$respuesta[] = $this->changeStateContratoGateway($contrato);
+            $respuesta[] = $this->changeStateContratoGateway($contrato);
         }
         return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
     }
@@ -278,13 +299,50 @@ class ContratoController extends Controller
     public function destroy(Request $request)
     {
         $contrato = Contrato::find($request['id']);
-        $respuesta[] = $this->removeContratoGateway($contrato);
-        $respuesta[] = $this->modificarMac($contrato, 1);
+        //$respuesta[] = $this->removeContratoGateway($contrato);
+        //$respuesta[] = $this->modificarMac($contrato, 1);
         $contrato->activo = false;
         $contrato->baja = true;
         $contrato->save();
+        $respuesta [] = $this->changeEquipoStatus($contrato->relEquipo->id);
         $respuesta[] = "Se dió de BAJA el contrato N° $contrato->id";
         return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
+    }
+
+    private function changeEquipoStatus ($id_equipo)
+    {
+        $equipo = Equipo::find($id_equipo);
+        if ($equipo->fecha_baja) 
+        {
+            if (!$rta = $this->forzarAlta($equipo)) {
+                return false;
+            }
+        } else
+        {
+            $equipo->fecha_baja = date('Y-m-d');
+            $equipo->ip = '0.0.0.0';
+            $rta = 'Equipo ' . $equipo->getResumida() . ' dado de baja';
+        }
+        $equipo->save();
+        return $rta;
+    }
+
+    private function forzarAlta ($equipo)
+    {
+        $equipo->fecha_baja = null;
+        ## Si viene con un IP verificar que no este usado
+        ## sino set io auto
+        $rta = 'Equipo ' . $equipo->getResumida() . ' dado de alta';
+        if ( Equipo::ipLibrePaneles($equipo->ip, true) && Equipo::ipLibrePaneles($equipo->ip, false) )
+        {
+            if ($equipo->ip === '0.0.0.0') {
+                return $equipo->setIpAuto() ? $rta : false;
+            }
+        }
+        else {
+            return false;
+        }
+        return $rta;
     }
     
     /**
@@ -296,13 +354,18 @@ class ContratoController extends Controller
     public function undestroy(Request $request)
     {
         $contrato = Contrato::find($request['id']);
-        $respuesta[] = $this->createContratoGateway($contrato);
-        $respuesta[] = $this->modificarMac($contrato, 0);
-        $contrato->activo = true;
-        $contrato->baja = false;
-        $contrato->save();
-        $respuesta[] = "Se dió de ALTA nuevamente el contrato N° $contrato->id";
-        return redirect ('adminContratos')->with('mensaje', $respuesta);
+        if($respuesta[] = $this->changeEquipoStatus($contrato->relEquipo->id))
+        {
+            //$respuesta[] = $this->createContratoGateway($contrato);
+            //$respuesta[] = $this->modificarMac($contrato, 0);
+            $contrato->activo = true;
+            $contrato->baja = false;
+            $contrato->save();
+            $respuesta[] = "Se dió de ALTA nuevamente el contrato N° $contrato->id";
+        } else {
+            $respuesta[] = "ERROR al asignar IP auto en el ALTA del contrato N° $contrato->id";
+        }
+        return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
     }
 
     public function test ($id)
@@ -310,7 +373,6 @@ class ContratoController extends Controller
         $contrato = Contrato::find($id);
         return view ('testContrato', ['internet' => 'active', 'contrato' => $contrato, 'website' => env('DOMINIO_COMFUEG'),
             'vuejs' => env('VUEJS_VERSION')]);
-        dd($id);
     }
 
     ################# Métodos de Gateway ####################################

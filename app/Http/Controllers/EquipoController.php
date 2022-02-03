@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Antena;
 use App\Models\Equipo;
+use App\Models\Panel;
 use App\Models\Producto;
 use App\Models\Contrato;
 use Illuminate\Http\Request;
@@ -56,14 +57,19 @@ class EquipoController extends Controller
         $Equipo = new Equipo;
         $Equipo->nombre = $request->input('nombre');
         $Equipo->num_dispositivo = $request->input('num_dispositivo');
-        $Equipo->mac_address = $request->input('mac_address');
-        $Equipo->ip = $request->input('ip');
+        $Equipo->mac_address = strtoupper($request->input('mac_address'));
+        if($request->input('ip') === null)
+        {
+            $Equipo->ip = '0.0.0.0';
+        }else {
+            $Equipo->ip = $request->input('ip');
+        }
         $Equipo->num_antena = $request->input('num_antena');
         $Equipo->comentario = $request->input('comentario');
         $Equipo->fecha_alta = new DateTime();
         $Equipo->save();
         $respuesta[] = 'El Equipo se creo correctamente';
-        return redirect('/adminEquipos')->with('mensaje', $respuesta);
+        return redirect('/adminEquipos?mac_address=' . $Equipo->mac_address)->with('mensaje', $respuesta);
     }
 
     /**
@@ -123,7 +129,7 @@ class EquipoController extends Controller
                 'nombre' => 'required|min:2|max:45',
                 'num_dispositivo' => 'required|numeric|min:1|max:99999',
                 'num_antena' => 'required|numeric|min:1|max:99999',
-                'ip' => 'required|ipv4',
+                'ip' => 'nullable|ipv4',
                 'fecha_alta' => 'date',
                 'fecha_baja' => 'nullable|date',
                 'comentario' => 'max:65535'
@@ -183,8 +189,15 @@ class EquipoController extends Controller
         $this->validar($request, $Equipo->id);
         $Equipo->nombre = $nombre;
         $Equipo->num_dispositivo = $num_dispositivo;
-        $Equipo->mac_address = $mac_address;
-        $Equipo->ip = $ip;
+        $Equipo->mac_address = strtoupper($mac_address);
+        if($ip === null)
+        {
+            $Equipo->ip = '0.0.0.0';
+        }
+            else
+            {
+                $Equipo->ip = $ip;
+            }
         $Equipo->num_antena = $num_antena;
         $Equipo->fecha_alta = $fecha_alta;
         $Equipo->fecha_baja = $fecha_baja;
@@ -204,7 +217,7 @@ class EquipoController extends Controller
             $contrato = Contrato::where('num_equipo', $Equipo->id)->where('baja', false)->first();
             if ($contrato)
             {
-                $respuesta[] = 'CUIDADO!! Equipo con contrato activo';
+                $respuesta[] = 'CUIDADO!! Equipo pertenece a contrato activo de ' . $contrato->relCliente->getNomYApe();
             }
         }
         if ($Equipo->num_antena != $Equipo->getOriginal()['num_antena']) {
@@ -220,7 +233,7 @@ class EquipoController extends Controller
             $respuesta[] = ' Comentario: ' . $Equipo->getOriginal()['comentario'] . ' POR ' . $Equipo->comentario;
         }
         $Equipo->save();
-        return redirect('adminEquipos')->with('mensaje', $respuesta);
+        return redirect('adminEquipos?mac_address=' . $Equipo->mac_address)->with('mensaje', $respuesta);
     }
 
     /**
@@ -251,6 +264,14 @@ class EquipoController extends Controller
         }
         $Equipo->save();
         $rta [] = 'Se cambió con exito. ' . $respuesta;
-        return redirect('adminEquipos')->with('mensaje', $rta);
+        return redirect('adminEquipos?mac_address=' . $Equipo->mac_address)->with('mensaje', $rta);
     }
+
+    public function ipLibre($ip)
+    {
+        if (Equipo::ipLibrePaneles($ip, true) && Equipo::ipLibrePaneles($ip, false)){
+            return true;   
+        }
+        return false;
+    } 
 }//fin de la clase

@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Panel;
+use App\Models\Contrato;
+use App\Models\Variable;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Config;
 
@@ -72,6 +74,9 @@ class Equipo extends Model
     public function relProducto () {
         return $this->belongsTo('App\Models\Producto', 'num_dispositivo', 'id');
     }
+    public function relPanel () {
+        return $this->belongsTo('App\Models\Pnale', 'id_equipo', 'id');
+    }
     public function relAntena () {
         return $this->belongsTo('App\Models\Antena', 'num_antena', 'id');
     }
@@ -96,6 +101,88 @@ class Equipo extends Model
             }
         }
         return $equipos;
+    }
+
+    public static function ipLibrePaneles ($ip, $dispositivos) //si $dispositivos = true => buscan en paneles sino en contratos
+    {
+        if ($dispositivos)
+        {
+            $candidatos = Panel::where('activo',true)->get();
+        } else {
+            $candidatos = Contrato::where('activo',true)->get();
+        }
+        foreach ($candidatos as $panel) {
+            if ($panel->relEquipo->ip === $ip)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function setIpAuto ()
+    {
+        $ip_inicial = $this->getIpInicial();
+        $ip_actual = $this->getIpActual();
+        $ip_final = $this->getIpFinal();
+        $todaLaVuelta = false;
+        if (!$ip_actual) {
+            $ip_actual = $ip_inicial;
+        }
+        while (!self::ipLibrePaneles($ip_actual, true) || !self::ipLibrePaneles($ip_actual, false)) {
+            $ip = explode('.', $ip_actual);
+            $ip[3]++;
+            if ($ip[3] > 255) {
+                $ip[3] = 0;
+                $ip[2]++;
+                if ($ip[2] > 255) {
+                    $ip[2] = 0;
+                    $ip[1]++;
+                    if ($ip[1] > 255) {
+                        $ip[1] = 0;
+                        $ip[0]++;
+                    }
+                    if ($ip[0] > 255) {
+                        return false;
+                    }
+                }
+            }
+            $ip_actual = $ip[0] . '.' . $ip[1] . '.' . $ip[2] . '.' . $ip[3];
+            if ($ip_actual === $ip_final) {
+                $ip_actual = $ip_inicial;
+                if ($todaLaVuelta)
+                {
+                    return false;
+                }
+                else
+                {
+                    $todaLaVuelta = true;
+                }
+            }
+        }
+        $this->ip = $ip_actual;
+        ## guardar $ip_actual
+        $this->setIpActual($ip_actual);
+        return true;
+    }
+
+    private function getIpInicial ()
+    {
+        return Variable::find(1)->ip_inicial;
+    }
+    private function getIpActual ()
+    {
+        return Variable::find(1)->ip_actual;
+    }
+    private function setIpActual ($ip)
+    {
+        $variable = Variable::find(1);
+        $variable->ip_actual = $ip;
+        $variable->save();
+    }
+    private function getIpFinal ()
+    {
+        return Variable::find(1)->ip_final;
     }
 
     public function getResumida()

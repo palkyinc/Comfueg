@@ -35,10 +35,10 @@ use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
 use App\Models\Mail_group;
 ####TEST
+use Illuminate\Support\Facades\Config;
 /* use App\Models\Contadores_mensuales;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Contrato;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use App\Custom\CronFunciones;
 use Illuminate\Support\Facades\Mail; */
@@ -63,7 +63,8 @@ use Illuminate\Support\Facades\Mail; */
 dd(CronFunciones::generarArchivoSem($dias));
 }); */ 
 Route::get('/sarasa', function () {
-        dd('Estas metiendo mal los dedos');
+        //Config::set('constants.IP_ACTUAL', '10.10.20.1');
+        dd(Config::get('constants.IP_ACTUAL'));
 });
 
 ### Route index
@@ -73,6 +74,7 @@ Route::get('/charts', function (){dd('Hola Domun');return view('charts');});
 ####################
 ####### Gateway API rest Web services
 //Route::get('/gateway/clients/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
+Route::get('/ipLibre/{ip}', [EquipoController::class, 'ipLibre'])->middleware('auth');
 Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
 Route::get('/clientTest/{ip}', [PruebaController::class, 'testClient'])->middleware('auth');
 Route::get('/contractTest/{contrato}', [PruebaController::class, 'testContract'])->middleware('auth');

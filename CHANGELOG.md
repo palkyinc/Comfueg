@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 2.	https://github.com/romainsimon/vue-simple-search-dropdown
 
 Secuencia de arctualización en server desarrollo:
-1.	Actualizar version en el archivo constants.php
+1.	Actualizar versión en el archivo constants.php
 2.	Realizar los cambios en Changelog.md actualizando la fecha de la versión.
 3.	add y commit en el branch develop
 4.	pasar a Master y luego realizar push de la versión con el tag si corresponde.
@@ -19,6 +19,10 @@ Secuencia de arctualización en server producción:
 1.	realizar el git pull
 3.	Si corresponde realizar un docker build y editar el .yml con la nueva version de la imagen y correr docker-compose.
 2.	realizar un migrate y un compose update.
+
+## [0.7.11] - 2022-02-03
+### Added
+1.	Se agrega métodos para asignar IPs a los contratos de manera automática.
 
 ## [0.7.10] - 2022-01-05
 ### Added

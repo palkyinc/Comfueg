@@ -38,7 +38,7 @@ $mostrarSololectura = true;
             <input type="text" name="mac_address" value="{{old('mac_address')}}" maxlength="17" class="form-control" id="mac_address">
         </div>
         <div class="form-group col-md-3">
-            <label for="ip">Ip: </label>
+            <label for="ip">Ip: (Vacio para automático)</label>
             <input type="text" name="ip" value="{{old('ip')}}" maxlength="15" class="form-control" id="ip">
         </div>
     </div>
