@@ -31,10 +31,13 @@ use App\Http\Controllers\Contract_typeController;
 use App\Http\Controllers\IssueController;
 use App\Http\Controllers\Issue_titleController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\Info_ClienteController;
+use App\Http\Controllers\AltaController;
 use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
 use App\Models\Mail_group;
 ####TEST
+use App\Models\Equipo;
 /* use App\Models\Contadores_mensuales;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
@@ -63,11 +66,14 @@ use Illuminate\Support\Facades\Mail; */
 dd(CronFunciones::generarArchivoSem($dias));
 }); */ 
 Route::get('/sarasa', function () {
+        $a = 'ERROR. No se encontró Mac Address para borrar en Panel con IP: ';
+        $b = 'EXITO. No se encontró Mac Address para borrar en Panel con IP: ';
+        dd(str_split($b, 5)[0]);
         echo 'Estas metiendo mal los dedos';
 });
 
 ### Route index
-Route::get('/', function (){return view('inicio', [ 'frase' => true, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
+Route::get('/', [Info_ClienteController::class, 'index']);
 Route::get('/inicio', function (){return view('inicio', [ 'frase' => false, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
 Route::get('/charts', function (){dd('Hola Domun');return view('charts');});
 ####################
@@ -84,6 +90,9 @@ Route::put('/Session', [SessionController::class, 'store'])->middleware('auth');
 Route::get('/Session/{id}', [SessionController::class, 'show'])->middleware('auth');
 Route::delete('/Session/{id}', [SessionController::class, 'destroy'])->middleware('auth');
 Route::get('/SessionDeleteAll', [SessionController::class, 'destroyAll'])->middleware('auth');
+####################
+####### Info Clientes
+Route::get('/infoClientes', [Info_ClienteController::class, 'index']);
 ####################
 ####### Contract types
 Route::get('/adminContractTypes', [Contract_typeController::class, 'index'])->middleware('auth');
@@ -165,7 +174,6 @@ Route::patch('/modificarModelo', [ModeloController::class, 'update'])->middlewar
 #####################
 ####### CRUD Contratos
 Route::get('/adminContratos', [ContratoController::class, 'index'])->middleware('auth');
-Route::get('/altaContrato', [ContratoController::class, 'vueIndex'])->middleware('auth');
 Route::get('/listadoContratos', [ContratoController::class, 'getListadoContratosactivos'])->middleware('auth');
 Route::get('/agregarContrato', [ContratoController::class, 'create'])->middleware('auth');
 Route::post('/agregarContrato', [ContratoController::class, 'store'])->middleware('auth');
@@ -174,6 +182,20 @@ Route::get('/testContrato/{id}', [ContratoController::class, 'test'])->middlewar
 Route::patch('/modificarContrato', [ContratoController::class, 'update'])->middleware('auth');
 Route::patch('/realtaContrato', [ContratoController::class, 'undestroy'])->middleware('auth');
 Route::delete('/eliminarContrato', [ContratoController::class, 'destroy'])->middleware('auth');
+Route::get('/altaContrato', [ContratoController::class, 'vueIndex'])->middleware('auth');
+Route::put('/guardarContrato', [ContratoController::class, 'storeContractFromAlta'])->middleware('auth');
+####################
+####### CRUD Altas
+Route::get('/adminAltas', [AltaController::class, 'index'])->middleware('auth');
+Route::post('/modificarAlta', [AltaController::class, 'updateInstallDate'])->middleware('auth');
+Route::get('/modificarAlta/{id}', [AltaController::class, 'vueIndex2'])->middleware('auth');
+Route::put('/programarAlta', [AltaController::class, 'programming'])->middleware('auth');
+Route::get('/agregarAlta', [AltaController::class, 'vueIndex2'])->middleware('auth');
+### API-Rest Altas
+Route::put('/agregarAlta', [AltaController::class, 'storeApi'])->middleware('auth');
+Route::patch('/agregarAlta', [AltaController::class, 'updateApi'])->middleware('auth');
+Route::patch('/anularAlta', [AltaController::class, 'cancelApi'])->middleware('auth');
+Route::get('/getAlta/{id}', [AltaController::class, 'getAltaPorId'])->middleware('auth');
 ####################
 ####### CRUD Antenas
 Route::get('/adminAntenas', [AntenaController::class, 'index'])->middleware('auth');
@@ -189,6 +211,7 @@ Route::get('/modificarBarrio/{id}', [BarrioController::class, 'edit'])->middlewa
 Route::patch('/modificarBarrio', [BarrioController::class, 'update'])->middleware('auth');
 Route::get('/agregarBarrio', [BarrioController::class, 'create'])->middleware('auth');
 Route::post('/agregarBarrio', [BarrioController::class, 'store'])->middleware('auth');
+Route::get('/updateBarrio', [BarrioController::class, 'updateGeneral'])->middleware('auth');
 ####################
 ####### CRUD Calles
 Route::get('/adminCalles', [CalleController::class, 'index'])->middleware('auth');
@@ -205,6 +228,7 @@ Route::get('/modificarCiudad/{id}', [CiudadController::class, 'edit'])->middlewa
 Route::patch('/modificarCiudad', [CiudadController::class, 'update'])->middleware('auth');
 Route::get('/agregarCiudad', [CiudadController::class, 'create'])->middleware('auth');
 Route::post('/agregarCiudad', [CiudadController::class, 'store'])->middleware('auth');
+Route::get('/searchCiudades', [CiudadController::class, 'search'])->middleware('auth');
 ####################
 ####### CRUD Codigos de Area
 Route::get('/adminCodigosDeArea', [CodigoDeAreaController::class, 'index'])->middleware('auth');
@@ -223,6 +247,11 @@ Route::get('/modificarDireccion/{id}', [DireccionController::class, 'edit'])->mi
 Route::patch('/modificarDireccion', [DireccionController::class, 'update'])->middleware('auth');
 Route::get('/agregarDireccion', [DireccionController::class, 'create'])->middleware('auth');
 Route::post('/agregarDireccion', [DireccionController::class, 'store'])->middleware('auth');
+### API-Rest Direcciones
+Route::post('/direccion', [DireccionController::class, 'storeApi'])->middleware('auth');
+Route::patch('/direccion', [DireccionController::class, 'updateApi'])->middleware('auth');
+Route::get('/searchDireccion/{calle}/{numero}', [DireccionController::class, 'search'])->middleware('auth');
+Route::get('/searchIdDireccion/{id}', [DireccionController::class, 'searchById'])->middleware('auth');
 ####################
 ####### CRUD Equipos
 Route::get('/adminEquipos', [EquipoController::class, 'index'])->middleware('auth');
@@ -275,6 +304,8 @@ Route::patch('/modificarPlan', [PlanController::class, 'update'])->middleware('a
 Route::get('/agregarPlan', [PlanController::class, 'create'])->middleware('auth');
 Route::post('/agregarPlan', [PlanController::class, 'store'])->middleware('auth');
 Route::delete('/eliminarPlan/{plan_id}', [PlanController::class, 'destroy'])->middleware('auth');
+### API-Rest Planes
+Route::get('/getPlanes', [PlanController::class, 'getAllPlans'])->middleware('auth');
 ####################
 ####### CRUD Productos
 Route::get('/adminProductos', [ProductoController::class, 'index'])->middleware('auth');

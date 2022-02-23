@@ -129,7 +129,70 @@ class BarrioController extends Controller
         //
     }
     public function search () {
-        $barrios = Barrio::select('nombre')->get();
+        $barrios = Barrio::get();
         return response()->json($barrios);
     }
+
+    public function updateGeneral ()
+    {
+        $nuevosBarrios = 0;
+        $file = fopen('barrios.txt', 'r');
+        if ($file)
+        {
+            while(!feof($file))
+            {
+                $candidatos[] = explode(';', fgets($file))[0];
+            }
+            fclose($file);
+            foreach ($candidatos as $key => $candidato) 
+            {
+                $barrio = explode('|', $candidato);
+                $nombre = $barrio[0];
+                $limites = $barrio[1];
+                if ($barrio = Barrio::whereRaw("LOWER(nombre) LIKE (?)", ["%{$this->prepararNombre($nombre)}%"])->first())
+                {
+                    ## cargar limites al barrio existente
+                    $barrio->limites = $limites;
+                    $barrio->save();
+                } else {
+                    ## crear nuevo barrio
+                    $nuevosBarrios++;
+                    $barrio = new Barrio;
+                    $barrio->nombre = $nombre;
+                    $barrio->limites = $limites;
+                    $barrio->save();
+                }
+            }
+            $respuesta[] = 'Se procesaron:' . (count($candidatos)) . ' Barrios.';
+            $respuesta[] = 'Se agregaron: ' . $nuevosBarrios . ' Barrios nuevos.';
+        }
+        else
+        {
+            $respuesta[] = 'Error al abrir el archcivo barrios.txt';
+        }
+        return redirect('adminBarrios')->with('mensaje', $respuesta);
+    }
+
+    public function prepararNombre ($candidata)
+    {
+        $letras = array('á', 'é', 'í', 'ó', 'ú', 'ñ', 'Ñ', 'º', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ü', 'ü', 'ö', 'Ö');
+        foreach ($letras as $letra)
+        {
+            if (stripos($candidata, $letra))
+            {
+                $explode = explode($letra, $candidata);
+                $masLargo = 0;
+                for ($i=0; $i < count($explode); $i++) 
+                {
+                    if (strlen($explode[$i]) > $masLargo)
+                    {
+                        $candidata = $explode[$i];
+                        $masLargo = strlen($explode[$i]);
+                    }
+                }
+            }
+        }
+        return strtolower($candidata);
+    }
+
 }// fin de barrio

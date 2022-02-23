@@ -118,7 +118,7 @@ class DireccionController extends Controller
      */
     public function update(Request $request)
     {
-        $id_calle = $request->input('id_calle');
+        /* $id_calle = $request->input('id_calle');
         $numero = $request->input('numero');
         $entrecalle_1 = $request->input('entrecalle_1');
         $entrecalle_2 = $request->input('entrecalle_2');
@@ -131,7 +131,8 @@ class DireccionController extends Controller
         $direccion->entrecalle_1 = $entrecalle_1;
         $direccion->entrecalle_2 = $entrecalle_2;
         $direccion->id_barrio = $id_barrio;
-        $direccion->id_ciudad = $id_ciudad;
+        $direccion->id_ciudad = $id_ciudad; */
+        $direccion = $this->requestToObject($request, $request->input('id'));
         if ($direccion->id_calle != $direccion->getOriginal()['id_calle']) {
             $respuesta[] = ' Id Calle: ' . $direccion->getOriginal()['id_calle'] . ' POR ' . $direccion->id_calle;
         }
@@ -176,5 +177,70 @@ class DireccionController extends Controller
     public function destroy(Direccion $direccion)
     {
         //
+    }
+
+    public function search ($street, $numero) {
+        if($street && preg_match("/^[0-9]*$/", $numero)) {
+            $direccion = Direccion::where('id_calle', $street)->where('numero', $numero)->first();
+            if($direccion){
+                return response()->json($this->direccionToJson($direccion));
+            }
+        }
+        return response()->json(null);
+    }
+
+    private function direccionToJson (Direccion $direccion) {
+        return [
+                    'id' => $direccion->id,
+                    'nombre_calle' => $direccion->relCalle->nombre,
+                    'numero' => $direccion->numero,
+                    'entrecalle1' => isset ($direccion->relEntrecalle1->nombre) ? $direccion->relEntrecalle1->nombre :'',
+                    'entrecalle2' => isset ($direccion->relEntrecalle2->nombre) ? $direccion->relEntrecalle2->nombre :'',
+                    'barrio' => $direccion->relBarrio->nombre,
+                    'ciudad' => $direccion->relCiudad->nombre,
+                    'coordenadas' => isset ($direccion->coordenadas) ? $direccion->coordenadas : '',
+                    'comentarios' => isset ($direccion->comentarios) ? $direccion->comentarios : '',
+                ];
+    }
+
+    public function searchById ($id) {
+        if (preg_match("/^[0-9]*$/", $id)) {
+            $direccion = Direccion::find($id);
+            if ($direccion) {
+                return response()->json($this->direccionToJson($direccion));
+            }
+        }
+        return response()->json(null);
+    }
+
+    public function storeApi(Request $request){
+        $direccion = $this->requestToObject($request);
+        $direccion->save();
+        return response()->json($direccion->id, 200);
+    }
+    
+    public function updateApi(Request $request){
+        $direccion = $this->requestToObject($request, $request->input('id'));
+        $direccion->save();
+        return response()->json(true, 200);
+    }
+
+    private function requestToObject (Request $request, $id_direccion = null) {
+        
+        $this->validar($request);
+        if ($id_direccion) {
+            $direccion = Direccion::find($id_direccion);
+        }else {
+            $direccion = new Direccion;
+        }
+        $direccion->id_calle = $request->input('id_calle');
+        $direccion->numero = $request->input('numero');
+        $direccion->entrecalle_1 = $request->input('entrecalle_1');
+        $direccion->entrecalle_2 = $request->input('entrecalle_2');
+        $direccion->id_barrio = $request->input('id_barrio');
+        $direccion->id_ciudad = $request->input('id_ciudad');
+        $direccion->coordenadas = ( null !==$request->input('coordenadas')) ? $request->input('coordenadas') : '';
+        $direccion->comentarios = ( null !==$request->input('comentarios')) ? $request->input('comentarios') : '';
+        return $direccion;
     }
 }//fin de la clase

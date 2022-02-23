@@ -120,4 +120,10 @@ class CiudadController extends Controller
     {
         //
     }
+
+    public function search()
+    {
+        $ciudades = Ciudad::get();
+        return response()->json($ciudades);
+    }
 }

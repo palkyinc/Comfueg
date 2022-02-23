@@ -23,7 +23,7 @@ class Equipo extends Model
         }
         else 
             {
-                $equipo = Equipo::where('ip', $ip)->first();
+                $equipo = Equipo::where('ip', $ip)->where('fecha_baja', null)->first();
             }
         try {
             $equipo->usuario = ($equipo->usuario) ? Crypt::decrypt($equipo->usuario) : null;
@@ -75,7 +75,7 @@ class Equipo extends Model
         return $this->belongsTo('App\Models\Producto', 'num_dispositivo', 'id');
     }
     public function relPanel () {
-        return $this->belongsTo('App\Models\Pnale', 'id_equipo', 'id');
+        return $this->belongsTo('App\Models\Panel', 'id_equipo', 'id');
     }
     public function relAntena () {
         return $this->belongsTo('App\Models\Antena', 'num_antena', 'id');
@@ -83,6 +83,8 @@ class Equipo extends Model
     public function relContrato () {
         return $this->belongsTo('App\Models\Contrato', 'num_equipo', 'id');
     }
+
+    ## retorna todos los equipos clientes que no se agregaron a un contrato
     public static function equiposSinAgregar ()
     {
         $equiposTodos = Equipo::get();
@@ -103,13 +105,14 @@ class Equipo extends Model
         return $equipos;
     }
 
+    ## retorna true si $ip se encuentra usado en un contrato o dispositivo
     public static function ipLibrePaneles ($ip, $dispositivos) ##si $dispositivos = true => buscan en paneles sino en contratos
     {
         if ($dispositivos)
         {
             $candidatos = Panel::where('activo',true)->get();
         } else {
-            $candidatos = Contrato::where('activo',true)->get();
+            $candidatos = Contrato::where('baja',false)->get();
         }
         foreach ($candidatos as $panel) {
             if ($panel->relEquipo->ip === $ip)
@@ -120,6 +123,7 @@ class Equipo extends Model
         return true;
     }
 
+    ##asigna un IP libre. Retorna true si lo consigue, false si no.
     public function setIpAuto ()
     {
         $ip_inicial = $this->getIpInicial();
@@ -161,6 +165,7 @@ class Equipo extends Model
             }
         }
         $this->ip = $ip_actual;
+        $this->save();
         ## guardar $ip_actual
         $this->setIpActual($ip_actual);
         return true;

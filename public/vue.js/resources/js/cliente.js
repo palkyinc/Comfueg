@@ -5,8 +5,8 @@ Vue.component('cliente',
 <div>
     <div class="container alert alert-info mx-auto m-2 p-2" :class="class_cliente_seleccionado" role="alert">
         <div class="row justify-content-between">
-            <div class="col-8 pr-2" v-if="esempresa">ID: {{id_cliente}} | {{apellido}}</div>
-            <div class="col-8 pr-2" v-else>Cliente: ID: {{id_cliente}} | {{apellido}}, {{nombre}} | {{cod_area_cel}} 15 {{celular}}</div>
+            <div class="col-8 pr-2" v-if="esempresa"><h4>Genesys ID: {{id_cliente}} | {{apellido}}</h4></div>
+            <div class="col-8 pr-2" v-else><h4>Genesys ID: {{id_cliente}} | {{apellido}}, {{nombre}} | {{cod_area_cel}} 15 {{celular}}</h4></div>
             <div class="col-1 pl-2">
                 <button type="button" class="btn btn-secondary" @click="deseleccionar_cliente" >Editar</button>
             </div>
@@ -156,7 +156,7 @@ Vue.component('cliente',
                 'telefono': false,
                 'cod_area_cel': true,
                 'celular': true,
-                'email': false,
+                'email': false
             },
             mensaje_id_cliente: '',
             mensaje_nombre: '',
@@ -190,7 +190,6 @@ Vue.component('cliente',
             class_cambiar_button_cliente: 'ocultar',
             mostrar_cliente: '',
             mostrar_empresa: 'ocultar',
-
         }
     },
     mounted(){
@@ -206,7 +205,7 @@ Vue.component('cliente',
     computed: {
         id_cliente: {
             get: function () {
-                return store.state.id_cliente;
+                    return store.state.id_cliente;
             },
             set: function (newVal) {
                 store.state.id_cliente = newVal;
@@ -306,7 +305,7 @@ Vue.component('cliente',
                         this.cod_area_cel = (null != data.cod_area_cel) ? data.cod_area_cel.codigoDeArea : '2964';
                         this.celular = (null != data.celular) ? data.celular : '',
                         this.esempresa = data.es_empresa ? true : false;
-                        this.email = data.email;
+                        this.email = (null != data.email) ? data.email : '';
                         this.mensaje_id_cliente = '';
                         this.error_cliente.id_cliente = false;
                         if (store.state.formulario_cliente){
@@ -449,7 +448,7 @@ Vue.component('cliente',
         },
         checkId_cliente() {
             const regex_numerico = /^[0-9]*$/;
-            if (this.id_cliente > 5 && regex_numerico.test(this.id_cliente)) {
+            if (this.id_cliente> 5 && regex_numerico.test(this.id_cliente)) {
                 this.buscarCliente();
             } else {
                 this.mensaje_id_cliente = 'Max= 99999. Solo números'

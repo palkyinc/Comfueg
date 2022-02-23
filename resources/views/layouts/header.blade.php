@@ -28,121 +28,125 @@
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-		  <div class="collapse navbar-collapse">
-		    <ul class="navbar-nav mr-auto">
-			    <li class="nav-item {{  $principal ?? ''}}">
-				    <a class="nav-link" href="/inicio">Principal</a>
-			    </li>
-			    <!-- <li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle {{  $contracts ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Contratos
-					</a>
-					<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
-						<a class="dropdown-item disabled" href="/altaContrato">Alta</a>
-						<a class="dropdown-item disabled" href="">Consulta</a>
-					</div>
-				</li> -->	
-			    <li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle {{  $internet ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Internet
-					</a>
-					<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
-						<a class="dropdown-item" href="/adminContratos">Abonos</a>
-						<a class="dropdown-item" href="/adminIssues">Tickets</a>
-						<!-- <a class="dropdown-item disabled" href="">Status de Contrato</a> -->
-					</div>
-				</li>	
-			    <li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle {{  $nodos ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Nodos
-					</a>
-					<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
-						<a class="dropdown-item" href="/adminControlPanelNodos">Status Paneles</a>
-						<a class="dropdown-item" href="/adminPanelLogs">Historial Test Paneles</a>
-						<a class="dropdown-item" href="/adminNodos">Nodos Info</a>
-						<a class="dropdown-item" href="/adminIncidencias">Incidencias Globales</a>
-					  	<a class="dropdown-item" href="/adminDeudasTecnica">Deuda Técnica</a>
-					</div>
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle {{  $providers ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Proveedores
-					</a>
-					<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
-						<a class="dropdown-item" href="/adminInterfaces">Interfaces</a>
-						<a class="dropdown-item" href="/adminProveedores">Proveedores</a>
-						<a class="dropdown-item" href="/adminPlanes">Planes</a>
-					</div>
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle {{ $datos ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Datos
-			        </a>
-			        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="/adminAntenas">Antenas</a>
-						<a class="dropdown-item" href="/adminBarrios">Barrios</a>
-						<a class="dropdown-item" href="/adminPanelhasBarrio">Barrios por panel</a>
-			        	<a class="dropdown-item" href="/adminCalles">Calles</a>
-			        	<a class="dropdown-item" href="/adminCiudades">Ciudades</a>
-			        	<a class="dropdown-item" href="/adminCodigosDeArea">Códigos de Área</a>
-			        	<a class="dropdown-item" href="/adminDirecciones">Direcciones</a>
-			        	<a class="dropdown-item" href="/adminEquipos">Equipos</a>
-			        	<a class="dropdown-item" href="/adminPaneles">Dispositivos</a>
-			        	<a class="dropdown-item" href="/adminProductos">Artículos</a>
-			        	<a class="dropdown-item" href="/adminSites">Sitios</a>
-			          <div class="dropdown-divider"></div>
-			          <a class="dropdown-item" href="/adminClientes">Clientes</a>
-			        </div>
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle {{ $sistema ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Sistema
-			        </a>
-			        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="/adminUsers">Usuarios</a>
-						<a class="dropdown-item" href="/adminRoles">Roles</a>
-						<a class="dropdown-item" href="/adminPermissions">Permisos</a>
-						<a class="dropdown-item" href="/adminMailGroups">Grupos de Mail</a>
-						<a class="dropdown-item" href="/adminModelos">Entidades</a>
-						<a class="dropdown-item" href="/adminContractTypes">Tipos de Contratos</a>
-						<a class="dropdown-item" href="/adminIssuesTitles">Títulos de Tickets</a>
-						<a class="dropdown-item" href="/adminBackups">Backups</a>
-						<a class="dropdown-item disabled" href="/adminLogs">Logs de Sistema</a>
-			        </div>
-			      </li>
-		    </ul>
-		  </div>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				@auth
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item {{  $principal ?? ''}}">
+							<a class="nav-link" href="/inicio">Principal</a>
+						</li>
+						{{-- <li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle {{  $contracts ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Contratos
+							</a>
+							<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
+								<a class="dropdown-item" href="/altaContrato">Alta</a>
+								<a class="dropdown-item disabled" href="">Consulta</a>
+							</div>
+						</li> --}}
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle {{  $internet ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Internet
+							</a>
+							<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
+								<a class="dropdown-item" href="/adminContratos">Abonos</a>
+								<a class="dropdown-item" href="/adminIssues">Tickets</a>
+								<a class="dropdown-item" href="/adminAltas">Altas</a>
+							</div>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle {{  $nodos ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Nodos
+							</a>
+							<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
+								<a class="dropdown-item" href="/adminControlPanelNodos">Status Paneles</a>
+								<a class="dropdown-item" href="/adminPanelLogs">Historial Test Paneles</a>
+								<a class="dropdown-item" href="/adminNodos">Nodos Info</a>
+								<a class="dropdown-item" href="/adminIncidencias">Incidencias Globales</a>
+								<a class="dropdown-item" href="/adminDeudasTecnica">Deuda Técnica</a>
+							</div>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle {{  $providers ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Proveedores
+							</a>
+							<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
+								<a class="dropdown-item" href="/adminInterfaces">Interfaces</a>
+								<a class="dropdown-item" href="/adminProveedores">Proveedores</a>
+								<a class="dropdown-item" href="/adminPlanes">Planes</a>
+							</div>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle {{ $datos ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Datos
+							</a>
+							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<a class="dropdown-item" href="/adminAntenas">Antenas</a>
+								<a class="dropdown-item" href="/adminBarrios">Barrios</a>
+								<a class="dropdown-item" href="/adminPanelhasBarrio">Barrios por panel</a>
+								<a class="dropdown-item" href="/adminCalles">Calles</a>
+								<a class="dropdown-item" href="/adminCiudades">Ciudades</a>
+								<a class="dropdown-item" href="/adminCodigosDeArea">Códigos de Área</a>
+								<a class="dropdown-item" href="/adminDirecciones">Direcciones</a>
+								<a class="dropdown-item" href="/adminEquipos">Equipos</a>
+								<a class="dropdown-item" href="/adminPaneles">Dispositivos</a>
+								<a class="dropdown-item" href="/adminProductos">Artículos</a>
+								<a class="dropdown-item" href="/adminSites">Sitios</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="/adminClientes">Clientes</a>
+							</div>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle {{ $sistema ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Sistema
+							</a>
+							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<a class="dropdown-item" href="/adminUsers">Usuarios</a>
+								<a class="dropdown-item" href="/adminRoles">Roles</a>
+								<a class="dropdown-item" href="/adminPermissions">Permisos</a>
+								<a class="dropdown-item" href="/adminMailGroups">Grupos de Mail</a>
+								<a class="dropdown-item" href="/adminModelos">Entidades</a>
+								<a class="dropdown-item" href="/adminContractTypes">Tipos de Contratos</a>
+								<a class="dropdown-item" href="/adminIssuesTitles">Títulos de Tickets</a>
+								<a class="dropdown-item" href="/adminBackups">Backups</a>
+								<a class="dropdown-item disabled" href="/adminLogs">Logs de Sistema</a>
+							</div>
+						</li>
+					</ul>
+				@endauth
+			</div>
 		    <div class="collapse navbar-collapse">
-		  		<a class="navbar-brand" href="#">
+		  		<a class="navbar-brand" href="https://comunicacionesfueguinas.com">
 				    <img src="/img/miniLogoCF.jpg" width="30" height="30" class="d-inline-block align-top" alt="logotipo" loading="lazy">
 				    Comunicaciones Fueguinas SRL
 				</a>
 			</div>
-			@guest
-				@if (Route::has('login'))
-						<a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-				@endif
-				
-				@if (Route::has('register'))
-						<a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-				@endif
-			@else
-				<div class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-						{{ Auth::user()->name }}
-					</a>
-
-					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="{{ route('logout') }}"
-							onclick="event.preventDefault();
-											document.getElementById('logout-form').submit();">
-							{{ __('Logout') }}
+			@if (!isset($es_cliente) || (isset($es_cliente) && !$es_cliente))
+				@guest
+					@if (Route::has('login'))
+							<a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+					@endif
+					
+					@if (Route::has('register'))
+							<a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+					@endif
+				@else
+					<div class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+							{{ Auth::user()->name }}
 						</a>
-						<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-							@csrf
-						</form>
+
+						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+							<a class="dropdown-item" href="{{ route('logout') }}"
+								onclick="event.preventDefault();
+												document.getElementById('logout-form').submit();">
+								{{ __('Logout') }}
+							</a>
+							<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+								@csrf
+							</form>
+						</div>
 					</div>
-				</div>
-			@endguest
+				@endguest
+			@endif
 		</nav>
 	</header>

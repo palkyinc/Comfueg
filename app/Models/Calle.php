@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Direccion;
 
 class Calle extends Model
 {
@@ -14,6 +15,10 @@ class Calle extends Model
         return Calle::select("*")
             ->whereRaw("UPPER(nombre) LIKE (?)", ["%{$calle}%"])
             ->first();
+    }
+    public function relDireccion()
+    {
+        return $this->belongsToMany(App\Models\Direccion::class, 'id_calle', 'id');
     }
 
 }

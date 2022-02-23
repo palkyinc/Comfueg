@@ -162,7 +162,7 @@ class Ubiquiti{
                     shell_exec('echo y | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 addmac ' . $datos['macaddress'] . ' 2>&1');
                     shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m save.sh 2>&1');
                     shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m reboot.sh 2>&1');
-                    return 'Mac Address Cargado OK.';
+                    return 'EXITO. Mac Address Cargado OK en panel con IP ' . $datos['ip'];
                     break;
             
                 case 1:
@@ -192,16 +192,16 @@ class Ubiquiti{
                             shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 kickmac ' . $datos['macaddress'] . ' 2>&1');
                             shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m save.sh 2>&1');
                             shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m reboot.sh 2>&1');
-                            return 'Se eliminó Mac Address OK del Panel con IP:' . $datos['ip'];
+                            return 'EXITO. Se eliminó Mac Address OK del Panel con IP:' . $datos['ip'];
                         }
                         
                     }
                     fclose($newFile);
-                    return 'No se encontró Mac Address para borrar en Panel con IP: ' . $datos['ip'];
+                    return 'ERROR. No se encontró Mac Address para borrar en Panel con IP: ' . $datos['ip'];
                     break;
                 
                 default:
-                    return "ERROR en el tipo de ope al tratar Mac en Panel";
+                    return "ERROR. tipo de ope incorrecta al tratar Mac en Panel";
                     break;
             }
             shell_exec ("echo y | plink $usuario@$ip -pw $password iwpriv ath0 $command $macaddress > response.txt 2>&1");

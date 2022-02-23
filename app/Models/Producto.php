@@ -9,4 +9,8 @@ class Producto extends Model
 {
     use HasFactory;
     public $timestamps = false;
+
+    public function getResumida () {
+        return $this->marca . ', ' . $this->modelo . ', ' . $this->descripcion; 
+    }
 }

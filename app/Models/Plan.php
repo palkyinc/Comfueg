@@ -170,4 +170,8 @@ class Plan extends Model
             # chequear que no existe este id de plan en ningun gateway.
         }
     }
+
+    public function getResumida() {
+        return $this->nombre . '. Bajada: ' . $this->bajada . 'Kb. Subida:' . $this->subida . 'Kb. ' . $this->descripcion;
+    }
 }

@@ -166,4 +166,11 @@ class PlanController extends Controller
         $Plan->delete();
         return redirect('adminPlanes')->with('mensaje', $respuesta);
     }
+
+    ### API-Rest
+
+    public function getAllPlans () {
+        $planes = Plan::where('gateway_id', '!=', null)->get();
+        return response()->json($planes, 200);
+    }
 }

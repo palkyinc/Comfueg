@@ -28,7 +28,7 @@ class PruebaController extends Controller
     private function getStatusSignal ($ubiquiti, $panel)
     {
     date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
-    $status = ($ubiquiti->status(true));
+    ($status = ($ubiquiti->status(true)));
     $signal = ($ubiquiti->signal(true));
     $prueba = New Prueba();
     if ($status) {

@@ -16,7 +16,7 @@ class CreateVariablesTable extends Migration
         Schema::create('variables', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->ipAddress('ip_inical');
+            $table->ipAddress('ip_inicial')->nullable();
             $table->ipAddress('ip_actual');
             $table->ipAddress('ip_final');
         });

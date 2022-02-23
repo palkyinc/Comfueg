@@ -11,6 +11,7 @@ use App\Models\Direccion;
 use App\Models\Equipo;
 use App\Models\Panel;
 use App\Models\Plan;
+use App\Models\Alta;
 use App\Models\Contadores_mensuales;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -66,7 +67,7 @@ class ContratoController extends Controller
             'vuejs' => env('VUEJS_VERSION')
         ]);
     }
-
+    
     public function getListadoContratosactivos ()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
@@ -113,6 +114,70 @@ class ContratoController extends Controller
                     'equipos' => $equipos, 'paneles' => $paneles, 'planes' => $planes];
     }
 
+    public function storeContractFromAlta (Request $request){
+        ##verificar num_panel
+        if (null === $request->input('num_panel') ||
+            'null' === $request->input('num_panel') ||
+            !is_numeric($request->input('num_panel')) ||
+            !Panel::where('activo', true)->where('rol', 'PANEL')->find($request->input('num_panel')) )
+            {
+                $mensaje['error'][] = 'Error en el id de Panel ingresado';
+                return redirect('/adminAltas')->with('mensaje', $mensaje);
+            }
+        $alta = Alta::find($request->input('alta_id'));
+        $contrato = new Contrato;
+        $contrato->num_cliente = $alta->cliente_id;
+        $contrato->num_plan = $alta->plan_id;
+        $contrato->id_direccion = $alta->direccion_id;
+        $contrato->num_equipo = ($request->input('equipo_id'));
+        $contrato->num_panel = ($request->input('num_panel'));
+        $contrato->activo = false;
+        $contrato->baja = true;
+        $contrato->save();
+        ## set nuevo IP para el equipo
+        if(!$contrato->RelEquipo->setIpAuto()) {
+                $mensaje['error'][] = 'Error al intentar asignar IP al equipo. NOTA: Panel y Mikrotik no programados';
+                return redirect('/adminAltas')->with('mensaje', $mensaje);
+            }else {
+                $contrato->relEquipo->refresh();
+            }
+        $rta = $this->modificarMac($contrato, 0);
+        if (!$this->analizarRta($rta)){
+            $mensaje['error'][] = $rta;
+            return redirect('/adminAltas')->with('mensaje', $mensaje);
+        } else {
+            $mensaje['success'][] = $rta;
+        }
+        $rta = $this->createContratoGateway($contrato);
+        if (!$this->analizarRta($rta)){
+            $mensaje['error'][] = $rta;
+            return redirect('/adminAltas')->with('mensaje', $mensaje);
+        } else {
+            $mensaje['success'][] = $rta;
+        }
+        $rta = $this->changeStateContratoGateway($contrato);
+        if (!$this->analizarRta($rta)){
+            $mensaje['error'][] = $rta;
+            return redirect('/adminAltas')->with('mensaje', $mensaje);
+        } else {
+            $mensaje['success'][] = $rta;
+        }
+        $alta->programado = true;
+        $alta->save();
+        $contrato->baja = false;
+        $contrato->save();
+        ## redirect a adminAltas con mjes.
+    }
+
+    private function analizarRta ($rta){
+        if ($wordTest = str_split($rta, 5)[0] === 'EXITO') {
+            return true;
+        } elseif ($wordTest === 'ERROR') {
+            return false;
+        }
+        return null;
+        
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -129,12 +194,15 @@ class ContratoController extends Controller
         $contrato->num_plan = $request['num_plan'];
         $contrato->num_equipo = $request['num_equipo'];
         $contrato->activo = (isset($request['activo']) && $request['activo'] == 'on') ? true : false;
-        $contrato->baja = false;
+        $contrato->baja = true;
         $contrato->save();
         ## activar equipo si hay error dar de baja el contrato.
         if ( $respuesta[] = $this->forzarAlta($equipo = Equipo::find($request['num_equipo'])) )
         {
             $equipo->save();
+            $contrato->baja = false;
+            $contrato->save();
+            $contrato->relEquipo->refresh();
             $respuesta[] = $this->modificarMac($contrato, 0);
             $respuesta[] = $this->createContratoGateway($contrato);
         } else 
@@ -231,7 +299,9 @@ class ContratoController extends Controller
         $contrato->num_plan = $request['num_plan'];
         $contrato->created_at = $request['created_at'];
         $contrato->activo = (isset($request['activo']) && $request['activo'] == 'on') ? true : false;
-        if ($contrato->relDireccion->coordenadas !== $request['coordenadas'])
+        if ($contrato->relDireccion->coordenadas !== $request['coordenadas'] &&
+            $contrato->id_direccion == $contrato->getOriginal()['id_direccion']
+            )
         {
             $direccion = Direccion::find($contrato->id_direccion);
             $direccion->coordenadas = $request['coordenadas'];
@@ -248,12 +318,12 @@ class ContratoController extends Controller
             $respuesta[] = ' Equipo: ' . $contrato->getOriginal()['num_equipo'] . ' POR ' . $contrato->num_equipo;
             $momificar['equipo'] = true;
             ## activar equipo nuevo
-            if(!$respuesta[] = $this->changeEquipoStatus($contrato->num_equipo))
+            if(!$respuesta[] = $this->changeEquipoStatus($contrato->num_equipo, true))
             {
                 return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
             }
             ## desactivar equipo anterior
-            $respuesta[] = $this->changeEquipoStatus($contrato->getOriginal()['num_equipo']);
+            $respuesta[] = $this->changeEquipoStatus($contrato->getOriginal()['num_equipo'], false);
         }
         if ($contrato->num_panel != $contrato->getOriginal()['num_panel']) {
             $respuesta[] = ' Panel: ' . $contrato->getOriginal()['num_panel'] . ' POR ' . $contrato->num_panel;
@@ -304,25 +374,25 @@ class ContratoController extends Controller
         $contrato->activo = false;
         $contrato->baja = true;
         $contrato->save();
-        $respuesta [] = $this->changeEquipoStatus($contrato->relEquipo->id);
+        $respuesta [] = $this->changeEquipoStatus($contrato->relEquipo->id, false);
         $respuesta[] = "Se dió de BAJA el contrato N° $contrato->id";
         return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
     }
 
-    private function changeEquipoStatus ($id_equipo)
+    private function changeEquipoStatus ($id_equipo, $darAlta)
     {
         $equipo = Equipo::find($id_equipo);
-        if ($equipo->fecha_baja) 
+        if ($darAlta) 
         {
             if (!$rta = $this->forzarAlta($equipo)) {
                 return false;
             }
         } else
-        {
-            $equipo->fecha_baja = date('Y-m-d');
-            $equipo->ip = '0.0.0.0';
-            $rta = 'Equipo ' . $equipo->getResumida() . ' dado de baja';
-        }
+                {
+                    $equipo->fecha_baja = date('Y-m-d');
+                    $equipo->ip = '0.0.0.0';
+                    $rta = 'Equipo ' . $equipo->getResumida() . ' dado de baja';
+                }
         $equipo->save();
         return $rta;
     }
@@ -331,11 +401,12 @@ class ContratoController extends Controller
     {
         $equipo->fecha_baja = null;
         ## Si viene con un IP verificar que no este usado
-        ## sino set io auto
-        $rta = 'Equipo ' . $equipo->getResumida() . ' dado de alta';
+        ## sino set ip auto
+        $rta = 'Equipo ' . $equipo->getResumida() . ' dado de alta.';
         if ( Equipo::ipLibrePaneles($equipo->ip, true) && Equipo::ipLibrePaneles($equipo->ip, false) )
         {
             if ($equipo->ip === '0.0.0.0') {
+                $rta = $rta . 'Se asigna IP Auto.';
                 return $equipo->setIpAuto() ? $rta : false;
             }
         }
@@ -354,8 +425,9 @@ class ContratoController extends Controller
     public function undestroy(Request $request)
     {
         $contrato = Contrato::find($request['id']);
-        if($respuesta[] = $this->changeEquipoStatus($contrato->relEquipo->id))
+        if($respuesta[] = $this->changeEquipoStatus($contrato->relEquipo->id, true))
         {
+            $contrato->relEquipo->refresh();
             $respuesta[] = $this->createContratoGateway($contrato);
             $respuesta[] = $this->modificarMac($contrato, 0);
             $contrato->activo = true;
@@ -425,7 +497,7 @@ class ContratoController extends Controller
                                                             'mac-address' => $contrato->relEquipo->mac_address,
                                                             'server' => 'SlamServer',
                                                             'comment' => $contrato->id]);
-            $respuesta = 'Contrato de ' . $contrato->relCliente->getNomYApe() . ' creado con Exito en Gateway!!';
+            $respuesta = 'EXITO. Contrato de ' . $contrato->relCliente->getNomYApe() . ' creado con Exito en Gateway!!';
         } 
         else 
             {
@@ -488,16 +560,16 @@ class ContratoController extends Controller
             if ($contrato->activo)
             {
                 $apiMikro->enableClient($gatewayContract);
-                $respuesta = 'Contrato de ' . $contrato->relCliente->getNomYApe() . ' fue habilitado con Exito!!';
+                $respuesta = 'EXITO. Contrato de ' . $contrato->relCliente->getNomYApe() . ' fue habilitado con Exito!!';
             }
             else
             {
                 $apiMikro->disableClient($gatewayContract);
-                $respuesta = 'Contrato de ' . $contrato->relCliente->getNomYApe() . ' fue deshabilitado con Exito!!';
+                $respuesta = 'EXITO. Contrato de ' . $contrato->relCliente->getNomYApe() . ' fue deshabilitado con Exito!!';
             }
             unset($apiMikro);
         } else {
-            $respuesta = 'ERROR: No se pudo realizar el cambio.';
+            $respuesta = 'ERROR. No se pudo realizar el cambio.';
         }
         return($respuesta);
     }

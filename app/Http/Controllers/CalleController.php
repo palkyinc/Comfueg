@@ -185,7 +185,8 @@ class CalleController extends Controller
     }
     public function search()
     {
-        $calles = Calle::select('nombre')->get();
+        //$calles = Calle::select('nombre')->get();
+        $calles = Calle::get();
         return response()->json($calles);
     }
 }// fin de la clase
