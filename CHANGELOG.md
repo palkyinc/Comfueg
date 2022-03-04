@@ -20,6 +20,10 @@ Secuencia de arctualización en server producción:
 3.	Si corresponde realizar un docker build y editar el .yml con la nueva version de la imagen y correr docker-compose.
 2.	realizar un migrate y un compose update.
 
+## [0.7.12] - 2022-03-04
+### Added
+1.	Se agrega vista para clientes.
+
 ## [0.7.11] - 2022-02-03
 ### Added
 1.	Se agrega métodos para asignar IPs a los contratos de manera automática.

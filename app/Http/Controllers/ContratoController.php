@@ -166,7 +166,7 @@ class ContratoController extends Controller
         $alta->save();
         $contrato->baja = false;
         $contrato->save();
-        ## redirect a adminAltas con mjes.
+        return redirect('/adminAltas')->with('mensaje', $mensaje);
     }
 
     private function analizarRta ($rta){
@@ -556,7 +556,7 @@ class ContratoController extends Controller
         if ($apiMikro = $this->openSessionGateway($contrato))
         {
             $clientsDataGateway = $apiMikro->getGatewayData();
-            $gatewayContract = new ClientMikrotik($contrato->id, $clientsDataGateway);
+            $gatewayContract = new ClientMikrotik($contrato->id, $clientsDataGateway, $contrato->relEquipo->mac_address);
             if ($contrato->activo)
             {
                 $apiMikro->enableClient($gatewayContract);

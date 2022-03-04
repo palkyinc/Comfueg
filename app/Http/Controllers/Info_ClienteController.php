@@ -22,15 +22,12 @@ class Info_ClienteController extends Controller
             }
         }
         $es_cliente = ( $equipo = Equipo::where('ip', $ip_cliente)->first() ) ? true : false;
-        //$es_cliente = false;
-        //dd($equipo);
         if ($es_cliente)
         {
             $contrato = Contrato::where('num_equipo', $equipo->id)->where('baja', false)->first();
             $conteo = Contadores_mensuales::where('contrato_id', $contrato->id)->first();
         } else {
-            $contrato = null;
-            $conteo = null;
+            return redirect('inicio');
         }
         //dd($contrato);
         ## Si ip_cliente no existe como contrato de Alta

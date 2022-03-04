@@ -64,7 +64,7 @@ class Kernel extends ConsoleKernel
 
     private function mensual ()
     {
-        CronFunciones::resetCounter(true);
+        //CronFunciones::resetCounter(true);
     }
     private function semanal ()
     {
@@ -75,6 +75,7 @@ class Kernel extends ConsoleKernel
     {
         CronFunciones::resetCounter();
         CronFunciones::readCounterGateway();
+        CronFunciones::resetCounter(true);
         CronFunciones::borrarArchivos();
         CronFunciones::generarArchivoSem();
     }

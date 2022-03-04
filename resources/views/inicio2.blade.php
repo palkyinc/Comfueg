@@ -2,7 +2,6 @@
 
     @section('contenido')
     {{-- Es Cliente y está habilitado --}}
-    @if (isset($es_cliente) && $es_cliente)
       <div class="table-responsive col-5 mx-auto mt-5">
         <table class="table table-sm table-bordered mt-5">
           <caption>Datos del Contrato</caption>
@@ -64,9 +63,17 @@
         </table>
       </div>
       {{-- Fin de la tabla --}}
-      @include('layouts.consumosCliente')
+
+      {{-- Inicio de Mensaje para suspendidos --}}
+      @if (!$contrato->activo)
+        <div class="alert alert-warning">
+          <strong>Su Servicio se encuentra suspendido.</strong> Comunicarse con el sector de Amdinistración al 42-0040, 42-0800 o 42-2317 int: 11. Whatsapp: +549 2964 422317.
+        </div>
+      @endif
+      
       {{-- Inicio de gráficos --}}
-    @else
-      <p>Logueate para poder trabajar</p>
-    @endif  
+      @if ($contrato->activo)
+        @include('layouts.consumosClienteInst')
+        {{-- @include('layouts.consumosCliente') --}}
+      @endif
     @endsection

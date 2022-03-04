@@ -144,10 +144,14 @@ class GatewayMikrotik extends RouterosAPI
 		}
 	}
 	   
-	public function getGatewayData ()
+	public function getGatewayData ($soloHotspotHost = false)
 	{
 		$this->write('/ip/hotspot/host/print');
 		$hotspotHost = $this->parseResponse($this->read(false));
+
+		if ($soloHotspotHost) {
+			return $hotspotHost;
+		}
 		
 		$this->write('/ip/hotspot/user/print');
 		$hotspotUser = $this->parseResponse($this->read(false));
@@ -583,7 +587,7 @@ class GatewayMikrotik extends RouterosAPI
 															'src-address' => '10.10.0.0/16',
 															'in-interface-list' => 'LAN',
 															'connection-state' => 'established,related,new',
-															'per-connection-classifier' => 'both-addresses:' . $totalClassifiers . '/' . ($pointerClassifier + $i),
+															'per-connection-classifier' => 'dst-address:' . $totalClassifiers . '/' . ($pointerClassifier + $i),
 															'dst-address-type' => '!local',
 															'action' => 'mark-connection',
 															'new-connection-mark' => $interface . '_conn',

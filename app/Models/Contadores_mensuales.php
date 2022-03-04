@@ -15,40 +15,40 @@ class Contadores_mensuales extends Model
         switch ($this->ultimo_mes) 
         {
                 case '01':
-                        $this->ene = $data;
+                        $this->ene += $data;
                         break;
                 case '02':
-                        $this->feb = $data;
+                        $this->feb += $data;
                         break;
                 case '03':
-                        $this->mar = $data;
+                        $this->mar += $data;
                         break;
                 case '04':
-                        $this->abr = $data;
+                        $this->abr += $data;
                         break;
                 case '05':
-                        $this->may = $data;
+                        $this->may += $data;
                         break;
                 case '06':
-                        $this->jun = $data;
+                        $this->jun += $data;
                         break;
                 case '07':
-                        $this->jul = $data;
+                        $this->jul += $data;
                         break;
                 case '08':
-                        $this->ago = $data;
+                        $this->ago += $data;
                         break;
                 case '09':
-                        $this->sep = $data;
+                        $this->sep += $data;
                         break;
                 case '10':
-                        $this->oct = $data;
+                        $this->oct += $data;
                         break;
                 case '11':
-                        $this->nov = $data;
+                        $this->nov += $data;
                         break;
                 case '12':
-                        $this->dic = $data;
+                        $this->dic += $data;
                         break;
                 default:
                         echo 'error en contadores_mensual';
@@ -166,6 +166,10 @@ class Contadores_mensuales extends Model
                                 {
                                         return $data . 'GB';
                                 }
+                                elseif ( ($data = intval($data/1024)) < 1000 )
+                                        {
+                                                return $data . 'TB';
+                                        }
     }
     public function getConteoData ()
     {

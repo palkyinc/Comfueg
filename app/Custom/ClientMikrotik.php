@@ -24,7 +24,7 @@ class ClientMikrotik
 	public $bytesOut_Partial;
 	public $uptime;
 
-	public function __construct ($contrato = null, $dataArray = null) // dataArray ['addressList', 'hotspotUser', 'hotspotHost']
+	public function __construct ($contrato = null, $dataArray = null, $mac_address = null) // dataArray ['addressList', 'hotspotUser', 'hotspotHost']
 	{
 		if ($contrato)
 		{
@@ -46,7 +46,8 @@ class ClientMikrotik
 			}
 			//bucar $idContratoy en $dataArray['hotspotHost'] y copiar los datos
 			foreach ($dataArray['hotspotHost'] as $key => $value) {
-				if (isset($value['comment']) && $value['comment'] == $contrato)
+				if ( (isset($value['comment']) && $value['comment'] == $contrato) ||
+					$mac_address == $value['mac-address'])
 				{
 					$this->setHotspotHostData($key, $value);
 				}

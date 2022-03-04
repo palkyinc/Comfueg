@@ -37,12 +37,14 @@ use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
 use App\Models\Mail_group;
 ####TEST
+/* 
+use Illuminate\Support\Facades\File;
+use App\Custom\GatewayMikrotik;
 use App\Models\Equipo;
-/* use App\Models\Contadores_mensuales;
+use App\Models\Contadores_mensuales;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Contrato;
-use Illuminate\Support\Facades\File;
 use App\Custom\CronFunciones;
 use Illuminate\Support\Facades\Mail; */
 
@@ -66,9 +68,6 @@ use Illuminate\Support\Facades\Mail; */
 dd(CronFunciones::generarArchivoSem($dias));
 }); */ 
 Route::get('/sarasa', function () {
-        $a = 'ERROR. No se encontró Mac Address para borrar en Panel con IP: ';
-        $b = 'EXITO. No se encontró Mac Address para borrar en Panel con IP: ';
-        dd(str_split($b, 5)[0]);
         echo 'Estas metiendo mal los dedos';
 });
 

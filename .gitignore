@@ -3,6 +3,7 @@ docker/rclone/rclone.conf
 /public/imgUsuarios
 /public/storage
 /public/Crons
+/public/instas
 /node_modules
 /public/hot
 /public/backup
