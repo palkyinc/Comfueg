@@ -73,7 +73,6 @@
       
       {{-- Inicio de gráficos --}}
       @if ($contrato->activo)
-        @include('layouts.consumosClienteInst')
-        {{-- @include('layouts.consumosCliente') --}}
+        @include('layouts.consumosCliente')
       @endif
     @endsection

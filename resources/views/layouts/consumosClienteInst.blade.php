@@ -32,11 +32,12 @@
                 .legend({ position: 'left' })
             });
             setInterval(() => {
-                chart.update({options:{headers:{'status-chart': 0}}});
+                chart.update({options:{headers:{'cliente': id, 'status-chart': 0}}});
             }, 5000);
         }
         
     </script>
         <script>
-                renderChartInsta({{$contrato->id}}, '{{$contrato->relCliente->getNomYApe()}}');        
+                let id = {{$contrato->id}}; 
+                renderChartInsta( id, '{{$contrato->relCliente->getNomYApe()}}');        
         </script>

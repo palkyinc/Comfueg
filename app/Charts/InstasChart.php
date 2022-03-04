@@ -147,10 +147,7 @@ class InstasChart extends BaseChart
                         $allData = $apiMikro->getGatewayData(true);
                         unset($apiMikro);
                         foreach ($allData as $key => $value) {
-                                //dd($value);
                                 if ( $value['mac-address'] == $mac_address) {
-                                        //echo $value['bytes-in'] . ' => ' . $value['bytes-out'] . '<br>';
-                                        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
                                         $hora = date('Ymd.H.i.s');
                                         if(
                                         File::append(
@@ -171,9 +168,9 @@ class InstasChart extends BaseChart
         $minute = date('i');
         $second = date('s');
         $capturas = $this->getDataFromFile ($contrato_id, $path_completo);
+        if (!$capturas) {return false;}
         $ult_captura = count($capturas) -1;
         $ult_date = explode('.', $capturas[$ult_captura][0]);
-        //echo ($hour  . '='  . $ult_date[1]);
         if ($year === $ult_date[0] && $hour === $ult_date[1] && $minute === $ult_date[2] && ($second - $ult_date[3]) < 5 ) {
                 return true;
         }else {

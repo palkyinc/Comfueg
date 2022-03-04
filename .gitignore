@@ -1,9 +1,9 @@
-public/putty.log
-docker/rclone/rclone.conf
+/public/putty.log
+/docker/rclone/rclone.conf
 /public/imgUsuarios
 /public/storage
 /public/Crons
-/storage/instas
+/storage/instas/*.*
 /node_modules
 /public/hot
 /public/backup

@@ -20,6 +20,12 @@ Secuencia de arctualización en server producción:
 3.	Si corresponde realizar un docker build y editar el .yml con la nueva version de la imagen y correr docker-compose.
 2.	realizar un migrate y un compose update.
 
+## [0.7.13] - 2022-XX-XX
+### Added
+1.	Se agrega vista para clientes.
+### Changed
+1. Versión definitiva de la vista para clientes.
+
 ## [0.7.12] - 2022-03-04
 ### Added
 1.	Se agrega vista para clientes.
