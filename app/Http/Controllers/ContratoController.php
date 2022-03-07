@@ -443,7 +443,12 @@ class ContratoController extends Controller
     public function test ($id)
     {
         $contrato = Contrato::find($id);
-        return view ('testContrato', ['internet' => 'active', 'contrato' => $contrato, 'website' => env('DOMINIO_COMFUEG'),
+        $conteo = Contadores_mensuales::where('contrato_id', $contrato->id)->first();
+        return view ('testContrato', [
+            'internet' => 'active', 
+            'contrato' => $contrato,
+            'conteo' => $conteo,
+            'website' => env('DOMINIO_COMFUEG'),
             'vuejs' => env('VUEJS_VERSION')]);
     }
 

@@ -31,7 +31,7 @@
                 hooks: new ChartisanHooks()
                 .colors(['#4299E1','#FE0045','#C07EF1','#67C560','#ECC94B'])
                 .datasets(['line', 'line'])
-                .title('Cliente: ' + nameApe + ' - Tráfico en actual')
+                .title('Tráfico en actual')
                 .legend({ position: 'left' })
             });
             setInterval(() => {
@@ -63,7 +63,7 @@
                 hooks: new ChartisanHooks()
                 .colors(['#4299E1','#FE0045','#C07EF1','#67C560','#ECC94B'])
                 .datasets(['line', 'bar'])
-                .title('Cliente: ' + nameApe + ' - Ultimas 24hs')
+                .title('Últimas 24hs')
                 .legend({ position: 'left' })
             });
         }
@@ -93,7 +93,7 @@
                 .legend(true)
                 .colors(['#67C560','#FE0045','#C07EF1','#ECC94B','#4299E1'])
                 .datasets(['bar', 'line'])
-                .title('Ultimo Año')
+                .title('Último Año')
                 .legend({ position: 'left' })
             });
         }
@@ -131,7 +131,7 @@
                 .colors(['#4299E1','#FE0045','#C07EF1','#67C560','#ECC94B'])
                 .datasets([{ type: 'line', fill: true }, 'bar'])
                 .title({text: 'Última semana'})
-                .legend(false)
+                .legend({ position: 'left' })
                 .options({spanGaps: 1000 * 60 * 60 * 24, scales:{x:{type: 'time', display: true}}})
             });
         }
