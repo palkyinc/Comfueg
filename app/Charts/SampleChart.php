@@ -56,8 +56,8 @@ class SampleChart extends BaseChart
         $ultimasTwentyFour = $this->getultimasTwentyFour($hoy, $ayer, $hora, $minuto, $labels, $cliente);
         return Chartisan::build()
             ->labels($labels)
-            ->dataset('Download', $ultimasTwentyFour['down'])
-            ->dataset('Upload', $ultimasTwentyFour['up'])
+            ->dataset('Download en Mb', $ultimasTwentyFour['down'])
+            ->dataset('Upload en Mb', $ultimasTwentyFour['up'])
             ;
     }
 

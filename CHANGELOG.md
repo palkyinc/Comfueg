@@ -22,9 +22,10 @@ Secuencia de arctualización en server producción:
 
 ## [0.7.13] - 2022-XX-XX
 ### Added
-1.	Se agrega vista para clientes.
+1.	
 ### Changed
 1. Versión definitiva de la vista para clientes.
+2. test Cliente pasa a ser panel de control de contrato, con consumos de clientes, historial de test.
 
 ## [0.7.12] - 2022-03-04
 ### Added

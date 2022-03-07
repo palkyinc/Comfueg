@@ -20,8 +20,8 @@ $mostrarSololectura = true;
         <script src="vue.js/resources/js/cliente.js"></script> --}}
         <script src="/vue.js/resources/js/testantena.js"></script>
         <script src="/vue.js/resources/js/testAntenaCliente.js"></script>
-        @endsection
-
+    @endsection
+@include('layouts.consumosCliente')
 @endcan
 @include('sinPermiso')
 @endsection

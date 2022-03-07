@@ -587,7 +587,7 @@ class GatewayMikrotik extends RouterosAPI
 															'src-address' => '10.10.0.0/16',
 															'in-interface-list' => 'LAN',
 															'connection-state' => 'established,related,new',
-															'per-connection-classifier' => 'dst-address:' . $totalClassifiers . '/' . ($pointerClassifier + $i),
+															'per-connection-classifier' => 'src-address:' . $totalClassifiers . '/' . ($pointerClassifier + $i),
 															'dst-address-type' => '!local',
 															'action' => 'mark-connection',
 															'new-connection-mark' => $interface . '_conn',

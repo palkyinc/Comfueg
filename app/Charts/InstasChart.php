@@ -107,10 +107,10 @@ class InstasChart extends BaseChart
                 }
                 if ($biggest_capture > 1024) {
                         $divisor = 1024;
-                        $unidad = 'kB';
+                        $unidad = 'Kb';
                         if (($biggest_capture/$divisor) > 1024) {
                                 $divisor *= 1024;
-                                $unidad = 'MB';
+                                $unidad = 'Mb';
                         }
                 }
                 if ($divisor > 1) {
@@ -125,8 +125,8 @@ class InstasChart extends BaseChart
                                }
                         }
                 }
-                $rta['dataset1']['name'] = 'Upload en: ' . $unidad;
-                $rta['dataset2']['name'] = 'Download en: ' . $unidad;
+                $rta['dataset1']['name'] = 'Download en: ' . $unidad;
+                $rta['dataset2']['name'] = 'Upload en: ' . $unidad;
                 return($rta);
         }else {
                 return('error al abrir el archivo');

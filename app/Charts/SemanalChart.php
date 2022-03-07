@@ -49,7 +49,7 @@ class SemanalChart extends BaseChart
         $salida = CronFunciones::getWeek($cliente);
         return Chartisan::build()
             ->labels($salida['labels'])
-            ->dataset('Download', $salida['down'])
-            ->dataset('Upload', $salida['up']);
+            ->dataset('Download en Mb', $salida['down'])
+            ->dataset('Upload  en Mb', $salida['up']);
     }
 }
