@@ -33,11 +33,12 @@ use App\Http\Controllers\Issue_titleController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\Info_ClienteController;
 use App\Http\Controllers\AltaController;
+use App\Custom\Ubiquiti;
+####TEST
+/* 
 use App\Models\Site_has_incidente;
 use App\Models\Proveedor;
 use App\Models\Mail_group;
-####TEST
-/* 
 use Illuminate\Support\Facades\File;
 use App\Custom\GatewayMikrotik;
 use App\Models\Equipo;
@@ -46,7 +47,8 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Contrato;
 use App\Custom\CronFunciones;
-use Illuminate\Support\Facades\Mail; */
+use Illuminate\Support\Facades\Mail;
+*/
 
 
 

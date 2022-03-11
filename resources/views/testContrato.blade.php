@@ -8,6 +8,12 @@ $mostrarSololectura = true;
     <div id="testContrato">
         <testantenacliente></testantenacliente>
     </div>
+    <div class="">
+        <div id="chartInsta{{$contrato->id}}" style="height: 300px;"></div>
+        <div id="chartDay{{$contrato->id}}" style="height: 300px;"></div>
+        <div id="chartWeek{{$contrato->id}}" style="height: 300px;"></div>
+        <div id="chartMonthly{{$contrato->id}}" style="height: 300px;"></div>
+    </div>
     
     @section('javascript')
         <script src="/vue.js/vendor/js/{{$vuejs}}"></script>
@@ -15,13 +21,10 @@ $mostrarSololectura = true;
         <script> website = '{{$website}}'</script>
         <script> contrato = '{{$contrato->id}}'</script>
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        {{-- <script src="vue.js/resources/js/numeroCarpeta.js"></script>
-        <script src="vue.js/resources/js/tipoContrato.js"></script>
-        <script src="vue.js/resources/js/cliente.js"></script> --}}
         <script src="/vue.js/resources/js/testantena.js"></script>
         <script src="/vue.js/resources/js/testAntenaCliente.js"></script>
+        @include('layouts.consumosCliente2')
     @endsection
-@include('layouts.consumosCliente')
 @endcan
 @include('sinPermiso')
 @endsection

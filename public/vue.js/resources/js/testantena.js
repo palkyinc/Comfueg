@@ -98,17 +98,17 @@ Vue.component('testantena',
                     <td class="alert alert-warning" v-else-if="statusInternetAVG === 2">{{InternetAvg}}</td>
                     <td v-else>{{InternetAvg}}</td>
                     <td class="alert alert-danger" v-if="statusInternet === 0">SIN INTERNET</td>
-                    <td class="alert alert-success" v-else-if="statusInternet === 1">{{InternetLoss}}</td>
-                    <td class="alert alert-warning" v-else-if="statusInternet === 2">{{InternetLoss}}</td>
+                    <td class="alert alert-success" v-else-if="statusInternet === 1">{{InternetLoss}}%</td>
+                    <td class="alert alert-warning" v-else-if="statusInternet === 2">{{InternetLoss}}%</td>
                     <td v-else>{{InternetLoss}}</td>
                     <td class="alert alert-danger" v-if="statusGatewayAVG === 0">{{gatewayAvg}}</td>
                     <td class="alert alert-success" v-else-if="statusGatewayAVG === 1">{{gatewayAvg}}</td>
                     <td class="alert alert-warning" v-else-if="statusGatewayAVG === 2">{{gatewayAvg}}</td>
                     <td v-else>{{gatewayAvg}}</td>
                     <td class="alert alert-danger" v-if="statusGateway === 0">{{Gateway}}</td>
-                    <td class="alert alert-success" v-else-if="statusGateway === 1">{{Gateway}}</td>
-                    <td class="alert alert-warning" v-else-if="statusGateway === 2">{{Gateway}}</td>
-                    <td v-else>{{gateway}}</td>
+                    <td class="alert alert-success" v-else-if="statusGateway === 1">{{Gateway}}%</td>
+                    <td class="alert alert-warning" v-else-if="statusGateway === 2">{{Gateway}}%</td>
+                    <td v-else>{{Gateway}}</td>
                 </tr>
             </table>
             <div class="col-12 pl-2">
