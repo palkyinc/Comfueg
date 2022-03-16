@@ -4,12 +4,13 @@
 @php
 $mostrarSololectura = true;
 @endphp
-    <h2>Prueba contrato : {{$contrato->id}} | {{$contrato->relCLiente->getNomYApe()}}</h2>
+    <h3>Prueba contrato : {{$contrato->id}} | {{$contrato->relCLiente->getNomYApe()}}</h3>
+    <h3>Plan: {{$contrato->relPlan->nombre}}</h3>
     <div id="testContrato">
         <testantenacliente></testantenacliente>
     </div>
-    <div class="">
-        <div id="chartInsta{{$contrato->id}}" style="height: 300px;"></div>
+    <div class="container bg-light border py-2">
+        <div id="chartInsta{{$contrato->id}}" style="height: 300px;" class="pt-4"></div>
         <div id="chartDay{{$contrato->id}}" style="height: 300px;"></div>
         <div id="chartWeek{{$contrato->id}}" style="height: 300px;"></div>
         <div id="chartMonthly{{$contrato->id}}" style="height: 300px;"></div>

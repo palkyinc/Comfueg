@@ -45,12 +45,11 @@ class InstasChart extends BaseChart
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $contrato = Contrato::find($request->header('cliente'));
-        $contrato_id = $contrato->id;
         $mac_address = $contrato->relEquipo->mac_address;
         $path_completo = '../storage/instas/' . $contrato_id . '.dat';
         ($status_chart = $request->header('status-chart') ? true :false);
-        if ($this->getDataFromGateway($status_chart, $contrato_id, $path_completo, $mac_address)) {
-                ($rta = $this->getInstaArrays($contrato_id, $path_completo));
+        if ($this->getDataFromGateway($status_chart, $contrato, $path_completo, $mac_address)) {
+                ($rta = $this->getInstaArrays($contrato->id, $path_completo));
                 return Chartisan::build()
                 ->labels($rta['labels'])
                 ->dataset($rta['dataset1']['name'], $rta['dataset1']['values'])
@@ -75,7 +74,7 @@ class InstasChart extends BaseChart
         return false;
     }
     private function getInstaArrays ($contrato_id, $path_completo) {
-        $unidad = 'Bytes';
+        $unidad = 'Bits';
         $biggest_capture = 0;
         $divisor = 1;
         $capturas_totales = 41;
@@ -125,8 +124,8 @@ class InstasChart extends BaseChart
                                }
                         }
                 }
-                $rta['dataset1']['name'] = 'Download en: ' . $unidad;
-                $rta['dataset2']['name'] = 'Upload en: ' . $unidad;
+                $rta['dataset1']['name'] = 'Bajada en: ' . $unidad;
+                $rta['dataset2']['name'] = 'Subida en: ' . $unidad;
                 return($rta);
         }else {
                 return('error al abrir el archivo');
@@ -134,15 +133,15 @@ class InstasChart extends BaseChart
         
     }
 
-    private function getDataFromGateway ($status, $contrato_id, $path_completo, $mac_address) {
-        $hayOtraSesion = $this->checkIsAntherSesion($contrato_id, $path_completo);
+    private function getDataFromGateway ($status, $contrato, $path_completo, $mac_address) {
+        $hayOtraSesion = $this->checkIsAntherSesion($contrato->id, $path_completo);
         if ($hayOtraSesion) {
                 return true;
         }else {
                 if ($status){
-                        (File::delete('../storage/instas/' . $contrato_id . '.dat'));
+                        (File::delete('../storage/instas/' . $contrato->id . '.dat'));
                 }
-                $apiMikro = GatewayMikrotik::getConnection('10.10.0.8', 'api_user', 'BobEs_ponj4');
+                $apiMikro = GatewayMikrotik::getConnection($contrato->relPlan->relPanel->relEquipo->ip, $contrato->relPlan->relPanel->relEquipo->getUsuario(), $contrato->relPlan->relPanel->relEquipo->getPassword());
                 if ($apiMikro){
                         $allData = $apiMikro->getGatewayData(true);
                         unset($apiMikro);

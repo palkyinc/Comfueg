@@ -34,10 +34,10 @@ use App\Http\Controllers\BackupController;
 use App\Http\Controllers\Info_ClienteController;
 use App\Http\Controllers\AltaController;
 use App\Custom\Ubiquiti;
+use App\Models\Proveedor;
+use App\Models\Site_has_incidente;
 ####TEST
 /* 
-use App\Models\Site_has_incidente;
-use App\Models\Proveedor;
 use App\Models\Mail_group;
 use Illuminate\Support\Facades\File;
 use App\Custom\GatewayMikrotik;

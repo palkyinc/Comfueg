@@ -447,7 +447,7 @@ class ContratoController extends Controller
         return view ('testContrato', [
             'internet' => 'active', 
             'contrato' => $contrato,
-            'conteo' => $conteo,
+            'conteo' => $conteo ?? new Contadores_mensuales,
             'website' => env('DOMINIO_COMFUEG'),
             'vuejs' => env('VUEJS_VERSION')]);
     }

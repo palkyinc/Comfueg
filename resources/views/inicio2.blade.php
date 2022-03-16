@@ -19,8 +19,13 @@
               <td>{{$contrato->relCliente->getNomYApe()}}</td>
             </tr>
             <tr>
-              <th scope="row">Abono</th>
+              <th scope="row">Plan</th>
               <td>{{$contrato->relPlan->nombre}}</td>
+            </tr>
+            <tr>
+            <tr>
+              <th scope="row">Descripción Plan</th>
+              <td>{{$contrato->relPlan->descripcion}}</td>
             </tr>
             <tr>
               <th scope="row">Estado</th>

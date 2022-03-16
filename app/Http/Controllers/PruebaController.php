@@ -230,7 +230,10 @@ class PruebaController extends Controller
     $prueba = New Prueba();
     if ($status) {
         $signal = ($ubiquiti->signal(true));
+        dd($status['wireless']['sta'][0]['remote']['signal']);
+        dd($status['interfaces'][0]['hwaddr']);
         $stations = $ubiquiti->stations(true);
+        dd($stations);
         $internet = $ubiquiti->getTestinternet('dns.google.com');
         if (!isset($internet['Ping_AVG']) || $internet['Ping_AVG'] > 150) $gateway = $ubiquiti->getTestinternet('10.10.0.245');
         $statusLAN = 3;
@@ -239,14 +242,15 @@ class PruebaController extends Controller
             'Uptime' => ($this->uptime($status['host']['uptime'])),
             'Temperature' => ((isset($status['host']['temperature'])) ? $status['host']['temperature'] . "°C" : 'N/A '),
             'Hostname' => $prueba->nom_equipo = $status['host']['hostname'],
-            'MacAdrress' => $prueba->mac_address = $status['wireless']['apmac'],
+            'MacAdrress' => $prueba->mac_address = $status['interfaces'][0]['hwaddr'] ?? 'Error',
             'Firmware' => $prueba->firmware = ($status['host']['fwprefix'] ?? '') . $status['host']['fwversion'],
             'DevModel' => $prueba->dispositivo = $status['host']['devmodel'],
             'NetRole' => $status['host']['netrole'],
             'SSID' => $prueba->ssid = $status['wireless']['essid'],
             'Signal' => $prueba->senial = ($signal['signal'] ?? '0') . 'dBm',
             'statusSignal' => (isset($signal['signal'])) ? (($signal['signal'] < -68) ? (($signal['signal'] < -73) ? 0 : 2) : 1) : 3,
-            'Remote' => isset($stations[0]['remote']['signal']) ?  $prueba->remote = $stations[0]['remote']['signal'] . 'dBm' : $prueba->remote = 0,
+            'Remote' => isset($stations[0]['remote']['signal']) ?  $prueba->remote = $stations[0]['remote']['signal'] . 'dBm' : 
+                                                                ( isset($status['wireless']['sta'][0]['remote']['signal']) ? $prueba->remote = $status['wireless']['sta'][0]['remote']['signal'] : $prueba->remote = 0),
             'statusRemote' => (isset($stations[0]['remote']['signal'])) ? (($stations[0]['remote']['signal'] < -68) ? (($stations[0]['remote']['signal'] < -73) ? 0 : 2) : 1) : 3,
             'NoiseFloor' => $prueba->ruido = ($signal['noisef'] ?? '0') . 'dBm',
             'ChannelWidth' => ((isset($signal['chwidth'])) ? $signal['chwidth'] : $signal['chbw']) . 'Mhz',
@@ -267,9 +271,9 @@ class PruebaController extends Controller
             'statusInternet' => isset($internet['Ping_Loss']) ?  (($internet['Ping_Loss'] < 100) ? (($internet['Ping_Loss'] == 0) ? 1 : 2) : 0) :3,
             'InternetAvg' => $prueba->internet_avg = $internet['Ping_AVG'] ?? null,
             'statusInternetAVG' => isset($internet['Ping_AVG']) ? (($internet['Ping_AVG'] <= 250) ? (($internet['Ping_AVG'] < 120) ? 1 : 2) : 0) : 0,
-            'Gateway' => $prueba->wispro_lost = ($gateway['Ping_Loss'] ?? null),
+            'Gateway' => $prueba->wispro_lost = ($gateway['Ping_Loss'] ?? 'Omitido.'),
             'statusGateway' => isset($gateway['Ping_Loss']) ? (($gateway['Ping_Loss'] < 100) ? (($gateway['Ping_Loss'] == 0) ? 1 : 2) : 0) : 3,
-            'gatewayAvg' => $prueba->wispro_avg = $gateway['Ping_AVG'] ?? null,
+            'gatewayAvg' => $prueba->wispro_avg = $gateway['Ping_AVG'] ?? 'Omitido.',
             'statusGatewayAVG' => isset($gateway['Ping_AVG']) ? (($gateway['Ping_AVG'] <= 25) ? (($gateway['Ping_AVG'] < 12) ? 1 : 2) : 0) : 3
         ];
         $prueba->lan_conectado = ($statusLAN === 0) ? 0 : 1;
