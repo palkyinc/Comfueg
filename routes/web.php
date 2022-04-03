@@ -84,6 +84,8 @@ Route::get('/ipLibre/{ip}', [EquipoController::class, 'ipLibre'])->middleware('a
 Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
 Route::get('/clientTest/{ip}', [PruebaController::class, 'testClient'])->middleware('auth');
 Route::get('/contractTest/{contrato}', [PruebaController::class, 'testContract'])->middleware('auth');
+Route::get('/getContract/{contrato}', [ContratoController::class, 'getContract'])->middleware('auth');
+Route::get('/getPruebasContract/{contrato}', [PruebaController::class, 'getPruebasContract'])->middleware('auth');
 Route::get('/allPanels', [PruebaController::class, 'allPanels'])->middleware('auth');
 Route::get('/adminControlPanelNodos', [PruebaController::class, 'index'])->middleware('auth');
 Route::get('/adminPanelLogs', [PruebaController::class, 'indexLogs'])->middleware('auth');
