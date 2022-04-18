@@ -35,11 +35,11 @@
 ## Descargar proyecto
 22.  Ingresar con root y contraseña seteada en el punto 12 anterior.
 23.  Crear la carpeta donde descargaremos el proyecto:
-    a.  mkdir /media/proyectos
-    b.  cd /media/proyectos
-    c.  apk add git
-    d.  git clone https://github.com/palkyinc/Comfueg.git
-    e.  sudo chmod -Rf ugo+rw Comfueg
+    a. mkdir /media/proyectos
+    b. cd /media/proyectos
+    c. apk add git
+    d. git clone https://github.com/palkyinc/Comfueg.git
+    e. sudo chmod -Rf ugo+rw Comfueg
 
 ## Habilitar ssh y crear usuario para acceso.
 24. cd Comfueg/docker

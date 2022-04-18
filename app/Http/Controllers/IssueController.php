@@ -10,6 +10,7 @@ use App\Models\Cliente;
 use App\Models\Contrato;
 use App\Models\Issue_title;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 
 class IssueController extends Controller
 {
@@ -246,6 +247,29 @@ class IssueController extends Controller
         }
         $issue->enviarMail($mailTipo);
         return redirect('adminIssues')->with('mensaje', ['Ticket actualizado correctamente.']);
+    }
+
+    public function getListadoIssues ()
+    {
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+        $issues = Issue::orderByDesc('created_at')->get();
+        $newFile = fopen ('../storage/app/public/ListadoIssues-' . date('Ymd') . '.csv', 'w');
+        fwrite($newFile ,'#Ticket;Abierto;Titulo;Creador;Cliente;Cerrado;Panel;Descripcion' . PHP_EOL);
+        foreach ($issues as $key => $value)
+        {
+            fwrite($newFile , 
+                    $value->id . ';' .
+                    $value->created_at . ';' . 
+                    $value->relTitle->title . ';' .
+                    $value->relCreator->name . ';' .
+                    $value->relCliente->getNomYApe() . ';' .
+                    ($value->closed ? 'CERRADA' : 'Abierta') . ';' .
+                    ($value->relContrato->relPanel->ssid ?? 'N/A') . ';' .
+                    (str_replace(array("\n", "\r", ";"), '|', $value->descripcion)) . ';' .
+                    PHP_EOL);
+        }
+        fclose($newFile);
+        return Storage::disk('public')->download('ListadoIssues-' . date('Ymd') . '.csv');
     }
 
     /**

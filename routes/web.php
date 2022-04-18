@@ -125,6 +125,7 @@ Route::post('/agregarIssue', [IssueController::class, 'store'])->middleware('aut
 Route::post('/buscarIssueCliente', [IssueController::class, 'buscarCliente'])->middleware('auth');
 Route::get('/modificarIssue/{id}', [IssueController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarIssue', [IssueController::class, 'update'])->middleware('auth');
+Route::get('/listadoIssues', [IssueController::class, 'getListadoIssues'])->middleware('auth');
 ####################
 ####### Deuda
 Route::get('/adminDeudasTecnica', [SiteHasIncidenteController::class, 'indexDeuda'])->middleware('auth');
