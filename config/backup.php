@@ -23,6 +23,7 @@ return [
                     base_path('storage/Crons'),
                     base_path('.env'),
                     base_path('docker/rclone/rclone.conf'),
+                    base_path('docker/aircontrol'),
                 ],
 
                 /*

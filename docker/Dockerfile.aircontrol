@@ -1,5 +1,4 @@
 #sudo docker run --rm --name slam-airControl2 -p 9081:9081 -v /media/proyectos/aircontrol/pgsql/data/:/opt/Ubiquiti/AirControl2/pgsql/data/ -p 9082:9082 -d cont-aircontrol:1
-VOLUME /media/storage/pgsql/data/:/opt/Ubiquiti/AirControl2/pgsql/data
 FROM openjdk:8
 EXPOSE 9081
 EXPOSE 9082

@@ -1,4 +1,5 @@
-version: '2'
+version: '3'
+
 services:
   web:
     hostname: slam-php-apache
@@ -24,7 +25,8 @@ services:
       - "9081:9081"
       - "9082:9082"
     volumes:
-      - "/media/proyectos/aircontrol/pgsql/data/:/opt/Ubiquiti/AirControl2/pgsql/data/"
+      - db-aircontrol:/opt/Ubiquiti/AirControl2/pgsql/data
+      - "/media/proyectos/Comfueg/docker/aircontrol/:/opt/Ubiquiti/AirControl2/lib/db/dbbackups"
     restart: unless-stopped
     network_mode: bridge
 
@@ -40,3 +42,5 @@ services:
       - MYSQL_ROOT_PASSWORD==@ndres0426
     restart: unless-stopped
     network_mode: bridge
+volumes:
+  db-aircontrol:

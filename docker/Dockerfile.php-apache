@@ -8,17 +8,17 @@ RUN chmod +x /etc/periodic/cron.sh
 COPY slam.cron /etc/periodic
 RUN crontab /etc/periodic/slam.cron
 # end cron
-RUN curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip
-RUN unzip rclone-current-linux-amd64.zip
-RUN cp /rclone-v1.57.0-linux-amd64/rclone /usr/bin/
+RUN curl -O https://downloads.rclone.org/v1.58.0/rclone-v1.58.0-linux-amd64.zip
+RUN unzip rclone-v1.58.0-linux-amd64.zip
+RUN cp /rclone-v1.58.0-linux-amd64/rclone /usr/bin/
 RUN chown root:root /usr/bin/rclone
 RUN chmod 755 /usr/bin/rclone
 RUN mkdir -p /usr/share/man/man1
-RUN cp /rclone-v1.57.0-linux-amd64/rclone.1 /usr/share/man/man1/
+RUN cp /rclone-v1.58.0-linux-amd64/rclone.1 /usr/share/man/man1/
 # config directory /root/.config/rclone/
 RUN mkdir /datarclone
-RUN rm rclone-current-linux-amd64.zip
-RUN rm -Rf rclone-v1.57.0-linux-amd64
+RUN rm rclone-v1.58.0-linux-amd64.zip
+RUN rm -Rf rclone-v1.58.0-linux-amd64
 RUN apk add mysql-client
 COPY php.ini /usr/local/etc/php/php.ini
 RUN apk add --no-cache procps

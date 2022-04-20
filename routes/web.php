@@ -84,6 +84,8 @@ Route::get('/ipLibre/{ip}', [EquipoController::class, 'ipLibre'])->middleware('a
 Route::get('/panelTest/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
 Route::get('/clientTest/{ip}', [PruebaController::class, 'testClient'])->middleware('auth');
 Route::get('/contractTest/{contrato}', [PruebaController::class, 'testContract'])->middleware('auth');
+Route::get('/getContract/{contrato}', [ContratoController::class, 'getContract'])->middleware('auth');
+Route::get('/getPruebasContract/{contrato}', [PruebaController::class, 'getPruebasContract'])->middleware('auth');
 Route::get('/allPanels', [PruebaController::class, 'allPanels'])->middleware('auth');
 Route::get('/adminControlPanelNodos', [PruebaController::class, 'index'])->middleware('auth');
 Route::get('/adminPanelLogs', [PruebaController::class, 'indexLogs'])->middleware('auth');
@@ -123,6 +125,7 @@ Route::post('/agregarIssue', [IssueController::class, 'store'])->middleware('aut
 Route::post('/buscarIssueCliente', [IssueController::class, 'buscarCliente'])->middleware('auth');
 Route::get('/modificarIssue/{id}', [IssueController::class, 'edit'])->middleware('auth');
 Route::patch('/modificarIssue', [IssueController::class, 'update'])->middleware('auth');
+Route::get('/listadoIssues', [IssueController::class, 'getListadoIssues'])->middleware('auth');
 ####################
 ####### Deuda
 Route::get('/adminDeudasTecnica', [SiteHasIncidenteController::class, 'indexDeuda'])->middleware('auth');
