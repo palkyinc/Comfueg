@@ -59,6 +59,24 @@ class ContratoController extends Controller
                                         'vuejs' => env('VUEJS_VERSION')]);
     }
 
+    public function getContract ($id) {
+        if (preg_match("/^[0-9]*$/", $id)) {
+            $contrato = Contrato::find($id);
+            $contrato->num_equipo = Equipo::find($contrato->num_equipo);
+            unset($contrato->num_equipo->password);
+            unset($contrato->num_equipo->usuario);
+            $contrato->num_panel = Equipo::find($contrato->num_panel);
+            unset($contrato->num_panel->password);
+            unset($contrato->num_panel->usuario);
+            $contrato->num_cliente = Cliente::find($contrato->num_cliente);
+            $contrato->num_plan = Plan::find($contrato->num_plan);
+            if ($contrato) {
+                return response()->json($contrato);
+            }
+        }
+        return response()->json(null);
+    }
+
     public function vueIndex ()
     {
         return view('altaContrato', [

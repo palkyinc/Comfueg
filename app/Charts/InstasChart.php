@@ -46,7 +46,7 @@ class InstasChart extends BaseChart
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $contrato = Contrato::find($request->header('cliente'));
         $mac_address = $contrato->relEquipo->mac_address;
-        $path_completo = '../storage/instas/' . $contrato_id . '.dat';
+        $path_completo = '../storage/instas/' . $contrato->id . '.dat';
         ($status_chart = $request->header('status-chart') ? true :false);
         if ($this->getDataFromGateway($status_chart, $contrato, $path_completo, $mac_address)) {
                 ($rta = $this->getInstaArrays($contrato->id, $path_completo));
