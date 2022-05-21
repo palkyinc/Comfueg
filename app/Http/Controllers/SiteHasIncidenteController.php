@@ -111,7 +111,7 @@ class SiteHasIncidenteController extends Controller
      */
     public function create()
     {
-        $paneles = Panel::all();
+        $paneles = Panel::where('activo', true)->get();
         return view('agregarSiteHasIncidente', ['paneles' => $paneles, 'completo' => 0, 'nodos' => 'activate']);
     }
 
@@ -291,7 +291,7 @@ class SiteHasIncidenteController extends Controller
     private function panelesAfectados($arraySitios)
     {
         foreach ($arraySitios as $key => $value) {
-            $panelesPorSitio = Panel::where('num_site', $key)->where('rol', 'PANEL')->get(); 
+            $panelesPorSitio = Panel::where('num_site', $key)->where('rol', 'PANEL')->where('activo', true)->get(); 
             foreach($panelesPorSitio as $panel)
             {
                 $respuesta [$panel->id] = $panel->relEquipo->nombre;

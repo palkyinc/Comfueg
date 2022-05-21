@@ -61,6 +61,7 @@ class AltaController extends Controller
      */
     public function store(Request $request, $modify = false)
     {
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $this->validar($request);
         ($alta = ($modify) ? Alta::find($request->input('alta_id')) : new Alta);
         $alta->cliente_id = $request->input('cliente_id');
@@ -71,7 +72,6 @@ class AltaController extends Controller
             $alta->programado = false;
             $alta->instalado = false;
             $alta->anulado = false;
-            date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
             $dias_instalacion = 3;
             if (date('w', strtotime(date('Ymd')." + $dias_instalacion days")) == 0) {
                 $dias_instalacion += 1;
@@ -161,37 +161,152 @@ class AltaController extends Controller
      */
     public function programming(Request $request)
     {
-        $respuesta= '';
+        //dd($request);
         $alta = Alta::find($request->input('alta_id'));
-        $macadress = (null !== $request->input('mac_address')) ? $this->validarEquipo($request, true) : null;
-        if ((null != $request->input('alta_equipo')) && $macadress){
-            if(!$errores = $this->validarEquipo($request)){
-                $equipo = $this->guardarEquipo($request);
-            }
-        }elseif ($macadress && 
-            $equipo = Equipo::where('mac_address', ($macadress = strtoupper($macadress)))->first()
-            ) {
-                $contrato = Contrato::where('num_equipo', $equipo->id)->first();
-                $panel = Panel::where('id_equipo', $equipo->id)->first();
-            }
-        $dispositivos = Producto::get();
-        $antenas = Antena::get();
-        $paneles = Panel::where('activo', true)->where('rol', 'PANEL')->orderBy('num_site')->get();
-        //dd($paneles);
+        ($paso = (null !== $request->input('paso')) ? $request->input('paso') : 0);
+        $tipo_contrato = (null !== $request->input('tipo_contrato')) ? $request->input('tipo_contrato') : null;
+        switch ($tipo_contrato) {
+            case 1: //standard
+                $titulo_paso2 = "Ingresar MacAddress de Antena Ubiquiti";
+                $macadress = (null !== $request->input('mac_address')) ? $this->validarEquipo($request, true) : null;
+                switch ($paso) {
+                    case 1:
+                        $paso = 2;
+                        $datos_cliente = true;
+                        break;
+                    
+                    case 2:
+                        if ($macadress) {
+                            if ($equipo = Equipo::where('mac_address', ($macadress = strtoupper($macadress)))->first()
+                            ) {
+                                $contrato = Contrato::where('num_equipo', $equipo->id)->first();
+                                $panel = Panel::where('id_equipo', $equipo->id)->first();
+                                if ($contrato || $panel){
+                                    $paso = 3;
+                                }else {
+                                    $paso = 6;
+                                }
+                            }else {
+                                $paso = 5;
+                            }
+                        }
+                        break;
+                    case 5:
+                        if(!$errores = $this->validarEquipo($request)){
+                            $equipo = $this->guardarEquipo($request);
+                            $paso = 6;
+                        }
+                        break;
+                    case 6:
+                        if (!$errores = $this->validarPaso6($request)){
+                            return redirect('/adminAltas')->with('mensaje', $this->crearContrato($request));
+                        } else {
+                            $paso = 0;
+                        }
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+                
+            
+            case '2': //Bridge
+                # code...
+                break;
+            
+            case '3': //solo router
+                # code...
+                break;
+            
+            default:
+                if ($paso === 0) {
+                    $paso = 1;
+                    $datos_cliente = true;
+                }
+                break;
+        }
+        if ($paso == 5){
+            $dispositivos = Producto::get();
+            $antenas = Antena::get();
+        }
+        if ($paso ==6) {
+            $paneles = Panel::where('activo', true)->where('rol', 'PANEL')->orderBy('num_site')->get();
+        }
+        //dd($alta);
         return view('programarAlta', [
-                    'alta' => $alta,
-                    'macaddress' => $macadress,
-                    'equipo' => $equipo ?? null,
-                    'contrato' => $contrato ?? null,
-                    'panel' => $panel ?? null,
-                    'dispositivos' => $dispositivos ?? null,
-                    'antenas' => $antenas ?? null,
-                    'paneles' => $paneles ?? null,
-                    'errores' => $errores ?? null,
+                    'alta' => $alta ?? null,
+                    'macaddress' => $macadress ?? null,
+                    'equipo' => $equipo ?? false,
+                    'contrato' => $contrato ?? false,
+                    'panel' => $panel ?? false,
+                    'dispositivos' => $dispositivos ?? [],
+                    'antenas' => $antenas ?? [],
+                    'paneles' => $paneles ?? [],
+                    'errores' => $errores ?? false,
+                    'router' => $router ?? false,
+                    'paso' => $paso,
+                    'tipo_contrato' => $tipo_contrato ?? null,
+                    'titulo_paso2' => $titulo_paso2 ?? '',
+                    'datos_cliente' => $datos_cliente ?? false
         ]);
     }
 
+    private function crearContrato (Request $request) 
+    {
+        if (!Panel::where('activo', true)->where('rol', 'PANEL')->find($request->input('num_panel')) )
+            {
+                $mensaje['error'][] = 'ERROR: Panel no existente. Nada fue guardado no creado.';
+            } 
+            else 
+            {
+                    $alta = Alta::find($request->input('alta_id'));
+                    $nuevo_contrato = New Contrato;
+                    $nuevo_contrato->num_cliente = $alta->cliente_id;
+                    $nuevo_contrato->num_plan = $alta->plan_id;
+                    $nuevo_contrato->id_direccion = $alta->direccion_id;
+                    $nuevo_contrato->num_equipo = $request->input('equipo_id');
+                    $nuevo_contrato->num_panel = $request->input('num_panel');
+                    $nuevo_contrato->tipo = $request->input('tipo_contrato');
+                    $nuevo_contrato->activo = false;
+                    $nuevo_contrato->baja = false;
+                    $nuevo_contrato->save();
+                    $alta->programado = true;
+                    $alta->save();
+                    $contrato = $nuevo_contrato->fresh();
+                    $mensaje['success'][] = 'Alta de ' . $contrato->relCliente->getNomYApe() . ' programada.';
+                    ## set nuevo IP para el equipo
+                    if(!$contrato->RelEquipo->setIpAuto()) {
+                            $mensaje['error'][] = 'ERROR al intentar asignar IP al equipo. NOTA: Gateway(' . $contrato->relPlan->relPanel->relEquipo->ip . ') no programados';
+                        }else {
+                            $mensaje['success'][] = 'EXITO. IP asignado automáticamente.';
+                            $contrato = $contrato->fresh();
+                            $mensaje['success'][] = 'VER. contrato nuevo en Mikrotik, probar y habilitar habilitar método';
+                            /* $rta = $contrato->createContratoGateway();
+                            if (!$this->analizarRta($rta)){
+                                $mensaje['error'][] = $rta;
+                            } else {
+                                $mensaje['success'][] = $rta;
+                            } */
+                            $mensaje['success'][] = 'VER: Deshabilita el contrato, probar y habilitar método';
+                            /* $rta = $contrato->changeStateContratoGateway();
+                            if (!$this->analizarRta($rta)){
+                                $mensaje['error'][] = $rta;
+                            } */
+                        }
+                    $mensaje['success'][] = 'VER Mac en Ubiquiti, probar y habilitar método.';
+                    /* $rta = $contrato->modificarMac(0);
+                    if (!$this->analizarRta($rta)){
+                        $mensaje['error'][] = $rta;
+                    } else {
+                        $mensaje['success'][] = $rta;
+                    } */
+            }
+        //dd($mensaje);
+        return $mensaje;
+    }
+
     private function guardarEquipo(Request $request) {
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $equipo = new Equipo;
         $equipo->nombre = $request->input('nombre');
         $equipo->mac_address = $request->input('mac_address');
@@ -205,7 +320,7 @@ class AltaController extends Controller
             $equipo->ip = $request->input('ip');
         }
         $equipo->save();
-        return $equipo;
+        return $equipo->fresh();
     }
 
     private function validarEquipo(Request $request, $validate_mac = false)
@@ -231,11 +346,63 @@ class AltaController extends Controller
         } 
     }
     
+    private function analizarRta ($rta){
+        if ($wordTest = str_split($rta, 5)[0] === 'EXITO') {
+            return true;
+        } elseif ($wordTest === 'ERROR') {
+            return false;
+        }
+        return null;
+        
+    }
+    
+    private function validarPaso6 (Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'paso' => 'required|numeric|min:1|max:6',
+                'num_panel' => 'required|numeric|min:1|max:99999',
+                'tipo_contrato' => 'required|numeric|min:1|max:4',
+                'alta_id' => 'required|numeric|min:1|max:99999',
+                'equipo_id' => 'required|numeric|min:1|max:99999'
+            ]
+        );
+        if ($validator->fails()) {
+            return($validator->errors());
+        }else {
+            return false;
+        }
+    }
+    
+    public function cancelApi (Request $request){
+        ($alta = Alta::find($request->input('id')));
+        if ($alta->anulado) {
+            $alta->anulado = false;
+            $respuesta['success'][] = 'Se anuló Alta del Cliente: ' . $alta->relCliente->getNomYApe();
+        } else {
+            $alta->anulado = true;
+            $respuesta['success'][] = 'Se restableció Alta del Cliente: ' . $alta->relCliente->getNomYApe();
+        }
+        $alta->save();
+        return redirect ('adminAltas')->with('mensaje', $respuesta);
+    }
+
     ### API-Rest Metodos
 
     public function getAltaPorId ($id) {
-        ($alta = ($id) ? (Alta::select('id', 'cliente_id', 'direccion_id', 'plan_id', 'comentarios')->find($id)) : null);
+        ($alta = ($id) ? (Alta::select('id', 'cliente_id', 'direccion_id', 'plan_id', 'comentarios', 'created_at', 'instalacion_fecha')->find($id)) : null);
         return response()->json($alta, 200);
+    }
+
+    public function vueIndexProgramarAlta (Request $request)
+    {
+        return view('programarAlta', [
+            'internet' => 'active',
+            'alta' => $request->input('alta_id'),
+            'website' => env('DOMINIO_COMFUEG'),
+            'vuejs' => env('VUEJS_VERSION')
+        ]);
     }
 
     public function vueIndex2 ($id = null)
@@ -257,11 +424,5 @@ class AltaController extends Controller
         $alta->save();
         return response()->json(true, 200);
     }
-    public function cancelApi (Request $request){
-        ($alta = Alta::find($request->input('id')));
-        $alta->anulado = true;
-        $alta->save();
-        $respuesta['success'][] = 'Se anulo Alta del Cliente: ' . $alta->relCliente->getNomYApe();
-        return redirect ('adminAltas')->with('mensaje', $respuesta);
-    }
+    
 }

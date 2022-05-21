@@ -233,4 +233,24 @@ class PanelController extends Controller
         $Panel->save();
         return redirect('adminPaneles')->with('mensaje', $respuesta);
     }
+
+    ### API Methods
+
+    public function getPanels() {
+        $Paneles = Panel::select('id', 'ssid')
+                        ->where('activo', 1)
+                        ->orderBy('num_site')
+                        ->whereIn('rol', ['PANEL'])
+                        ->get();
+        return response()->json($Paneles, 200);
+    }
+    
+    public function getPanelById($id) {
+        $panel = Panel::find($id);
+        if ($panel) {
+            return response()->json($panel, 200);
+        }else {
+            return response()->json(false, 200);
+        }
+    }
 }//fin de la clase

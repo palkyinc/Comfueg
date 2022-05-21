@@ -64,7 +64,7 @@ class ClienteController extends Controller
         $this->validar($request);
         $cliente = new Cliente;
         $cliente->id = $request->input('id');
-        $cliente->nombre = $this->primerasMayusculas($request->input('nombre'));
+        $cliente->nombre = $this->primerasMayusculas(trim($request->input('nombre')));
         $cliente->apellido = strtoupper(trim($request->input('apellido')));
         $cliente->cod_area_tel = $request->input('cod_area_tel');
         $cliente->telefono = $request->input('telefono');
@@ -79,7 +79,11 @@ class ClienteController extends Controller
         $words = explode (' ', strtolower(trim($string)));
         $string = '';
         foreach ($words as $word) {
-            $string = $string . ' ' . ucfirst($word);
+            if ($string != '') {
+                $string = $string . ' ' . ucfirst($word);
+            } else {
+                $string = ucfirst($word);
+            }
         }
         return $string;
     }
@@ -168,7 +172,7 @@ class ClienteController extends Controller
 
     private function updateInBase( Request $request, $noEsApi)
     {
-        $nombre = $this->primerasMayusculas($request->input('nombre'));
+        $nombre = $this->primerasMayusculas(trim($request->input('nombre')));
         $apellido = strtoupper(trim($request->input('apellido')));
         $cod_area_tel = $request->input('cod_area_tel');
         $telefono = $request->input('telefono');

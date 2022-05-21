@@ -203,7 +203,6 @@ Vue.component('direccion', {
                                 }
                             } 
                         };
-        //console.log(this.datosArray_calle_ori);
         $("#calleSearch").easyAutocomplete(optionsFinal);
         $("#entrecalle1Search").easyAutocomplete(optionsFinal);
         $("#entrecalle2Search").easyAutocomplete(optionsFinal);
@@ -293,7 +292,6 @@ Vue.component('direccion', {
     methods: {
         validar_comentarios() {
             let longitud = this.comentarios.length;
-            console.log(longitud > 500 || longitud < 3);
             if ((longitud < 501 && longitud > 2) || longitud === 0) {
                 this.class_comentarios = 'form-control is-valid';
                 this.mensaje_comentarios = 'Max: 500. Caracteres: ' + longitud;
@@ -436,7 +434,6 @@ Vue.component('direccion', {
         },
         buscar_en_array(candidato, array) {
             let match_id = false;
-            //console.log(array);
             array.forEach(element => {
                 if (candidato == element.nombre.replace(/[\r\n]+/gm, ""))
                 {
@@ -567,7 +564,7 @@ Vue.component('direccion', {
                 this.class_guardar_button_direccion = 'ocultar';
                 this.class_cambiar_button_direccion = 'ocultar';
                 if (typeof (data) == 'number'){
-                    console.log(this.id_direccion = data);
+                    this.id_direccion = data;
                 }
             } else {
                 this.mensaje_direccion = 'Algo salió mal...';

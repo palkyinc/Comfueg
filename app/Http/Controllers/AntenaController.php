@@ -135,4 +135,12 @@ class AntenaController extends Controller
     {
         //
     }
+
+    ### API-Rest Metodos
+
+    public function getAllAntenas () {
+        $antenas = Antena::all();
+        return response()->json($antenas, 200);
+    }
+
 }//fin de la clase

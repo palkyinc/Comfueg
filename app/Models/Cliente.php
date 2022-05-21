@@ -19,8 +19,7 @@ class Cliente extends Model
 
     public function getNomYApe ()
     {
-        if ($this->es_empresa)
-        {
+        if ($this->es_empresa){
             return $this->apellido;
         }
         else {

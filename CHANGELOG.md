@@ -20,6 +20,8 @@ Secuencia de arctualización en server producción:
 3.	Si corresponde realizar un docker build y editar el .yml con la nueva version de la imagen y correr docker-compose.
 2.	realizar un migrate y un compose update.
 
+13-5-22- se corrige problema con Paneles afectado en incidentes globales. Taria paneles dados de baja.
+
 ## [0.7.13] - 2022-XX-XX
 ### Added
 1.	

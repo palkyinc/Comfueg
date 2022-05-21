@@ -68,43 +68,53 @@ $mostrarSololectura = true;
                         @foreach ($altas as $alta)
                             <tr>
                                 
-                            <th scope="row"> {{$alta->relCliente->getNomyApe()}}</th>
-                            <td>{{$alta->relDireccion->getResumida()}}</td>
-                            <td>{{$alta->relPlan->nombre}}</td>
-                            <td>{{$alta->comentarios}}</td>
-                            @if ($alta->getStatus(true))
-                                <td class="alert alert-success">
-                            @else
-                                <td class="alert alert-danger">
-                            @endif
-                                <a href="#" title="Cambiar fecha de instalación" class="btn btn-link" data-toggle="modal" data-target="#altaCambioFecha{{$alta->id}}">
-                                    {{$alta->getStatus()}}
-                                </a>
-                            </td>
-                            <td class="conFlex">
-                                @can('altas_edit')
-                                    <a href="/modificarAlta/{{ $alta->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
-                                        <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                <th scope="row"> {{$alta->relCliente->getNomyApe()}}</th>
+                                <td>{{$alta->relDireccion->getResumida()}}</td>
+                                <td>{{$alta->relPlan->nombre}}</td>
+                                <td>{{$alta->comentarios}}</td>
+                                @if ($alta->getStatus(true))
+                                    <td class="alert alert-success">
+                                @else
+                                    <td class="alert alert-danger">
+                                @endif
+                                    <a href="#" title="Cambiar fecha de instalación" class="btn btn-link" data-toggle="modal" data-target="#altaCambioFecha{{$alta->id}}">
+                                        {{$alta->getStatus()}}
                                     </a>
-                                    <form action="/anularAlta" method="post" class="margenAbajo">
-                                    @csrf
-                                    @method('patch')
-                                        <input type="hidden" name="id" value="{{$alta->id}}">
-                                        <button type="submit" class="btn btn-outline-secundary boton-anular"  title="Anular">
-                                            <img src="imagenes/103761_comment_cancel_icon.svg" alt="imagen de Cancelar" height="20px">
-                                        </button>
-                                    </form>
-                                    <form action="/programarAlta" method="post" class="margenAbajo">
-                                    @csrf
-                                    @method('PUT')
-                                        <input type="hidden" name="alta_id" value="{{$alta->id}}">
-                                        <button type="submit" class="btn btn-outline-secundary"  title="Pasar a Contrato">
-                                            <img src="imagenes/contract_contract sign_deal_icon.svg" alt="imagen de firma contracto" height="20px">
-                                        </button>
-                                    </form>
-                                @endcan
-                            </td>
-                            
+                                </td>
+                                @if ($alta->programado)
+                                    <td class="alert alert-success" title="Para modificar ir a Contratos">PROGRAMADO</td>
+                                @else
+                                    <td class="conFlex">
+                                        @can('altas_edit')
+                                            <a href="/modificarAlta/{{ $alta->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
+                                                <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
+                                            </a>
+                                            <form action="/anularAlta" method="post" class="margenAbajo">
+                                            @csrf
+                                            @method('patch')
+                                                <input type="hidden" name="id" value="{{$alta->id}}">
+                                                <button type="submit" class="btn btn-outline-secundary boton-anular"  title=
+                                                @if ($alta->anulado)
+                                                    "Restablecer"
+                                                @else
+                                                    "Anular"
+                                                @endif
+                                                >
+                                                    <img src="imagenes/103761_comment_cancel_icon.svg" alt="imagen de Cancelar" height="20px">
+                                                </button>
+                                            </form>
+                                            <form action="/programarAlta" method="post" class="margenAbajo">
+                                            @csrf
+                                            @method('PUT')
+                                                <input type="hidden" name="alta_id" value="{{$alta->id}}">
+                                                <button type="submit" class="btn btn-outline-secundary"  title="Pre-Instalación">
+                                                    <img src="imagenes/contract_contract sign_deal_icon.svg" alt="imagen de firma contracto" height="20px">
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    </td>
+                                @endif
+                                
                             </tr>
                         @endforeach
                     </tbody>
@@ -117,7 +127,7 @@ $mostrarSololectura = true;
         let btnDesactivar = zona.getElementsByClassName('boton-anular');
         for (let i = 0; i < btnDesactivar.length; i++) {
             btnDesactivar[i].addEventListener('click', e => {
-                if(!confirm("¿Seguro que anula el Alta de Contrato?")) {
+                if(!confirm("¿Confirma cambiar el estado del Alta?")) {
                     e.preventDefault()
                 }
             })

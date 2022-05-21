@@ -10,13 +10,16 @@ Vue.component('contrato', {
         </div>
         <div :class="class_alert_error" role="alert">
                 {{ mensaje_error }}
-                <button class="btn btn-success m-2" v-on:click="volver_admin">Volver</button>
+                <button class="btn btn-info m-2" v-on:click="volver_admin">Volver Altas</button>
         </div>
-        <button class="btn btn-primary m-2" v-on:click="borrar_formulario">Borrar formulario</button>
+        <div :class="class_borrar_formulario">
+            <button class="btn btn-primary m-2" v-on:click="borrar_formulario">Borrar formulario</button>
+            <a :href="url_volver_altas" class="btn btn-info m-2">Volver Altas</a>
+        </div>
         <div class="alert bg-light border col-10 mx-auto p-4" :class="div_guardar_alta">
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <span class="input-group-text">Comentarios</span>
+                    <span class="input-group-text">Notas de la Instalación</span>
                 </div>
                 <textarea class="form-control" aria-label="Comentarios" v-model="comentarios" :class="class_comentarios" rows="auto" cols="50"></textarea>
                 <div class="input-group-prepend">
@@ -38,6 +41,11 @@ Vue.component('contrato', {
         }
     },
     computed: {
+        url_volver_altas: {
+            get: function () {
+                return store.state.url_volver_altas;
+            }
+        },
         div_title_alta: {
             get:function () {
                 return store.state.id_alta ? 'ocultar' : '';
@@ -64,8 +72,17 @@ Vue.component('contrato', {
                 store.state.class_guardar_button = newVal;
             }
         },
+        class_borrar_formulario: {
+            get: function () {
+              return (store.state.class_borrar_formulario ?  '' : 'ocultar');
+            },
+            set: function (newVal) {
+                store.state.class_guardar_button = newVal;
+            }
+        },
         class_alert_error: {
             get: function () {
+                console.log(store.state.class_alert_error);
                 if (store.state.class_alert_error == 0) {
                     return 'ocultar';
                 } else if (store.state.class_alert_error == 1) {
@@ -74,7 +91,7 @@ Vue.component('contrato', {
                     return 'alert alert-danger';
                 }
             },
-            set: function (newVal) {
+            set: function(newVal) {
                 store.state.class_alert_error = newVal;
             }
         },
@@ -92,6 +109,13 @@ Vue.component('contrato', {
             },
             set: function (newVal) {
                 store.state.div_planNext = newVal;
+            }
+        },
+        div_cliente: {
+            get: function() {
+                return (store.state.div_cliente);
+            },
+            set: function() {
             }
         },
         div_tipoContrato: {
@@ -120,10 +144,15 @@ Vue.component('contrato', {
         }
     },
     watch:{
+        div_cliente : function () {
+            if (!this.div_cliente) {
+                this.div_tipoContrato = false;
+            }
+        },
         div_tipoContrato : function () {
             if (!this.div_tipoContrato) {
                 this.div_direccionNext = false;
-                this.class_alert_error = 0;
+                //this.class_alert_error = 0;
             } else if (store.state.id_direccion) {
                 this.div_direccionNext = true
             }
@@ -184,6 +213,7 @@ Vue.component('contrato', {
 
 const store = new Vuex.Store({
     state: {
+        url_volver_altas: 'http://' + website + '/adminAltas',
         id_alta: null,
         id_cliente: null,
         esempresa: false,
@@ -200,7 +230,8 @@ const store = new Vuex.Store({
         class_alert_error: 0, //0=ocultar 1=Success 2=danger
         mensaje_error: '',
         alta_comentarios: '',
-        class_guardar_button: true
+        class_guardar_button: true,
+        class_borrar_formulario: true
     },
     mutations: {
         set_id_cliente(state, data) {
@@ -251,6 +282,8 @@ const store = new Vuex.Store({
             }else if (datos === true) {
                 store.state.class_alert_error = 1;
                 store.state.class_guardar_button = false;
+                store.state.class_borrar_formulario = false;
+                store.state.div_cliente = false;
                 store.state.mensaje_error = 'Alta guardada OK.';
             } else {
                 store.state.mensaje_error = 'Algo salió mal...';
@@ -259,12 +292,11 @@ const store = new Vuex.Store({
             }
         },
         set_data_modify (state, datos) {
-            store.commit('set_id_cliente', datos.cliente_id)
-            store.commit('set_id_direccion', datos.direccion_id)
-            store.commit('set_id_plan', datos.plan_id)
+            store.commit('set_id_cliente', datos.cliente_id);
+            store.commit('set_id_direccion', datos.direccion_id);
+            store.commit('set_id_plan', datos.plan_id);
             store.state.alta_comentarios = datos.comentarios;
             store.state.id_alta = datos.id;
-            console.log(datos);
         }
     },
     actions: {
@@ -296,8 +328,8 @@ const store = new Vuex.Store({
                 }
             };
             store.dispatch('fetch_api', {
-                url: url,
-                metodo: metodo,
+            url: url,
+            metodo: metodo,
                 datos: datos,
                 callback: 'post_guardar_alta',
             });
