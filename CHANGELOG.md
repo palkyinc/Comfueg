@@ -32,6 +32,13 @@ ___
 2. test Cliente pasa a ser panel de control de contrato, con consumos de clientes, historial de test.
 ___ -->
 
+## [0.8.0] - 2022-05-21
+### Added
+1. Altas admin terminado vistas.
+### Changed
+1. Metodo para realizar cambios en Clientes
+___
+
 ## [0.7.13] - 2022-04-20
 ### Added
 1. /listadoIssues, emite informe de todos los tickets abiertos en csv.
