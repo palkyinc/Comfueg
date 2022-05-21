@@ -140,4 +140,11 @@ class ProductoController extends Controller
     {
         //
     }
+
+    ### API-Rest Metodos
+
+    public function getAllProducts () {
+        $productos = Producto::all();
+        return response()->json($productos, 200);
+    }
 }

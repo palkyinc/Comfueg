@@ -10,6 +10,8 @@ use App\Models\Contrato;
 use Illuminate\Http\Request;
 use Axiom\Rules\MacAddress;
 use DateTime;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Config;
 
 class EquipoController extends Controller
 {
@@ -116,25 +118,33 @@ class EquipoController extends Controller
         return view('modificarEquipoUserPass', ['nodos' => 'active', 'elemento' => $equipo]);
     }
     
-    public function validar(Request $request, $idEquipo = "")
+    public function validar(Request $request, $idEquipo = "", $esApi = false)
     {
-        if ($idEquipo) {
-            $condicion = ['mac_address' => ['unique:equipos,mac_address,' . $idEquipo, 'required', new MacAddress]];
-        } else {
-            $condicion = ['mac_address' => ['unique:equipos,mac_address', 'required', new MacAddress]];
-        }
-        $request->validate($condicion);
-        $request->validate(
-            [
+        $condicion = [
                 'nombre' => 'required|min:2|max:45',
                 'num_dispositivo' => 'required|numeric|min:1|max:99999',
                 'num_antena' => 'required|numeric|min:1|max:99999',
                 'ip' => 'nullable|ipv4',
                 'fecha_alta' => 'date',
                 'fecha_baja' => 'nullable|date',
-                'comentario' => 'max:65535'
-            ]
-        );
+                'comentario' => 'max:100'
+        ];
+        if ($idEquipo) {
+            $condicion['mac_address'] = ['unique:equipos,mac_address,' . $idEquipo, 'required', new MacAddress];
+        } else {
+            $condicion['mac_address'] = ['unique:equipos,mac_address', 'required', new MacAddress];
+        }
+        if ($esApi){
+            $validator = Validator::make(
+            $request->all(), $condicion);
+            if ($validator->fails()) {
+                return($validator->errors());
+            }else {
+                return false;
+            }
+        }else {
+            $request->validate($condicion);
+        }
     }
 
     /**
@@ -273,5 +283,78 @@ class EquipoController extends Controller
             return true;   
         }
         return false;
-    } 
+    }
+
+    ### API REST Functions
+
+    public function getById ($id) {
+        $equipo = Equipo::find($id);
+        if ($equipo) {
+            $equipo->num_dispositivo = Producto::find($equipo->num_dispositivo);
+            $equipo->num_antena = Antena::find($equipo->num_antena);
+            unset($equipo->password);
+            unset($equipo->usuario);
+            return response()->json($equipo, 200);
+        } else {
+            return response()->json(false, 200);
+        }
+    }
+    public function existByMac($macaddress) {
+        $regex = '/^(?:[0-9A-F]{2}[:]){5}(?:[0-9A-F]{2})$/';
+        $rta['status']= false;
+        $rta['datos'] = null;
+        $rta['mensaje'] = null;
+        if (preg_match($regex, $macaddress)) {
+            if($equipo = Equipo::select('id', 'nombre', 'num_dispositivo', 'mac_address', 'ip', 'num_antena', 'fecha_alta', 'fecha_baja', 'comentario')
+                                     ->where('mac_address', ($macaddress = strtoupper($macaddress)))
+                                     ->first()) {
+                $equipo->num_dispositivo = Producto::where('id', $equipo->num_dispositivo)->first();
+                $equipo->num_antena = Antena::where('id', $equipo->num_antena)->first();
+                $rta['datos'] = $equipo;
+                if ( ($contrato = Contrato::where('num_equipo', $equipo->id)->first()) || $panel = Panel::where('id_equipo', $equipo->id)->first()) 
+                {
+                    $rta['mensaje'] = ($contrato ? 
+                                                    'Equipo asignado al Contrado' . ($contrato->baja ? '(Dado de baja)' : '') . ' N°: ' . $contrato->id . ', del Cliente: ' . ($contrato->relCliente->getNomyApe()) 
+                                                    : 'Equipo asignado al Panel: ' . ($panel->ssid ?? '') );
+                    $rta['status'] = true;
+                }
+            }
+        }else {
+                $rta['status']= true;
+                $rta['mensaje'] = 'ERROR en Mac Address ingresado.';
+            }
+        
+        return response()->json($rta, 200);
+    }
+    
+    public function storeApiRest(Request $request)
+    {
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+        if (!$rta = $this->validar($request, $request->input('id'), true)) {
+            if ($request->input('id')) {
+                $Equipo = Equipo::find($request->input('id'));
+            }else {
+                $Equipo = new Equipo;
+                $Equipo->fecha_alta = new DateTime();
+                $Equipo->mac_address = strtoupper($request->input('mac_address'));
+            }
+            $Equipo->nombre = $request->input('nombre');
+            $Equipo->num_dispositivo = $request->input('num_dispositivo');
+            if($request->input('ip') === null)
+            {
+                $Equipo->ip = '0.0.0.0';
+            }else {
+                $Equipo->ip = $request->input('ip');
+            }
+            $Equipo->num_antena = $request->input('num_antena');
+            $Equipo->comentario = $request->input('comentario');
+            $Equipo->save();
+            $Equipo = $Equipo->fresh();
+            $rta = $Equipo->id;
+            $codigo = 200;
+        }else {
+            $codigo = 400;    
+        }
+        return response()->json($rta, $codigo);
+    }
 }##fin de la clase

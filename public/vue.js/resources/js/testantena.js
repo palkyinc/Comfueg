@@ -7,13 +7,19 @@ Vue.component('testantena',
             <h4 class="alert alert-info">Escaneando Antena Cliente</h4>
         </div>
         <div :class=class_apagado>
-            <h4 class="alert alert-danger">Equipo apagado o desasociado del Panel</h4>
+            <h4 class="alert alert-danger">Equipo apagado, desasociado del Panel o demora mucho en responder.</h4>
             <div class="col-12 pl-2">
                 <button type="button" class="btn btn-secondary" @click="volver_probar_cliente" >Nueva Prueba</button>
-                <a v-bind:href="url" class="btn btn-primary m-1">Volver Abono</a>
+                <a v-bind:href="url_volver" class="btn btn-primary m-1">Volver Abono</a>
             </div>
         </div>
-        <div :class="class_escaneado">
+        <div :class="class_escaneado" class="border">
+            
+            <p>Resultados:</p>
+            <div :class="class_error_macadress" class="alert alert-danger">ATENCIÓN personal técnico: Al parecer el equipo Cliente fue reemplazado y no fue actualizado en SLAM.</div>
+            <div :class="class_error_ssid" class="alert alert-danger">ATENCIÓN personal técnico: Al parecer el equipo fue cambiado de Panel y no fue actualizado en SLAM.</div>
+            <div :class="class_comentarios_equipo" class="alert alert-danger" >ATENCIÓN personal técnico: Equipo cliente, {{comentarios_equipo}}</div>
+                
             <table class="table table-sm table-bordered table-hover">
                 <thead class="thead-light">
                     <tr>
@@ -26,7 +32,7 @@ Vue.component('testantena',
                         <th>Role</th>
                         <th>SSID</th>
                         <th>Frecuencia</th>
-                        <th>Ruido</th>
+                        <th>Pot. TX</th>
                     </tr>
                 </thead>
                     <tr>
@@ -39,14 +45,13 @@ Vue.component('testantena',
                         <td>{{NetRole}}</td>
                         <td>{{SSID}}</td>
                         <td>{{Frecuency}}</td>
-                    <td>{{NoiseFloor}}</td>
+                        <td>{{TxPower}}dBm</td>
                     </tr>
             </table>
             <table class="table table-sm table-bordered table-hover">
-                <caption>Test de radioenlace</caption>
                 <thead class="thead-light">
                     <tr>
-                        <th>Señal</th>
+                        <th>Antena</th>
                         <th>Panel</th>
                         <th>CCQ</th>
                         <th>Uso CPU</th>
@@ -111,17 +116,93 @@ Vue.component('testantena',
                     <td v-else>{{Gateway}}</td>
                 </tr>
             </table>
+            <div>
+                <div :class="class_pruebas_anteriores">
+                    <p>Historial:</p>
+                    <table class="table table-sm table-bordered table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Nombre</th>
+                                <th>MacAddress</th>
+                                <th>Firmware</th>
+                                <th>Modelo</th>
+                                <th>SSID</th>
+                                <th>Pot. TX</th>
+                                <th>Antena</th>
+                                <th>Panel</th>
+                                <th>CCQ</th>
+                                <th>TX</th>
+                                <th>RX</th>
+                                <th>LAN</th>
+                                <th>Internet AVG</th>
+                                <th>Internet Perdidos</th>
+                                <th>Gateway AVG</th>
+                                <th>Gateway Perdidos</th>
+                            </tr>
+                        </thead>
+                            <tr v-for="historial_prueba in historial_pruebas">
+                                <td>{{historial_prueba.created_at.split("T")[0]}}</td>
+                                <td>{{historial_prueba.nom_equipo}}</td>
+                                <td>{{historial_prueba.mac_address}}</td>
+                                <td>{{historial_prueba.firmware}}</td>
+                                <td>{{historial_prueba.dispositivo}}</td>
+                                <td>{{historial_prueba.ssid}}</td>
+                                <td>agregar</td>
+                                <td>{{historial_prueba.senial}}</td>
+                                <td>{{historial_prueba.remote}}</td>
+                                <td>CCQ</td>
+                                <td>TX</td>
+                                <td>RX</td>
+                                <td>{{historial_prueba.lan_velocidad}}</td>
+                                <td>{{historial_prueba.internet_avg}}ms</td>
+                                <td>{{historial_prueba.internet_lost}}%</td>
+                                <td v-if="historial_prueba.wispro_avg">{{historial_prueba.wispro_avg}}ms</td>
+                                <td v-else></td>
+                                <td v-if="historial_prueba.wispro_lost">{{historial_prueba.wispro_lost}}%</td>
+                                <td v-else></td>
+                            </tr>
+                    </table>
+                    <button type="button" class="btn btn-secondary m-1" @click="cerrar_pruebas_anteriores" >Cerrar Pruebas Anteriores</button>
+                </div>
+                
+                <div>
+                    <p>Evaluación:</p>
+                    <div class="alert alert-danger" v-if="statusSignal === 0 || statusRemote === 0">Radioenlace: Baja señal, se deberá revisar orientación/obstrucciones.</div>
+                    <div class="alert alert-success" v-else-if="statusSignal === 1 && statusRemote === 1">Señal radioenlace OK</div>
+                    <div class="alert alert-info" v-else>Señal radioenlace Bien.</div>
+                    
+                    <div v-if="!(statusSignal === 0 || statusRemote === 0)">
+                        <div class="alert alert-danger" v-if="statusGatewayAVG === 0 && !(statusSignal === 0 || statusRemote === 0)">Se deberá revisar enlace Panel - Antena Cliente (Mucha Latencia a Gateway).</div>
+                        <div class="alert alert-success" v-else-if="statusInternetAVG === 0">Mucha Latencia, ver consumos instantaneos.</div>
+                        <div class="alert alert-success" v-else-if="statusInternetAVG === 1">Salida internet OK.</div>
+                        <div class="alert alert-info" v-else>Salida internet Bien.</div>
+                    </div>
+                    
+                    <div class="alert alert-danger" v-if="statusLan === 0">El Router WiFi de cliente está desconectado o apagado.</div>
+                    <div class="alert alert-danger" v-if="statusLan === 2">Reiniciar Router WiFi y Antena del Cliente.</div>
+                </div>
+
+            </div>
             <div class="col-12 pl-2">
-                <button type="button" class="btn btn-secondary" @click="volver_probar_cliente" >Nueva Prueba</button>
-                <a v-bind:href="url" class="btn btn-primary m-1">Volver Abono</a>
+                <button type="button" class="btn btn-secondary m-1" @click="volver_probar_cliente" >Nueva Prueba</button>
+                <a v-bind:href="url_volver" class="btn btn-primary m-1">Volver Abono</a>
+                <button type="button" class="btn btn-primary m-1" @click="pruebas_anteriores" >Pruebas Anteriores</button>
+                <a :href="url_antena" class="btn btn-primary m-1" target="_blank">Ir Antena</a>
+                <button class="btn btn-primary m-1" disabled>Reiniciar Antena</button>
+                <a :href="url_panel" class="btn btn-primary m-1" target="_blank">Ir {{panel_nombre}}</a>
+                <a href="#" class="btn btn-primary m-1">Ver TKT´s(Total/Abiertos)</a>
             </div>
         </div>
     </div>
     `,
     data(){
         return{
-            url: '/adminContratos?contrato=' + contrato,
+            url_volver: '/adminContratos?contrato=' + contrato,
+            url_panel: '',
+            url_antena: '',
             CCQ: '',
+            TxPower: '',
             ChannelWidth: '',
             CpuUse: '',
             DevModel: '',
@@ -159,10 +240,18 @@ Vue.component('testantena',
             statusGatewayAVG: '',
             class_escaneado: 'ocultar',
             class_escaneando: '',
-            class_apagado: 'ocultar'
+            class_apagado: 'ocultar',
+            class_error_macadress: 'ocultar',
+            class_error_ssid: 'ocultar',
+            class_pruebas_anteriores: 'ocultar',
+            contrato_datos: '',
+            historial_pruebas: '',
+            comentarios_equipo: '',
+            panel_nombre: ''
         }
     },
     mounted(){
+        this.getContrato();
         this.escanearCliente();
     },
     beforeUpdate(){
@@ -172,9 +261,61 @@ Vue.component('testantena',
 
     },
     watch: {
-
+        gatewayAvg: function () {
+            this.gatewayAvg = this.gatewayAvg ? this.gatewayAvg : 'No testeado';
+        },
+        Gateway: function () {
+            this.Gateway = this.Gateway ? this.Gateway : 'No testeado';
+        },
+        MacAdrress: function() {
+            if (this.MacAdrress != this.contrato_datos.num_equipo.mac_address) {
+                this.class_error_macadress = '';
+            }else {
+                this.class_error_macadress = 'ocultar';
+            }
+        },
+        comentarios_equipo: function() {
+            if (this.comentarios_equipo) {
+                this.class_comentarios_equipo = '';
+            }else {
+                this.class_comentarios_equipo = 'ocultar';
+            }
+        },
+        SSID: function () {
+            if (this.SSID != this.contrato_datos.num_panel.nombre) {
+                this.class_error_ssid = '';
+            } else {
+                this.class_error_ssid = 'ocultar';
+            }
+        },
+        contrato_datos: function () {
+            this.url_panel = 'https://' + this.contrato_datos.num_panel.ip;
+            this.url_antena = 'http://' + this.contrato_datos.num_equipo.ip;
+            this.panel_nombre = this.contrato_datos.num_panel.nombre;
+            this.comentarios_equipo = this.contrato_datos.num_equipo.comentario;
+        }
     },
     methods: {
+        cerrar_pruebas_anteriores: function() {
+            this.class_pruebas_anteriores = 'ocultar';
+        },
+        pruebas_anteriores: function() {
+            this.class_pruebas_anteriores = '';
+            fetch('http://' + website + '/getPruebasContract/' + contrato)
+                .then(response => response.json())
+                .then(data => {
+                    this.historial_pruebas = data;
+                    console.log(this.historial_pruebas);
+                })
+        },
+        getContrato: function () {
+            fetch('http://' + website + '/getContract/' + contrato)
+                .then(response => response.json())
+                .then(data => {
+                    this.contrato_datos = data;
+                    console.log(data);
+                })
+        },
         escanearCliente: function () {
             fetch('http://' + website + '/contractTest/' + contrato)
                 .then(response => response.json())
@@ -183,6 +324,7 @@ Vue.component('testantena',
                     {
 
                         this.CCQ = data.CCQ;
+                        this.TxPower = data.TxPower;
                         this.ChannelWidth = data.ChannelWidth;
                         this.CpuUse = data.CpuUse;
                         this.DevModel = data.DevModel;

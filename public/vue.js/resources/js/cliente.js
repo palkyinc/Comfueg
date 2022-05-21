@@ -2,7 +2,7 @@ Vue.component('cliente',
 {
     template: //html
 `
-<div>
+<div :class="class_div_cliente">
     <div class="container alert alert-info mx-auto m-2 p-2" :class="class_cliente_seleccionado" role="alert">
         <div class="row justify-content-between">
             <div class="col-8 pr-2" v-if="esempresa"><h4>Genesys ID: {{id_cliente}} | {{apellido}}</h4></div>
@@ -203,6 +203,13 @@ Vue.component('cliente',
         this.esempresa ? (this.mostrar_cliente = 'ocultar') : (this.mostrar_cliente = '');
     },
     computed: {
+        class_div_cliente: {
+            get: function () {
+                    return (store.state.div_cliente ? '' : 'ocultar');
+            },
+            set: function () {
+            }
+        },
         id_cliente: {
             get: function () {
                     return store.state.id_cliente;
@@ -421,7 +428,13 @@ Vue.component('cliente',
             }
         },
         checkNombre() {
-            if (this.nombre.length < 3 || this.nombre.length > 45) {
+            if (this.nombre.length != this.nombre.trim().length) {
+                this.mensaje_nombre = 'Tiene espacios al principio o final.';
+                this.class_nombre = 'form-control is-invalid';
+                this.error_cliente.nombre = true;
+                return false;
+            }
+            else if (this.nombre.length < 3 || this.nombre.length > 45) {
                 this.mensaje_nombre = 'Nombre: min 3, max 45 caracteres.';
                 this.class_nombre = 'form-control is-invalid';
                 this.error_cliente.nombre = true;
@@ -434,7 +447,13 @@ Vue.component('cliente',
             }
         },
         checkApellido() {
-            if (this.apellido.length < 3 || this.apellido.length > 45) {
+            if (this.apellido.length != this.apellido.trim().length) {
+                this.mensaje_apellido = 'Tiene espacios al principio o final.';
+                this.class_apellido = 'form-control is-invalid';
+                this.error_cliente.apellido = true;
+                return false;
+            }
+            else if (this.apellido.length < 3 || this.apellido.length > 45) {
                 this.mensaje_apellido = 'Apellido: min 3, max 45 caracteres.';
                 this.class_apellido = 'form-control is-invalid';
                 this.error_cliente.apellido = true;

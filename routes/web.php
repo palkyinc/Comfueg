@@ -33,11 +33,12 @@ use App\Http\Controllers\Issue_titleController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\Info_ClienteController;
 use App\Http\Controllers\AltaController;
-use App\Custom\Ubiquiti;
 use App\Models\Proveedor;
+use App\Models\Cliente; //TEST
 use App\Models\Site_has_incidente;
 ####TEST
 /* 
+use App\Custom\Ubiquiti;
 use App\Models\Mail_group;
 use Illuminate\Support\Facades\File;
 use App\Custom\GatewayMikrotik;
@@ -70,7 +71,19 @@ use Illuminate\Support\Facades\Mail;
 dd(CronFunciones::generarArchivoSem($dias));
 }); */ 
 Route::get('/sarasa', function () {
-        echo 'Estas metiendo mal los dedos';
+        //echo 'Estas metiendo mal los dedos';
+        $clientes = Cliente::get();
+        foreach ($clientes as $cliente) {
+                if ($cliente->cod_area_tel == null) {
+                        $cliente->cod_area_tel = 154;
+                }
+                if ($cliente->cod_area_cel == null) {
+                        $cliente->cod_area_cel = 154;
+                }
+                $cliente->nombre = trim($cliente->nombre);
+                $cliente->save();
+        }
+        dd('DONE! Cliente reformateados');
 });
 
 ### Route index
@@ -187,13 +200,14 @@ Route::patch('/modificarContrato', [ContratoController::class, 'update'])->middl
 Route::patch('/realtaContrato', [ContratoController::class, 'undestroy'])->middleware('auth');
 Route::delete('/eliminarContrato', [ContratoController::class, 'destroy'])->middleware('auth');
 Route::get('/altaContrato', [ContratoController::class, 'vueIndex'])->middleware('auth');
+### API-Rest Altas
 Route::put('/guardarContrato', [ContratoController::class, 'storeContractFromAlta'])->middleware('auth');
 ####################
 ####### CRUD Altas
 Route::get('/adminAltas', [AltaController::class, 'index'])->middleware('auth');
 Route::post('/modificarAlta', [AltaController::class, 'updateInstallDate'])->middleware('auth');
 Route::get('/modificarAlta/{id}', [AltaController::class, 'vueIndex2'])->middleware('auth');
-Route::put('/programarAlta', [AltaController::class, 'programming'])->middleware('auth');
+Route::put('/programarAlta', [AltaController::class, 'vueIndexProgramarAlta'])->middleware('auth');
 Route::get('/agregarAlta', [AltaController::class, 'vueIndex2'])->middleware('auth');
 ### API-Rest Altas
 Route::put('/agregarAlta', [AltaController::class, 'storeApi'])->middleware('auth');
@@ -207,6 +221,9 @@ Route::get('/modificarAntena/{id}', [AntenaController::class, 'edit'])->middlewa
 Route::patch('/modificarAntena', [AntenaController::class, 'update'])->middleware('auth');
 Route::get('/agregarAntena', [AntenaController::class, 'create'])->middleware('auth');
 Route::post('/agregarAntena', [AntenaController::class, 'store'])->middleware('auth');
+### API-Rest Planes
+####################
+Route::get('/getAntenas', [AntenaController::class, 'getAllAntenas'])->middleware('auth');
 ####################
 ####### CRUD Barrios
 Route::get('/adminBarrios', [BarrioController::class, 'index'])->middleware('auth');
@@ -266,6 +283,10 @@ Route::patch('/modificarEquipoUserPass', [EquipoController::class, 'updateUserPa
 Route::patch('/equipoActivar', [EquipoController::class, 'activar'])->middleware('auth');
 Route::get('/agregarEquipo', [EquipoController::class, 'create'])->middleware('auth');
 Route::post('/agregarEquipo', [EquipoController::class, 'store'])->middleware('auth');
+### API-Rest Equipos
+Route::get('/getEquipo/{id}', [EquipoController::class, 'getById'])->middleware('auth');
+Route::get('/existeEquipo/{macaddress}', [EquipoController::class, 'existByMac'])->middleware('auth');
+Route::put('/agregarEquipo2', [EquipoController::class, 'storeApiRest'])->middleware('auth');
 ####################
 ####### CRUD Backups 
 Route::get('/adminBackups', [BackupController::class, 'index'])->middleware('auth');
@@ -290,6 +311,9 @@ Route::patch('/modificarPanel', [PanelController::class, 'update'])->middleware(
 Route::get('/panelActivar/{id}', [PanelController::class, 'activar'])->middleware('auth');
 Route::get('/agregarPanel', [PanelController::class, 'create'])->middleware('auth');
 Route::post('/agregarPanel', [PanelController::class, 'store'])->middleware('auth');
+### API-Rest Equipos
+Route::get('/getPanels', [PanelController::class, 'getPanels'])->middleware('auth');
+Route::get('/getPanel/{id}', [PanelController::class, 'getPanelById'])->middleware('auth');
 ####################
 ####### CRUD Proveedores
 Route::get('/adminProveedores', [ProveedoresController::class, 'index'])->middleware('auth');
@@ -317,7 +341,9 @@ Route::get('/modificarProducto/{id}', [ProductoController::class, 'edit'])->midd
 Route::patch('/modificarProducto', [ProductoController::class, 'update'])->middleware('auth');
 Route::get('/agregarProducto', [ProductoController::class, 'create'])->middleware('auth');
 Route::post('/agregarProducto', [ProductoController::class, 'store'])->middleware('auth');
+### API-Rest Planes
 ####################
+Route::get('/getProductos', [ProductoController::class, 'getAllProducts'])->middleware('auth');
 ####### CRUD Sites
 Route::get('/adminSites', [SiteController::class, 'index'])->middleware('auth');
 Route::get('/modificarSite/{id}', [SiteController::class, 'edit'])->middleware('auth');

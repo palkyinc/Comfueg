@@ -4,8 +4,7 @@
 @php
 $mostrarSololectura = true;
 @endphp
-    <h3>Prueba contrato : {{$contrato->id}} | {{$contrato->relCLiente->getNomYApe()}}</h3>
-    <h3>Plan: {{$contrato->relPlan->nombre}}</h3>
+    <h3>Prueba contrato : {{$contrato->id}} | {{$contrato->relCLiente->getNomYApe()}} | {{$contrato->relPlan->nombre}} | Desde:</h3>
     <div id="testContrato">
         <testantenacliente></testantenacliente>
     </div>
@@ -24,7 +23,7 @@ $mostrarSololectura = true;
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <script src="/vue.js/resources/js/testantena.js"></script>
         <script src="/vue.js/resources/js/testAntenaCliente.js"></script>
-        @include('layouts.consumosCliente2')
+        {{-- @include('layouts.consumosCliente2') --}}
     @endsection
 @endcan
 @include('sinPermiso')

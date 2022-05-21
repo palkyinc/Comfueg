@@ -45,11 +45,7 @@ $mostrarSololectura = true;
                             <tr>
                                 
                             <th scope="row"> {{$cliente->id}}</th>
-                            @if ($cliente->nombre)
-                                <td>{{$cliente->apellido . ', ' . $cliente->nombre}}</td>
-                            @else 
-                                <td>{{$cliente->apellido}}</td>
-                            @endif
+                                <td>{{$cliente->getNomYApe()}}</td>
                             @if (!$cliente->telefono)
                                 <td></td>
                             @else 

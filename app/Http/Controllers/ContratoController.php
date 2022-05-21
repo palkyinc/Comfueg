@@ -59,6 +59,24 @@ class ContratoController extends Controller
                                         'vuejs' => env('VUEJS_VERSION')]);
     }
 
+    public function getContract ($id) {
+        if (preg_match("/^[0-9]*$/", $id)) {
+            $contrato = Contrato::find($id);
+            $contrato->num_equipo = Equipo::find($contrato->num_equipo);
+            unset($contrato->num_equipo->password);
+            unset($contrato->num_equipo->usuario);
+            $contrato->num_panel = Equipo::find($contrato->num_panel);
+            unset($contrato->num_panel->password);
+            unset($contrato->num_panel->usuario);
+            $contrato->num_cliente = Cliente::find($contrato->num_cliente);
+            $contrato->num_plan = Plan::find($contrato->num_plan);
+            if ($contrato) {
+                return response()->json($contrato);
+            }
+        }
+        return response()->json(null);
+    }
+
     public function vueIndex ()
     {
         return view('altaContrato', [
@@ -116,31 +134,27 @@ class ContratoController extends Controller
 
     public function storeContractFromAlta (Request $request){
         ##verificar num_panel
-        if (null === $request->input('num_panel') ||
-            'null' === $request->input('num_panel') ||
-            !is_numeric($request->input('num_panel')) ||
-            !Panel::where('activo', true)->where('rol', 'PANEL')->find($request->input('num_panel')) )
-            {
-                $mensaje['error'][] = 'Error en el id de Panel ingresado';
-                return redirect('/adminAltas')->with('mensaje', $mensaje);
-            }
         $alta = Alta::find($request->input('alta_id'));
         $contrato = new Contrato;
         $contrato->num_cliente = $alta->cliente_id;
         $contrato->num_plan = $alta->plan_id;
         $contrato->id_direccion = $alta->direccion_id;
-        $contrato->num_equipo = ($request->input('equipo_id'));
+        $contrato->num_equipo = ($request->input('num_equipo'));
+        $contrato->router_id = ($request->input('router_id'));
         $contrato->num_panel = ($request->input('num_panel'));
+        $contrato->tipo = ($request->input('tipo'));
         $contrato->activo = false;
         $contrato->baja = true;
+        $contrato->pem = true;
         $contrato->save();
-        ## set nuevo IP para el equipo
+        /* ## set nuevo IP para el equipo
         if(!$contrato->RelEquipo->setIpAuto()) {
                 $mensaje['error'][] = 'Error al intentar asignar IP al equipo. NOTA: Panel y Mikrotik no programados';
                 return redirect('/adminAltas')->with('mensaje', $mensaje);
             }else {
                 $contrato->relEquipo->refresh();
             }
+        ## set Mac en Ubiquiti
         $rta = $this->modificarMac($contrato, 0);
         if (!$this->analizarRta($rta)){
             $mensaje['error'][] = $rta;
@@ -148,6 +162,7 @@ class ContratoController extends Controller
         } else {
             $mensaje['success'][] = $rta;
         }
+        ## set contrato en Mikrotik
         $rta = $this->createContratoGateway($contrato);
         if (!$this->analizarRta($rta)){
             $mensaje['error'][] = $rta;
@@ -155,18 +170,21 @@ class ContratoController extends Controller
         } else {
             $mensaje['success'][] = $rta;
         }
+        ## Deshabilita el contrato
         $rta = $this->changeStateContratoGateway($contrato);
         if (!$this->analizarRta($rta)){
             $mensaje['error'][] = $rta;
             return redirect('/adminAltas')->with('mensaje', $mensaje);
         } else {
             $mensaje['success'][] = $rta;
-        }
+        } */
+        $mensaje['success'][] = 'Ejem de mensaje OK';
+        $mensaje['error'][] = 'Ejem de mensaje ERROR';
         $alta->programado = true;
         $alta->save();
         $contrato->baja = false;
         $contrato->save();
-        return redirect('/adminAltas')->with('mensaje', $mensaje);
+        return response()->json($mensaje, 200);
     }
 
     private function analizarRta ($rta){
