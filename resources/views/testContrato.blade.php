@@ -23,7 +23,7 @@ $mostrarSololectura = true;
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <script src="/vue.js/resources/js/testantena.js"></script>
         <script src="/vue.js/resources/js/testAntenaCliente.js"></script>
-        {{-- @include('layouts.consumosCliente2') --}}
+        @include('layouts.consumosCliente2')
     @endsection
 @endcan
 @include('sinPermiso')
