@@ -32,6 +32,11 @@ ___
 2. test Cliente pasa a ser panel de control de contrato, con consumos de clientes, historial de test.
 ___ -->
 
+## [0.8.1] - 2022-05-24
+### Changed
+1. Arreglos en vista testContrato
+2. Arreglos en Admin Altas, intentaba cargar router_id como false en el caso de tipo de Contrato 1.
+
 ## [0.8.0] - 2022-05-21
 ### Added
 1. Altas admin terminado vistas.
