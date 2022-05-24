@@ -89,7 +89,7 @@ class ContratoController extends Controller
     public function getListadoContratosactivos ()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
-        $contratos = Contrato::where('baja', false)->get();
+        $contratos = Contrato::where('no_paga', false)->where('baja', false)->get();
         $newFile = fopen ('../storage/app/public/ListadoClientes-' . date('Ymd') . '.csv', 'w');
         fwrite($newFile ,'ID Genesys;APELLIDO, Nombre;Plan;Estado;Sistema' . PHP_EOL);
         foreach ($contratos as $key => $value)
@@ -139,13 +139,13 @@ class ContratoController extends Controller
         $contrato->num_cliente = $alta->cliente_id;
         $contrato->num_plan = $alta->plan_id;
         $contrato->id_direccion = $alta->direccion_id;
-        $contrato->num_equipo = ($request->input('num_equipo'));
-        $contrato->router_id = ($request->input('router_id'));
-        $contrato->num_panel = ($request->input('num_panel'));
+        $contrato->num_equipo = ($request->input('num_equipo') ? $request->input('num_equipo') : null);
+        $contrato->router_id = ($request->input('router_id') ? $request->input('router_id') : null);
+        $contrato->num_panel = ($request->input('num_panel') ? $request->input('num_panel') : null);;
         $contrato->tipo = ($request->input('tipo'));
         $contrato->activo = false;
         $contrato->baja = true;
-        $contrato->pem = true;
+        $contrato->pem = false;
         $contrato->save();
         /* ## set nuevo IP para el equipo
         if(!$contrato->RelEquipo->setIpAuto()) {
@@ -178,8 +178,7 @@ class ContratoController extends Controller
         } else {
             $mensaje['success'][] = $rta;
         } */
-        $mensaje['success'][] = 'Ejem de mensaje OK';
-        $mensaje['error'][] = 'Ejem de mensaje ERROR';
+        $mensaje['success'][] = 'Se grabó Contrato en Base de Datos.';
         $alta->programado = true;
         $alta->save();
         $contrato->baja = false;
