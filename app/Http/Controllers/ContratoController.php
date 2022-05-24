@@ -65,11 +65,14 @@ class ContratoController extends Controller
             $contrato->num_equipo = Equipo::find($contrato->num_equipo);
             unset($contrato->num_equipo->password);
             unset($contrato->num_equipo->usuario);
-            $contrato->num_panel = Equipo::find($contrato->num_panel);
+            $contrato->num_panel = Panel::find($contrato->num_panel);
             unset($contrato->num_panel->password);
             unset($contrato->num_panel->usuario);
             $contrato->num_cliente = Cliente::find($contrato->num_cliente);
             $contrato->num_plan = Plan::find($contrato->num_plan);
+            $contrato->num_panel->id_equipo = Equipo::find($contrato->num_panel->id_equipo);
+            unset($contrato->num_panel->id_equipo->password);
+            unset($contrato->num_panel->id_equipo->usuario);
             if ($contrato) {
                 return response()->json($contrato);
             }

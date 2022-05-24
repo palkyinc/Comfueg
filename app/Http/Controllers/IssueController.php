@@ -61,6 +61,8 @@ class IssueController extends Controller
         if (isset($request->contrato_id))
         {
             $contrato = Contrato::find($request->contrato_id);
+            $cliente = $contrato->relCliente;
+            $contratos = Contrato::where('num_cliente', $cliente->id)->get();
         }else {
             $contrato=null;
         }
