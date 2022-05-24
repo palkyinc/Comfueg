@@ -8,7 +8,7 @@ $mostrarSololectura = true;
     <div id="testContrato">
         <testantenacliente></testantenacliente>
     </div>
-    <div class="container bg-light border py-2">
+    <div class="bg-light border p-3 mx-0 my-3">
         <div id="chartInsta{{$contrato->id}}" style="height: 300px;" class="pt-4"></div>
         <div id="chartDay{{$contrato->id}}" style="height: 300px;"></div>
         <div id="chartWeek{{$contrato->id}}" style="height: 300px;"></div>
@@ -23,7 +23,7 @@ $mostrarSololectura = true;
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <script src="/vue.js/resources/js/testantena.js"></script>
         <script src="/vue.js/resources/js/testAntenaCliente.js"></script>
-        @include('layouts.consumosCliente2')
+        {{-- @include('layouts.consumosCliente2') --}}
     @endsection
 @endcan
 @include('sinPermiso')

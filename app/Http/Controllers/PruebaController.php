@@ -219,6 +219,9 @@ class PruebaController extends Controller
     public function getPruebasContract($contrato_id)
     {
         $pruebas = Prueba::where('contrato_id', $contrato_id)->get();
+        foreach ($pruebas as $key => $prueba) {
+            $prueba->user_id = $prueba->relUser->name;
+        }
         return response()->json($pruebas, 200);
     }
     public function testContract($contrato_id)
