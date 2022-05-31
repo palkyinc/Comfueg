@@ -22,7 +22,7 @@ Vue.component('programaralta', {
                                         <p><strong>Cliente</strong>: {{cliente}}</p>
                                         <p><strong>Direccion</strong>: {{direccion}}</p>
                                         <p><strong>Plan</strong>: {{plan}}</p>
-                                        <p><strong>Autor</strong>: <strong>Fecha de alta</strong>: {{fecha_alta}} | <strong>Coordinado</strong>: {{instalacion_fecha}}</p>
+                                        <p><strong>Creado por</strong>: {{creator}} | <strong>Fecha de alta</strong>: {{fecha_alta}} | <strong>Coordinado</strong>: {{instalacion_fecha}}</p>
                                         <p><strong>Comentarios de la Instalación</strong>: {{comentarios_ins}}</p>
                                     </div>
                                     <ul class="list-group list-group-flush">
@@ -294,6 +294,11 @@ Vue.component('programaralta', {
                 return store.state.url_volver_altas;
             }
         },
+        creator: {
+            get: function () {
+                return store.state.creator;
+            }
+        },
         cliente: {
             get: function () {
                 return store.state.cliente;
@@ -426,6 +431,7 @@ const store = new Vuex.Store({
         inst_paso: '1',
         cliente_nombre: null,
         cliente: null,
+        creator: null,
         direccion: null,
         fecha_alta: null,
         instalacion_fecha: null,
@@ -513,6 +519,10 @@ const store = new Vuex.Store({
                 callback: 'set_elements_direccion',
                 url: 'http://' + website + '/searchIdDireccion/' + data.direccion_id
             });
+            store.dispatch('get_fetch_api', {
+                callback: 'set_elements_user',
+                url: 'http://' + website + '/user/' + data.creator
+            });
             state.fecha_alta = data.created_at.split('T')[0];
             state.instalacion_fecha = data.instalacion_fecha.split(' ')[0];
         },
@@ -536,6 +546,9 @@ const store = new Vuex.Store({
         },
         set_elements_equipo_id (state, data) {
             state.equipo_id = data;
+        },
+        set_elements_user (state, data) {
+            state.creator = data.name;
         },
         set_elements_router_id (state, data) {
             state.router_id = data;

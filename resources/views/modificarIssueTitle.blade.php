@@ -14,10 +14,14 @@ $mostrarSololectura = true;
                 <label for="title">Título: </label>
                 <input type="text" name="title" value="{{$elemento->title}}" maxlength="45"  class="form-control">
             </div>
+            <div class="form-group col-md-6">
+                <label for="tmr">TMR: </label>
+                <input type="text" name="tmr" value="{{$elemento->tmr}}" maxlength="45"  class="form-control">
+            </div>
         </div>
             <input type="hidden" name="id" value="{{$elemento->id}}">
             <button type="submit" class="btn btn-primary" id="enviar">Modificar</button>
-            <a href="/adminIssueTitles" class="btn btn-primary">volver</a>
+            <a href="/adminIssuesTitles" class="btn btn-primary">volver</a>
     </form>
     </div>
 

@@ -82,7 +82,6 @@ Vue.component('contrato', {
         },
         class_alert_error: {
             get: function () {
-                console.log(store.state.class_alert_error);
                 if (store.state.class_alert_error == 0) {
                     return 'ocultar';
                 } else if (store.state.class_alert_error == 1) {
@@ -288,7 +287,7 @@ const store = new Vuex.Store({
             } else {
                 store.state.mensaje_error = 'Algo salió mal...';
                 store.state.class_alert_error = 2;
-                console.log('Algo salió mal...' + datos);
+                console.error('Algo salió mal...' + datos);
             }
         },
         set_data_modify (state, datos) {

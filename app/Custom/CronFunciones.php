@@ -184,24 +184,28 @@ abstract class CronFunciones
         $archivoMes = date('Ym') . '-totMes.dat';
         $hora = date('H.i');
         $gateways = self::getGateways();
-        foreach ($gateways as $elemento)
+        foreach ($gateways as $mikrotik)
         {
-            $gateway = Panel::find($elemento);
+            $gateway = Panel::find($mikrotik);
             $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
             if ($apiMikro) 
             {
                 $allData = $apiMikro->getGatewayData();
-                unset($apiMikro);
                 foreach ($allData['hotspotHost'] as $elemento)
                 {
-                    if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 
-                    {
-                        File::append(
-                                storage_path('Crons/' . $archivo),
-                                $elemento['comment'] . ';' . $hora . ';' . $elemento['bytes-in'] . ';' . $elemento['bytes-out'] . PHP_EOL
-                            );
-                    }
+                        if ($elemento['authorized'] == 'false') {
+                                echo ($elemento['.id'] . ' - ' . $elemento['address'] . '<br>');
+                                $apiMikro->removeClientBloqued ($elemento['.id']);
+                        }
+                        if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 
+                        {
+                                File::append(
+                                        storage_path('Crons/' . $archivo),
+                                        $elemento['comment'] . ';' . $hora . ';' . $elemento['bytes-in'] . ';' . $elemento['bytes-out'] . PHP_EOL
+                                );
+                        }
                 }
+                unset($apiMikro);
             }
         }
     }

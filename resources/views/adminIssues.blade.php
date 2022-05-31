@@ -65,7 +65,7 @@ $mostrarSololectura = true;
                             <th scope="col"> Título </th>
                             <th scope="col"> Asignada a: </th>
                             <th scope="col"> Cliente </th>
-                            <th scope="col"> Vence en:</th>
+                            <th scope="col"> Estado:</th>
                             <th scope="col"> N° Contrato </th>
                             <th scope="col"> Creado por: </th>
                             <th scope="col"> Novedades</th>
@@ -79,16 +79,23 @@ $mostrarSololectura = true;
 
                     <tbody>
                         @foreach ($incidentes as $incidente)
-                            @if (!$incidente->closed)
-                                <tr class="table-danger">
+                            @if ($incidente->closed)
+                                <tr class="table-info">
                             @else
-                                <tr class="table-success">
+                                <tr>
                             @endif
                             <th scope="row"> {{$incidente->id}}</th>
                             <td>{{$incidente->relTitle->title}}</td>
                             <td>{{$incidente->relAsignado->name}}</td>
                             <td>{{$incidente->relCliente->getNomYApe()}}</td>
-                            <td>{{$incidente->getVencida()}}</td>
+                                    @if ($incidente->getVencida(true) === false)
+                                        <td class="alert alert-success">
+                                    @elseif ($incidente->getVencida(true) === true)
+                                        <td class="alert alert-danger">
+                                    @elseif ($incidente->getVencida(true) === null)
+                                        <td>
+                                    @endif
+                                {{$incidente->getVencida()}}</td>
                             <td>
                                 @if ($incidente->contrato_id != null)
                                     {{$incidente->relContrato->id}}

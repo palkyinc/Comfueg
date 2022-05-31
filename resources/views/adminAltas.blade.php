@@ -56,6 +56,7 @@ $mostrarSololectura = true;
                             <th scope="col"> Plan </th>
                             <th scope="col"> Comentarios </th>
                             <th scope="col"> Status </th>
+                            <th scope="col"> Creador </th>
                             <th scope="col" colspan="2">
                                 @can('altas_create')
                                 <a href="/agregarAlta" class="margenAbajo btn btn-dark">Nueva</a>
@@ -72,15 +73,20 @@ $mostrarSololectura = true;
                                 <td>{{$alta->relDireccion->getResumida()}}</td>
                                 <td>{{$alta->relPlan->nombre}}</td>
                                 <td>{{$alta->comentarios}}</td>
-                                @if ($alta->getStatus(true))
-                                    <td class="alert alert-success">
+                                @if ($alta->instalado)
+                                    <td>{{$alta->getStatus()}}</td>
                                 @else
-                                    <td class="alert alert-danger">
+                                    @if ($alta->getStatus(true))
+                                        <td class="alert alert-success">
+                                    @else
+                                        <td class="alert alert-danger">
+                                    @endif
+                                        <a href="#" title="Cambiar fecha de instalación" class="btn btn-link" data-toggle="modal" data-target="#altaCambioFecha{{$alta->id}}">
+                                            {{$alta->getStatus()}}
+                                        </a>
+                                    </td>
                                 @endif
-                                    <a href="#" title="Cambiar fecha de instalación" class="btn btn-link" data-toggle="modal" data-target="#altaCambioFecha{{$alta->id}}">
-                                        {{$alta->getStatus()}}
-                                    </a>
-                                </td>
+                                <td>{{$alta->relCreator->name ?? 'Unknown'}}</td>
                                 @if ($alta->programado)
                                     <td class="alert alert-success" title="Para modificar ir a Contratos">PROGRAMADO</td>
                                 @else

@@ -36,9 +36,10 @@ class Issue_titleController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate(['titulo' => 'required|min:3|max:50']);
+        $request->validate(['titulo' => 'required|min:3|max:50', 'tmr' => 'required|numeric']);
         $issue_title = new Issue_Title;
         $issue_title->title = $request->input('titulo');
+        $issue_title->tmr = $request->input('tmr');
         $issue_title->save();
         $respuesta[] = 'Nuevo Titulo de Ticket se creo correctamente';
         return redirect('/adminIssuesTitles')->with('mensaje', $respuesta);
@@ -76,9 +77,10 @@ class Issue_titleController extends Controller
      */
     public function update(Request $request)
     {
-        $request->validate(['title' => 'required|min:3|max:45']);
+        $request->validate(['title' => 'required|min:3|max:45', 'tmr' => 'required|numeric']);
         $issue_title = Issue_title::find($request->input('id'));
         $issue_title->title = $request->input('title');
+        $issue_title->tmr = $request->input('tmr');
         $respuesta[] = 'Se cambió con exito:';
         if ($issue_title->title != $issue_title->getOriginal()['title']) {
             $respuesta[] = ' title: ' . $issue_title->getOriginal()['title'] . ' POR ' . $issue_title->title;

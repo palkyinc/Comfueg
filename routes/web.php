@@ -33,21 +33,19 @@ use App\Http\Controllers\Issue_titleController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\Info_ClienteController;
 use App\Http\Controllers\AltaController;
-use App\Models\Proveedor;
-use App\Models\Cliente; //TEST
-use App\Models\Site_has_incidente;
 ####TEST
 /* 
+use App\Models\Cliente; //TEST
+use App\Custom\CronFunciones;//TEST
+use App\Custom\GatewayMikrotik;//TEST
 use App\Custom\Ubiquiti;
 use App\Models\Mail_group;
 use Illuminate\Support\Facades\File;
-use App\Custom\GatewayMikrotik;
 use App\Models\Equipo;
 use App\Models\Contadores_mensuales;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Contrato;
-use App\Custom\CronFunciones;
 use Illuminate\Support\Facades\Mail;
 */
 
@@ -65,31 +63,19 @@ use Illuminate\Support\Facades\Mail;
 */
 ## Route Inicial Default
 /* Route::get('/test', function () {
-        dd(CronFunciones::readCounterGateway());
+        dd(CronFunciones::readDay());
         }); */
 /* Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
 }); */ 
 Route::get('/sarasa', function () {
-        //echo 'Estas metiendo mal los dedos';
-        $clientes = Cliente::get();
-        foreach ($clientes as $cliente) {
-                if ($cliente->cod_area_tel == null) {
-                        $cliente->cod_area_tel = 154;
-                }
-                if ($cliente->cod_area_cel == null) {
-                        $cliente->cod_area_cel = 154;
-                }
-                $cliente->nombre = trim($cliente->nombre);
-                $cliente->save();
-        }
-        dd('DONE! Cliente reformateados');
+        echo 'Estas metiendo mal los dedos';
 });
 
 ### Route index
 Route::get('/', [Info_ClienteController::class, 'index']);
-Route::get('/inicio', function (){return view('inicio', [ 'frase' => false, 'proveedoresCaidos' => Proveedor::provedoresCaidos() , 'incidentes' => Site_has_incidente::incidentesAbiertos() , 'principal' => 'active']);})->middleware('auth');
-Route::get('/charts', function (){dd('Hola Domun');return view('charts');});
+Route::get('/inicio', [Info_ClienteController::class, 'index2'])->middleware('auth');
+/* Route::get('/charts', function (){dd('Hola Domun');return view('charts');}); */
 ####################
 ####### Gateway API rest Web services
 //Route::get('/gateway/clients/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');
@@ -371,6 +357,8 @@ Route::get('/agregarRoleToUser/{id}', [UserController::class, 'show'])->middlewa
 Route::patch('/agregarRoleToUser', [UserController::class, 'updateRoleToUser'])->middleware('auth');
 Route::get('/agregarUser', [UserController::class, 'create'])->middleware('auth');
 Route::post('/agregarUser', [UserController::class, 'store'])->middleware('auth');
+### Cliente API-rest
+Route::get('/user/{id}', [UserController::class, 'search'])->middleware('auth');
 ####################
 ####### CRUD Roles 
 Route::get('/adminRoles', [RoleController::class, 'index'])->middleware('auth');

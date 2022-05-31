@@ -17,7 +17,7 @@ Vue.component('testantena',
             <h5>Mensajes Técnicos:</h5>
             <div :class="class_error_macadress" class="alert alert-danger">ATENCIÓN personal técnico: Al parecer el equipo Cliente fue reemplazado y no fue actualizado en SLAM.</div>
             <div :class="class_error_ssid" class="alert alert-danger">ATENCIÓN personal técnico: Al parecer el equipo fue cambiado de Panel y no fue actualizado en SLAM.</div>
-            <div :class="class_comentarios_equipo" class="alert alert-danger" >ATENCIÓN personal técnico: Equipo cliente, {{comentarios_equipo}}</div>
+            <div :class="class_comentarios_equipo" class="alert alert-danger" >ATENCIÓN personal técnico: {{comentarios_equipo}}</div>
         </div>
         <div :class="class_escaneado" class="border">
             <div class="border border-2 border-info rounded my-3 mx-0 p-3">
@@ -180,7 +180,7 @@ Vue.component('testantena',
                                 <td>{{historial_prueba.firmware}}</td>
                                 <td>{{historial_prueba.dispositivo}}</td>
                                 <td>{{historial_prueba.ssid}}</td>
-                                <td>agregar</td>
+                                <td>{{historial_prueba.potenciatx}}</td>
                                 <td>{{historial_prueba.senial}}</td>
                                 <td>{{historial_prueba.remote}}</td>
                                 <td>{{historial_prueba.ccq}}</td>

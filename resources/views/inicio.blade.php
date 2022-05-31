@@ -140,13 +140,25 @@
           <div class="row">
             
             <div class="col-sm">
-              {{-- <div class="card">
+              <div class="card  mb-4">
                 <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">This is another card with title and supporting text below. This card has some additional content to make it slightly taller overall.</p>
-                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                  <h5 class="card-title">Resumen de mis Tickets Asignados</h5>
+                  <p class="card-text">Pendientes: {{$tickets['total']}}</p>
+                  <p class="card-text">Vencidos: {{$tickets['vencidos']}}</p>
+                  <p class="card-text">No Vencidos: {{$tickets['no_vencidos']}}</p>
+                  <p class="card-text"><small class="text-muted"></small></p>
                 </div>
-              </div> --}}
+              </div>
+              <div class="card  mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">Últimos 30 días</h5>
+                  <p class="card-text">Total Generados: {{$total_tickets['total']}} (Prom: {{$total_tickets['total_prom_dia']}} tkt´s x día)</p>
+                  <p class="card-text">Pendientes: {{$total_tickets['abiertos']}} ({{$total_tickets['abiertos_porc']}}%)</p>
+                  <p class="card-text">Pendientes Vencidas: {{$total_tickets['abiertos_vencidos']}} ({{$total_tickets['abiertos_vencidos_porc']}}%)</p>
+                  <p class="card-text">Cerrados a tiempo: {{$total_tickets['finalizados_no_vencidos']}} ({{$total_tickets['finalizados_no_vencidos_porc']}}%)</p>
+                  <p class="card-text"><small class="text-muted">Asignados a cualquier usuario</small></p>
+                </div>
+              </div>
             </div>
             
             <div class="col-sm">
@@ -172,22 +184,24 @@
 
         <div class="col-sm">
           @auth
-            @foreach ($incidentes as $incidente)
-              @if ($incidente->tipo === 'DEUDA TECNICA')
-                <div class="card mb-4">
-                  <div class="card-body">
-                    <h5 class="card-title">Deuda Técnica: {{$incidente->mensaje_clientes}}</h5>
-                    <p class="card-text">Equipo: <strong>{{$incidente->relPanel->relEquipo->nombre}}</strong></p>
-                    <p class="card-text">IP: <strong>{{$incidente->relPanel->relEquipo->ip}}</strong></p>
-                    <p class="card-text">Sitio: <strong>{{$incidente->relPanel->relSite->nombre}}</strong></p>
-                    <p class="card-text">Deuda: <strong>{{$incidente->causa}}</strong></p>
-                    <p class="card-text">Cantidad de Actualizaciones: <strong>{{count($incidente->incidente_has_mensaje)}}</strong></p>
-                    <p class="card-text"> <a href="#" class="margenAbajo btn btn-link" data-toggle="modal" data-target="#staticBackdrop{{$incidente->id}}" title="Ver">Ver Incidente</a> </p>
-                    <p class="card-text"><small class="text-muted">Creado {{$incidente->created_at}} por {{$incidente->reluser->name}}</small></p>
+            @can('SiteHasIncidente_edit')
+              @foreach ($incidentes as $incidente)
+                @if ($incidente->tipo === 'DEUDA TECNICA')
+                  <div class="card mb-4">
+                    <div class="card-body">
+                      <h5 class="card-title">Deuda Técnica: {{$incidente->mensaje_clientes}}</h5>
+                      <p class="card-text">Equipo: <strong>{{$incidente->relPanel->relEquipo->nombre}}</strong></p>
+                      <p class="card-text">IP: <strong>{{$incidente->relPanel->relEquipo->ip}}</strong></p>
+                      <p class="card-text">Sitio: <strong>{{$incidente->relPanel->relSite->nombre}}</strong></p>
+                      <p class="card-text">Deuda: <strong>{{$incidente->causa}}</strong></p>
+                      <p class="card-text">Cantidad de Actualizaciones: <strong>{{count($incidente->incidente_has_mensaje)}}</strong></p>
+                      <p class="card-text"> <a href="#" class="margenAbajo btn btn-link" data-toggle="modal" data-target="#staticBackdrop{{$incidente->id}}" title="Ver">Ver Incidente</a> </p>
+                      <p class="card-text"><small class="text-muted">Creado {{$incidente->created_at}} por {{$incidente->reluser->name}}</small></p>
+                    </div>
                   </div>
-                </div>
-              @endif
-            @endforeach
+                @endif
+              @endforeach
+            @endcan
           @endauth
         </div>
 

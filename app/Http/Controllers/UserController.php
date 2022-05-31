@@ -172,4 +172,12 @@ class UserController extends Controller
     {
         //
     }
+
+    ### API Methods
+
+    public function search($id)
+    {
+        $user = User::select('name', 'email')->find($id);
+        return response()->json($user, 200);
+    }
 }

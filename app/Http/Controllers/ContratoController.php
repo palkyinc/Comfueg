@@ -136,7 +136,7 @@ class ContratoController extends Controller
     }
 
     public function storeContractFromAlta (Request $request){
-        ##verificar num_panel
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $alta = Alta::find($request->input('alta_id'));
         $contrato = new Contrato;
         $contrato->num_cliente = $alta->cliente_id;
@@ -149,6 +149,7 @@ class ContratoController extends Controller
         $contrato->activo = false;
         $contrato->baja = true;
         $contrato->pem = false;
+        $contrato->creator = auth()->user()->id;
         $contrato->save();
         /* ## set nuevo IP para el equipo
         if(!$contrato->RelEquipo->setIpAuto()) {
@@ -183,6 +184,7 @@ class ContratoController extends Controller
         } */
         $mensaje['success'][] = 'Se grabó Contrato en Base de Datos.';
         $alta->programado = true;
+        // $alta->instalacion_fecha debe que la fecha que instalo luego de la prueba de instalacion.
         $alta->save();
         $contrato->baja = false;
         $contrato->save();

@@ -34,11 +34,7 @@ $mostrarSololectura = true;
                             <th scope="col"> Panel </th>
                             <th scope="col"> Ubicación </th>
                             <th scope="col"> Estado </th>
-                            <th scope="col" colspan="2">
-                                @can('contratos_create')
-                                <a href="/agregarContrato" class="btn btn-dark">Agregar</a>
-                                @endcan
-                            </th>
+                            <th scope="col" colspan="2">Acciones</th>
                         </tr>
                     </thead>
 

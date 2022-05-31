@@ -22,15 +22,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 2. realizar el git pull
 3. Si corresponde realizar un docker build y editar el .yml con la nueva version de la imagen y correr docker-compose.
 4. Realizar un migrate y un compose update.
-___
-
-## [0.7.14] - 2022-XX-XX
-### Added
-1. 
-### Changed
-1. Versión definitiva de la vista para clientes.
-2. test Cliente pasa a ser panel de control de contrato, con consumos de clientes, historial de test.
 ___ -->
+
+## [0.8.2] - 2022-05-30
+### Added
+1. Resumen de ticket en vista de inicio/principal.
+### Changed
+1. removeClientBloqued, elimina todos los clientes bloqueados en mikrotik cada minuto.
+2. Agregar potencia tx a Pruebas y la vista de Pruebas anteriores.
+3. Se agrega tmr a issue titulos. Se completa getVencida en Issue. Se completa la vista de adminIssues con el estado de los tkt´s para seguimiento y calidad del servicio.
+> - Agregar TMR´s en Titulos de Ticket.
+4. Agregado 'creator' en Altas. Corregido en Admin Altas y programarAlta.
+5. Agregado creator en Contratos. Resta instalator que se hará al momento de la instalación.
+6. Se borra boton de agregar contratos.
+7. Se cambia Horario de backup a las 20hs y subida a la nube a las 20.30hs
 
 ## [0.8.1] - 2022-05-24
 ### Changed

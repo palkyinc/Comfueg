@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Request;
 use App\Models\Contrato;
 use App\Models\Contadores_mensuales;
 use App\Models\Equipo;
+use App\Models\Proveedor;
+use App\Models\Issue;
+use App\Models\Site_has_incidente;
 
 class Info_ClienteController extends Controller
 {
@@ -46,9 +51,52 @@ class Info_ClienteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function index2()
     {
-        //
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+        $tickets['vencidos'] = 0;
+        $tickets['no_vencidos'] = 0;
+        $issues = Issue::where('asignado_id', auth()->user()->id)
+                        ->where('closed', false)
+                        ->get();
+        $tickets['total'] = count($issues);
+        foreach ($issues as $issue) {
+            //dd($issue);
+            if ($issue->getVencida(true)) {
+                $tickets['vencidos'] ++;
+            }else {
+                $tickets['no_vencidos'] ++;
+            }
+        }
+        $hoy = new DateTime();
+        $hace_un_mes = $hoy->modify('-31 days');
+        $hace_un_mes = $hoy->format('Y-m-d h:i:s');
+        $total_issues = Issue::where('created_at', '>', $hace_un_mes)->get();
+        $total_tickets['total'] = count($total_issues);
+        $total_tickets['total_prom_dia'] = round( $total_tickets['total'] / 22, 2);
+        $total_tickets['abiertos'] = 0;
+        $total_tickets['abiertos_vencidos'] = 0;
+        $total_tickets['finalizados_no_vencidos'] = 0;
+        foreach ($total_issues as $issue) {
+            if (!$issue->closed){
+                $total_tickets['abiertos'] ++;
+                if ($issue->getVencida(true)) {
+                    $total_tickets['abiertos_vencidos'] ++;
+                }
+            } elseif (!$issue->getVencida(true)) {
+                $total_tickets['finalizados_no_vencidos'] ++;
+            }
+        }
+        $total_tickets['abiertos_porc'] = round($total_tickets['abiertos'] *100 / $total_tickets['total'], 2);
+        $total_tickets['finalizados_no_vencidos_porc'] = 
+        round ($total_tickets['finalizados_no_vencidos'] * 100 / ($total_tickets['total'] - $total_tickets['abiertos']));
+        $total_tickets['abiertos_vencidos_porc'] = round($total_tickets['abiertos_vencidos'] *100 / $total_tickets['abiertos']);
+        return view(  'inicio', [   'frase' => false, 
+                                    'tickets' => $tickets,
+                                    'total_tickets' => $total_tickets,
+                                    'proveedoresCaidos' => Proveedor::provedoresCaidos() , 
+                                    'incidentes' => Site_has_incidente::incidentesAbiertos() ,
+                                    'principal' => 'active']);
     }
 
     /**

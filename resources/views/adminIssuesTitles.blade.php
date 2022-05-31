@@ -5,7 +5,7 @@
 $mostrarSololectura = true;
 @endphp
                     <form class="form-inline mx-6 margin-10" action="" method="GET">
-                        <h2 class="mx-2">Administración de títulos de Tikects</h2>
+                        <h2 class="mx-2">Administración de títulos de Tickets</h2>
                     </form>
 
         @if ( session('mensaje') )
@@ -24,6 +24,7 @@ $mostrarSololectura = true;
                         <tr>
                             <th scope="col"> Id </th>
                             <th scope="col"> Título </th>
+                            <th scope="col"> Tiempo Máximo Respuesta (TMR) en días</th>
                             <th scope="col" colspan="2">
                                 @can('issues_titles_create')
                                 <a href="/agregarIssueTitle" class="btn btn-dark">Agregar</a>
@@ -38,6 +39,7 @@ $mostrarSololectura = true;
                                 
                             <th scope="row"> {{$tipo->id}}</th>
                             <td>{{$tipo->title}}</td>
+                            <td>{{$tipo->tmr}}</td>
                             <td>
                                 @can('issues_titles_edit')
                                 <a href="/modificarIssueTitle/{{ $tipo->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">

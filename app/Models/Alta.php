@@ -11,6 +11,10 @@ class Alta extends Model
 {
     use HasFactory;
 
+    public function relCreator()
+    {
+        return $this->belongsTo('App\Models\User', 'creator', 'id');
+    }
     public function relCliente()
     {
         return $this->belongsTo('App\Models\Cliente', 'cliente_id', 'id');
@@ -33,6 +37,9 @@ class Alta extends Model
         $interval = $instalacion->diff($hoy);
         if ($alert) {
             return $interval->invert ? true : false;
+        }
+        if ($this->instalado) {
+            return 'Instalado: ' . $instalacion->format('d-M-Y');
         }
         return(
                 ($interval->invert ===1 ? 'Vence en ' : 'Vencido hace ') . 

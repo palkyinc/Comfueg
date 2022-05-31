@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Config;
 use App\Models\User;
 use App\Models\Contrato;
 use App\Models\Cliente;
@@ -135,9 +137,44 @@ class Issue extends Model
         return $this->belongsTo(Contrato::class, 'contrato_id', 'id');
     }
 
-    public function getVencida()
+    public function getVencida($status = false)
     {
-        return 'A Implementar';
+        if ($this->closed) {
+            if ($status) {
+                $cerrada = new DateTime($this->updated_at);
+                return $this->estavencida($cerrada, $status);
+            } else {
+                return 'Cerrada: ' . date('d-M-Y', strtotime($this->updated_at));
+            }
+        } else {
+            date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+            $hoy =  new DateTime();
+            return $this->estavencida($hoy, $status);
+        }
+    }
+
+    private function estaVencida ($hoy, $status) {
+        $tmr = new DateTime($this->created_at);
+        $tmr->modify('+' . $this->relTitle->tmr . ' day');
+        if ($tmr->format('w') == 0) {
+            $tmr->modify('+1 day');
+        } elseif ($tmr->format('w') == 6) {
+            $tmr->modify('+2 day');
+        }
+        $interval = $tmr->diff($hoy);
+        if ($interval->invert) {
+            if ($status) {
+                return false;
+            } else {
+                return 'Vence en: ' . $interval->days . 'día/s';
+            }
+        }else {
+            if ($status) {
+                return true;
+            } else {
+                return 'Venció hace: ' . $interval->days . 'día/s';
+            }
+        }
     }
 
     public function obtenerDominio ()

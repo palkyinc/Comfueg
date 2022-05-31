@@ -4,7 +4,7 @@
 @php
 $mostrarSololectura = true;
 @endphp
-    <h3>Prueba contrato : {{$contrato->id}} | {{$contrato->relCLiente->getNomYApe()}} | {{$contrato->relPlan->nombre}} | Desde:</h3>
+    <h3>Prueba contrato : {{$contrato->id}} | {{$contrato->relCLiente->getNomYApe()}} | {{$contrato->relPlan->nombre}} | Desde: {{$contrato->inicioDateTimeLocal()}}</h3>
     <div id="testContrato">
         <testantenacliente></testantenacliente>
     </div>

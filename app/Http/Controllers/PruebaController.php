@@ -249,7 +249,7 @@ class PruebaController extends Controller
         $statusLAN = 0;
         $rta =  [
             'status' => $prueba->contactado = 1,
-            'TxPower' => $status['wireless']['txpower'] ?? null,
+            'TxPower' => $prueba->potenciatx = $status['wireless']['txpower'] ?? null,
             'Uptime' => ($this->uptime($status['host']['uptime'])),
             'Temperature' => ((isset($status['host']['temperature'])) ? $status['host']['temperature'] . "°C" : 'N/A '),
             'Hostname' => $prueba->nom_equipo = $status['host']['hostname'],

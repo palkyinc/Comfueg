@@ -127,6 +127,10 @@ class GatewayMikrotik extends RouterosAPI
 					   ));
 		}
    	}
+
+	public function removeClientBloqued ($id) {
+		$this->comm("/ip/hotspot/host/remove", array( "numbers" => $id ));
+	}
 	
 	public function enableClient ($clienteMikrotik)
 	{
