@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 1. haruncpi/laravel-user-activity
 2. https://github.com/romainsimon/vue-simple-search-dropdown
+3. https://laracasts.com/discuss/channels/code-review/custom-chartisanlaravel-charts-hooks-on-controller
 
 ### Secuencia de arctualización en server desarrollo:
 1. Actualizar versión en el archivo constants.php
@@ -24,6 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 4. Realizar un migrate y un compose update.
 ___ -->
 
+## [0.8.3] - 2022-06-03
+### Added
+1. Se agrega PieChart de tipos de ticket generados.
+### Changed
+1. Cambio en SiteHasIncidenteController.php por error cuando equipo afectado es gateway.
+___
+
 ## [0.8.2] - 2022-05-30
 ### Added
 1. Resumen de ticket en vista de inicio/principal.
@@ -36,11 +44,13 @@ ___ -->
 5. Agregado creator en Contratos. Resta instalator que se hará al momento de la instalación.
 6. Se borra boton de agregar contratos.
 7. Se cambia Horario de backup a las 20hs y subida a la nube a las 20.30hs
+___
 
 ## [0.8.1] - 2022-05-24
 ### Changed
 1. Arreglos en vista testContrato
 2. Arreglos en Admin Altas, intentaba cargar router_id como false en el caso de tipo de Contrato 1.
+___
 
 ## [0.8.0] - 2022-05-21
 ### Added

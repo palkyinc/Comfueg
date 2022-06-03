@@ -56,6 +56,7 @@ class AppServiceProvider extends ServiceProvider
         $charts->register([\App\Charts\SemanalChart::class]);
         $charts->register([\App\Charts\MensualChart::class]);
         $charts->register([\App\Charts\InstasChart::class]);
+        $charts->register([\App\Charts\TortaIssuesChart::class]);
     }
 
     private function implotar ($separador, $query)

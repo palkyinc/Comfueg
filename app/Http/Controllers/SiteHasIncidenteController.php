@@ -170,7 +170,7 @@ class SiteHasIncidenteController extends Controller
         $incidente_global->afectado = $request->input('afectado');
         $incidente_global->afectados_indi = $this->iterarAfectados($Afectados['paneles']);
         $incidente_global->sitios_afectados = $this->iterarAfectados($Afectados['sitios']);
-        $incidente_global->barrios_afectados = $this->iterarAfectados($Afectados['barrios']);
+        $incidente_global->barrios_afectados = str_split($this->iterarAfectados($Afectados['barrios']), 254)[0];
         $incidente_global->causa = $request->input('causa');
         $incidente_global->mensaje_clientes = $request->input('mensaje_clientes');
         $incidente_global->user_creator = auth()->user()->id;
@@ -203,10 +203,10 @@ class SiteHasIncidenteController extends Controller
         foreach ($array as $element) {
             if (!isset($respuesta))
             {
-                $respuesta = $element . ', ';
+                $respuesta = trim($element) . ', ';
             }else 
                 {
-                    $respuesta .= $element . ', ';
+                    $respuesta .= trim($element) . ', ';
                 }
         }
         return $respuesta;
@@ -252,7 +252,7 @@ class SiteHasIncidenteController extends Controller
             $sitios_afectados[$afectado->relSite->id] = $afectado->relSite->nombre;
             $paneles_afectados[] = 'N/A';
             $barrios_afectados = $this->onePanel($afectado->id);
-        } elseif ($afectado->rol == 'PTPST' || $afectado->rol == 'SWITCH') {
+        } elseif ($afectado->rol == 'PTPST' || $afectado->rol == 'SWITCH' || $afectado->rol == 'GATEWAY') {
             $sitios_afectados[$afectado->relSite->id] = $afectado->relSite->nombre;
             $this->siguientesSitios($arbol, $afectado->relSite->id, $sitios_afectados);
             $paneles_afectados = $this->panelesAfectados($sitios_afectados);

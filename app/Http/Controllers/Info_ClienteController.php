@@ -11,6 +11,7 @@ use App\Models\Equipo;
 use App\Models\Proveedor;
 use App\Models\Issue;
 use App\Models\Site_has_incidente;
+use App\Charts\TortaIssuesChart;
 
 class Info_ClienteController extends Controller
 {
@@ -77,7 +78,13 @@ class Info_ClienteController extends Controller
         $total_tickets['abiertos'] = 0;
         $total_tickets['abiertos_vencidos'] = 0;
         $total_tickets['finalizados_no_vencidos'] = 0;
+        $total_tickets['tipos'] = [];
         foreach ($total_issues as $issue) {
+            if (isset($total_tickets['tipos'][$issue->titulo_id])){
+                    $total_tickets['tipos'][$issue->titulo_id] ++;
+            }else {
+                $total_tickets['tipos'][$issue->titulo_id] = 1;
+            }
             if (!$issue->closed){
                 $total_tickets['abiertos'] ++;
                 if ($issue->getVencida(true)) {
@@ -87,11 +94,12 @@ class Info_ClienteController extends Controller
                 $total_tickets['finalizados_no_vencidos'] ++;
             }
         }
+        ($total_tickets['tipos'] = json_encode($total_tickets['tipos']));
         $total_tickets['abiertos_porc'] = round($total_tickets['abiertos'] *100 / $total_tickets['total'], 2);
         $total_tickets['finalizados_no_vencidos_porc'] = 
         round ($total_tickets['finalizados_no_vencidos'] * 100 / ($total_tickets['total'] - $total_tickets['abiertos']));
         $total_tickets['abiertos_vencidos_porc'] = round($total_tickets['abiertos_vencidos'] *100 / $total_tickets['abiertos']);
-        return view(  'inicio', [   'frase' => false, 
+        return view(  'inicio', [   'frase' => false,
                                     'tickets' => $tickets,
                                     'total_tickets' => $total_tickets,
                                     'proveedoresCaidos' => Proveedor::provedoresCaidos() , 

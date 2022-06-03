@@ -142,21 +142,48 @@
             <div class="col-sm">
               <div class="card  mb-4">
                 <div class="card-body">
-                  <h5 class="card-title">Resumen de mis Tickets Asignados</h5>
-                  <p class="card-text">Pendientes: {{$tickets['total']}}</p>
-                  <p class="card-text">Vencidos: {{$tickets['vencidos']}}</p>
-                  <p class="card-text">No Vencidos: {{$tickets['no_vencidos']}}</p>
-                  <p class="card-text"><small class="text-muted"></small></p>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      <h5 class="card-title">Resumen de mis Tickets Asignados</h5>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text">Pendientes: {{$tickets['total']}}</p>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text">Vencidos: {{$tickets['vencidos']}}</p>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text">No Vencidos: {{$tickets['no_vencidos']}}</p>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text"><small class="text-muted"></small></p>
+                    </li>
+                  </ul>
                 </div>
               </div>
               <div class="card  mb-4">
                 <div class="card-body">
-                  <h5 class="card-title">Últimos 30 días</h5>
-                  <p class="card-text">Total Generados: {{$total_tickets['total']}} (Prom: {{$total_tickets['total_prom_dia']}} tkt´s x día)</p>
-                  <p class="card-text">Pendientes: {{$total_tickets['abiertos']}} ({{$total_tickets['abiertos_porc']}}%)</p>
-                  <p class="card-text">Pendientes Vencidas: {{$total_tickets['abiertos_vencidos']}} ({{$total_tickets['abiertos_vencidos_porc']}}%)</p>
-                  <p class="card-text">Cerrados a tiempo: {{$total_tickets['finalizados_no_vencidos']}} ({{$total_tickets['finalizados_no_vencidos_porc']}}%)</p>
-                  <p class="card-text"><small class="text-muted">Asignados a cualquier usuario</small></p>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      <h5 class="card-title">Últimos 30 días</h5>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text">Total Generados: {{$total_tickets['total']}} (Prom: {{$total_tickets['total_prom_dia']}} tkt´s x día)</p>
+                      <div id="chartTortaIssues" style="height: 500px;"></div>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text">Pendientes: {{$total_tickets['abiertos']}} ({{$total_tickets['abiertos_porc']}}%)</p>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text">Pendientes Vencidas: {{$total_tickets['abiertos_vencidos']}} ({{$total_tickets['abiertos_vencidos_porc']}}%)</p>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text">Cerrados a tiempo: {{$total_tickets['finalizados_no_vencidos']}} ({{$total_tickets['finalizados_no_vencidos_porc']}}%)</p>
+                    </li>
+                    <li class="list-group-item">
+                    <p class="card-text"><small class="text-muted">Asignados a cualquier usuario</small></p>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -209,4 +236,5 @@
 </div>
 @include('modals.deudas')
 @include('modals.incidentes')
+@include('layouts.tortaIssues')
 @endsection
