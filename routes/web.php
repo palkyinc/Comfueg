@@ -35,8 +35,8 @@ use App\Http\Controllers\Info_ClienteController;
 use App\Http\Controllers\AltaController;
 ####TEST
 /* 
-use App\Models\Cliente; //TEST
 use App\Custom\CronFunciones;//TEST
+use App\Models\Cliente; //TEST
 use App\Custom\GatewayMikrotik;//TEST
 use App\Custom\Ubiquiti;
 use App\Models\Mail_group;
@@ -62,15 +62,15 @@ use Illuminate\Support\Facades\Mail;
 |
 */
 ## Route Inicial Default
-/* Route::get('/test', function () {
+/* Route::get('/readDay', function () {
         dd(CronFunciones::readDay());
         }); */
 /* Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
 }); */ 
-Route::get('/sarasa', function () {
+/* Route::get('/sarasa', function () {
         echo 'Estas metiendo mal los dedos';
-});
+}); */
 
 ### Route index
 Route::get('/', [Info_ClienteController::class, 'index']);

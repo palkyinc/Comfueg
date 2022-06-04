@@ -25,6 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 4. Realizar un migrate y un compose update.
 ___ -->
 
+## [0.8.4] - 2022-06-04
+### Added
+### Changed
+1. corregido readDay error al capturar consumos.
+2. corregido error al mostrar datos de consumos no completos.
+___
+
 ## [0.8.3] - 2022-06-03
 ### Added
 1. Se agrega PieChart de tipos de ticket generados.

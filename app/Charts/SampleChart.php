@@ -53,7 +53,7 @@ class SampleChart extends BaseChart
         $hoy = date('Ymd') . '.dat';
         $ayer = date('Ymd', strtotime(date('Ymd')."- 1 days")) . '.dat';
         $labels = $this->getLabels($hora, $minuto);
-        $ultimasTwentyFour = $this->getultimasTwentyFour($hoy, $ayer, $hora, $minuto, $labels, $cliente);
+        $ultimasTwentyFour = $this->getultimasTwentyFour($hoy, $ayer, $labels, $cliente);
         return Chartisan::build()
             ->labels($labels)
             ->dataset('Bajada en Mb', $ultimasTwentyFour['down'])
@@ -61,8 +61,9 @@ class SampleChart extends BaseChart
             ;
     }
 
-    private function getDatosDelDia($dia, $datos, $cliente)
+    private function getDatosDelDia($dia, $cliente)
     {
+        $datos = [];
         $file = fopen('../storage/Crons/' . $dia, 'r');
         $downAnterior = null;
         $upAnterior = null;
@@ -93,12 +94,19 @@ class SampleChart extends BaseChart
         fclose($file);
         return $datos;
     }
-    private function getUltimasTwentyFour($hoy, $ayer, $hora, $minuto, $labels, $cliente)
+    private function getUltimasTwentyFour($hoy, $ayer, $labels, $cliente)
     {
         $datosArchivos = null;
-        $datosArchivos = $this->getDatosdelDia($ayer, $datosArchivos, $cliente);
-        $datosArchivos = $this->getDatosdelDia($hoy, $datosArchivos, $cliente);
+        $datosArchivosAyer = $this->getDatosdelDia($ayer, $cliente);
+        $datosArchivosHoy = $this->getDatosdelDia($hoy, $cliente);
+        if ($labels[0] != '00.00') {
+            $datosArchivos = $datosArchivosAyer;
+        }
         foreach ($labels as $label) {
+            if ($label == '00.00') {
+            } else {
+                $datosArchivos = $datosArchivosHoy;
+            }
             if (isset($datosArchivos[$label]))
             {
                 $salida['up'][] = $datosArchivos[$label]['up'];
@@ -115,12 +123,14 @@ class SampleChart extends BaseChart
 
     private function getLabels($hora, $minuto)
     {
-        $labels [] = $hora . '.' . $minuto;
+        $labels [] = str_pad(strval($hora), 2, '0', STR_PAD_LEFT) . '.' . str_pad(strval($minuto), 2, '0', STR_PAD_LEFT);
         $minutoLabel = $minuto;
         $minutoLabel ++;
         $horaLabel = $hora;
         while ($horaLabel != $hora || $minutoLabel != $minuto)
         {
+            $labels[] = str_pad(strval($horaLabel), 2, '0', STR_PAD_LEFT) . '.' . str_pad(strval($minutoLabel), 2, '0', STR_PAD_LEFT);
+            $minutoLabel ++;
             if ($minutoLabel == 60)
             {
                 $minutoLabel = 0;
@@ -130,8 +140,6 @@ class SampleChart extends BaseChart
                     $horaLabel = 0;
                 }
             }
-            $labels[] = str_pad(strval($horaLabel), 2, '0', STR_PAD_LEFT) . '.' . str_pad(strval($minutoLabel), 2, '0', STR_PAD_LEFT);
-            $minutoLabel ++;
         }
         return $labels;
     }

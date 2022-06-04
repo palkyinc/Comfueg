@@ -95,9 +95,9 @@ abstract class CronFunciones
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $ayer = date('Ymd', strtotime(date('Ymd')."- $dias days"));
-        if (file_exists('storage/Crons/' . $ayer . '.dat'))
+        if (file_exists('../storage/Crons/' . $ayer . '.dat'))
         {
-                $file = fopen('storage/Crons/' . $ayer . '.dat', 'r');
+                $file = fopen('../storage/Crons/' . $ayer . '.dat', 'r');
                 while(!feof($file))
                 {
                         $linea = explode(';', trim(fgets($file)));
@@ -167,12 +167,12 @@ abstract class CronFunciones
                         $salida[$cliente]['up'] = $up;
                         $salida[$cliente]['down'] = $down;
                 }
-                $file = fopen('storage/Crons/' . $ayer . '-sem.dat', 'w');
+                $file = fopen('../storage/Crons/' . $ayer . '-sem.dat', 'w');
                 fwrite($file, json_encode($salida));
                 fclose($file);
         }
         else {
-                return 'Error al abrir el archivo storage/Crons/ de ayer';
+                return 'Error al abrir el archivo storage/Crons/' . $ayer . '.dat';
         }
         return 'true';
     }
@@ -181,12 +181,12 @@ abstract class CronFunciones
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $archivo = date('Ymd') . '.dat';
-        $archivoMes = date('Ym') . '-totMes.dat';
         $hora = date('H.i');
         $gateways = self::getGateways();
         foreach ($gateways as $mikrotik)
         {
             $gateway = Panel::find($mikrotik);
+            dd($archivo);
             $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
             if ($apiMikro) 
             {
@@ -194,7 +194,6 @@ abstract class CronFunciones
                 foreach ($allData['hotspotHost'] as $elemento)
                 {
                         if ($elemento['authorized'] == 'false') {
-                                echo ($elemento['.id'] . ' - ' . $elemento['address'] . '<br>');
                                 $apiMikro->removeClientBloqued ($elemento['.id']);
                         }
                         if (isset($elemento['comment']) && is_numeric($elemento['comment'])) 
