@@ -21,7 +21,11 @@ class ClienteController extends Controller
             ->whereRaw("UPPER(id) LIKE (?)", ["%{$num_cliente}%"])
             ->whereRaw("UPPER(apellido) LIKE (?)", ["%{$apellido}%"])
             ->paginate(10);
-        return view('adminClientes', ['clientes' => $clientes, 'datos' => 'active']);
+        return view('adminClientes', [
+            'clientes' => $clientes, 
+            'datos' => 'active',
+            'num_cliente' => $num_cliente,
+            'apellido' => $apellido]);
     }
 
     /**
@@ -63,15 +67,19 @@ class ClienteController extends Controller
     private function storeInBase (Request $request) {
         $this->validar($request);
         $cliente = new Cliente;
+        $cliente->es_empresa = ($request->input('es_empresa') == 'true' || $request->input('es_empresa') == 'on') ? true : false;
+        if ($cliente->es_empresa && isset($request->razonSocial)) {
+            $cliente->apellido = strtoupper(trim($request->input('razonSocial')));
+        } else {
+            $cliente->apellido = strtoupper(trim($request->input('apellido')));
+        }
         $cliente->id = $request->input('id');
         $cliente->nombre = $this->primerasMayusculas(trim($request->input('nombre')));
-        $cliente->apellido = strtoupper(trim($request->input('apellido')));
         $cliente->cod_area_tel = $request->input('cod_area_tel');
         $cliente->telefono = $request->input('telefono');
         $cliente->cod_area_cel = $request->input('cod_area_cel');
         $cliente->celular = $request->input('celular');
         $cliente->email = $request->input('email');
-        $cliente->es_empresa = ($request->input('es_empresa') == 'true' || $request->input('es_empresa') == 'on') ? true : false;
         $cliente->save();
     }
 
@@ -129,9 +137,14 @@ class ClienteController extends Controller
         return view('modificarCliente', ['elemento' => $Cliente, 'codigosArea' =>$codigosArea, 'datos' => 'active']);
     }
 
-    public function validar(Request $request)
+    public function validar(Request $request, $modificando)
     {
         //dd(CodigoDeArea::find($request->cod_area_tel)->codigoDeArea);
+        if ($modificando){
+            $id = 'required|numeric|min:1|max:99999';
+        }else {
+            $id = 'required|numeric|min:1|max:99999|unique:clientes,id';
+        }
         if ($request->cod_area_tel && $request->cod_area_cel)
         {
             $longTel = 10-strlen(CodigoDeArea::find($request->cod_area_tel)->codigoDeArea);
@@ -140,15 +153,27 @@ class ClienteController extends Controller
             $longTel = 20;
             $longCel = 20;
         }
-        if ($request->es_empresa == 'true'){
+        if ($request->es_empresa == 'on' || $request->es_empresa == 'true'){
             $celular = 'nullable|numeric|digits:' . $longCel;
+            $nombre = 'nullable|min:2|max:45';
+            if(isset($request->razonSocial)) {
+                $razonSocial = 'required|min:2|max:45';
+                $apellido = 'nullable|min:2|max:45';
+            } else {
+                $apellido = 'required|min:2|max:45';
+                $razonSocial = 'nullable|min:2|max:45';
+            }
         }else {
+            $nombre = 'required|min:2|max:45';
+            $apellido = 'required|min:2|max:45';
+            $razonSocial = 'nullable|min:2|max:45';
             $celular = 'required|numeric|digits:' . $longCel;
         }
         $aValidar = [
-            'id' => 'required|numeric|min:1|max:99999',
-            'nombre' => 'nullable|min:2|max:45',
-            'apellido' => 'required|min:2|max:45',
+            'id' => $id,
+            'nombre' => $nombre,
+            'apellido' => $apellido,
+            'razonSocial' => $razonSocial,
             'cod_area_tel' => 'required',
             'cod_area_cel' => 'required',
             'celular' => $celular,
@@ -172,22 +197,15 @@ class ClienteController extends Controller
 
     private function updateInBase( Request $request, $noEsApi)
     {
-        $nombre = $this->primerasMayusculas(trim($request->input('nombre')));
-        $apellido = strtoupper(trim($request->input('apellido')));
-        $cod_area_tel = $request->input('cod_area_tel');
-        $telefono = $request->input('telefono');
-        $cod_area_cel = $request->input('cod_area_cel');
-        $celular = $request->input('celular');
-        $email = $request->input('email');
+        $this->validar($request, true);
         $cliente = Cliente::find($request->input('id'));
-        $this->validar($request);
-        $cliente->nombre = $nombre;
-        $cliente->apellido = $apellido;
-        $cliente->cod_area_tel = $cod_area_tel;
-        $cliente->telefono = $telefono;
-        $cliente->cod_area_cel = $cod_area_cel;
-        $cliente->celular = $celular;
-        $cliente->email = $email;
+        $cliente->nombre = $this->primerasMayusculas(trim($request->input('nombre')));
+        $cliente->apellido = strtoupper(trim($request->input('apellido')));
+        $cliente->cod_area_tel = $request->input('cod_area_tel');
+        $cliente->telefono = $request->input('telefono');
+        $cliente->cod_area_cel = $request->input('cod_area_cel');
+        $cliente->celular = $request->input('celular');
+        $cliente->email = $request->input('email');
         $cliente->es_empresa = ($request->input('es_empresa') == 'true' || $request->input('es_empresa') == 'on') ? true : false;
         if ($noEsApi)
         {

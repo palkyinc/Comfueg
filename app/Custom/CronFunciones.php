@@ -95,9 +95,9 @@ abstract class CronFunciones
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $ayer = date('Ymd', strtotime(date('Ymd')."- $dias days"));
-        if (file_exists('../storage/Crons/' . $ayer . '.dat'))
+        if (file_exists('storage/Crons/' . $ayer . '.dat'))
         {
-                $file = fopen('../storage/Crons/' . $ayer . '.dat', 'r');
+                $file = fopen('storage/Crons/' . $ayer . '.dat', 'r');
                 while(!feof($file))
                 {
                         $linea = explode(';', trim(fgets($file)));
@@ -167,7 +167,7 @@ abstract class CronFunciones
                         $salida[$cliente]['up'] = $up;
                         $salida[$cliente]['down'] = $down;
                 }
-                $file = fopen('../storage/Crons/' . $ayer . '-sem.dat', 'w');
+                $file = fopen('storage/Crons/' . $ayer . '-sem.dat', 'w');
                 fwrite($file, json_encode($salida));
                 fclose($file);
         }
@@ -186,7 +186,6 @@ abstract class CronFunciones
         foreach ($gateways as $mikrotik)
         {
             $gateway = Panel::find($mikrotik);
-            dd($archivo);
             $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
             if ($apiMikro) 
             {
@@ -286,7 +285,6 @@ abstract class CronFunciones
     public static function enviarMailDeudasPendientes ()
     {
         $deudas = Site_has_incidente::where('tipo', 'DEUDA TECNICA')->where('final', null)->orderByDesc('prioridad')->get();
-        //dd($deudas);
         $toSend = new DeudaTecnicaResumen($deudas);
         $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.DEUDAS_TECNICA_MAIL_GROUP'));
         Mail::to($arrayCorreos)->send($toSend);

@@ -18,7 +18,7 @@ $mostrarSololectura = true;
                 <label class="custom-control-label" for="customSwitch1">Es Empresa</label>
             </div>
         </div>
-        <div class="form-row">
+        <div class="form-row" id="no_es_empresa">
             <div class="form-group col-md-4">
                 <label for="nombre">Nombre: </label>
                 <input type="text" name="nombre" value="{{old('nombre')}}" maxlength="45"  class="form-control">
@@ -26,6 +26,12 @@ $mostrarSololectura = true;
             <div class="form-group col-md-4">
                 <label for="apellido">Apellido: </label>
                 <input type="text" name="apellido" value="{{old('apellido')}}" maxlength="45"  class="form-control">
+            </div>
+        </div>
+        <div class="form-row" id="es_empresa">
+            <div class="form-group col-md-8">
+                <label for="razonSocial">Razón Social: </label>
+                <input type="text" name="razonSocial" value="{{old('razonSocial')}}" maxlength="45"  class="form-control">
             </div>
         </div>
         <div class="form-row">
@@ -84,4 +90,23 @@ $mostrarSololectura = true;
     @endif
 @endcan
 @include('sinPermiso')
+@endsection
+@section('javascript')
+    <script>
+        let btn = document.getElementById('customSwitch1');
+        let es_empresa = document.getElementById('es_empresa');
+        let no_es_empresa = document.getElementById('no_es_empresa');
+        es_empresa.classList.add('ocultar');
+        btn.addEventListener('click', e => {
+            if(btn.checked) {
+                no_es_empresa.classList.add('ocultar');
+                es_empresa.classList.remove('ocultar');
+            } else {
+                es_empresa.classList.add('ocultar');
+                no_es_empresa.classList.remove('ocultar');
+            }
+
+            })
+        
+    </script>
 @endsection

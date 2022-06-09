@@ -73,7 +73,7 @@ $mostrarSololectura = true;
                     </tbody>
                 </table>
 </div>
-        {{ $clientes->links() }}
+        {{ $clientes->appends(['num_cliente' => $num_cliente, 'apellido' => $apellido])->links() }}
 @endcan    
 @include('sinPermiso')
 @endsection

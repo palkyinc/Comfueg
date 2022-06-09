@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\App;
 use App\Models\Equipo;
 use App\Models\Contrato;
 use App\Models\Panel;

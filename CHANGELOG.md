@@ -25,6 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 4. Realizar un migrate y un compose update.
 ___ -->
 
+## [0.8.5] - 2022-06-XX
+### Added
+### Changed
+1. 
+___
+
 ## [0.8.4] - 2022-06-04
 ### Added
 ### Changed
