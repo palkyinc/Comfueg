@@ -26,8 +26,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Realizar un migrate y un compose update.
 6. php artisan up
 ___ -->
+## [0.8.6] - 2022-06-17
+### Added
+1. Programación de nueva Alta en Panel/gateway. Solo para tipo de contrato standard
+2. Informe de contratoFull
+3. Nuevo archivo calles.txt
+___
 
 ## [0.8.5] - 2022-06-08
+### Added
+1. Programación de nueva Alta en Panel/gateway. Solo para tipo de contrato standard
+2. Informe de contratoFull
+3. Nuevo archivo calles.txt
 ### Changed
 1. Mejoras en la vista de Clientes agregar y modificar.
 2. se corrije problema en generar Archivo Semana.
