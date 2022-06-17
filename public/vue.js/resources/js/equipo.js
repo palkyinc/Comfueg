@@ -343,7 +343,6 @@ template: //html
             store.state.inst_paso = this.siguiente_paso;
             if (this.soy_equipo()) {
                 store.state.equipo_id = this.equipo_id ?? this.existe_equipo.datos.id;
-                console.log('seleccionar_equipo1: ' + store.state.equipo_id)
             }else {
                 store.state.router_id = this.equipo_id ?? this.existe_equipo.datos.id;
             }
@@ -354,7 +353,6 @@ template: //html
             if (typeof(data) == 'Object') {
                 this.mensaje_usuario = "Error al guardar datos.";
                 this.alert_mensaje_usuario = 'alert alert-danger';
-                console.log(data);
             } else if (typeof (data) == 'number') {
                 this.mensaje_usuario = "Guardado OK.";
                 this.alert_mensaje_usuario = 'alert alert-success';

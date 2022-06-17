@@ -1,10 +1,10 @@
     @section('javascript')
     <!-- Your application script -->
     <script>
-        function renderChartPieIssues(datos)
+        function renderChartPieIssues(datos, id)
         {
             const chart = new Chartisan({
-                el: '#chartTortaIssues',
+                el: '#chartTortaIssues' + id,
                 url: "@chart('tortaIssues')",
                 options:{headers:{'datos': datos, 'status-chart': 1}},
                 loader: {
@@ -33,6 +33,7 @@
         
     </script>
         <script>
-                renderChartPieIssues('{{$total_tickets['tipos']}}');        
+                renderChartPieIssues('{{$total_tickets['tipos']}}', 1);        
+                renderChartPieIssues('{{$total_tickets_180['tipos']}}', 2);        
         </script>
     @endsection

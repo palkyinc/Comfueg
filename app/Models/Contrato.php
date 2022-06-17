@@ -18,27 +18,26 @@ class Contrato extends Model
     {
         return $this->belongsTo('App\Models\Cliente', 'num_cliente', 'id');
     }
-
     public function relPlan()
     {
         return $this->belongsto('App\Models\Plan', 'num_plan', 'id');
     }
-
     public function relEquipo()
     {
         return $this->belongsto('App\Models\Equipo', 'num_equipo', 'id');
     }
-
+    public function relRouter()
+    {
+        return $this->belongsto('App\Models\Equipo', 'router_id', 'id');
+    }
     public function relPanel()
     {
         return $this->belongsto('App\Models\Panel', 'num_panel', 'id');
     }
-
     public function relDireccion()
     {
         return $this->belongsto('App\Models\Direccion', 'id_direccion', 'id');
     }
-
     public function relContacto()
     {
         return $this->belongsto('App\Models\Contacto', 'id_contacto', 'id');
@@ -52,7 +51,7 @@ class Contrato extends Model
         $respuesta = explode('+', date("c", strtotime($date)));
         return ($respuesta[0]);
     }
-    public function modificarMac ($ope)
+    public function modificarMac ($ope) // 'ope' => 1 = Del, 0 = Add
     {
         return ubiquiti::tratarMac(
             [
@@ -64,7 +63,7 @@ class Contrato extends Model
                 'ope' => $ope
             ]);
     }
-    public function openSessionGateway()
+    private function openSessionGateway()
     {
         $apiMikro = GatewayMikrotik::getConnection($this->relPlan->relPanel->relEquipo->ip, $this->relPlan->relPanel->relEquipo->getUsuario(), $this->relPlan->relPanel->relEquipo->getPassword());
         if ($apiMikro) 
@@ -78,34 +77,63 @@ class Contrato extends Model
     }
     public function createContratoGateway()
     {
+        switch ($this->tipo) {
+            case 1:
+                $ip = $this->relEquipo->ip;
+                $macaddress = $this->relEquipo->mac_address;
+                break;
+            
+            case (2 || 3):
+                $ip = $this->relRouter->ip;
+                $macaddress = $this->relRouter->mac_address;
+                break;
+            
+            default:
+                return 'ERROR. En tipo de Contrato, al crear contrato en Mikrotik(' . $this->relPlan->relPanel->relEquipo->ip . ')';
+                break;
+        }
         if ($apiMikro = $this->openSessionGateway()) 
         {
             $apiMikro->addClient([
-                'name' => $this->relEquipo->ip,
-                'mac-address' => $this->relEquipo->mac_address,
+                'name' => $ip,
+                'mac-address' => $macaddress,
                 'comment' => $this->id, ';contrato_id;A;addedBySlam',
                 'server' => 'hotspot1',
                 'list' => $this->relPlan->id
             ]);
             $apiMikro->checkDhcpServer($this->relPlan->relPanel->relEquipo->ip);
-            $apiMikro->comm('/ip/dhcp-server/lease/add', [  'address' => $this->relEquipo->ip,
-                                                            'mac-address' => $this->relEquipo->mac_address,
+            $apiMikro->comm('/ip/dhcp-server/lease/add', [  'address' => $ip,
+                                                            'mac-address' => $macaddress,
                                                             'server' => 'SlamServer',
                                                             'comment' => $this->id]);
-            $respuesta = 'EXITO. Contrato de ' . $this->relCliente->getNomYApe() . ' creado con Exito en Gateway(' . $this->relPlan->relPanel->relEquipo->ip . ')';
+            return 'EXITO. Contrato de ' . $this->relCliente->getNomYApe() . ' creado con Exito en Gateway(' . $this->relPlan->relPanel->relEquipo->ip . ')';
         } 
         else 
             {
-                $respuesta = 'ERROR al conectarse al Gateway (' . $this->relPlan->relPanel->relEquipo->ip . '): No se pudo crear.';
+                return 'ERROR al conectarse al Gateway (' . $this->relPlan->relPanel->relEquipo->ip . '): No se pudo crear.';
             }
-        return($respuesta);
     }
     public function changeStateContratoGateway()
     {
         if ($apiMikro = $this->openSessionGateway())
         {
-            $clientsDataGateway = $apiMikro->getGatewayData();
-            $gatewayContract = new ClientMikrotik($this->id, $clientsDataGateway, $this->relEquipo->mac_address);
+            switch ($this->tipo) {
+            case 1:
+                $ip = $this->relEquipo->ip;
+                $macaddress = $this->relEquipo->mac_address;
+                break;
+            
+            case (2 || 3):
+                $ip = $this->relRouter->ip;
+                $macaddress = $this->relRouter->mac_address;
+                break;
+            
+            default:
+                return 'ERROR. En tipo de Contrato, al crear contrato en Mikrotik(' . $this->relPlan->relPanel->relEquipo->ip . ')';
+                break;
+        }
+        $clientsDataGateway = $apiMikro->getGatewayData();
+            $gatewayContract = new ClientMikrotik($this->id, $clientsDataGateway, $macaddress);
             if ($this->activo)
             {
                 $apiMikro->enableClient($gatewayContract);

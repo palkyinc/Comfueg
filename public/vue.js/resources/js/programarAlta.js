@@ -65,7 +65,6 @@ Vue.component('programaralta', {
     },
     methods: {
         post_guardar: function (data) {
-            console.log(data);
             this.class_mensajes_postGuardar =  '';
             this.class_preGuardar =  'ocultar';
             this.mensajes =  data;

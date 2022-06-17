@@ -10,6 +10,7 @@ use App\Models\Cliente;
 use App\Models\Direccion;
 use App\Models\Equipo;
 use App\Models\Panel;
+use App\Models\Issue;
 use App\Models\Plan;
 use App\Models\Alta;
 use App\Models\Contadores_mensuales;
@@ -17,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ContratoController extends Controller
 {
@@ -102,6 +104,29 @@ class ContratoController extends Controller
         fclose($newFile);
         return Storage::disk('public')->download('ListadoClientes-' . date('Ymd') . '.csv');
     }
+    public function getListadoContratosactivosFull ()
+    {
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+        $contratos = Contrato::where('no_paga', false)->where('baja', false)->get();
+        $newFile = fopen ('../storage/app/public/ListadoClientes-' . date('Ymd') . '.csv', 'w');
+        fwrite($newFile ,'ID Contrato;APELLIDO, Nombre;Plan;Estado;Barrio;Panel;Desde;Equipo;Reclamos' . PHP_EOL);
+        foreach ($contratos as $key => $contrato)
+        {
+            fwrite($newFile ,   $contrato->id . ';' . 
+                                $contrato->relCliente->getNomyApe() . ';' . 
+                                $contrato->relPlan->nombre . ';' . 
+                                ($contrato->activo ? 'Habilitado' : 'Deshabilitado') . ';' .
+                                trim($contrato->relDireccion->relBarrio->nombre) . ';' . 
+                                $contrato->relPanel->ssid . ';' . 
+                                $contrato->created_at . ';' . 
+                                $contrato->relEquipo->relProducto->modelo . ';' . 
+                                (Issue::where('contrato_id', $contrato->id)->count()) . ';' . 
+                                PHP_EOL
+            );
+        }
+        fclose($newFile);
+        return Storage::disk('public')->download('ListadoClientes-' . date('Ymd') . '.csv');
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -134,11 +159,31 @@ class ContratoController extends Controller
         return ['internet' => 'active', 'clientes' => $clientes, 'direcciones' => $direcciones,
                     'equipos' => $equipos, 'paneles' => $paneles, 'planes' => $planes];
     }
-
+    public function validarFromAlta(Request $request)
+    {
+        $condicion = [
+            'alta_id' => 'required|numeric|min:1|max:99999',
+            'num_equipo' => 'nullable|numeric|min:1|max:99999|unique:equipos,id',
+            'num_panel' => 'nullable|numeric|min:1|max:99999',
+            'router_id' => 'nullable|numeric|min:1|max:99999',
+            'tipo' => 'required|numeric|min:1|max:5'
+        ];
+        $validator = Validator::make(
+            $request->all(), $condicion);
+            if ($validator->fails()) {
+                return($validator->errors());
+            }else {
+                return false;
+            }
+    }
     public function storeContractFromAlta (Request $request){
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $alta = Alta::find($request->input('alta_id'));
         $contrato = new Contrato;
+        if (!$mje = $this->validarFromAlta($request)) {
+            $mensaje['error'][] = $mje;
+            return response()->json($mensaje, 200);
+        }
         $contrato->num_cliente = $alta->cliente_id;
         $contrato->num_plan = $alta->plan_id;
         $contrato->id_direccion = $alta->direccion_id;
@@ -147,47 +192,91 @@ class ContratoController extends Controller
         $contrato->num_panel = ($request->input('num_panel') ? $request->input('num_panel') : null);;
         $contrato->tipo = ($request->input('tipo'));
         $contrato->activo = false;
-        $contrato->baja = true;
+        $contrato->baja = false;
         $contrato->pem = false;
         $contrato->creator = auth()->user()->id;
         $contrato->save();
-        /* ## set nuevo IP para el equipo
-        if(!$contrato->RelEquipo->setIpAuto()) {
-                $mensaje['error'][] = 'Error al intentar asignar IP al equipo. NOTA: Panel y Mikrotik no programados';
-                return redirect('/adminAltas')->with('mensaje', $mensaje);
-            }else {
-                $contrato->relEquipo->refresh();
-            }
-        ## set Mac en Ubiquiti
-        $rta = $this->modificarMac($contrato, 0);
-        if (!$this->analizarRta($rta)){
-            $mensaje['error'][] = $rta;
-            return redirect('/adminAltas')->with('mensaje', $mensaje);
-        } else {
-            $mensaje['success'][] = $rta;
+        $mensaje['success'][] = 'EXITO. Se grabó Contrato en Base de Datos.';
+        switch ($contrato->tipo) {
+            case 1:
+                ##activa el equipo
+                $contrato->relEquipo->activarEstado();
+                ##set ip en num_equipo
+                if ($contrato->relEquipo->setIpAuto()) {
+                    ##Refresh al objeto
+                    $contrato = $contrato->fresh();
+                    $mensaje['success'][] = 'EXITO. Se asigno a la antena cliente el IP:' . $contrato->relEquipo->ip;
+                    ##programar num_equipo en panel
+                    if ($this->analizarRta($rta = $contrato->modificarMac(false))) {
+                        $mensaje['success'][] = $rta;
+                    } else {
+                        $mensaje['error'][] = $rta;
+                    }
+                    ##programar num_equipo en mikrotik
+                    if ($this->analizarRta($rta = $contrato->createContratoGateway())) {
+                        $mensaje['success'][] = $rta;
+                    } else {
+                        $mensaje['error'][] = $rta;
+                    }
+                    ##bloquear num_equipo en mikrotik
+                    if ($this->analizarRta($rta = $contrato->changeStateContratoGateway())) {
+                        $mensaje['success'][] = $rta;
+                    } else {
+                        $mensaje['error'][] = $rta;
+                    }
+                } else {
+                    $mensaje['error'][] = 'ERROR. NO asigno IP a la antena cliente con MacAddress:' . $contrato->relEquipo->macaddress;
+                }
+                break;
+            
+            case 2:
+                dd('stop tipo 2');
+                ##set ip en num_equipo
+                $contrato->relEquipo->setIpAuto();
+                ##set ip en router_id
+                $contrato->relRouter->setIpAuto();
+                ##Refresh al objeto
+                $contrato = $contrato->fresh();
+                ##programar router_id en mikrotic
+                $contrato->createContratoGateway();
+                ##programar num_antena en panel
+                $contrato->modificarMac(false);
+                ##bloquear router_id en mikrotik
+                $contrato->changeStateContratoGateway();
+                break;
+            
+            case 3:
+                dd('stop tipo 3');
+                ##set ip en router_id
+                $contrato->relRouter->setIpAuto();
+                ##Refresh al objeto
+                $contrato = $contrato->fresh();
+                ##programar router_id en mikrotik
+                $contrato->createContratoGateway();
+                ##bloquear num_equipo en mikrotik
+                $contrato->changeStateContratoGateway();
+                break;
+            
+            default:
+                $mensaje['error'][] = 'ERROR. En el tipo de.';
+                break;
         }
-        ## set contrato en Mikrotik
-        $rta = $this->createContratoGateway($contrato);
-        if (!$this->analizarRta($rta)){
-            $mensaje['error'][] = $rta;
-            return redirect('/adminAltas')->with('mensaje', $mensaje);
-        } else {
-            $mensaje['success'][] = $rta;
-        }
-        ## Deshabilita el contrato
-        $rta = $this->changeStateContratoGateway($contrato);
-        if (!$this->analizarRta($rta)){
-            $mensaje['error'][] = $rta;
-            return redirect('/adminAltas')->with('mensaje', $mensaje);
-        } else {
-            $mensaje['success'][] = $rta;
-        } */
-        $mensaje['success'][] = 'Se grabó Contrato en Base de Datos.';
+        /* 
+        si tipo 1
+            
+        si tipo 2
+            
+        si tipo 3
+            
+         */
         $alta->programado = true;
-        // $alta->instalacion_fecha debe que la fecha que instalo luego de la prueba de instalacion.
+        // $alta->instalacion_fecha debe ser la fecha que instaló luego de la prueba de instalacion.
         $alta->save();
-        $contrato->baja = false;
-        $contrato->save();
+        if (!isset($mensaje['error'])) {
+            $mensaje['success'][] = 'EXITO. Contrato Cargado ok en panel y mikrotik.';
+        }else {
+            $mensaje['error'][] = 'ERROR. Se produjeron errores al cargar Contrato a panel o mikrotik.';
+        }
         return response()->json($mensaje, 200);
     }
 
@@ -198,7 +287,6 @@ class ContratoController extends Controller
             return false;
         }
         return null;
-        
     }
     /**
      * Store a newly created resource in storage.

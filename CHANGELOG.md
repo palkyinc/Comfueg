@@ -19,20 +19,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Volver develop.
 
 ### Secuencia de arctualización en server producción:
-1. Si corresponde realizar un git restore.
-2. realizar el git pull
-3. Si corresponde realizar un docker build y editar el .yml con la nueva version de la imagen y correr docker-compose.
-4. Realizar un migrate y un compose update.
+1. php artisan down
+2. Si corresponde realizar un git restore.
+3. realizar el git pull
+4. Si corresponde realizar un docker build y editar el .yml con la nueva version de la imagen y correr docker-compose.
+5. Realizar un migrate y un compose update.
+6. php artisan up
 ___ -->
 
-## [0.8.5] - 2022-06-XX
-### Added
+## [0.8.5] - 2022-06-08
 ### Changed
-1. 
+1. Mejoras en la vista de Clientes agregar y modificar.
+2. se corrije problema en generar Archivo Semana.
 ___
 
 ## [0.8.4] - 2022-06-04
-### Added
 ### Changed
 1. corregido readDay error al capturar consumos.
 2. corregido error al mostrar datos de consumos no completos.

@@ -44,7 +44,6 @@ class Equipo extends Model
         $equipo->password = Crypt::encrypt($password);
         $equipo->save();
     }
-    
     public function getPassword()
     {
         return (($this->password) ? Crypt::decrypt($this->password) : null);
@@ -54,7 +53,6 @@ class Equipo extends Model
         $this->password = Crypt::encrypt($palabra);
         $this->save();
     }
-    
     public function getUsuario()
     {
                 return (($this->usuario) ? Crypt::decrypt($this->usuario) : null);
@@ -64,13 +62,11 @@ class Equipo extends Model
         $this->usuario = Crypt::encrypt($palabra);
         $this->save();
     }
-
     public function setUsPassInicial()
     {
         $this->setPassword(Config::get('constants.CLIENT_PASS'));
         $this->setUsuario(Config::get('constants.CLIENT_USER'));
     }
-    
     public function relProducto () {
         return $this->belongsTo('App\Models\Producto', 'num_dispositivo', 'id');
     }
@@ -83,10 +79,8 @@ class Equipo extends Model
     public function relContrato () {
         return $this->belongsTo('App\Models\Contrato', 'num_equipo', 'id');
     }
-
     ## retorna todos los equipos clientes que no se agregaron a un contrato
-    public static function equiposSinAgregar ()
-    {
+    public static function equiposSinAgregar (){
         $equiposTodos = Equipo::get();
         $paneles = Panel::get();
         $equipos;
@@ -104,7 +98,6 @@ class Equipo extends Model
         }
         return $equipos;
     }
-
     ## retorna true si $ip se encuentra usado en un contrato o dispositivo
     public static function ipLibrePaneles ($ip, $dispositivos) ##si $dispositivos = true => buscan en paneles sino en contratos
     {
@@ -122,10 +115,18 @@ class Equipo extends Model
         }
         return true;
     }
-
-    ##asigna un IP libre. Retorna true si lo consigue, false si no.
+    /** 
+    * Asigna un IP libre si el IP asignado es 0.0.0.0, sino verifica si el IP esta usado en contrato o panel.
+    * Si el IP esta usado le asigna uno libre.
+    * Retorna true si consigue asignale un IP o si el IP que tiene asignado es valido
+    * Retorna false si falla al asignar IP.
+    * @return Boolean
+    */
     public function setIpAuto ()
     {
+        if ($this->ip != '0.0.0.0' && self::ipLibrePaneles($this->ip, true) && self::ipLibrePaneles($this->ip, true)) {
+            return true;
+        }
         $ip_inicial = $this->getIpInicial();
         $ip_actual = $this->getIpActual();
         $ip_final = $this->getIpFinal();
@@ -170,7 +171,20 @@ class Equipo extends Model
         $this->setIpActual($ip_actual);
         return true;
     }
-
+    /**
+     * Retorna True si los activo
+     * Retorna False si no hizo nada
+     * @return Boolean*/
+    public function activarEstado () {
+        if ($this->fecha_baja) {
+            $this->fecha_baja = null;
+            $this->save();
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
     private function getIpInicial ()
     {
         return Variable::find(1)->ip_inicial;

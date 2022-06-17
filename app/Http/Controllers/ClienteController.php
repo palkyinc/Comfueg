@@ -137,7 +137,7 @@ class ClienteController extends Controller
         return view('modificarCliente', ['elemento' => $Cliente, 'codigosArea' =>$codigosArea, 'datos' => 'active']);
     }
 
-    public function validar(Request $request, $modificando)
+    public function validar(Request $request, $modificando = false)
     {
         //dd(CodigoDeArea::find($request->cod_area_tel)->codigoDeArea);
         if ($modificando){

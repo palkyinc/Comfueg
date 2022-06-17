@@ -69,12 +69,25 @@ class Info_ClienteController extends Controller
                 $tickets['no_vencidos'] ++;
             }
         }
+        $total_tickets = $this->issuesCalc(30);
+        $total_tickets_180 = $this->issuesCalc(180);
+        return view(  'inicio', [   'frase' => false,
+                                    'tickets' => $tickets,
+                                    'total_tickets' => $total_tickets,
+                                    'total_tickets_180' => $total_tickets_180,
+                                    'proveedoresCaidos' => Proveedor::provedoresCaidos() , 
+                                    'incidentes' => Site_has_incidente::incidentesAbiertos() ,
+                                    'principal' => 'active']);
+    }
+
+    private function issuesCalc($days) {
         $hoy = new DateTime();
-        $hace_un_mes = $hoy->modify('-31 days');
+        $hace_un_mes = $hoy->modify('-' . $days . ' days' );
         $hace_un_mes = $hoy->format('Y-m-d h:i:s');
         $total_issues = Issue::where('created_at', '>', $hace_un_mes)->get();
         $total_tickets['total'] = count($total_issues);
-        $total_tickets['total_prom_dia'] = round( $total_tickets['total'] / 22, 2);
+        $dias_para_promediar = ($days / 30) * 22;
+        $total_tickets['total_prom_dia'] = round( $total_tickets['total'] / $dias_para_promediar, 2);
         $total_tickets['abiertos'] = 0;
         $total_tickets['abiertos_vencidos'] = 0;
         $total_tickets['finalizados_no_vencidos'] = 0;
@@ -99,13 +112,8 @@ class Info_ClienteController extends Controller
         $total_tickets['finalizados_no_vencidos_porc'] = 
         round ($total_tickets['finalizados_no_vencidos'] * 100 / ($total_tickets['total'] - $total_tickets['abiertos']));
         $total_tickets['abiertos_vencidos_porc'] = round($total_tickets['abiertos_vencidos'] *100 / $total_tickets['abiertos']);
-        return view(  'inicio', [   'frase' => false,
-                                    'tickets' => $tickets,
-                                    'total_tickets' => $total_tickets,
-                                    'proveedoresCaidos' => Proveedor::provedoresCaidos() , 
-                                    'incidentes' => Site_has_incidente::incidentesAbiertos() ,
-                                    'principal' => 'active']);
-    }
+        return $total_tickets;
+    } 
 
     /**
      * Store a newly created resource in storage.

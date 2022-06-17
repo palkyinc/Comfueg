@@ -13,7 +13,6 @@
         @endforeach
         <div class="container-fluid mt-5">
           <div class="row">
-            
             <div class="col-sm">
               <div class="card  mb-4">
                 <div class="card-body">
@@ -40,15 +39,16 @@
                   </ul>
                 </div>
               </div>
+              
               <div class="card  mb-4">
                 <div class="card-body">
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                      <h5 class="card-title">Últimos 30 días</h5>
+                      <h5 class="card-title">Últimos 30 días...</h5>
                     </li>
                     <li class="list-group-item">
                       <p class="card-text">Total Generados: {{$total_tickets['total']}} (Prom: {{$total_tickets['total_prom_dia']}} tkt´s x día)</p>
-                      <div id="chartTortaIssues" style="height: 500px;"></div>
+                      <div id="chartTortaIssues1" style="height: 500px;"></div>
                     </li>
                     <li class="list-group-item">
                       <p class="card-text">Pendientes: {{$total_tickets['abiertos']}} ({{$total_tickets['abiertos_porc']}}%)</p>
@@ -58,6 +58,32 @@
                     </li>
                     <li class="list-group-item">
                       <p class="card-text">Cerrados a tiempo: {{$total_tickets['finalizados_no_vencidos']}} ({{$total_tickets['finalizados_no_vencidos_porc']}}%)</p>
+                    </li>
+                    <li class="list-group-item">
+                    <p class="card-text"><small class="text-muted">Asignados a cualquier usuario</small></p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div class="card  mb-4">
+                <div class="card-body">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      <h5 class="card-title">Últimos 6 Meses...</h5>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text">Total Generados: {{$total_tickets_180['total']}} (Prom: {{$total_tickets_180['total_prom_dia']}} tkt´s x día)</p>
+                      <div id="chartTortaIssues2" style="height: 500px;"></div>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text">Pendientes: {{$total_tickets_180['abiertos']}} ({{$total_tickets_180['abiertos_porc']}}%)</p>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text">Pendientes Vencidas: {{$total_tickets_180['abiertos_vencidos']}} ({{$total_tickets_180['abiertos_vencidos_porc']}}%)</p>
+                    </li>
+                    <li class="list-group-item">
+                      <p class="card-text">Cerrados a tiempo: {{$total_tickets_180['finalizados_no_vencidos']}} ({{$total_tickets_180['finalizados_no_vencidos_porc']}}%)</p>
                     </li>
                     <li class="list-group-item">
                     <p class="card-text"><small class="text-muted">Asignados a cualquier usuario</small></p>

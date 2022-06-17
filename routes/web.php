@@ -178,6 +178,7 @@ Route::patch('/modificarModelo', [ModeloController::class, 'update'])->middlewar
 ####### CRUD Contratos
 Route::get('/adminContratos', [ContratoController::class, 'index'])->middleware('auth');
 Route::get('/listadoContratos', [ContratoController::class, 'getListadoContratosactivos'])->middleware('auth');
+Route::get('/listadoContratosFull', [ContratoController::class, 'getListadoContratosactivosFull'])->middleware('auth');
 Route::get('/agregarContrato', [ContratoController::class, 'create'])->middleware('auth');
 Route::post('/agregarContrato', [ContratoController::class, 'store'])->middleware('auth');
 Route::get('/modificarContrato/{id}', [ContratoController::class, 'edit'])->middleware('auth');

@@ -65,8 +65,8 @@ class AltaController extends Controller
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $this->validar($request);
         ($alta = ($modify) ? Alta::find($request->input('alta_id')) : new Alta);
-        if (null !== $request->input('alta_id')) {
-            $alta->creator_id = auth()->user()->id;
+        if (!$modify) {
+            $alta->creator = auth()->user()->id;
         }
         $alta->cliente_id = $request->input('cliente_id');
         $alta->direccion_id = $request->input('direccion_id');
