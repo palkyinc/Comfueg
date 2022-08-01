@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Realizar un migrate y un compose update.
 6. php artisan up
 ___ -->
+## [0.8.7] - 2022-06-XX
+___
 ## [0.8.6] - 2022-06-17
 ### Added
 1. Programación de nueva Alta en Panel/gateway. Solo para tipo de contrato standard

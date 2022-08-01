@@ -220,6 +220,7 @@ Route::patch('/modificarBarrio', [BarrioController::class, 'update'])->middlewar
 Route::get('/agregarBarrio', [BarrioController::class, 'create'])->middleware('auth');
 Route::post('/agregarBarrio', [BarrioController::class, 'store'])->middleware('auth');
 Route::get('/updateBarrio', [BarrioController::class, 'updateGeneral'])->middleware('auth');
+Route::get('/checkBarrio', [BarrioController::class, 'checkArchivo'])->middleware('auth');
 ####################
 ####### CRUD Calles
 Route::get('/adminCalles', [CalleController::class, 'index'])->middleware('auth');
@@ -229,6 +230,7 @@ Route::patch('/modificarCalle', [CalleController::class, 'update'])->middleware(
 Route::get('/agregarCalle', [CalleController::class, 'create'])->middleware('auth');
 Route::post('/agregarCalle', [CalleController::class, 'store'])->middleware('auth');
 Route::get('/updateCalle', [CalleController::class, 'updateGeneral'])->middleware('auth');
+Route::get('/checkCalle', [CalleController::class, 'checkCalle'])->middleware('auth');
 ####################
 ####### CRUD Ciudades
 Route::get('/adminCiudades', [CiudadController::class, 'index'])->middleware('auth');
