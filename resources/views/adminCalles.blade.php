@@ -7,7 +7,7 @@ $mostrarSololectura = true;
                     <form class="form-inline mx-4 margin-10" action="" method="GET">
                         <h2 class="mx-3">Administración de calles</h2>
                         <label for="nombre" class="mx-3">Nombre</label>
-                        <input type="text" name="nombre" class="form-control mx-3" id="nombreSearch">
+                        <input type="text" name="nombre" value="{{$nombre}}" class="form-control mx-3" id="nombreSearch">
                         <button type="submit" class="btn btn-primary mx-3">Enviar</button>
                     </form>
     
@@ -54,7 +54,7 @@ $mostrarSololectura = true;
                     </tbody>
                 </table>
 </div>
-        {{ $calles->links() }}
+        {{ $calles->appends(['nombre' => $nombre])->links() }}
 @endcan
 @include('sinPermiso')
 @endsection

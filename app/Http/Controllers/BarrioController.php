@@ -133,6 +133,56 @@ class BarrioController extends Controller
         return response()->json($barrios);
     }
 
+    public function checkArchivo ()
+    {
+        $nuevosBarrios = 0;
+        $file = fopen('barrios.txt', 'r');
+        if ($file)
+        {
+            while(!feof($file))
+            {
+                $candidatos[] = explode(';', fgets($file))[0];
+            }
+            fclose($file);
+            $barrios = Barrio::get();
+            foreach ($barrios as $barrio) {
+                $rta = true;
+                foreach ($candidatos as $candidato) {
+                    if ($barrio->nombre === explode('|', $candidato)[0]) {
+                        $rta = false;
+                    }
+                }
+                echo $rta ? ($barrio->nombre . '<br>') : "";
+            }
+            dd('Fin.');
+            foreach ($candidatos as $key => $candidato) 
+            {
+                $barrio = explode('|', $candidato);
+                $nombre = $barrio[0];
+                $limites = $barrio[1];
+                if ($barrio = Barrio::whereRaw("LOWER(nombre) LIKE (?)", ["%{$this->prepararNombre($nombre)}%"])->first())
+                {
+                    ## cargar limites al barrio existente
+                    $barrio->limites = $limites;
+                    $barrio->save();
+                } else {
+                    ## crear nuevo barrio
+                    $nuevosBarrios++;
+                    $barrio = new Barrio;
+                    $barrio->nombre = $nombre;
+                    $barrio->limites = $limites;
+                    $barrio->save();
+                }
+            }
+            $respuesta[] = 'Se procesaron:' . (count($candidatos)) . ' Barrios.';
+            $respuesta[] = 'Se agregaron: ' . $nuevosBarrios . ' Barrios nuevos.';
+        }
+        else
+        {
+            $respuesta[] = 'Error al abrir el archcivo barrios.txt';
+        }
+        return redirect('adminBarrios')->with('mensaje', $respuesta);
+    }
     public function updateGeneral ()
     {
         $nuevosBarrios = 0;

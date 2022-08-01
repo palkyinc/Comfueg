@@ -19,7 +19,7 @@ class CalleController extends Controller
         $calles = Calle::select("*")
             ->whereRaw("UPPER(nombre) LIKE (?)", ["%{$nombre}%"])
             ->paginate(10);
-        return view('adminCalles', ['calles' => $calles, 'datos' => 'active']);
+        return view('adminCalles', ['calles' => $calles, 'nombre' => $request->input('nombre'), 'datos' => 'active']);
     }
 
     /**
@@ -71,15 +71,32 @@ class CalleController extends Controller
         return view('modificarCalle', ['elemento' => $Calle, 'datos' => 'active']);
     }
 
+    public function checkCalle () {
+        $calles = Calle::get();
+        echo count($calles) . '<br>';
+        foreach ($calles as $calle) {
+            if ($nombre = $this->prepararNombre($calle->nombre)) {
+                if ($calle_dulpicada = (Calle::where('id', '!=', $calle->id)->whereRaw("LOWER(nombre) LIKE (?)", ["%{$nombre}%"])->first())) {
+                    echo $calle->nombre . '<br>';
+                    echo $calle_dulpicada->nombre . ' | true<hr>';
+                }
+            } else {
+                if ($calle_dulpicada = (Calle::where('id', '!=', $calle->id)->whereRaw("LOWER(nombre)", strtolower($calle->nombre))->first())) {
+                    echo $calle_dulpicada->nombre . '<br>';
+                }
+            }
+        }
+    }
     public function prepararNombre ($candidata)
     {
-        $letras = array('á', 'é', 'í', 'ó', 'ú', 'ñ', 'Ñ', 'º', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ü', 'ü', 'ö', 'Ö');
+        $rta = false;
+        $letras = array('á', 'é', 'í', 'ó', 'ú', 'ñ', 'Ñ', 'º', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ü', 'ü', 'ö', 'Ö', 'Ã');
         foreach ($letras as $letra)
         {
-            if (stripos($candidata, $letra))
+            if ($explode = $this->findLetraString($candidata, $letra))
             {
-                $explode = explode($letra, $candidata);
                 $masLargo = 0;
+                $rta = true;
                 for ($i=0; $i < count($explode); $i++) 
                 {
                     if (strlen($explode[$i]) > $masLargo)
@@ -90,7 +107,26 @@ class CalleController extends Controller
                 }
             }
         }
-        return strtolower($candidata);
+        return $rta ? strtolower($candidata) : false;
+    }
+
+    private function findLetraString ($candidata, $letra) {
+        $rta = false;
+        $len_candidata = strlen($candidata);
+        $i = 0;
+        while ($i < $len_candidata) {
+            if (ord($candidata[$i]) === ord($letra)) {
+                $rta[] = (substr($candidata, 0, $i));
+                if ($resto = $i + 1  - ($len_candidata - 1)) {
+                    $candidata = (substr($candidata, ($i + 1  - ($len_candidata - 1))));
+                    $i = -1;
+                    $len_candidata = strlen($candidata);
+                }
+            }
+            $i++;
+        }
+        $rta[] = $candidata;
+        return ($rta);
     }
 
     /**
@@ -112,11 +148,18 @@ class CalleController extends Controller
             fclose($file);
             foreach ($candidatas as $key => $candidata) 
             {
-                $nombre = $this->prepararNombre($candidata);
-                if (Calle::whereRaw("LOWER(nombre) LIKE (?)", ["%{$nombre}%"])->first())
-                {
-                    unset($candidatas[$key]);
+                if ($nombre = $this->prepararNombre($candidata)) {
+                    if (Calle::whereRaw("LOWER(nombre) LIKE (?)", ["%{$nombre}%"])->first())
+                    {
+                        unset($candidatas[$key]);
+                    }
+                } else {
+                    if (Calle::whereRaw("LOWER(nombre)", strtolower($candidata))->first())
+                    {
+                        unset($candidatas[$key]);
+                    }
                 }
+
             }
             foreach ($candidatas as $candidata)
             {
