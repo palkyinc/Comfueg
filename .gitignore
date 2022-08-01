@@ -1,6 +1,6 @@
 /public/putty.log
 /docker/rclone/rclone.conf
-/docker/aircontrol/
+/docker/aircontrol/*
 /public/imgUsuarios
 /public/storage
 /public/Crons
