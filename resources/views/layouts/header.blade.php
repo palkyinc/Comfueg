@@ -34,15 +34,6 @@
 						<li class="nav-item {{  $principal ?? ''}}">
 							<a class="nav-link" href="/inicio">Principal</a>
 						</li>
-						{{-- <li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle {{  $contracts ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Contratos
-							</a>
-							<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
-								<a class="dropdown-item" href="/altaContrato">Alta</a>
-								<a class="dropdown-item disabled" href="">Consulta</a>
-							</div>
-						</li> --}}
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle {{  $internet ?? ''}}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								Internet
@@ -108,7 +99,8 @@
 								<a class="dropdown-item" href="/adminContractTypes">Tipos de Contratos</a>
 								<a class="dropdown-item" href="/adminIssuesTitles">Títulos de Tickets</a>
 								<a class="dropdown-item" href="/adminBackups">Backups</a>
-								<a class="dropdown-item disabled" href="/adminLogs">Logs de Sistema</a>
+								<a class="dropdown-item" href="/reports">Reportes</a>
+								{{-- <a class="dropdown-item disabled" href="/adminLogs">Logs de Sistema</a> --}}
 							</div>
 						</li>
 					</ul>

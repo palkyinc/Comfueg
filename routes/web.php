@@ -352,6 +352,9 @@ Route::get('/Cliente/{id}', [ClienteController::class, 'search'])->middleware('a
 Route::post('/Cliente', [ClienteController::class, 'storeApi'])->middleware('auth');
 Route::patch('/Cliente', [ClienteController::class, 'updateApi'])->middleware('auth');
 ####################
+####### Reportes
+Route::get('/reports', function(){return view('reports');})->middleware('auth');
+####################
 ####### CRUD Users
 Route::get('/adminUsers', [UserController::class, 'index'])->middleware('auth');
 Route::get('/modificarUser/{id}', [UserController::class, 'edit'])->middleware('auth');
