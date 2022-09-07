@@ -350,12 +350,16 @@ class GatewayMikrotik extends RouterosAPI
 			"name"	=>	$nombre . "_up",
 			"kind"	=>	"pcq",
 			"pcq-rate" => $up . 'K',
+			'pcq-limit' => '3072', 
+			'pcq-total-limit' => '10240',
 			"pcq-classifier" => "src-address"
 		));
 		$this->comm('/queue/type/add', array(
 			'name'	=>	$nombre . "_down",
 			'kind'	=>	'pcq',
 			'pcq-rate' => $down . 'K',
+			'pcq-limit' => '3072', 
+			'pcq-total-limit' => '10240',
 			'pcq-classifier' => 'dst-address'
 		));
 	}

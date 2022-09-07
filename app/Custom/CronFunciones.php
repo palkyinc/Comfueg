@@ -31,7 +31,7 @@ abstract class CronFunciones
             {
                 $apiMikro->setClock();
                 $apiMikro->makeBackup();
-                $apiMikro->resetGateway();
+                //$apiMikro->resetGateway();
             }
         }
     }

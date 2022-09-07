@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Realizar un migrate y un compose update.
 6. php artisan up
 ___ -->
+## [0.8.8] - 2022-XX-XX
+### Added
+1.  
+### Changed
+1.  Se cambia pcq-limit para mejor manejo del arbol de colas en Mikrotik.
+
 ## [0.8.7] - 2022-08-1
 ### Added
 1.  Se agrega vista de Reportes
