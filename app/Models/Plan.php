@@ -83,12 +83,22 @@ class Plan extends Model
                         if (isset($array['bajada']))
                         {
                             $answerType = $apiMikro->getTypeNumbers($this->id);
-                            $apiMikro->modificarPlanType(['numbers' => $answerType['down'], 'pcq-rate' => $this->bajada . 'K'], null, 'set');
+                            $apiMikro->modificarPlanType(   [
+                                                            'numbers' => $answerType['down'],
+                                                            'pcq-rate' => $this->bajada . 'K',
+                                                            'pcq-limit' => '3072K', 
+                                                            'pcq-total-limit' => '10240K',
+                                                            ], null, 'set');
                         }
                         if (isset($array['subida']))
                         {
                             $answerType = $apiMikro->getTypeNumbers($this->id);
-                            $apiMikro->modificarPlanType(null, ['numbers' => $answerType['up'], 'pcq-rate' => $this->subida . 'K'], 'set');
+                            $apiMikro->modificarPlanType(null,  [
+                                                                'numbers' => $answerType['up'], 
+                                                                'pcq-rate' => $this->subida . 'K'
+                                                                'pcq-limit' => '3072K', 
+                                                                'pcq-total-limit' => '10240K',
+                                                                ], 'set');
                         }
                     }else return false;
                     unset($apiMikro);
