@@ -26,13 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Realizar un migrate y un compose update.
 6. php artisan up
 ___ -->
-## [0.8.8] - 2022-XX-XX
-### Added
-1.  
+## [0.8.8] - 2022-09-16
 ### Changed
 1.  Se cambia pcq-limit para mejor manejo del arbol de colas en Mikrotik.
 2.  Carpeta Packages para salvar el problema de la caida del repo de Chartisan v7.x. Se queda a la espera de v8.x
 3.  Fixes en archivos de docker para contar con Docker Flow.
+4.  Fix para pcq burst, rafagas.
 
 ## [0.8.7] - 2022-08-1
 ### Added
