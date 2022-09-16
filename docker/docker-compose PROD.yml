@@ -17,6 +17,19 @@ services:
     links:
       - database
 
+  aircontrol:
+    hostname: slam-aircontrol
+    container_name: aircontrol
+    image: "image.aircontrol:1.0"
+    ports:
+      - "9081:9081"
+      - "9082:9082"
+    volumes:
+      - db-aircontrol:/opt/Ubiquiti/AirControl2/pgsql/data
+      - "/media/proyectos/Comfueg/docker/aircontrol/:/opt/Ubiquiti/AirControl2/lib/db/dbbackups"
+    restart: unless-stopped
+    network_mode: bridge
+
   database:
     hostname: slam-mysql
     container_name: mysql

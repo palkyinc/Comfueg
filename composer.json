@@ -1,4 +1,14 @@
 {
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./packages/consoletvs/charts"
+        },
+        {
+            "type": "path",
+            "url": "./packages/chartisan/php"
+        }
+    ],
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
@@ -9,7 +19,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.4",
-        "consoletvs/charts": "7.*",
+        "consoletvs/charts": "@dev",
         "doctrine/dbal": "^2.12.1",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",

@@ -13,4 +13,5 @@ docker volume create db-aircontrol
 docker build -f Dockerfile.aircontrol -t image.aircontrol:1.0 .
 docker build -f Dockerfile.mysql -t image.mysql:1.0 .
 docker build -f Dockerfile.php-apache -t image.php-apache:1.4 .
-docker run --rm -v db-aircontrol:/bdatos image.aircontrol:1.0 cp -RT /opt/Ubiquiti/AirControl2/pgsql/data /bdatos
+docker run --rm -v db-aircontrol:/bdatos image.aircontrol:1.0
+cp -RT /opt/Ubiquiti/AirControl2/pgsql/data /bdatos

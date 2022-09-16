@@ -31,6 +31,8 @@ ___ -->
 1.  
 ### Changed
 1.  Se cambia pcq-limit para mejor manejo del arbol de colas en Mikrotik.
+2.  Carpeta Packages para salvar el problema de la caida del repo de Chartisan v7.x. Se queda a la espera de v8.x
+3.  Fixes en archivos de docker para contar con Docker Flow.
 
 ## [0.8.7] - 2022-08-1
 ### Added
