@@ -352,7 +352,7 @@ class GatewayMikrotik extends RouterosAPI
 			"pcq-rate" => $up . 'K',
 			'pcq-limit' => $up, 
 			'pcq-total-limit' => $up * 6,
-			'pcq-burst-rate'= $up * 2 . 'K',
+			'pcq-burst-rate'=> $up * 2 . 'K',
 			'pcq-burst-time' => '1m',
 			"pcq-classifier" => "src-address"
 		));
@@ -362,7 +362,7 @@ class GatewayMikrotik extends RouterosAPI
 			'pcq-rate' => $down . 'K',
 			'pcq-limit' => $down, 
 			'pcq-total-limit' => $down * 6,
-			'pcq-burst-rate'= $down * 2 . 'K',
+			'pcq-burst-rate'=> $down * 2 . 'K',
 			'pcq-burst-time' => '1m',
 			'pcq-classifier' => 'dst-address'
 		));

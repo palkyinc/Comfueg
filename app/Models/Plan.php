@@ -87,8 +87,8 @@ class Plan extends Model
                                                             'numbers' => $answerType['down'],
                                                             'pcq-rate' => $this->bajada . 'K',
                                                             'pcq-limit' => $this->bajada, 
-                                                            'pcq-total-limit' => $this->bajada * 6,
-                                                            'pcq-burst-rate'= $this->bajada * 2 . 'K',
+                                                            'pcq-total-limit' => ($this->bajada * 6),
+                                                            'pcq-biurst-rate'=> ($this->bajada * 2) . 'K'
                                                             ], null, 'set');
                         }
                         if (isset($array['subida']))
@@ -96,10 +96,10 @@ class Plan extends Model
                             $answerType = $apiMikro->getTypeNumbers($this->id);
                             $apiMikro->modificarPlanType(null,  [
                                                                 'numbers' => $answerType['up'], 
-                                                                'pcq-rate' => $this->subida . 'K'
+                                                                'pcq-rate' => $this->subida . 'K',
                                                                 'pcq-limit' => $this->subida, 
-                                                                'pcq-total-limit' => $this->subida * 6,
-                                                                'pcq-burst-rate'= $this->subida * 2 . 'K',
+                                                                'pcq-total-limit' => ($this->subida * 6),
+                                                                'pcq-burst-rate'=> ($this->subida * 2) . 'K'
                                                             ], 'set');
                         }
                     }else return false;
