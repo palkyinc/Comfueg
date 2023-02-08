@@ -24,6 +24,10 @@ $mostrarSololectura = true;
             <th scope="row"> <a href="listadoContratosFull">Listado Completo Full</a></th>
             <td>Listado de clientes activos (no dados de baja). Incluye los campos: ID Contrato, APELLIDO-Nombre, Plan, Estado, Barrio, Panel, Cliente Desde, Equipo, Cantidad de Reclamos.</td>
             </tr>
+            <tr>
+            <th scope="row"> <a href="listadoContratosNoActivos">Listado Contratos de Baja</a></th>
+            <td>Listado para Contratos de baja. Incluye los campos: Genesys ID, APELLIDO Nombre, Plan, Estado, Sistema, Comentarios: Si posee velocidad a prueba.</td>
+            </tr>
         </tbody>
     </table>
 @endcan

@@ -104,7 +104,6 @@ class SampleChart extends BaseChart
         }
         foreach ($labels as $label) {
             if ($label == '00.00') {
-            } else {
                 $datosArchivos = $datosArchivosHoy;
             }
             if (isset($datosArchivos[$label]))

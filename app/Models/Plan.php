@@ -88,7 +88,7 @@ class Plan extends Model
                                                             'pcq-rate' => $this->bajada . 'K',
                                                             'pcq-limit' => $this->bajada, 
                                                             'pcq-total-limit' => ($this->bajada * 6),
-                                                            'pcq-biurst-rate'=> ($this->bajada * 2) . 'K'
+                                                            'pcq-burst-rate'=> ($this->bajada * 2) . 'K'
                                                             ], null, 'set');
                         }
                         if (isset($array['subida']))

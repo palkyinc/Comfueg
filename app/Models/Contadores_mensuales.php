@@ -174,6 +174,9 @@ class Contadores_mensuales extends Model
     public function getConteoData ()
     {
         $ultimo_mes = $this->ultimo_mes + 1;
+        if ($ultimo_mes === 13) {
+                $ultimo_mes = 1;
+        }
         $meses = [1 => 'ene',2 => 'feb',3 => 'mar',4 => 'abr',5 => 'may',6 => 'jun',7 => 'jul',8 => 'ago',9 => 'sep',10 => 'oct',11 => 'nov',12 => 'dic',];
         for ($i=0; $i < 12; $i++) { 
                 $labels[$i] = $meses[$ultimo_mes];

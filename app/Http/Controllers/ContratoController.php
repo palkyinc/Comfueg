@@ -111,6 +111,24 @@ class ContratoController extends Controller
         fclose($newFile);
         return Storage::disk('public')->download('ListadoClientes-' . date('Ymd') . '.csv');
     }
+    public function getListadoContratosNoActivos ()
+    {
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+        $contratos = Contrato::where('no_paga', false)->where('baja', true)->get();
+        $newFile = fopen ('../storage/app/public/ListadoClientesNoActivos-' . date('Ymd') . '.csv', 'w');
+        fwrite($newFile ,'ID Genesys;APELLIDO, Nombre;Plan;Estado;Sistema;Comentarios' . PHP_EOL);
+        foreach ($contratos as $key => $value)
+        {
+            fwrite($newFile ,   $value->relCliente->id . ';' . 
+                                $value->relCliente->getNomyApe() . ';' . 
+                                $value->relPlan->nombre . ';' . 
+                                ($value->activo ? 'Habilitado' : 'Deshabilitado') .  
+                                ';SLAM' . ';' .
+                                PHP_EOL);
+        }
+        fclose($newFile);
+        return Storage::disk('public')->download('ListadoClientesNoActivos-' . date('Ymd') . '.csv'); 
+    }
     public function getListadoContratosactivosFull ()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
