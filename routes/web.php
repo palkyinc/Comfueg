@@ -33,9 +33,10 @@ use App\Http\Controllers\Issue_titleController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\Info_ClienteController;
 use App\Http\Controllers\AltaController;
+
+use App\Custom\CronFunciones;//TEST
 ####TEST
 /* 
-use App\Custom\CronFunciones;//TEST
 use App\Models\Cliente; //TEST
 use App\Custom\GatewayMikrotik;//TEST
 use App\Custom\Ubiquiti;
@@ -68,9 +69,10 @@ use Illuminate\Support\Facades\Mail;
 /* Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
 }); */ 
-/* Route::get('/sarasa', function () {
+Route::get('/sarasa', function () {
+        CronFunciones::resetContadores_mensuales();
         echo 'Estas metiendo mal los dedos';
-}); */
+});
 
 ### Route index
 Route::get('/', [Info_ClienteController::class, 'index']);

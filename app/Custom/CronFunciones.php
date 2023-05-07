@@ -20,6 +20,68 @@ use Illuminate\Support\Facades\Mail;
 abstract class CronFunciones
 {
 
+    public static function resetContadores_mensuales() 
+    {
+        $todosLosContadores = Contadores_mensuales::get();
+        $mes_actual = date('m');
+        switch ($mes_actual) {
+                case '1':
+                        $mes_actual = 'ene';
+                        break;
+                
+                case '2':
+                        $mes_actual = 'feb';
+                        break;
+                
+                case '3':
+                        $mes_actual = 'mar';
+                        break;
+                
+                case '4':
+                        $mes_actual = 'abr';
+                        break;
+                
+                case '5':
+                        $mes_actual = 'may';
+                        break;
+                
+                case '6':
+                        $mes_actual = 'jun';
+                        break;
+                
+                case '7':
+                        $mes_actual = 'jul';
+                        break;
+                
+                case '8':
+                        $mes_actual = 'ago';
+                        break;
+                
+                case '9':
+                        $mes_actual = 'sep';
+                        break;
+                
+                case '10':
+                        $mes_actual = 'oct';
+                        break;
+                
+                case '11':
+                        $mes_actual = 'nov';
+                        break;
+                
+                case '12':
+                        $mes_actual = 'dic';
+                        break;
+                
+                default:
+                        return false;
+                        break;
+        }
+        foreach ($todosLosContadores as $contador) {
+                $contador->$mes_actual = 0;
+                $contador->save();
+        }
+    }
     public static function setClockAndResetGateway ()
     {
         $gateways = self::getGateways();

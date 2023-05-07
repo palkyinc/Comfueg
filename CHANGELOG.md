@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Realizar un migrate y un compose update.
 6. php artisan up
 ___ -->
+## [0.8.9] - 2023-05-06
+### Changed
+1.  Fix de reset mensual de los Contadores_mensuales
+2.  Fix para planes
+3.  Fix para contadores mensuales y charts.
+
 ## [0.8.8] - 2022-09-16
 ### Changed
 1.  Se cambia pcq-limit para mejor manejo del arbol de colas en Mikrotik.

@@ -51,13 +51,13 @@
                       <div id="chartTortaIssues1" style="height: 500px;"></div>
                     </li>
                     <li class="list-group-item">
-                      <p class="card-text">Pendientes: {{$total_tickets['abiertos']}} ({{$total_tickets['abiertos_porc']}}%)</p>
+                      <p class="card-text">Pendientes: {{$total_tickets['abiertos']}} ({{$total_tickets['abiertos_porc'] ?? ''}}%)</p>
                     </li>
                     <li class="list-group-item">
-                      <p class="card-text">Pendientes Vencidas: {{$total_tickets['abiertos_vencidos']}} ({{$total_tickets['abiertos_vencidos_porc']}}%)</p>
+                      <p class="card-text">Pendientes Vencidas: {{$total_tickets['abiertos_vencidos'] ?? ''}} ({{$total_tickets['abiertos_vencidos_porc'] ?? ''}}%)</p>
                     </li>
                     <li class="list-group-item">
-                      <p class="card-text">Cerrados a tiempo: {{$total_tickets['finalizados_no_vencidos']}} ({{$total_tickets['finalizados_no_vencidos_porc']}}%)</p>
+                      <p class="card-text">Cerrados a tiempo: {{$total_tickets['finalizados_no_vencidos'] ?? ''}} ({{$total_tickets['finalizados_no_vencidos_porc'] ?? ''}}%)</p>
                     </li>
                     <li class="list-group-item">
                     <p class="card-text"><small class="text-muted">Asignados a cualquier usuario</small></p>
@@ -77,13 +77,13 @@
                       <div id="chartTortaIssues2" style="height: 500px;"></div>
                     </li>
                     <li class="list-group-item">
-                      <p class="card-text">Pendientes: {{$total_tickets_180['abiertos']}} ({{$total_tickets_180['abiertos_porc']}}%)</p>
+                      <p class="card-text">Pendientes: {{$total_tickets_180['abiertos']}} ({{$total_tickets_180['abiertos_porc'] ?? ''}}%)</p>
                     </li>
                     <li class="list-group-item">
-                      <p class="card-text">Pendientes Vencidas: {{$total_tickets_180['abiertos_vencidos']}} ({{$total_tickets_180['abiertos_vencidos_porc']}}%)</p>
+                      <p class="card-text">Pendientes Vencidas: {{$total_tickets_180['abiertos_vencidos']}} ({{$total_tickets_180['abiertos_vencidos_porc'] ?? ''}}%)</p>
                     </li>
                     <li class="list-group-item">
-                      <p class="card-text">Cerrados a tiempo: {{$total_tickets_180['finalizados_no_vencidos']}} ({{$total_tickets_180['finalizados_no_vencidos_porc']}}%)</p>
+                      <p class="card-text">Cerrados a tiempo: {{$total_tickets_180['finalizados_no_vencidos']}} ({{$total_tickets_180['finalizados_no_vencidos_porc'] ?? ''}}%)</p>
                     </li>
                     <li class="list-group-item">
                     <p class="card-text"><small class="text-muted">Asignados a cualquier usuario</small></p>

@@ -108,10 +108,13 @@ class Info_ClienteController extends Controller
             }
         }
         ($total_tickets['tipos'] = json_encode($total_tickets['tipos']));
-        $total_tickets['abiertos_porc'] = round($total_tickets['abiertos'] *100 / $total_tickets['total'], 2);
-        $total_tickets['finalizados_no_vencidos_porc'] = 
-        round ($total_tickets['finalizados_no_vencidos'] * 100 / ($total_tickets['total'] - $total_tickets['abiertos']));
-        $total_tickets['abiertos_vencidos_porc'] = round($total_tickets['abiertos_vencidos'] *100 / $total_tickets['abiertos']);
+        if ($total_tickets['total'] !== 0)
+        {
+            $total_tickets['abiertos_porc'] = round($total_tickets['abiertos'] *100 / $total_tickets['total'], 2);
+            $total_tickets['finalizados_no_vencidos_porc'] = 
+            round ($total_tickets['finalizados_no_vencidos'] * 100 / ($total_tickets['total'] - $total_tickets['abiertos']));
+            $total_tickets['abiertos_vencidos_porc'] = round($total_tickets['abiertos_vencidos'] *100 / $total_tickets['abiertos']);
+        }
         return $total_tickets;
     } 
 
