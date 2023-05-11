@@ -27,9 +27,10 @@ $mostrarSololectura = true;
                         <tr>
                             <th scope="col"> Id </th>
                             <th scope="col"> Descripción </th>
-                            <th scope="col" colspan="2">
+                            <th scope="col">
                                 @can('calles_create')
                                 <a href="/agregarCalle" class="btn btn-dark">Agregar</a>
+                                <a href="/actualizarCalle" class="btn btn-dark">Actualizar</a>
                                 @endcan
                             </th>
                         </tr>

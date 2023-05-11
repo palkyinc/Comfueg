@@ -26,6 +26,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Realizar un migrate y un compose update.
 6. php artisan up
 ___ -->
+
+## [0.8.10] - 2023-05-10
+### Add
+1.  Vista de actualizar Calles cargando un archivo.
+
 ## [0.8.9] - 2023-05-06
 ### Changed
 1.  Fix de reset mensual de los Contadores_mensuales

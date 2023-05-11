@@ -24,7 +24,7 @@ $mostrarSololectura = true;
         <button type="submit" class="btn btn-primary">Modificar</button>
         <a href="/mostrarNodo/{{$sitio_id}}" class="btn btn-primary">Volver</a>
     </form>
-    </div>
+</div>
     
     @if( $errors->any() )
     <div class="alert alert-danger col-8 mx-auto">

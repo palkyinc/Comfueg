@@ -136,11 +136,14 @@ class CalleController extends Controller
      * @param  \App\Models\Calle  $calle
      * @return \Illuminate\Http\Response
      */
-    public function updateGeneral ()
+    public function updateGeneral (Request $request)
     {
-        $file = fopen('calles.txt', 'r');
-        if ($file)
+        $fileName = 'calles.txt';
+        $request->validate(['scheme_file' => 'required|mimetypes:text/plain|max:1024']);
+        $request->file('scheme_file')->move(public_path('/'), $fileName);
+        if (file_exists($fileName))
         {
+            $file = fopen($fileName, 'r');
             while(!feof($file))
             {
                 $candidatas[] = explode(';', fgets($file))[0];
@@ -171,7 +174,7 @@ class CalleController extends Controller
         }
         else
         {
-            $respuesta[] = 'Error al abrir el archcivo calles.txt';
+            $respuesta[] = 'ERROR al abrir el archcivo ' . $fileName;
         }
         return redirect('adminCalles')->with('mensaje', $respuesta);
     }

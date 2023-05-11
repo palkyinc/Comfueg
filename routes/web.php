@@ -69,10 +69,10 @@ use Illuminate\Support\Facades\Mail;
 /* Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
 }); */ 
-Route::get('/sarasa', function () {
+/* Route::get('/sarasa', function () {
         CronFunciones::resetContadores_mensuales();
         echo 'Estas metiendo mal los dedos';
-});
+}); */
 
 ### Route index
 Route::get('/', [Info_ClienteController::class, 'index']);
@@ -232,8 +232,10 @@ Route::get('/modificarCalle/{id}', [CalleController::class, 'edit'])->middleware
 Route::patch('/modificarCalle', [CalleController::class, 'update'])->middleware('auth');
 Route::get('/agregarCalle', [CalleController::class, 'create'])->middleware('auth');
 Route::post('/agregarCalle', [CalleController::class, 'store'])->middleware('auth');
-Route::get('/updateCalle', [CalleController::class, 'updateGeneral'])->middleware('auth');
-Route::get('/checkCalle', [CalleController::class, 'checkCalle'])->middleware('auth');
+Route::view('/actualizarCalle', 'adminArchivoCalles')->middleware('auth');
+Route::post('/actualizarCalle', [CalleController::class, 'updateGeneral'])->middleware('auth');
+//Route::get('/updateCalle', [CalleController::class, ''])->middleware('auth');
+//Route::get('/checkCalle', [CalleController::class, 'checkCalle'])->middleware('auth');
 ####################
 ####### CRUD Ciudades
 Route::get('/adminCiudades', [CiudadController::class, 'index'])->middleware('auth');
