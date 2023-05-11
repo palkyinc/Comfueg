@@ -175,6 +175,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         ZanySoft\Zip\ZipServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -227,6 +228,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Zip' => ZanySoft\Zip\ZipFacade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

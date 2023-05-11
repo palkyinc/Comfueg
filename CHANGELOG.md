@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Realizar un migrate y un compose update.
 6. php artisan up
 ___ -->
+(https://docs.laravel-excel.com/3.1/architecture/).
 
 ## [0.8.10] - 2023-05-10
 ### Add

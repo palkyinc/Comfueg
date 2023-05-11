@@ -28,6 +28,7 @@
         "laravel/slack-notification-channel": "^2.3",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.1",
+        "maatwebsite/excel": "^3.1",
         "mattkingshott/axiom": "^3.1",
         "spatie/db-dumper": "^2.21",
         "spatie/laravel-backup": "^6.16",
