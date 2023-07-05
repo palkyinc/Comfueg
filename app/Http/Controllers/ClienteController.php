@@ -33,10 +33,16 @@ class ClienteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        if( null !==  session('btf_debito') )
+        {
+            $datos = 'controller';
+        } else {
+            $datos = 'datos';
+        }
         $codigosArea = CodigoDeArea::all();
-        return view('agregarCliente', ['codigosArea' =>$codigosArea, 'datos' => 'active']);
+        return view('agregarCliente', ['codigosArea' =>$codigosArea, $datos => 'active']);
     }
    
     /**
@@ -60,8 +66,19 @@ class ClienteController extends Controller
     public function store(Request $request)
     {
         $this->storeInBase($request);
-        $respuesta[] = 'Cliente se creo correctamente';
-        return redirect('/adminClientes')->with('mensaje', $respuesta);
+        if (isset($request->btf_debito)) {
+            $cliente = Cliente::find($request->id);
+            return view('/agregarBtfDebito', [
+                'sin_cliente_id' => false,
+                'cliente_id' => $cliente->id,
+                'cliente_NomYApe' => $cliente->getNomYApe(true),
+                'controller' => 'active'
+            ]);
+        } else {
+            $respuesta[] = 'Cliente se creo correctamente';
+            return redirect('/adminClientes')->with('mensaje', $respuesta);
+        }
+        
     }
 
     private function storeInBase (Request $request) {

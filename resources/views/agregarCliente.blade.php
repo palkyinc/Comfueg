@@ -4,6 +4,9 @@
 @php
 $mostrarSololectura = true;
 @endphp
+    @if (session('btf_debito'))
+        <div class="alert alert-danger">Cliente inexistente</div>
+    @endif
 <h3>Agregar Cliente nuevo</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
     <form action="/agregarCliente" method="post">
@@ -11,7 +14,12 @@ $mostrarSololectura = true;
         <div class="form-row">
             <div class="form-group col-md-2">
                 <label for="id">ID Genesys: </label>
-                <input type="text" name="id" value="{{old('id')}}" maxlength="45"  class="form-control">
+                @if (session('btf_debito'))
+                    <input type="text" name="id" value="{{session('btf_debito')}}" maxlength="45"  class="form-control">
+                    <input type="hidden" name="btf_debito" value="1">
+                @else
+                    <input type="text" name="id" value="{{old('id')}}" maxlength="45"  class="form-control">
+                @endif
             </div>
             <div class="custom-control custom-switch m-4">
                 <input type="checkbox" class="custom-control-input" id="customSwitch1" name="es_empresa">

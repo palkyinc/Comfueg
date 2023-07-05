@@ -56,7 +56,7 @@ class RoleController extends Controller
     {
         $Role = Role::find($id);
         $PermissionsAdded = $Role->getPermissionNames();
-        $Permissions = Permission::select("id", "name")->get();
+        $Permissions = Permission::select("id", "name")->orderBy('name', 'asc')->get();
         foreach ($Permissions as $Permission) {
             foreach ($PermissionsAdded as $PermissionAdded) {
                 if ($PermissionAdded == $Permission->name) {

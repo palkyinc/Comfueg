@@ -99,7 +99,7 @@ class ContratoController extends Controller
         fwrite($newFile ,'ID Genesys;APELLIDO, Nombre;Plan;Estado;Sistema;Comentarios' . PHP_EOL);
         foreach ($contratos as $key => $value)
         {
-            $pruebaVelocidad = Issue::where('closed', false)->where('titulo_id', 4)->where('contrato_id', $value->id)->first();
+            $pruebaVelocidad = Issue::where('titulo_id', 4)->where('contrato_id', $value->id)->get();
             fwrite($newFile ,   $value->relCliente->id . ';' . 
                                 $value->relCliente->getNomyApe() . ';' . 
                                 $value->relPlan->nombre . ';' . 
@@ -111,33 +111,16 @@ class ContratoController extends Controller
         fclose($newFile);
         return Storage::disk('public')->download('ListadoClientes-' . date('Ymd') . '.csv');
     }
-    public function getListadoContratosNoActivos ()
-    {
-        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
-        $contratos = Contrato::where('no_paga', false)->where('baja', true)->get();
-        $newFile = fopen ('../storage/app/public/ListadoClientesNoActivos-' . date('Ymd') . '.csv', 'w');
-        fwrite($newFile ,'ID Genesys;APELLIDO, Nombre;Plan;Estado;Sistema;Comentarios' . PHP_EOL);
-        foreach ($contratos as $key => $value)
-        {
-            fwrite($newFile ,   $value->relCliente->id . ';' . 
-                                $value->relCliente->getNomyApe() . ';' . 
-                                $value->relPlan->nombre . ';' . 
-                                ($value->activo ? 'Habilitado' : 'Deshabilitado') .  
-                                ';SLAM' . ';' .
-                                PHP_EOL);
-        }
-        fclose($newFile);
-        return Storage::disk('public')->download('ListadoClientesNoActivos-' . date('Ymd') . '.csv'); 
-    }
-    public function getListadoContratosactivosFull ()
+    public function getListadoContratosActivosFull ()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $contratos = Contrato::where('no_paga', false)->where('baja', false)->get();
-        $newFile = fopen ('../storage/app/public/ListadoClientes-' . date('Ymd') . '.csv', 'w');
-        fwrite($newFile ,'ID Contrato;APELLIDO, Nombre;Plan;Estado;Barrio;Panel;Desde;Equipo;Reclamos' . PHP_EOL);
+        $newFile = fopen ('../storage/app/public/ListadoClientes-ActivosFull-' . date('Ymd') . '.csv', 'w');
+        fwrite($newFile ,'ID Contrato;Genesys ID;APELLIDO, Nombre;Plan;Estado;Barrio;Panel;Desde;Equipo;Reclamos' . PHP_EOL);
         foreach ($contratos as $key => $contrato)
         {
             fwrite($newFile ,   $contrato->id . ';' . 
+                                $contrato->relCliente->id . ';' . 
                                 $contrato->relCliente->getNomyApe() . ';' . 
                                 $contrato->relPlan->nombre . ';' . 
                                 ($contrato->activo ? 'Habilitado' : 'Deshabilitado') . ';' .
@@ -150,7 +133,7 @@ class ContratoController extends Controller
             );
         }
         fclose($newFile);
-        return Storage::disk('public')->download('ListadoClientes-' . date('Ymd') . '.csv');
+        return Storage::disk('public')->download('ListadoClientes-ActivosFull-' . date('Ymd') . '.csv');
     }
     /**
      * Show the form for creating a new resource.

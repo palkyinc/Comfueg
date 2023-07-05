@@ -17,7 +17,7 @@ $mostrarSololectura = true;
             <td>Listado para reporte mensual. Incluye los campos: Genesys ID, APELLIDO Nombre, Plan, Estado, Sistema, Comentarios: Si posee velocidad a prueba.</td>
             </tr>
             <tr>
-            <th scope="row"> <a href="listadoContratos">Listado Tickets</a></th>
+            <th scope="row"> <a href="listadoIssues">Listado Tickets</a></th>
             <td>Historial completo. Incluye los campos: Número de Ticket, Fecha de Apertura, Titulo, Creador, Cliente, Estado, Panel, Descripcion del Ticket.</td>
             </tr>
             <tr>

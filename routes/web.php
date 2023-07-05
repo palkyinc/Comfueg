@@ -33,10 +33,11 @@ use App\Http\Controllers\Issue_titleController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\Info_ClienteController;
 use App\Http\Controllers\AltaController;
+use App\Http\Controllers\BtfDebitoController;
 
-use App\Custom\CronFunciones;//TEST
 ####TEST
 /* 
+use App\Custom\CronFunciones;//TEST
 use App\Models\Cliente; //TEST
 use App\Custom\GatewayMikrotik;//TEST
 use App\Custom\Ubiquiti;
@@ -181,7 +182,7 @@ Route::patch('/modificarModelo', [ModeloController::class, 'update'])->middlewar
 Route::get('/adminContratos', [ContratoController::class, 'index'])->middleware('auth');
 Route::get('/listadoContratos', [ContratoController::class, 'getListadoContratosactivos'])->middleware('auth');
 Route::get('/listadoContratosNoActivos', [ContratoController::class, 'getListadoContratosNoActivos'])->middleware('auth');
-Route::get('/listadoContratosFull', [ContratoController::class, 'getListadoContratosactivosFull'])->middleware('auth');
+Route::get('/listadoContratosFull', [ContratoController::class, 'getListadoContratosActivosFull'])->middleware('auth');
 Route::get('/agregarContrato', [ContratoController::class, 'create'])->middleware('auth');
 Route::post('/agregarContrato', [ContratoController::class, 'store'])->middleware('auth');
 Route::get('/modificarContrato/{id}', [ContratoController::class, 'edit'])->middleware('auth');
@@ -211,8 +212,19 @@ Route::get('/modificarAntena/{id}', [AntenaController::class, 'edit'])->middlewa
 Route::patch('/modificarAntena', [AntenaController::class, 'update'])->middleware('auth');
 Route::get('/agregarAntena', [AntenaController::class, 'create'])->middleware('auth');
 Route::post('/agregarAntena', [AntenaController::class, 'store'])->middleware('auth');
-### API-Rest Planes
 ####################
+####### CRUD btfDebitos
+Route::get('/adminBtfDebitos', [BtfDebitoController::class, 'index'])->middleware('auth');
+Route::get('/modificarBtfDebitos/{id}', [BtfDebitoController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarBtfDebitos', [BtfDebitoController::class, 'update'])->middleware('auth');
+Route::patch('/habilitarBtfDebito', [BtfDebitoController::class, 'enable'])->middleware('auth');
+Route::delete('/deshabilitarBtfDebito', [BtfDebitoController::class, 'disable'])->middleware('auth');
+Route::get('/agregarBtfDebito', [BtfDebitoController::class, 'create'])->middleware('auth');
+Route::put('/agregarBtfDebito', [BtfDebitoController::class, 'createClienteId'])->middleware('auth');
+Route::post('/agregarBtfDebito', [BtfDebitoController::class, 'store'])->middleware('auth');
+Route::get('/presentarBtfDebito', [BtfDebitoController::class, 'getPresentacion'])->middleware('auth');
+####################
+### API-Rest Planes
 Route::get('/getAntenas', [AntenaController::class, 'getAllAntenas'])->middleware('auth');
 ####################
 ####### CRUD Barrios

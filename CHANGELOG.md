@@ -31,6 +31,7 @@ ___ -->
 ## [0.8.10] - 2023-05-10
 ### Add
 1.  Vista de actualizar Calles cargando un archivo.
+2.  ABM de BTF Debitos.
 
 ## [0.8.9] - 2023-05-06
 ### Changed

@@ -17,10 +17,13 @@ class Cliente extends Model
         return $this->belongsTo('App\Models\CodigoDeArea', 'cod_area_cel', 'id');
     }
 
-    public function getNomYApe ()
+    public function getNomYApe ($nomYape = false)
     {
         if ($this->es_empresa){
             return $this->apellido;
+        }
+        elseif ($nomYape) {
+            return $this->nombre . ' ' . $this->apellido;
         }
         else {
             return $this->apellido . ', ' . $this->nombre;

@@ -24,7 +24,6 @@ class IssueController extends Controller
         $usuarios = User::get();
         $userSelected = (isset($request->usuario)) ? (($request->usuario != 'todos') ? $request->usuario : null) : auth()->user()->id;
         $abiertas = isset($request->abiertas) ? 'on' : (isset($request->rebusqueda ) ? 'off' : 'on' );
-        //dd($request->rebusqueda);
         $cliente = isset($request->cliente) ? $request->cliente : null;
         $contrato = isset($request->contrato) ? $request->contrato : null;
         $incidentes = Issue::asignado($userSelected)
