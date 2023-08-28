@@ -231,8 +231,12 @@ class BtfDebitoController extends Controller
                                 $fecha_presentación .
                                 '000000000000000000000' . 
                                 PHP_EOL);
+                                // Agregar fecha de presentacion
+                                // deshabilitar si es excepcional
         }
         fclose($newFile);
+        //Generar PDF
+        //Enviar email
         return Storage::disk('public')->download('DEBAUT-' . date('Ymd') . '.txt');
     }
 }

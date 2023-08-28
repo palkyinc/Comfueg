@@ -87,7 +87,7 @@ title="Dirección:
                                     <img src="imagenes/iconfinder_cinema_ticket_film_media_movie_icon.svg" alt="imganen ticket" height="30px">
                                     </a>
                                     <a href="testContrato/{{$contrato->id}}" title="Test/Dashboard" >
-                                    <img src="imagenes/7638092_exam_test_checklist_online learning_education_icon.svg" alt="imganen ticket" height="30px">
+                                    <img src="imagenes/7638092_exam_test_checklist_online learning_education_icon.svg" alt="imagen ticket" height="30px">
                                     </a>
                                     @if ($contrato->relDireccion->coordenadas != '')
                                         <a href="https://www.google.com/maps/place/{{$contrato->relDireccion->coordenadas}}" target="_blank"

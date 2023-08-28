@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBtfDebitosTable extends Migration
+class CreateFirstdataDebitosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,19 @@ class CreateBtfDebitosTable extends Migration
      */
     public function up()
     {
-        Schema::create('btf_debitos', function (Blueprint $table) {
+        Schema::create('firstdata_debitos', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            /*
+            Numero de comercio 
+            cuotas
+            cuotas plan
+            */
             $table->unsignedSmallInteger('cliente_id');
             $table->unsignedBigInteger('concepto_id');
-            $table->float('importe', 11, 2);
+            $table->float('importe', 9, 2);
             $table->string('dni', 8);
-            $table->string('cuenta', 9);
-            $table->string('tipo_cuenta', 2);
-            $table->string('sucursal', 2);
+            $table->string('num_tarjeta', 16);
             $table->date('fecha_presentacion')->nullable();
             $table->boolean('excepcional');
             $table->boolean('desactivado');
@@ -38,6 +41,6 @@ class CreateBtfDebitosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('btf_debitos');
+        Schema::dropIfExists('firstdata_debitos');
     }
 }

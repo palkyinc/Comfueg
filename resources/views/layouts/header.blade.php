@@ -92,6 +92,8 @@
 							</a>
 							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 								<a class="dropdown-item" href="/adminBtfDebitos">BTF Débitos</a>
+								<a class="dropdown-item" href="/adminFirstdataDebitos">FirstData Débitos</a>
+								<a class="dropdown-item" href="/adminConceptoDebitos">Concepto Débitos</a>
 							</div>
 						</li>
 						<li class="nav-item dropdown">

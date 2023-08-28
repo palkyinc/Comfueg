@@ -34,9 +34,11 @@ use App\Http\Controllers\BackupController;
 use App\Http\Controllers\Info_ClienteController;
 use App\Http\Controllers\AltaController;
 use App\Http\Controllers\BtfDebitoController;
+use App\Http\Controllers\Concepto_debitoController;
 
 ####TEST
 /* 
+use PDF;
 use App\Custom\CronFunciones;//TEST
 use App\Models\Cliente; //TEST
 use App\Custom\GatewayMikrotik;//TEST
@@ -73,7 +75,13 @@ dd(CronFunciones::generarArchivoSem($dias));
 /* Route::get('/sarasa', function () {
         CronFunciones::resetContadores_mensuales();
         echo 'Estas metiendo mal los dedos';
-}); */
+}); 
+*/
+Route::view('/welcome', 'welcome');
+Route::get('/test/', function () {
+  $pdf = PDF::loadView('welcome');
+  return $pdf->download('pruebapdf.pdf');
+});
 
 ### Route index
 Route::get('/', [Info_ClienteController::class, 'index']);
@@ -98,6 +106,15 @@ Route::get('/SessionDeleteAll', [SessionController::class, 'destroyAll'])->middl
 ####################
 ####### Info Clientes
 Route::get('/infoClientes', [Info_ClienteController::class, 'index']);
+####################
+####### CRUD Conceptos Debitos
+Route::get('/adminConceptoDebitos', [Concepto_debitoController::class, 'index'])->middleware('auth');
+Route::get('/agregarConceptoDebito', [Concepto_debitoController::class, 'create'])->middleware('auth');
+Route::post('/agregarConceptoDebito', [Concepto_debitoController::class, 'store'])->middleware('auth');
+Route::get('/modificarConceptoDebitos/{id}', [Concepto_debitoController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarConceptoDebitos', [Concepto_debitoController::class, 'update'])->middleware('auth');
+Route::patch('/habilitarConceptoDebitos', [Concepto_debitoController::class, 'enable'])->middleware('auth');
+Route::delete('/deshabilitarConceptoDebitos', [Concepto_debitoController::class, 'unable'])->middleware('auth');
 ####################
 ####### Contract types
 Route::get('/adminContractTypes', [Contract_typeController::class, 'index'])->middleware('auth');

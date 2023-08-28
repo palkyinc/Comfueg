@@ -19,6 +19,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.4",
+        "barryvdh/laravel-dompdf": "^2.0",
         "consoletvs/charts": "@dev",
         "doctrine/dbal": "^2.12.1",
         "fideloper/proxy": "^4.2",
