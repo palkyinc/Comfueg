@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Btf_debito;
 use App\Models\Cliente;
+use App\Models\Conceptos_debito;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -42,21 +43,27 @@ class BtfDebitoController extends Controller
     {
         if (!isset($request['cliente_id'])) {
             $sin_cliente_id = true;
+        } else {
+            $sin_cliente_id = false;
         }
+        $conceptos = Conceptos_debito::where('desactivado', false)->get();
         return view('agregarBtfDebito', [
             'sin_cliente_id' => $sin_cliente_id,
-            'controller' => 'active'
+            'controller' => 'active',
+            'conceptos' => $conceptos
         ]);
     }
     public function createClienteId(Request $request)
     {
         $this->validar($request, true);
+        $conceptos = Conceptos_debito::where('desactivado', false)->get();
         if($cliente = Cliente::find($request['cliente_id'])) {
             return view('/agregarBtfDebito', [
                 'sin_cliente_id' => false,
                 'cliente_id' => $cliente->id,
                 'cliente_NomYApe' => $cliente->getNomYApe(true),
-                'controller' => 'active'
+                'controller' => 'active',
+                'conceptos' => $conceptos
             ]);
         }else {
             return redirect('/agregarCliente')->with('btf_debito', $request['cliente_id'] );
@@ -83,6 +90,7 @@ class BtfDebitoController extends Controller
                     'importe1' => 'required|numeric|max:99999999999',
                     'importe2' => 'required|numeric|max:99',
                     'dni' => 'required|numeric|max:99999999',
+                    'concepto_id' => 'required|numeric|digits:3',
                     'cuenta' => 'required|numeric|digits:9',
                     'tipo_cuenta' => 'required|numeric|digits:2',
                     'sucursal' => 'required|numeric|digits:2'
@@ -99,6 +107,8 @@ class BtfDebitoController extends Controller
                     'dni.required' => 'DNI no puede estar vacío.', 
                     'dni.numeric' => 'DNI debe ser un número.',
                     'dni.max' => 'DNI debe ser de 8 números.',
+                    'concepto_id.required' => 'Debe seleccionar un concepto.', 
+                    'concepto_id.numeric' => 'Error el ID del concepto debe ser numerico.',
                     'cuenta.required' => 'Cuenta no puede estar vacío.', 
                     'cuenta.numeric' => 'Cuenta debe ser un número.',
                     'cuenta.digits' => 'Cuenta debe ser de 9 dígitos.',
@@ -125,6 +135,7 @@ class BtfDebitoController extends Controller
         $btf_debito = new Btf_debito;
         $btf_debito->importe = $request->importe1 . '.' . $request->importe2;
         $btf_debito->dni = $request->dni;
+        $btf_debito->concepto_id = $request->concepto_id;
         $btf_debito->cliente_id = $request->cliente_id;
         $btf_debito->cuenta = $request->cuenta;
         $btf_debito->tipo_cuenta = $request->tipo_cuenta;
@@ -159,7 +170,12 @@ class BtfDebitoController extends Controller
     public function edit($id)
     {
         $debito = Btf_debito::find($id);
-        return view('modificarBtfDebito', ['debito' => $debito, 'controller' => 'active']);
+        $conceptos = Conceptos_debito::where('desactivado', false)->get();
+        return view('modificarBtfDebito', [
+                                            'debito' => $debito, 
+                                            'controller' => 'active',
+                                            'conceptos' => $conceptos
+                                        ]);
     }
 
     /**
@@ -176,6 +192,7 @@ class BtfDebitoController extends Controller
         $btf_debito->importe = $request->importe1 . '.' . $request->importe2;
         $btf_debito->dni = $request->dni;
         $btf_debito->cliente_id = $request->cliente_id;
+        $btf_debito->concepto_id = $request->concepto_id;
         $btf_debito->cuenta = $request->cuenta;
         $btf_debito->tipo_cuenta = $request->tipo_cuenta;
         $btf_debito->sucursal = $request->sucursal;

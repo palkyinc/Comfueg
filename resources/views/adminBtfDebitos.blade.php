@@ -43,13 +43,14 @@ $mostrarSololectura = true;
         <thead class="thead-light">
             <tr>
                 <th scope="col" class="text-center"> DNI </th>
-                <th scope="col" class="text-center"> N° Cliente</th>
-                <th scope="col" class="text-center"> Suc.</th>
-                <th scope="col" class="text-center"> Tipo Cta.</th>
-                <th scope="col" class="text-center"> Cuenta</th>
-                <th scope="col" class="text-center"> Importe</th>
-                <th scope="col" class="text-center"> Ult. Presentación</th>
-                <th scope="col" class="text-center"> Excepcional</th>
+                <th scope="col" class="text-center"> N° Cliente </th>
+                <th scope="col" class="text-center"> Suc. </th>
+                <th scope="col" class="text-center"> Tipo Cta. </th>
+                <th scope="col" class="text-center"> Cuenta </th>
+                <th scope="col" class="text-center"> Importe </th>
+                <th scope="col" class="text-center"> Concepto </th>
+                <th scope="col" class="text-center"> Ult. Presentación </th>
+                <th scope="col" class="text-center"> Excepcional </th>
                 <th scope="col" colspan="2">
                     @can('btfDebitos_create')
                     <a href="/agregarBtfDebito" class="btn btn-dark">Agregar</a>
@@ -73,6 +74,7 @@ $mostrarSololectura = true;
                     <td class="text-center">{{$btf_debito->getTipoCuenta()}}</td>
                     <td class="text-center">{{$btf_debito->cuenta}}</td>
                     <td class="text-right">${{$btf_debito->importe}}</td>
+                    <td class="text-center">{{$btf_debito->relConceptos_debito->concepto}}</td>
                     <td class="text-center">{{$btf_debito->fecha_presentacion}}</td>
                     <td class="text-center">
                         @if ($btf_debito->excepcional)

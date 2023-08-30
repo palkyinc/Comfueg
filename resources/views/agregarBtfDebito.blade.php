@@ -58,6 +58,15 @@ $mostrarSololectura = true;
                         <label for="dni">DNI</label>
                         <input type="text" value="{{old('dni')}}" name="dni"class="form-control" maxlength="8">
                     </div>
+                    <div class="form-group col col-lg-4">
+                        <label for="concepto_id">Concepto</label>
+                        <select name="concepto_id" class="form-control">
+                            <option value="">Seleccionar...</option>
+                            @foreach ($conceptos as $concepto)
+                                <option value="{{$concepto->id}}">{{$concepto->concepto}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-auto">
@@ -67,23 +76,23 @@ $mostrarSololectura = true;
                     <div class="form-group col col-lg-3">
                         <label for="tipo_cuenta">Tipo de Cuenta</label>
                         <select name="tipo_cuenta" class="form-control">
-                            <option value="01">Cuenta Corriente</option>
-                            <option value="03">Caja de ahorro</option>
+                            <option value="01" {{ (null !== old('tipo_cuenta') && old('tipo_cuenta') === '01') ? 'selected' : '' }}>Cuenta Corriente</option>
+                            <option value="03" {{ (null !== old('tipo_cuenta') && old('tipo_cuenta') === '03') ? 'selected' : '' }}>Caja de ahorro</option>
                         </select>
                     </div>
                     <div class="form-group col col-lg-2">
                         <label for="sucursal">Sucursal</label>
                         <select name="sucursal" class="form-control">
-                            <option value="02">Ushuaia</option>
-                            <option value="03" selected>Río Grande</option>
-                            <option value="04">Río Gallegos</option>
-                            <option value="05">Buenos Aires</option>
-                            <option value="22">Kuanip</option>
-                            <option value="24">El Calafate</option>
-                            <option value="33">Chacra II</option>
-                            <option value="42">Malvinas Argentinas</option>
-                            <option value="43">Tolhuin</option>
-                            <option value="20">Cuentas Sueldos</option>
+                            <option value="02" {{(null !== old('sucursal') && old('sucursal') === '02') ? 'selected' : ''}}>Ushuaia</option>
+                            <option value="03" {{(null !== old('sucursal') && old('sucursal') === '03') ? 'selected' : (null === old('sucursal') ? 'selected' : '') }}>Río Grande</option>
+                            <option value="04" {{(null !== old('sucursal') && old('sucursal') === '04') ? 'selected' : ''}}>Río Gallegos</option>
+                            <option value="05" {{(null !== old('sucursal') && old('sucursal') === '05') ? 'selected' : ''}}>Buenos Aires</option>
+                            <option value="22" {{(null !== old('sucursal') && old('sucursal') === '22') ? 'selected' : ''}}>Kuanip</option>
+                            <option value="24" {{(null !== old('sucursal') && old('sucursal') === '24') ? 'selected' : ''}}>El Calafate</option>
+                            <option value="33" {{(null !== old('sucursal') && old('sucursal') === '33') ? 'selected' : ''}}>Chacra II</option>
+                            <option value="42" {{(null !== old('sucursal') && old('sucursal') === '42') ? 'selected' : ''}}>Malvinas Argentinas</option>
+                            <option value="43" {{(null !== old('sucursal') && old('sucursal') === '43') ? 'selected' : ''}}>Tolhuin</option>
+                            <option value="20" {{(null !== old('sucursal') && old('sucursal') === '20') ? 'selected' : ''}}>Cuentas Sueldos</option>
                         </select>
                     </div>
                 </div>

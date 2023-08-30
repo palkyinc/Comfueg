@@ -41,6 +41,14 @@ $mostrarSololectura = true;
                         <label for="dni">DNI</label>
                         <input type="text" value="{{old('dni') ?? $debito->dni}}" name="dni"class="form-control" maxlength="8">
                     </div>
+                    <div class="form-group col col-lg-4">
+                        <label for="concepto_id">Concepto</label>
+                        <select name="concepto_id" class="form-control">
+                            @foreach ($conceptos as $concepto)
+                                <option value="{{$concepto->id}}" {{ ($concepto->id === $debito->concepto_id ? 'selected' : '') }}>{{$concepto->concepto}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-auto">

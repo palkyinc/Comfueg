@@ -13,6 +13,10 @@ class Btf_debito extends Model
     {
         return $this->belongsTo('App\Models\Cliente', 'cliente_id', 'id');
     }
+    public function relConceptos_debito()
+    {
+        return $this->belongsTo('App\Models\Conceptos_debito', 'concepto_id', 'id');
+    }
     public function getSucursal () {
         switch ($this->sucursal) {
             case '02':
