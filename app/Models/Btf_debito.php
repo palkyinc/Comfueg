@@ -73,6 +73,10 @@ class Btf_debito extends Model
         $importe = explode('.', $this->importe);
         return (!$centavos) ? $importe[0] : (isset($importe[1]) ? $importe[1] : '00');
     }
+    public function getImporteFormateado()
+    {
+        return '$' . number_format($this->importe, 2, ',', '.');
+    }
     public function scopeHabilitadas($query, $habilitadas)
     {
         if($habilitadas == 'on')

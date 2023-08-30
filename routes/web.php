@@ -38,7 +38,6 @@ use App\Http\Controllers\Concepto_debitoController;
 
 ####TEST
 /* 
-use PDF;
 use App\Custom\CronFunciones;//TEST
 use App\Models\Cliente; //TEST
 use App\Custom\GatewayMikrotik;//TEST
@@ -77,11 +76,9 @@ dd(CronFunciones::generarArchivoSem($dias));
         echo 'Estas metiendo mal los dedos';
 }); 
 */
-Route::view('/welcome', 'welcome');
-Route::get('/test/', function () {
-  $pdf = PDF::loadView('welcome');
-  return $pdf->download('pruebapdf.pdf');
-});
+/* Route::view('/welcome', 'index'); */
+/* Route::get('/test/', function () {
+}); */
 
 ### Route index
 Route::get('/', [Info_ClienteController::class, 'index']);

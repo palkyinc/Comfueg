@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\Conceptos_debito;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use PDF;
 
 class BtfDebitoController extends Controller
 {
@@ -227,9 +228,18 @@ class BtfDebitoController extends Controller
     public function getPresentacion ()
     {
         $debitos = Btf_debito::where('desactivado', false)->get();
-        $fecha_presentación = date('dmY');
-        //dd($fecha_presentación);
-        $newFile = fopen ('../storage/app/public/DEBAUT-' . date('Ymd') . '.txt', 'w');
+        $cant_debitos = count($debitos);
+        $tot_importe = Btf_debito::where('desactivado', false)->sum('importe');
+        //dd($debitos);
+        $dia = date('d');
+        $mes = date('m');
+        $anio = date('Y');
+        $fecha_presentacion_full = $dia . ' de ' . $this->getMonth($mes) . ' de ' . $anio;
+        $fecha_presentacion_short = $dia . '/' . $mes . '/' . $anio;
+        $fecha_presentacion_txt = date('dmY');
+        
+        ###Generacion de txt
+        /* $newFile = fopen ('../storage/app/public/DEBAUT-' . date('Ymd') . '.txt', 'w');
         foreach ($debitos as $key => $debito)
         {
             fwrite($newFile ,   
@@ -245,15 +255,39 @@ class BtfDebitoController extends Controller
                                 str_pad($debito->getImporte() . $debito->getImporte(true), 13, '0', STR_PAD_LEFT) . //13 caracteres
                                 '268' .
                                 '000000' .
-                                $fecha_presentación .
+                                $fecha_presentacion_txt .
                                 '000000000000000000000' . 
                                 PHP_EOL);
                                 // Agregar fecha de presentacion
                                 // deshabilitar si es excepcional
         }
-        fclose($newFile);
-        //Generar PDF
-        //Enviar email
+        fclose($newFile); 
         return Storage::disk('public')->download('DEBAUT-' . date('Ymd') . '.txt');
+        */
+        //Generar PDF
+        $pdf = PDF::loadView('presBtf', [
+                'debitos' => $debitos,
+                'fecha_presentacion_full' => $fecha_presentacion_full,
+                'fecha_presentacion_short' => $fecha_presentacion_short,
+                'cant_debitos' => $cant_debitos,
+                'mes_anio' => $this->getMonth($mes) . ' ' . $anio,
+                'tot_importe' => '$' . number_format($tot_importe, 2, ',', '.')
+        ]);
+        return $pdf->download('pruebapdf.pdf');
+        //Enviar email
+    }
+    private function getMonth ($mes) {
+        switch ($mes) {
+            case '01':
+                return 'Enero';
+                break;
+            case '08':
+                return 'Agosto';
+                break;
+            
+            default:
+                # code...
+                break;
+        }
     }
 }
