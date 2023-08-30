@@ -96,7 +96,7 @@ class ContratoController extends Controller
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $contratos = Contrato::where('no_paga', false)->where('baja', false)->get();
         $newFile = fopen ('../storage/app/public/ListadoClientes-' . date('Ymd') . '.csv', 'w');
-        fwrite($newFile ,'ID Genesys;APELLIDO, Nombre;Plan;Estado;Sistema;Comentarios' . PHP_EOL);
+        fwrite($newFile ,'ID Genesys;APELLIDO, Nombre;Plan;Estado;Sistema;Panel;Nodo;Barrio;Comentarios' . PHP_EOL);
         foreach ($contratos as $key => $value)
         {
             $pruebaVelocidad = Issue::where('closed', false)->where('titulo_id', 4)->where('contrato_id', $value->id)->first();
@@ -105,7 +105,10 @@ class ContratoController extends Controller
                                 $value->relPlan->nombre . ';' . 
                                 ($value->activo ? 'Habilitado' : 'Deshabilitado') .  
                                 ';SLAM' . ';' .
-                                ($pruebaVelocidad ? 'Con Prueba de Velocidad' : '') . 
+                                $value->relPanel->ssid . ';' .
+                                $value->relPanel->relSite->nombre . ';' .
+                                $value->relDireccion->relBarrio->nombre . ';' .
+                                ($pruebaVelocidad ? 'Con Prueba de Velocidad' : '') .
                                 PHP_EOL);
         }
         fclose($newFile);

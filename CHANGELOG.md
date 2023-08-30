@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.8.11] - 2023-08-39
+### Changed
+1.  Se agrega Panel, Nodo y Barrio al Listado Contratos en reportes.
+
 ## [0.8.10] - 2023-05-10
 ### Add
 1.  Vista de actualizar Calles cargando un archivo.
