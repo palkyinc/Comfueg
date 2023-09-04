@@ -26,15 +26,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Realizar un migrate y un compose update.
 6. php artisan up
 ___ -->
-(https://docs.laravel-excel.com/3.1/architecture/).
 
 ## [0.9.00] - 2023-09-04
 ### Add
 #### Composer Updste REQUIRED
-1.  Vista de actualizar Calles cargando un archivo.
-2.  ABM de Conceptos Debitos.
-3.  ABM de BTF Debitos.
-4. Se instala DomPDF (<https://styde.net/genera-pdfs-en-laravel-con-el-componente-dompdf/>).
+1.  ABM de Conceptos Debitos.
+2.  ABM de BTF Debitos.
+3. Se instala DomPDF (<https://styde.net/genera-pdfs-en-laravel-con-el-componente-dompdf/>).
+
+## [0.8.11] - 2023-08-39
+### Changed
+1. Se agrega Panel, Nodo y Barrio al Listado Contratos en reportes.
+
+## [0.8.10] - 2023-05-10
+### Add
+1. Vista de actualizar Calles cargando un archivo.
 
 ## [0.8.9] - 2023-05-06
 ### Changed
