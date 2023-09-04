@@ -103,10 +103,9 @@
 
 
             <div class="table-responsive">
-                <table class="table table-xl">
-                    
                     @for ($i = 0; $i < $cant_debitos; $i++)
-                        @if ($i%35 === 0)
+                        @if ($i%33 === 0)
+                        <table class="table table-xl">
                             <thead>
                                 <tr>
                                 <th>Documento</th>
@@ -130,7 +129,7 @@
                                 <td class="tac">{{$fecha_presentacion_short}}</td>
                             </tr>
                         </tbody>
-                        @if (($i + 1 )%35 === 0 && $key !== 0)
+                        @if (($i + 1 )%33 === 0)
                             </table>
                             <p style="page-break-before: always;"></p>                
                         @endif

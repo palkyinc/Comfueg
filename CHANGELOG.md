@@ -28,13 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ___ -->
 (https://docs.laravel-excel.com/3.1/architecture/).
 
-## [0.8.12] - 2023-XX-XX
+## [0.9.00] - 2023-09-04
 ### Add
 #### Composer Updste REQUIRED
 1.  Vista de actualizar Calles cargando un archivo.
 2.  ABM de Conceptos Debitos.
 3.  ABM de BTF Debitos.
-4.  Se instala DomPDF
+4. Se instala DomPDF (<https://styde.net/genera-pdfs-en-laravel-con-el-componente-dompdf/>).
 
 ## [0.8.9] - 2023-05-06
 ### Changed

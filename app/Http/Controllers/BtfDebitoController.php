@@ -7,7 +7,9 @@ use App\Models\Cliente;
 use App\Models\Conceptos_debito;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
+use ZipArchive;
+use File;
 
 class BtfDebitoController extends Controller
 {
@@ -230,16 +232,16 @@ class BtfDebitoController extends Controller
         $debitos = Btf_debito::where('desactivado', false)->get();
         $cant_debitos = count($debitos);
         $tot_importe = Btf_debito::where('desactivado', false)->sum('importe');
-        //dd($debitos);
         $dia = date('d');
         $mes = date('m');
         $anio = date('Y');
         $fecha_presentacion_full = $dia . ' de ' . $this->getMonth($mes) . ' de ' . $anio;
         $fecha_presentacion_short = $dia . '/' . $mes . '/' . $anio;
         $fecha_presentacion_txt = date('dmY');
+        $fileName = 'DEBAUT-' . date('Ymd');
         
-        ###Generacion de txt
-        /* $newFile = fopen ('../storage/app/public/DEBAUT-' . date('Ymd') . '.txt', 'w');
+        ### Generacion de txt
+        $newFile = fopen ('../storage/app/public/BTF/' . $fileName . '.txt', 'w');
         foreach ($debitos as $key => $debito)
         {
             fwrite($newFile ,   
@@ -258,13 +260,17 @@ class BtfDebitoController extends Controller
                                 $fecha_presentacion_txt .
                                 '000000000000000000000' . 
                                 PHP_EOL);
-                                // Agregar fecha de presentacion
-                                // deshabilitar si es excepcional
+                                ### Agrega fecha de presentacion
+                                $debito->fecha_presentacion = date('Y-m-d');
+                                ### deshabilitar si es excepcional
+                                if ($debito->excepcional) {
+                                    $debito->desactivado = true;
+                                }
+                                $debito->save();
         }
         fclose($newFile); 
-        return Storage::disk('public')->download('DEBAUT-' . date('Ymd') . '.txt');
-        */
-        //Generar PDF
+        
+        ### Generar PDF
         $pdf = PDF::loadView('presBtf', [
                 'debitos' => $debitos,
                 'fecha_presentacion_full' => $fecha_presentacion_full,
@@ -272,8 +278,19 @@ class BtfDebitoController extends Controller
                 'cant_debitos' => $cant_debitos,
                 'mes_anio' => $this->getMonth($mes) . ' ' . $anio,
                 'tot_importe' => '$' . number_format($tot_importe, 2, ',', '.')
-        ]);
-        return $pdf->download('pruebapdf.pdf');
+            ]);
+        $pdf->save('../storage/' . public_path('BTF/' . $fileName . '.pdf'));
+        
+        ### Zip Files
+        $zip = new ZipArchive;
+        if ($zip->open('../storage/' . public_path('/BTF/' . $fileName . '.zip'), ZipArchive::CREATE) === TRUE) {
+            $zip->addFile('../storage/' . public_path('/BTF/' . $fileName . '.txt'), $fileName . '.txt');
+            $zip->addFile('../storage/' . public_path('/BTF/' . $fileName . '.pdf'), $fileName . '.pdf');
+            $zip->close();
+            return Storage::disk('public')->download('/BTF/' . $fileName . '.zip');
+        } else {
+            return redirect('/adminBtfDebitos')->with('mensaje', ['Error al crear archivo *.zip']);
+        }
         //Enviar email
     }
     private function getMonth ($mes) {
@@ -281,12 +298,41 @@ class BtfDebitoController extends Controller
             case '01':
                 return 'Enero';
                 break;
+            case '02':
+                return 'Febrero';
+                break;
+            case '03':
+                return 'Marzo';
+                break;
+            case '04':
+                return 'Abril';
+                break;
+            case '05':
+                return 'Mayo';
+                break;
+            case '06':
+                return 'Junio';
+                break;
+            case '07':
+                return 'Julio';
+                break;
             case '08':
                 return 'Agosto';
                 break;
-            
+            case '09':
+                return 'Septiembre';
+                break;
+            case '10':
+                return 'Octubre';
+                break;
+            case '11':
+                return 'Noviembre';
+                break;
+            case '12':
+                return 'Diciembre';
+                break;
             default:
-                # code...
+                return 'Error';
                 break;
         }
     }

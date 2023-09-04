@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\CodigoDeArea;
 use Illuminate\Http\Request;
+use App\Models\Conceptos_debito;
 
 class ClienteController extends Controller
 {
@@ -68,12 +69,14 @@ class ClienteController extends Controller
         $this->storeInBase($request);
         if (isset($request->btf_debito)) {
             $cliente = Cliente::find($request->id);
+            $conceptos = Conceptos_debito::where('desactivado', false)->get();
             return view('/agregarBtfDebito', [
                 'sin_cliente_id' => false,
                 'cliente_id' => $cliente->id,
                 'cliente_NomYApe' => $cliente->getNomYApe(true),
-                'controller' => 'active'
-            ]);
+                'controller' => 'active',
+                'conceptos' => $conceptos
+        ]);
         } else {
             $respuesta[] = 'Cliente se creo correctamente';
             return redirect('/adminClientes')->with('mensaje', $respuesta);
