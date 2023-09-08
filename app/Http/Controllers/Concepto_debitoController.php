@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Conceptos_debito;
+use App\Models\Btf_debito;
 
 class Concepto_debitoController extends Controller
 {
@@ -46,7 +47,7 @@ class Concepto_debitoController extends Controller
         $concepto->id = $request->cod_concepto;
         $concepto->concepto = $request->descripcion;
         $concepto->desactivado = false;
-        //$concepto->save();
+        $concepto->save();
         $respuesta['success'][] = 'Se creó Concepto N° ' . $concepto->id . ' correctamente';
         return redirect('/adminConceptoDebitos')->with('mensaje', $respuesta);
     }
@@ -118,12 +119,16 @@ class Concepto_debitoController extends Controller
     }
     public function unable(Request $request)
     {
-        dd('Falta chequear si el concepto esta en algún debito');
-        $concepto = Conceptos_debito::find($request->id);
-        $concepto->desactivado = true;
-        $concepto->save();
-        $respuesta['success'][] = 'Se deshabilitó Concepto N° ' . $concepto->id . ' correctamente';
-        return redirect('/adminConceptoDebitos')->with('mensaje', $respuesta);
+        if(Btf_debito::where('concepto_id', $request->id)->first()) {
+            $respuesta['error'][] = 'Se encontró al concepto activo en Debitos';
+            return redirect('/adminConceptoDebitos')->with('mensaje', $respuesta);
+        } else {
+            $concepto = Conceptos_debito::find($request->id);
+            $concepto->desactivado = true;
+            $concepto->save();
+            $respuesta['success'][] = 'Se deshabilitó Concepto N° ' . $concepto->id . ' correctamente';
+            return redirect('/adminConceptoDebitos')->with('mensaje', $respuesta);
+        }
     }
     private function validar(Request $request, $edit = false)
     {
@@ -132,7 +137,6 @@ class Concepto_debitoController extends Controller
         } else {
             $cod_concepto = 'required|numeric|unique:conceptos_debitos,id';
         }
-        
         $request->validate(
             [
                 'descripcion' => 'required|min:2|max:30',

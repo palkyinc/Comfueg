@@ -27,6 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.1] - 2023-09-08
+### Changed
+1.  Error al grabar Conceptos de Debitos, corregido.
+2.  Error en carpeta de Backup BTF, arreglado.
+3.  Error en el reporte de Contratos de Baja, corregido.
+
 ## [0.9.00] - 2023-09-04
 ### Add
 #### Composer Updste REQUIRED

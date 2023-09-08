@@ -114,6 +114,29 @@ class ContratoController extends Controller
         fclose($newFile);
         return Storage::disk('public')->download('ListadoClientes-' . date('Ymd') . '.csv');
     }
+    public function getListadoContratosNoActivos ()
+    {
+        date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
+        $contratos = Contrato::where('no_paga', false)->where('baja', true)->get();
+        $newFile = fopen ('../storage/app/public/ListadoContratosNoActivos-' . date('Ymd') . '.csv', 'w');
+        fwrite($newFile ,'ID Genesys;APELLIDO, Nombre;Plan;Estado;Sistema;Panel;Nodo;Barrio;Comentarios' . PHP_EOL);
+        foreach ($contratos as $key => $value)
+        {
+            $pruebaVelocidad = Issue::where('titulo_id', 4)->where('contrato_id', $value->id)->get();
+            fwrite($newFile ,   $value->relCliente->id . ';' . 
+                                $value->relCliente->getNomyApe() . ';' . 
+                                $value->relPlan->nombre . ';' . 
+                                ($value->activo ? 'Habilitado' : 'Deshabilitado') .  
+                                ';SLAM' . ';' .
+                                $value->relPanel->ssid . ';' .
+                                $value->relPanel->relSite->nombre . ';' .
+                                $value->relDireccion->relBarrio->nombre . ';' .
+                                ($pruebaVelocidad ? 'Con Prueba de Velocidad' : '') .
+                                PHP_EOL);
+        }
+        fclose($newFile);
+        return Storage::disk('public')->download('ListadoContratosNoActivos-' . date('Ymd') . '.csv');
+    }
     public function getListadoContratosActivosFull ()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));

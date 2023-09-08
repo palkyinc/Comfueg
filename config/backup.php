@@ -22,8 +22,8 @@ return [
                     base_path('public/configPanels'),
                     base_path('storage/Crons'),
                     base_path('storage/app/public'),
-                    base_path('storage/app/BTF'),
-                    base_path('storage/app/FirstData'),
+                    base_path('storage/app/public/BTF'),
+                    /* base_path('storage/app/public/FirstData'), */
                     base_path('.env'),
                     base_path('docker/rclone/rclone.conf'),
                     base_path('docker/aircontrol'),
