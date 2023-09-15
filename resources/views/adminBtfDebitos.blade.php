@@ -10,9 +10,9 @@ $mostrarSololectura = true;
         <input type="text" name="codComfueg" value="{{$codComfueg}}" class="form-control mx-3">
         <div class="form-check form-switch col-2">
             @if ($habilitadas === 'on')
-                <input class="form-check-input" type="checkbox" name="habilitadas" id="flexSwitchCheckChecked" checked>
+                <input class="form-check-input" type="checkbox" name="habilitadas" checked>
             @else
-                <input class="form-check-input" type="checkbox" name="habilitadas" id="flexSwitchCheckChecked">
+                <input class="form-check-input" type="checkbox" name="habilitadas">
             @endif
             <input type="hidden" name="rebusqueda" value="on">
             <label class="form-check-label" for="flexSwitchCheckChecked">
@@ -105,15 +105,17 @@ $mostrarSololectura = true;
                                     </button>
                                 </form>
                             @endif
+                            <a href="/agregarBtfDebito/{{ $btf_debito->id }}" class="margenAbajo btn btn-outline-secundary" title="Nuevo debito mismo cliente">
+                                <img src="imagenes/4074101_content_exclusive_new_premium_special_icon.svg" alt="imagen de lapiz editor" height="20px">
+                            </a>
                         @endcan
                     </td>
-                    
                 </tr>
             @endforeach
         </tbody>
     </table>
 </div>
-        {{ $btf_debitos->links() }}
+        {{ $btf_debitos->appends(['habilitadas' => $habilitadas === 'on' ? 'on' : '', 'rebusqueda' => $rebusqueda])->links() }}
 @section('javascript')
     
 @endsection

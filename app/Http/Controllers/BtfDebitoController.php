@@ -20,10 +20,13 @@ class BtfDebitoController extends Controller
      */
     public function index(Request $request)
     {
-        $habilitadas = isset($request->habilitadas) ? 'on' : 'off';
         $cliente = isset($request->codComfueg) ? $request->codComfueg : null;
         if (null !== ($request->rebusqueda)) {
-            //dd($request);
+            $habilitadas = isset($request->habilitadas) ? 'on' : 'off';
+            $rebusqueda = true;
+        } else {
+            $habilitadas = 'on';
+            $rebusqueda = null;
         }
         $btf_debitos = Btf_debito::habilitadas($habilitadas)
                                     ->cliente($cliente)
@@ -33,7 +36,8 @@ class BtfDebitoController extends Controller
             'btf_debitos' => $btf_debitos,
             'controller' => 'active',
             'habilitadas' => $habilitadas,
-            'codComfueg' => $cliente
+            'codComfueg' => $cliente,
+            'rebusqueda' => $rebusqueda
         ]);
     }
 
@@ -56,6 +60,15 @@ class BtfDebitoController extends Controller
             'conceptos' => $conceptos
         ]);
     }
+    public function create_ext ($id) {
+        $debito = Btf_debito::find($id);
+        $conceptos = Conceptos_debito::where('desactivado', false)->get();
+        return view ('agregarBtfDebito_ext', [
+            'controller' => 'active',
+            'conceptos' => $conceptos,
+            'debito' => $debito
+        ]);
+    }
     public function createClienteId(Request $request)
     {
         $this->validar($request, true);
@@ -72,7 +85,6 @@ class BtfDebitoController extends Controller
             return redirect('/agregarCliente')->with('btf_debito', $request['cliente_id'] );
         }
     }
-
     /* 
     $esClienteId -> false si es para validar los datos 
      */
@@ -125,7 +137,6 @@ class BtfDebitoController extends Controller
             );
         }
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -135,6 +146,7 @@ class BtfDebitoController extends Controller
     public function store(Request $request)
     {
         $this->validar($request);
+        //dd($request);
         $btf_debito = new Btf_debito;
         $btf_debito->importe = $request->importe1 . '.' . $request->importe2;
         $btf_debito->dni = $request->dni;

@@ -234,6 +234,7 @@ Route::patch('/modificarBtfDebitos', [BtfDebitoController::class, 'update'])->mi
 Route::patch('/habilitarBtfDebito', [BtfDebitoController::class, 'enable'])->middleware('auth');
 Route::delete('/deshabilitarBtfDebito', [BtfDebitoController::class, 'disable'])->middleware('auth');
 Route::get('/agregarBtfDebito', [BtfDebitoController::class, 'create'])->middleware('auth');
+Route::get('/agregarBtfDebito/{id}', [BtfDebitoController::class, 'create_ext'])->middleware('auth');
 Route::put('/agregarBtfDebito', [BtfDebitoController::class, 'createClienteId'])->middleware('auth');
 Route::post('/agregarBtfDebito', [BtfDebitoController::class, 'store'])->middleware('auth');
 Route::get('/presentarBtfDebito', [BtfDebitoController::class, 'getPresentacion'])->middleware('auth');

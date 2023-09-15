@@ -5,40 +5,23 @@
 $mostrarSololectura = true;
 @endphp
 <h3>Nuevo Btf débito</h3>
-    @if ($sin_cliente_id && null === (old('con_cliente_id')))
-        <div class="alert bg-light border col-8 mx-auto p-4">
-            <form action="/agregarBtfDebito" method="post">
-                @method('put')
-                @csrf
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="cliente_id">Genesys ID: </label>
-                    <input type="text" name="cliente_id" value="{{old('cliente_id')}}" maxlength="6"  class="form-control">
-                    </div>
-                </div>
-                    <button type="submit" class="btn btn-primary">Consultar</button>
-                    <a href="/adminBtfDebitos" class="btn btn-primary">Volver</a>
-            </form>
-        </div>
-    
-    @else
         <div class="alert bg-light border col-8 mx-auto p-4">
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="id_demo">Genesys ID</label>
-                        <input type="text" value="{{old('cliente_id') ?? $cliente_id}}" name="id_demo" class="form-control" disabled>
+                        <input type="text" value="{{$debito->cliente_id}}" name="id_demo" class="form-control" disabled>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="NomYApe_demo">Nombre y Apellido</label>
-                        <input type="text" value="{{old('NomYApe') ?? $cliente_NomYApe}}" name="NomYApe_demo" class="form-control" disabled>
+                        <input type="text" value="{{$debito->relCliente->getNomYApe(true)}}" name="NomYApe_demo" class="form-control" disabled>
                     </div>
                 </div>
         </div>
         <div class="alert bg-light border col-8 mx-auto p-4">
             <form action="/agregarBtfDebito" method="post">
                 @csrf
-                <input type="text" name="cliente_id" value="{{old('cliente_id') ?? $cliente_id}}" hidden>
-                <input type="text" value="{{old('NomYApe') ?? $cliente_NomYApe}}" name="NomYApe" class="form-control" hidden>
+                <input type="text" name="cliente_id" value="{{old('cliente_id') ?? $debito->cliente_id}}" hidden>
+                <input type="text" value="{{old('NomYApe') ?? $debito->relCliente->getNomYApe(true)}}" name="NomYApe" class="form-control" hidden>
                 <input type="text" name="con_cliente_id" value="1" hidden>
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -56,7 +39,7 @@ $mostrarSololectura = true;
                     </div>
                     <div class="form-group col-md-2">
                         <label for="dni">DNI</label>
-                        <input type="text" value="{{old('dni')}}" name="dni"class="form-control" maxlength="8">
+                        <input type="text" value="{{old('dni') ?? $debito->dni}}" name="dni"class="form-control" maxlength="8">
                     </div>
                     <div class="form-group col col-lg-4">
                         <label for="concepto_id">Concepto</label>
@@ -71,7 +54,7 @@ $mostrarSololectura = true;
                 <div class="form-row">
                     <div class="form-group col-md-auto">
                         <label for="cuenta">Cuenta</label>
-                        <input type="text" value="{{old('cuenta')}}" name="cuenta" class="form-control" maxlength="9">
+                        <input type="text" value="{{old('cuenta') ?? $debito->cuenta}}" name="cuenta" class="form-control" maxlength="9">
                     </div>
                     <div class="form-group col col-lg-3">
                         <label for="tipo_cuenta">Tipo de Cuenta</label>
@@ -99,7 +82,7 @@ $mostrarSololectura = true;
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <input class="btn btn-primary" type="submit" value="Guardar">
-                        <a href="adminBtfDebitos" class="btn btn-primary">Volver</a>
+                        <a href="/adminBtfDebitos" class="btn btn-primary">Volver</a>
                     </div>
                     <div class="form-check col-md-auto">
                         <input type="checkbox" name="excepcional" class="form-check-input">
@@ -108,9 +91,6 @@ $mostrarSololectura = true;
                 </div>
             </form>
         </div>
-    @endif
-    
-
     @if( $errors->any() )
         <div class="alert alert-danger col-8 mx-auto">
             <ul>

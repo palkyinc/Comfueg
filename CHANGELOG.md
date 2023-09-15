@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.2] - 2023-09-15
+### Add
+1.  Vista de agregar nuevo debito BTF con datos de un debito ya cargado.
+
 ## [0.9.1] - 2023-09-08
 ### Changed
 1.  Error al grabar Conceptos de Debitos, corregido.
