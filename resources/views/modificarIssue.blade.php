@@ -129,11 +129,11 @@ $mostrarSololectura = true;
     </div>
 </div>
 <div class="form-row ">
-    <div class="input-group col-md-6">
+    <div class="input-group col-md-8">
         <p class="font-weight-bold">Seleccionar usuarios en seguimiento:</p>
-        <div class="input-group-prepend">
+        <div class="form-row">
             @foreach ($usuarios as $usuario)
-                <div class="input-group-text">
+                <div class="col-md-4">
                     <input type="checkbox" name="viewer{{$usuario->id}}" value="{{$usuario->id}}"
                         @foreach ((($issue->viewers != 'null' && $issue->viewers != null) ? json_decode($issue->viewers) : []) as $value)
                             @if ($value == $usuario->id)

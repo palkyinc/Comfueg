@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.3] - 2023-09-15
+### hanged
+1.  En agregarIssue se arregla problema en la vista con el listado de usuarios en seguimineto.
+2.  En agregarIssue se generan reglas para no duplicar ticket y para el uso correcto de los titulos.
+
 ## [0.9.2] - 2023-09-15
 ### Add
 1.  Vista de agregar nuevo debito BTF con datos de un debito ya cargado.

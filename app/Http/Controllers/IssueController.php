@@ -88,6 +88,9 @@ class IssueController extends Controller
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $viewers = $this->getViewers($request, 5);
         $this->validar($request);
+        if ($rta = $this->validarTwo($request)) {
+            return back()->withInput()->withErrors(['msg' => [$rta]]);
+        }
         $issue = new Issue();
         $issue->titulo_id = $request->titulo;
         $issue->descripcion = $request->descripcion;
@@ -97,10 +100,40 @@ class IssueController extends Controller
         $issue->contrato_id = $request->afectado;
         $issue->viewers = json_encode($viewers);
         $issue->closed = false;
-        $issue->save();
-        $issue->enviarMail(1);
+        dd('para grabar');
+        //$issue->save();
+        //$issue->enviarMail(1);
         $respuesta[] = 'Nuevo Ticket se ha creado correctamente';
         return redirect('/adminIssues')->with('mensaje', $respuesta);
+    }
+
+    public function validarTwo(Request $request) {
+        $contrato = Contrato::find($request->afectado);
+        $contract = isset($contrato->id) ? $contrato->id : null;
+        // SI contrato dado de baja y (titulo distinto a "reconexion de contrato" y "Mudanza") ENTONCES mensaje:
+        if (isset($contrato->baja) && $contrato->baja === 1 && !($request->titulo === "7" || $request->titulo === "8")){
+            return 'Para los contratos dados de baja solo se pueden usar los Titulos: "Reconexión de contrato" o "Mudanza"';
+        }
+        // SINO SI contrato NO dado de baja y (titulo igual a "reconexion de contrato" o "Wispro") ENTONCES mensaje:
+        if (isset($contrato->baja) && $contrato->baja === 0 && ($request->titulo === "7" || $request->titulo === "10") ){
+            return 'No se puede usar los Títulos: "Reconexión de contrato" o "Wispro" en contratos activos (No Dados de baja).';
+        }
+        // SINO SI SIN contrato y (titulo distinto a "Wispro") ENTONCES mensaje:
+        if (!isset($contrato->baja) && $request->titulo !== "10") {
+            return ('Incidentes sin Contrato solo se puede usar en tickets con el Título "Wispro"');
+        }
+        // SINO SI existe issue con el mismo contrato y titulo mensaje:
+        if (
+            ($request->titulo === "2" || $request->titulo === "3") &&
+            (Issue::where('closed', false)->where('titulo_id', "2")->where('contrato_id', $contract)->first() ||
+            Issue::where('closed', false)->where('titulo_id', "3")->where('contrato_id', $contract)->first())
+            ) {
+                return 'Existe un Ticket para este contrato con este Título "Sin Conectividad" o "Problemas de Conectividad". Se debe actualizar el ticket existente sin duplicar el registro de incidentes';
+        }
+        if (Issue::where('closed', false)->where('titulo_id', $request->titulo)->where('contrato_id', $contract)->first()) {
+            return 'Existe un Ticket para este contrato con este Título. Se debe actualizar el ticket existente sin duplicar el registro de incidentes';
+        }
+        return false;
     }
 
     public function getViewers(Request $request, $cant)

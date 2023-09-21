@@ -23,7 +23,7 @@ $mostrarSololectura = true;
                         <option value="">Sin Contrato</option>
                         @foreach ($contratos as $elemento)
                         <option value="{{$elemento->id}}"
-                            @if (null != $contrato && $contrato->id == $elemento->id)
+                            @if (null != old('afectado') && old('afectado') == $elemento->id)
                                 selected
                             @endif
                                                         >{{$elemento->id . ' | ' . 
@@ -40,7 +40,7 @@ $mostrarSololectura = true;
                     <select class="form-control" name="titulo">
                         <option value="">Seleccione uno...</option>
                         @foreach ($titulos as $titulo)
-                            <option value="{{$titulo->id}}">{{$titulo->title}}</option>
+                            <option value="{{$titulo->id}}" {{ null !== (old('titulo')) ? (old('titulo') == $titulo->id ? 'selected' : '') : '' }}>{{$titulo->title}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -49,7 +49,7 @@ $mostrarSololectura = true;
                     <select name="asignado" class="form-control">
                         <option value="">Seleccione uno...</option>
                         @foreach ($usuarios as $usuario)
-                            <option value="{{$usuario->id}}">{{$usuario->name}}</option>
+                            <option value="{{$usuario->id}}" {{ null !== (old('asignado')) ? (old('asignado') == $usuario->id ? 'selected' : '') : '' }}>{{$usuario->name}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -61,11 +61,11 @@ $mostrarSololectura = true;
                     </div>
                 </div>
                 <div class="form-row ">
-                    <div class="input-group col-md-6">
+                    <div class="input-group col-md-8">
                         <label for="">Seleccionar usuarios en seguimiento:
-                            <div class="input-group-prepend">
+                            <div class="form-row">
                                 @foreach ($usuarios as $usuario)
-                                    <div class="input-group-text">
+                                    <div class="col-md-4">
                                         <input type="checkbox" name="viewer{{$usuario->id}}" value="{{$usuario->id}}">
                                         <label for="{{$usuario->id}}"> {{$usuario->name}} </label><br>
                                     </div>
@@ -82,7 +82,7 @@ $mostrarSololectura = true;
                 </div> --}}
                 <button type="submit" class="btn btn-primary" id="enviar">Crear Nueva</button>
                 <a href="/adminIssues" class="btn btn-primary">Volver</a>
-            </form>    
+        </form>    
     @else
         @if ( session('mensaje') )
             <div class="alert alert-info">
