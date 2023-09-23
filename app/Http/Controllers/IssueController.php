@@ -100,9 +100,8 @@ class IssueController extends Controller
         $issue->contrato_id = $request->afectado;
         $issue->viewers = json_encode($viewers);
         $issue->closed = false;
-        dd('para grabar');
-        //$issue->save();
-        //$issue->enviarMail(1);
+        $issue->save();
+        $issue->enviarMail(1);
         $respuesta[] = 'Nuevo Ticket se ha creado correctamente';
         return redirect('/adminIssues')->with('mensaje', $respuesta);
     }
