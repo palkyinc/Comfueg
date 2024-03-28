@@ -30,6 +30,7 @@ ___ -->
 ## [0.9.4] - 2023-09-23
 ### Changed
 1.  Se arregla problema en IssueController, se dejo un dd al grabar un nuevo issue.
+2.  Se arregla problema con contadores mensuales. Error en el orden de metodos en el kernel.
 
 ## [0.9.3] - 2023-09-21
 ### Changed

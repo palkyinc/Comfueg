@@ -35,10 +35,11 @@ use App\Http\Controllers\Info_ClienteController;
 use App\Http\Controllers\AltaController;
 use App\Http\Controllers\BtfDebitoController;
 use App\Http\Controllers\Concepto_debitoController;
+use App\Custom\CronFunciones;//TEST
 
 ####TEST
 /* 
-use App\Custom\CronFunciones;//TEST
+use Illuminate\Support\Facades\Mail;//TEST
 use App\Models\Cliente; //TEST
 use App\Custom\GatewayMikrotik;//TEST
 use App\Custom\Ubiquiti;
@@ -49,7 +50,6 @@ use App\Models\Contadores_mensuales;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Contrato;
-use Illuminate\Support\Facades\Mail;
 */
 
 
@@ -68,14 +68,15 @@ use Illuminate\Support\Facades\Mail;
 /* Route::get('/readDay', function () {
         dd(CronFunciones::readDay());
         }); */
-/* Route::get('/archivoSem/{dias}', function ($dias) {
+Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
-}); */ 
+});
+
 /* Route::get('/sarasa', function () {
-        CronFunciones::resetContadores_mensuales();
+        CronFunciones::readCounterGateway();
         echo 'Estas metiendo mal los dedos';
-}); 
-*/
+}); */ 
+
 /* Route::view('/welcome', 'index'); */
 /* Route::get('/test/', function () {
 }); */

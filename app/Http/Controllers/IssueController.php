@@ -40,8 +40,6 @@ class IssueController extends Controller
                                         'contrato' => $contrato, 
                                         'internet' => 'active']);
     }
-
-
     /**
      * Show the form for creating a new resource.
      *
@@ -76,7 +74,6 @@ class IssueController extends Controller
                                         'cliente' => $cliente
                                     ]);
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -105,7 +102,6 @@ class IssueController extends Controller
         $respuesta[] = 'Nuevo Ticket se ha creado correctamente';
         return redirect('/adminIssues')->with('mensaje', $respuesta);
     }
-
     public function validarTwo(Request $request) {
         $contrato = Contrato::find($request->afectado);
         $contract = isset($contrato->id) ? $contrato->id : null;
@@ -134,7 +130,6 @@ class IssueController extends Controller
         }
         return false;
     }
-
     public function getViewers(Request $request, $cant)
     {
         $viewers = null;
@@ -157,7 +152,6 @@ class IssueController extends Controller
         }
         return $viewers;
     }
-
     public function validar(Request $request)
     {
         $aValidar = [
@@ -178,7 +172,6 @@ class IssueController extends Controller
         ];
         $request->validate($aValidar);
     }
-
     public function buscarCliente(Request $request)
     {
         $apellido = strtoupper($request->input('cliente'));
@@ -203,7 +196,6 @@ class IssueController extends Controller
     {
         //
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -222,7 +214,6 @@ class IssueController extends Controller
                                         'issues_updates' => $issue_updates,
                                         'usuarios' => $usuarios]);
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -281,7 +272,6 @@ class IssueController extends Controller
         $issue->enviarMail($mailTipo);
         return redirect('adminIssues')->with('mensaje', ['Ticket actualizado correctamente.']);
     }
-
     public function getListadoIssues ()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
@@ -304,7 +294,6 @@ class IssueController extends Controller
         fclose($newFile);
         return Storage::disk('public')->download('ListadoIssues-' . date('Ymd') . '.csv');
     }
-
     /**
      * Remove the specified resource from storage.
      *

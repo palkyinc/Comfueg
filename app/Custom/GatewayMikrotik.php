@@ -31,7 +31,6 @@ class GatewayMikrotik extends RouterosAPI
 		return self::getApiPointer($ip, $usuario, $contrasenia);
 		
 	}
-
 	private static function getApiPointer($ip, $usuario, $contrasenia)
 	{
 		//Creo la sesion, $this->$id_session y la sumo a 4mikrotik

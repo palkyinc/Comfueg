@@ -73,11 +73,11 @@ class Kernel extends ConsoleKernel
     
     private function diario ()
     {
-        CronFunciones::resetCounter();
         CronFunciones::readCounterGateway();
+        CronFunciones::generarArchivoSem();
+        CronFunciones::resetCounter();
         CronFunciones::resetCounter(true);
         CronFunciones::borrarArchivos();
-        CronFunciones::generarArchivoSem();
     }
 
     private function cadaMinuto()

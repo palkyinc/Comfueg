@@ -25,6 +25,7 @@ abstract class CronFunciones
         $todosLosContadores = Contadores_mensuales::get();
         $mes_actual = date('m');
         switch ($mes_actual) {
+
                 case '1':
                         $mes_actual = 'ene';
                         break;
@@ -132,7 +133,6 @@ abstract class CronFunciones
         }
         return false;
     }
-
     public static function resetCounter($mensual = false)
     {
         $gateways = self::getGateways();
@@ -152,14 +152,13 @@ abstract class CronFunciones
             }
         }
     }
-
     public static function generarArchivoSem($dias = 1)
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $ayer = date('Ymd', strtotime(date('Ymd')."- $dias days"));
-        if (file_exists('storage/Crons/' . $ayer . '.dat'))
+        if (file_exists('../storage/Crons/' . $ayer . '.dat'))
         {
-                $file = fopen('storage/Crons/' . $ayer . '.dat', 'r');
+                $file = fopen('../storage/Crons/' . $ayer . '.dat', 'r');
                 while(!feof($file))
                 {
                         $linea = explode(';', trim(fgets($file)));
@@ -229,16 +228,13 @@ abstract class CronFunciones
                         $salida[$cliente]['up'] = $up;
                         $salida[$cliente]['down'] = $down;
                 }
-                $file = fopen('storage/Crons/' . $ayer . '-sem.dat', 'w');
+                $file = fopen('../storage/Crons/' . $ayer . '-sem.dat', 'w');
                 fwrite($file, json_encode($salida));
                 fclose($file);
+                return 'true';
         }
-        else {
-                return 'Error al abrir el archivo storage/Crons/' . $ayer . '.dat';
-        }
-        return 'true';
+        return 'Error al abrir el archivo storage/Crons/' . $ayer . '.dat';
     }
-
     public static function readDay()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
@@ -269,7 +265,6 @@ abstract class CronFunciones
             }
         }
     }
-
     private static function getGateways ()
     {
         $planes = Plan::select('gateway_id')->where('gateway_id', '!=', null)->get();
@@ -299,7 +294,6 @@ abstract class CronFunciones
         }
         return $gateways;
     }
-
     public static function getWeek($contrato_id = 2)
     {
         for ($day=7; $day > 0; $day--)
@@ -329,7 +323,6 @@ abstract class CronFunciones
             }
             return($salida);
     }
-
     public static function buscarProveedoresCaidos ()
     {
             $proveedores = Proveedor::where('estado', true)->get();
@@ -343,7 +336,6 @@ abstract class CronFunciones
                 }
             }
     }
-    
     public static function enviarMailDeudasPendientes ()
     {
         $deudas = Site_has_incidente::where('tipo', 'DEUDA TECNICA')->where('final', null)->orderByDesc('prioridad')->get();
@@ -351,7 +343,6 @@ abstract class CronFunciones
         $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.DEUDAS_TECNICA_MAIL_GROUP'));
         Mail::to($arrayCorreos)->send($toSend);
     }
-
     public static function borrarArchivos()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
