@@ -27,7 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
-## [0.9.4] - 2023-09-23
+## [0.9.5] - 2024-XX-XX
+### Changed
+1.  Se agrega metodo para logueo de errores en archivo Error.log
+
+## [0.9.4] - 2024-03-29
 ### Changed
 1.  Se arregla problema en IssueController, se dejo un dd al grabar un nuevo issue.
 2.  Se arregla problema con contadores mensuales. Error en el orden de metodos en el kernel.

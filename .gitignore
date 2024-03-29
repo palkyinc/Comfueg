@@ -2,7 +2,7 @@
 /public/calles.txt
 /docker/rclone/rclone.conf
 /docker/aircontrol/*
-/public/imgUsuarios/photos/*.*
+/public/imgUsuarios
 /public/storage
 /public/Crons
 /storage/instas/*.*

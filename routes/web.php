@@ -73,9 +73,10 @@ dd(CronFunciones::generarArchivoSem($dias));
 });
 
 /* Route::get('/sarasa', function () {
-        CronFunciones::readCounterGateway();
-        echo 'Estas metiendo mal los dedos';
-}); */ 
+        //CronFunciones::readCounterGateway();
+        CronFunciones::borrarArchivos();
+        echo 'Fin.';
+}); */
 
 /* Route::view('/welcome', 'index'); */
 /* Route::get('/test/', function () {

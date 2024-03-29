@@ -3,6 +3,7 @@
 namespace App\Custom;
 use Illuminate\Support\Facades\Config;
 use App\Models\Panel;
+use App\Models\Contrato;
 use App\Models\Plan;
 use App\Models\Proveedor;
 use App\Models\Site_has_incidente;
@@ -101,6 +102,7 @@ abstract class CronFunciones
     public static function readCounterGateway()
     {
         $gateways = self::getGateways();
+        //$gateways[] = 56;
         foreach ($gateways as $elemento)
         {
                 $gateway = Panel::find($elemento);
@@ -121,14 +123,20 @@ abstract class CronFunciones
                                                 $contador_mensual = new Contadores_mensuales();
                                                 $contador_mensual->contrato_id = $elemento['comment'];
                                         }
-                                        $contador_mensual->anio = date('Y');
-                                        $contador_mensual->ultimo_mes = date('m');
-                                        $contador_mensual->setMounthCounter($elemento['bytes-in'] + $elemento['bytes-out']);
-                                        $contador_mensual->save();
+                                        if (Contrato::find($elemento['comment']))
+                                        {
+                                                $contador_mensual->anio = date('Y');
+                                                $contador_mensual->ultimo_mes = date('m');
+                                                $contador_mensual->setMounthCounter($elemento['bytes-in'] + $elemento['bytes-out']);
+                                                $contador_mensual->save();
+                                        } else {
+                                                self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'readCounterGateway', 'error' => 'Error: No existe el contrato:' . $elemento['comment'] . 'en el Gateway:' . $gateway->relEquipo->ip . 'al querer grabarlo como ContadorMensual.']);
+                                        }
                                 }
                         }
                 } else {
-                        return 'Error al contactar al Gateway' . $gateway->relEquipo->ip;
+                        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'readCounterGateway', 'error' => 'Error al contactar al Gateway' . $gateway->relEquipo->ip]);
+                        return false;
                 }
         }
         return false;
@@ -231,9 +239,10 @@ abstract class CronFunciones
                 $file = fopen('../storage/Crons/' . $ayer . '-sem.dat', 'w');
                 fwrite($file, json_encode($salida));
                 fclose($file);
-                return 'true';
+                return true;
         }
-        return 'Error al abrir el archivo storage/Crons/' . $ayer . '.dat';
+        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'generarArchivoSem', 'error' => 'Error al abrir el archivo storage/Crons/' . $ayer . '.dat']);
+        return false;
     }
     public static function readDay()
     {
@@ -262,6 +271,8 @@ abstract class CronFunciones
                         }
                 }
                 unset($apiMikro);
+            } else {
+                self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'readDay', 'error' => 'Error al contactar al Gateway' . $gateway->relEquipo->ip]);
             }
         }
     }
@@ -318,7 +329,8 @@ abstract class CronFunciones
                 }
                 else
                 {
-                        dd('Error no encuentra archivo: ' . $dayTarget);
+                        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'getWeek', 'error' => 'Error no encuentra archivo: /storage/Crons/' . $dayTarget . '-sem.dat']);
+                        return false;
                 }
             }
             return($salida);
@@ -348,13 +360,28 @@ abstract class CronFunciones
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $paraBorrar = date('Ymd', strtotime(date('Ymd')."- 7 days"));
         $archivos = Storage::disk('crons')->files();
+        dd($archivos);
         foreach ($archivos as $archivo) {
                 if ((str_split($archivo,8)[0]) < $paraBorrar)
                 {
-                        //echo 'borrar ' . $archivo . '<br>';
+                        echo 'borrar ' . $archivo . '<br>';
                         Storage::disk('crons')->delete($archivo);
                 }
         }
         return true;
+    }
+    public static function logError($data)
+    {
+        ### $data['clase']
+        ### $data['metodo']
+        ### $data['error']
+        if($file = fopen('../storage/logs/Errors.log', 'a+'))
+        {
+                fwrite($file, date('Y-m-d|H:s') . ';' . $data['clase'] . ';' . $data['metodo'] . ';' . $data['error'] . PHP_EOL);
+                fclose($file);
+                //dd();
+        }else {
+                echo '<p>ERROR al abrir el archivo ../storage/logs/Errors.log<p>';
+        }
     }
 }
