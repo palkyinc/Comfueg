@@ -188,4 +188,8 @@ class Contadores_mensuales extends Model
         }
         return(['labels' => $labels, 'values' => $values]);
     }
+     public function relContrato()
+    {
+        return $this->belongsTo('App\Models\Contrato', 'contrato_id', 'id');
+    }
 }

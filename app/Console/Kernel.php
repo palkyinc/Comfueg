@@ -73,10 +73,10 @@ class Kernel extends ConsoleKernel
     
     private function diario ()
     {
-        CronFunciones::readCounterGateway();
-        CronFunciones::generarArchivoSem();
         CronFunciones::resetCounter();
+        CronFunciones::readCounterGateway();
         CronFunciones::resetCounter(true);
+        CronFunciones::generarArchivoSem();
         CronFunciones::borrarArchivos();
     }
 

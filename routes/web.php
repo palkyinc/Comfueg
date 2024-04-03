@@ -72,11 +72,11 @@ Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
 });
 
-/* Route::get('/sarasa', function () {
-        //CronFunciones::readCounterGateway();
-        CronFunciones::borrarArchivos();
+Route::get('/sarasa', function () {
+        CronFunciones::fixContadoresMensuales();
+        //CronFunciones::borrarArchivos();
         echo 'Fin.';
-}); */
+});
 
 /* Route::view('/welcome', 'index'); */
 /* Route::get('/test/', function () {

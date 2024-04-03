@@ -99,6 +99,35 @@ abstract class CronFunciones
             }
         }
     }
+    public static function fixContadoresMensuales()
+    {
+        $contador_mensuales = Contadores_mensuales::get();
+                echo '<table>
+                <tr>
+                <th>Contrato</th>
+                <th>Nov</th>
+                <th>Dic</th>
+                <th>Ene</th>
+                <th>Feb</th>
+                <th>Mar</th>
+                <th>Abr</th>
+                </tr>';
+        foreach ($contador_mensuales as $cm) {
+                if(!$cm->relContrato->baja)
+                {
+                        echo '<tr>';
+                        echo '<td>' . $cm->contrato_id . '</td>';
+                        echo '<td>' . round($cm->nov/1024/1024/1024, 1) . '</td>';
+                        echo '<td>' . round($cm->dic/1024/1024/1024, 1) . '</td>';
+                        echo '<td>' . round($cm->ene/1024/1024/1024/10, 1) . '</td>';
+                        echo '<td>' . round($cm->feb/1024/1024/1024/10, 1) . '</td>';
+                        echo '<td>' . round($cm->mar/1024/1024/1024/10, 1) . '</td>';
+                        echo '<td>' . round($cm->abr/1024/1024/1024, 1) . '</td>';
+                        echo '</tr>';
+                }
+        }
+                echo '</table>';
+    }
     public static function readCounterGateway()
     {
         $gateways = self::getGateways();
@@ -136,10 +165,9 @@ abstract class CronFunciones
                         }
                 } else {
                         self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'readCounterGateway', 'error' => 'Error al contactar al Gateway' . $gateway->relEquipo->ip]);
-                        return false;
                 }
         }
-        return false;
+        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'readCounterGateway', 'error' => 'Finaliza OK']);;
     }
     public static function resetCounter($mensual = false)
     {
@@ -153,9 +181,11 @@ abstract class CronFunciones
                 if ($mensual)
                 {
                         $apiMikro->resetCounterMensual();
+                        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'resetCounter(Mensual)', 'error' => 'Finaliza OK']);
                 }
                 else   {
-                                $apiMikro->resetCounter();
+                        $apiMikro->resetCounter();
+                        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'resetCounter()', 'error' => 'Finaliza OK']);
                         }    
             }
         }
@@ -239,6 +269,7 @@ abstract class CronFunciones
                 $file = fopen('../storage/Crons/' . $ayer . '-sem.dat', 'w');
                 fwrite($file, json_encode($salida));
                 fclose($file);
+                self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'generarArchivoSem', 'error' => 'FInaliza OK']);        
                 return true;
         }
         self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'generarArchivoSem', 'error' => 'Error al abrir el archivo storage/Crons/' . $ayer . '.dat']);
@@ -360,7 +391,6 @@ abstract class CronFunciones
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $paraBorrar = date('Ymd', strtotime(date('Ymd')."- 7 days"));
         $archivos = Storage::disk('crons')->files();
-        dd($archivos);
         foreach ($archivos as $archivo) {
                 if ((str_split($archivo,8)[0]) < $paraBorrar)
                 {
@@ -368,7 +398,7 @@ abstract class CronFunciones
                         Storage::disk('crons')->delete($archivo);
                 }
         }
-        return true;
+        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'borrarArchivos', 'error' => 'Finaliza OK']);;
     }
     public static function logError($data)
     {
@@ -379,7 +409,6 @@ abstract class CronFunciones
         {
                 fwrite($file, date('Y-m-d|H:s') . ';' . $data['clase'] . ';' . $data['metodo'] . ';' . $data['error'] . PHP_EOL);
                 fclose($file);
-                //dd();
         }else {
                 echo '<p>ERROR al abrir el archivo ../storage/logs/Errors.log<p>';
         }
