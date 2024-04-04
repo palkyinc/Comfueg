@@ -78,6 +78,7 @@ class Kernel extends ConsoleKernel
         CronFunciones::resetCounter(true);
         CronFunciones::generarArchivoSem();
         CronFunciones::borrarArchivos();
+        CronFunciones::enviarErrorsMail();
     }
 
     private function cadaMinuto()

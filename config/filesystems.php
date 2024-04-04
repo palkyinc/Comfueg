@@ -52,6 +52,11 @@ return [
             'driver' => 'local',
             'root' => storage_path('Crons'),
         ],
+        
+        'logs' => [
+            'driver' => 'local',
+            'root' => storage_path('logs'),
+        ],
 
         'public' => [
             'driver' => 'local',

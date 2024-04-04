@@ -12,6 +12,7 @@ use App\Models\Contadores_mensuales;
 use App\Custom\ClientMikrotik;
 use App\Custom\GatewayMikrotik;
 use App\Mail\DeudaTecnicaResumen;
+use App\Mail\ReporteError;
 use App\Mail\CambioDeEstadoEnProveedor;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -386,6 +387,29 @@ abstract class CronFunciones
         $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.DEUDAS_TECNICA_MAIL_GROUP'));
         Mail::to($arrayCorreos)->send($toSend);
     }
+    public static function enviarErrorsMail()
+    {
+        if($file = fopen('../storage/logs/Errors.log', 'r'))
+        {
+                while (!feof($file))
+                {
+                        $linea = explode(';', fgets($file));
+                        if(count($linea) === 4)
+                        {
+                                $errores [] = $linea;
+                        }
+                }
+        }
+        fclose($file);
+        if($errores)
+        {
+                $grupoMail = 4;
+                $arrayCorreos = Mail_group::arrayCorreos($grupoMail);
+                $toSend = new ReporteError($errores);
+                Mail::to($arrayCorreos)->send($toSend);
+                Storage::disk('logs')->delete('Errors.log');
+        }
+    }
     public static function borrarArchivos()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
@@ -394,11 +418,11 @@ abstract class CronFunciones
         foreach ($archivos as $archivo) {
                 if ((str_split($archivo,8)[0]) < $paraBorrar)
                 {
-                        echo 'borrar ' . $archivo . '<br>';
+                        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'borrarArchivos', 'error' => 'Se borra: ' . $archivo]);
                         Storage::disk('crons')->delete($archivo);
                 }
         }
-        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'borrarArchivos', 'error' => 'Finaliza OK']);;
+        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'borrarArchivos', 'error' => 'Finaliza OK']);
     }
     public static function logError($data)
     {

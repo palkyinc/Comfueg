@@ -99,7 +99,7 @@ class ContratoController extends Controller
         fwrite($newFile ,'ID Genesys;APELLIDO, Nombre;Plan;Estado;Sistema;Panel;Nodo;Barrio;Comentarios' . PHP_EOL);
         foreach ($contratos as $key => $value)
         {
-            $pruebaVelocidad = Issue::where('titulo_id', 4)->where('contrato_id', $value->id)->get();
+            $pruebaVelocidad = Issue::where('titulo_id', 4)->where('contrato_id', $value->id)->where('closed', false)->first();
             fwrite($newFile ,   $value->relCliente->id . ';' . 
                                 $value->relCliente->getNomyApe() . ';' . 
                                 $value->relPlan->nombre . ';' . 

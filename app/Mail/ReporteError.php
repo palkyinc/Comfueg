@@ -10,16 +10,16 @@ use Illuminate\Queue\SerializesModels;
 class ReporteError extends Mailable
 {
     use Queueable, SerializesModels;
-    public $datos;
+    public $errores;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($datos)
+    public function __construct($errores)
     {
-        $this->datos = $datos;
+        $this->errores = $errores;
     }
 
     /**
