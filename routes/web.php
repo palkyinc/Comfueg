@@ -73,13 +73,7 @@ dd(CronFunciones::generarArchivoSem($dias));
 });
 
 Route::get('/sarasa', function () {
-        //CronFunciones::resetCounter();
-        //CronFunciones::readCounterGateway();
-        //CronFunciones::resetCounter(true);
-        //CronFunciones::generarArchivoSem();
-        //CronFunciones::borrarArchivos();
-        //CronFunciones::fixContadoresMensuales();
-        CronFunciones::enviarErrorsMail();
+        CronFunciones::diario();
         echo 'Fin.';
 });
 

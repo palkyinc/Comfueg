@@ -437,4 +437,13 @@ abstract class CronFunciones
                 echo '<p>ERROR al abrir el archivo ../storage/logs/Errors.log<p>';
         }
     }
+    public static function diario()
+    {
+        self::resetCounter();
+        self::readCounterGateway();
+        self::resetCounter(true);
+        self::generarArchivoSem();
+        self::borrarArchivos();
+        self::enviarErrorsMail();
+    }
 }
