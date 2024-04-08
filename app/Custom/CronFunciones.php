@@ -132,7 +132,6 @@ abstract class CronFunciones
     public static function readCounterGateway()
     {
         $gateways = self::getGateways();
-        //$gateways[] = 56;
         foreach ($gateways as $elemento)
         {
                 $gateway = Panel::find($elemento);
@@ -195,9 +194,9 @@ abstract class CronFunciones
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $ayer = date('Ymd', strtotime(date('Ymd')."- $dias days"));
-        if (file_exists('../storage/Crons/' . $ayer . '.dat'))
+        if (file_exists('/app/storage/Crons/' . $ayer . '.dat'))
         {
-                $file = fopen('../storage/Crons/' . $ayer . '.dat', 'r');
+                $file = fopen('/app/storage/Crons/' . $ayer . '.dat', 'r');
                 while(!feof($file))
                 {
                         $linea = explode(';', trim(fgets($file)));
@@ -267,7 +266,7 @@ abstract class CronFunciones
                         $salida[$cliente]['up'] = $up;
                         $salida[$cliente]['down'] = $down;
                 }
-                $file = fopen('../storage/Crons/' . $ayer . '-sem.dat', 'w');
+                $file = fopen('/app/storage/Crons/' . $ayer . '-sem.dat', 'w');
                 fwrite($file, json_encode($salida));
                 fclose($file);
                 self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'generarArchivoSem', 'error' => 'FInaliza OK']);        
@@ -389,8 +388,9 @@ abstract class CronFunciones
     }
     public static function enviarErrorsMail()
     {
-        if($file = fopen('../storage/logs/Errors.log', 'r'))
+        if(file_exists('/app/storage/logs/Errors.log'))
         {
+                $file = fopen('/app/storage/logs/Errors.log', 'r');
                 while (!feof($file))
                 {
                         $linea = explode(';', fgets($file));
@@ -399,15 +399,15 @@ abstract class CronFunciones
                                 $errores [] = $linea;
                         }
                 }
-        }
-        fclose($file);
-        if($errores)
-        {
-                $grupoMail = 4;
-                $arrayCorreos = Mail_group::arrayCorreos($grupoMail);
-                $toSend = new ReporteError($errores);
-                Mail::to($arrayCorreos)->send($toSend);
-                Storage::disk('logs')->delete('Errors.log');
+                fclose($file);
+                if(isset($errores))
+                {
+                        $grupoMail = 4;
+                        $arrayCorreos = Mail_group::arrayCorreos($grupoMail);
+                        $toSend = new ReporteError($errores);
+                        Mail::to($arrayCorreos)->send($toSend);
+                        Storage::disk('logs')->delete('Errors.log');
+                }
         }
     }
     public static function borrarArchivos()
@@ -426,15 +426,20 @@ abstract class CronFunciones
     }
     public static function logError($data)
     {
+        print('hola logError' . PHP_EOL);
+        print (shell_exec('pwd'));
+        print_r($data);
+        print('chau logError' . PHP_EOL);
         ### $data['clase']
         ### $data['metodo']
         ### $data['error']
-        if($file = fopen('../storage/logs/Errors.log', 'a+'))
+        if($file = fopen('/app/storage/logs/Errors.log', 'a+'))
         {
+                print ('Log correcto en .../storage/logs/Errors.log' . PHP_EOL);
                 fwrite($file, date('Y-m-d|H:s') . ';' . $data['clase'] . ';' . $data['metodo'] . ';' . $data['error'] . PHP_EOL);
                 fclose($file);
         }else {
-                echo '<p>ERROR al abrir el archivo ../storage/logs/Errors.log<p>';
+                print ('ERROR al abrir el archivo ../storage/logs/Errors.log' . PHP_EOL);
         }
     }
     public static function diario()

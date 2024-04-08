@@ -73,8 +73,9 @@ dd(CronFunciones::generarArchivoSem($dias));
 });
 
 Route::get('/sarasa', function () {
-        CronFunciones::diario();
-        echo 'Fin.';
+        //CronFunciones::diario();
+        CronFunciones::logError(['clase' => 'routes/web.php', 'metodo' => 'sarasa', 'error' => 'Funciona OK.']);
+        //CronFunciones::enviarErrorsMail();
 });
 
 /* Route::view('/welcome', 'index'); */
