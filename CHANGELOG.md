@@ -27,9 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
-## [0.9.5] - 2024-XX-XX
+## [0.9.5] - 2024-04-11
+### Add
+1. Nuevo metodo en CronFunciones actualizarIssuesVencidos ()
 ### Changed
 1.  Se agrega metodo para logueo de errores en archivo Error.log
+2.  Se corrige errores en generarArchivoSem()
 
 ## [0.9.4] - 2024-03-29
 ### Changed

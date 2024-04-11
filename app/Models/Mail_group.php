@@ -23,4 +23,13 @@ class Mail_group extends Model
         }
         return($respuesta);
     }
+    public static function arrayUsersId ($id)
+    {
+        $grupo = Mail_group::find($id);
+        foreach($grupo->RelUsers as $user)
+        {
+            $respuesta[] = $user->id;
+        }
+        return($respuesta);
+    }
 }

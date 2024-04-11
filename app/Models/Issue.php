@@ -170,7 +170,7 @@ class Issue extends Model
             }
         }else {
             if ($status) {
-                return true;
+                return $interval->days;
             } else {
                 return 'Venció hace: ' . $interval->days . 'día/s';
             }

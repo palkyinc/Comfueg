@@ -1,8 +1,12 @@
 <?php
 
 namespace App\Custom;
+
+use DateTime;
 use Illuminate\Support\Facades\Config;
 use App\Models\Panel;
+use App\Models\Issue;
+use App\Models\Issues_update;
 use App\Models\Contrato;
 use App\Models\Plan;
 use App\Models\Proveedor;
@@ -85,7 +89,7 @@ abstract class CronFunciones
                 $contador->save();
         }
     }
-    public static function setClockAndResetGateway ()
+    private static function setClockAndResetGateway ()
     {
         $gateways = self::getGateways();
         foreach ($gateways as $elemento)
@@ -129,7 +133,7 @@ abstract class CronFunciones
         }
                 echo '</table>';
     }
-    public static function readCounterGateway()
+    private static function readCounterGateway()
     {
         $gateways = self::getGateways();
         foreach ($gateways as $elemento)
@@ -169,7 +173,7 @@ abstract class CronFunciones
         }
         self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'readCounterGateway', 'error' => 'Finaliza OK']);;
     }
-    public static function resetCounter($mensual = false)
+    private static function resetCounter($mensual = false)
     {
         $gateways = self::getGateways();
         foreach ($gateways as $elemento) 
@@ -190,7 +194,7 @@ abstract class CronFunciones
             }
         }
     }
-    public static function generarArchivoSem($dias = 1)
+    private static function generarArchivoSem($dias = 1)
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $ayer = date('Ymd', strtotime(date('Ymd')."- $dias days"));
@@ -386,8 +390,93 @@ abstract class CronFunciones
         $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.DEUDAS_TECNICA_MAIL_GROUP'));
         Mail::to($arrayCorreos)->send($toSend);
     }
-    public static function enviarErrorsMail()
+    private static function actualizarIssuesVencidos ()
     {
+        $issues = Issue::where('closed', false)->get();
+        foreach ($issues as $key => $issue)
+        {
+                if ($issue->getVencida(true))
+                {
+                        $issue_updates = Issues_update::where('issue_id', $issue->id)->get();
+                        $indice = count($issue_updates)-1;
+                        //echo $indice  . ' | ';
+                        ### encontrar si issue vencida y con mas de 5 dias sin updates por usuarios que no sean el 1.
+                        if ($indice > -1) {
+                                $last_update = ($issue_updates[$indice]);
+                                $last_update_date = new DateTime($last_update->created_at);
+                                if ($last_update->relUsuario->id !== 1) {
+                                        $modify = '+5 day';
+                                } 
+                                else 
+                                {
+                                        $modify = '+2 day';
+                                }
+                                $last_update_date->modify($modify);
+                                if ($last_update_date->format('w') == 0) {
+                                        $last_update_date->modify('+1 day');
+                                } elseif ($last_update_date->format('w') == 6) {
+                                        $last_update_date->modify('+2 day');
+                                }
+                                $hoy =  new DateTime();
+                                $interval = $last_update_date->diff($hoy);
+                                if (!$interval->invert && $last_update->relUsuario->id !== 1) ### ADVERTENCIA
+                                {
+                                        self::enviarAdverCerrar($issue,
+                                                                'Aviso automático. Ticket vencido y sin novedades. De no mediar novedades se cerrará automaticamente en 2 días.',
+                                                                5,
+                                                                2);
+                                        self::logError(['clase' => 'Cronfunciones.php',
+                                                        'metodo' => 'actualizarIssuesVencidos',
+                                                        'error' => 'Advertencia sobre ticket:' . $issue->id]);
+                                }
+                                elseif (!$interval->invert && $last_update->relUsuario->id !== 1) ### CERRAR
+                                {
+                                        self::enviarAdverCerrar($issue,
+                                                                'Aviso automático. Ticket vencido y sin novedades. Se cierra.',
+                                                                5,
+                                                                3);
+                                        self::logError(['clase' => 'Cronfunciones.php',
+                                                        'metodo' => 'actualizarIssuesVencidos',
+                                                        'error' => 'Se Cierra ticket:' . $issue->id]);
+                                }
+                        }
+                        else
+                        {
+                                self::enviarAdverCerrar($issue,
+                                                                'Aviso automático. Ticket vencido y sin novedades. De no mediar novedades se cerrará automaticamente en 2 días.',
+                                                                5,
+                                                                2);
+                                self::logError(['clase' => 'Cronfunciones.php',
+                                                'metodo' => 'actualizarIssuesVencidos',
+                                                'error' => 'Advertencia sobre ticket:' . $issue->id]);
+                        }
+                }
+        }
+    }
+    private static function enviarAdverCerrar($issue, $texto, $grupoMail, $tipoMail)
+    {
+        $arrayIds = Mail_group::arrayUsersId($grupoMail);
+        $issue_updates_new = new Issues_update();
+        $issue_updates_new->issue_id = $issue->id;
+        $issue_updates_new->descripcion = $texto;
+        $issue_updates_new->usuario_id = 1;
+        $issue_updates_new->asignadoAnt_id = $issue->asignado_id;
+        $issue_updates_new->asignadoSig_id = $issue->asignado_id;
+        $issue_updates_new->save();
+        $viewers = json_decode($issue->viewers);
+        foreach ($arrayIds as $key => $arrayid) {
+                if(!$viewers || ($viewers && !in_array($arrayid, $viewers)))
+                {
+                        $viewers[] = $arrayid; 
+                }
+        }
+        $issue->viewers = json_encode($viewers);
+        $issue->save(); 
+        $issue->enviarMail($tipoMail);
+    }
+    private static function enviarErrorsMail()
+    {
+        $grupoMail = 4;
         if(file_exists('/app/storage/logs/Errors.log'))
         {
                 $file = fopen('/app/storage/logs/Errors.log', 'r');
@@ -402,7 +491,6 @@ abstract class CronFunciones
                 fclose($file);
                 if(isset($errores))
                 {
-                        $grupoMail = 4;
                         $arrayCorreos = Mail_group::arrayCorreos($grupoMail);
                         $toSend = new ReporteError($errores);
                         Mail::to($arrayCorreos)->send($toSend);
@@ -410,7 +498,7 @@ abstract class CronFunciones
                 }
         }
     }
-    public static function borrarArchivos()
+    private static function borrarArchivos()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $paraBorrar = date('Ymd', strtotime(date('Ymd')."- 7 days"));
@@ -426,20 +514,13 @@ abstract class CronFunciones
     }
     public static function logError($data)
     {
-        print('hola logError' . PHP_EOL);
-        print (shell_exec('pwd'));
-        print_r($data);
-        print('chau logError' . PHP_EOL);
         ### $data['clase']
         ### $data['metodo']
         ### $data['error']
         if($file = fopen('/app/storage/logs/Errors.log', 'a+'))
         {
-                print ('Log correcto en .../storage/logs/Errors.log' . PHP_EOL);
                 fwrite($file, date('Y-m-d|H:s') . ';' . $data['clase'] . ';' . $data['metodo'] . ';' . $data['error'] . PHP_EOL);
                 fclose($file);
-        }else {
-                print ('ERROR al abrir el archivo ../storage/logs/Errors.log' . PHP_EOL);
         }
     }
     public static function diario()
@@ -449,6 +530,12 @@ abstract class CronFunciones
         self::resetCounter(true);
         self::generarArchivoSem();
         self::borrarArchivos();
+    }
+    public static function diario01()
+    {
+        self::setClockAndResetGateway();
+        self::actualizarIssuesVencidos();
         self::enviarErrorsMail();
     }
+    
 }
