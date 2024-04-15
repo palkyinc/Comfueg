@@ -71,7 +71,10 @@ $mostrarSololectura = true;
                             <th scope="col"> Novedades</th>
                             <th scope="col" colspan="2">
                                 @can('issues_create')
-                                <a href="/agregarIssue" class="btn btn-dark">Agregar</a>
+                                @if ($contrato)
+                                    <a href="/agregarIssue?contrato_id={{$contrato}}" class="btn btn-dark">Agregar</a>
+                                    
+                                @endif
                                 @endcan
                             </th>
                         </tr>
@@ -116,7 +119,7 @@ $mostrarSololectura = true;
                                         </a> --}}
                                     @else
                                         <a href="/modificarIssue/{{$incidente->id}}" class="margenAbajo btn btn-outline-secundary" title="Ver">
-                                                <img src="imagenes/iconfinder_VIEW_eye_2738306.svg" alt="imagen de ojo para ver" height="20px">
+                                            <img src="imagenes/iconfinder_VIEW_eye_2738306.svg" alt="imagen de ojo para ver" height="20px">
                                         </a>
                                     @endif
                                 @endcan

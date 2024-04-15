@@ -450,6 +450,10 @@ abstract class CronFunciones
                                                 'metodo' => 'actualizarIssuesVencidos',
                                                 'error' => 'Advertencia sobre ticket:' . $issue->id]);
                         }
+                } else {
+                                self::logError(['clase' => 'Cronfunciones.php',
+                                                'metodo' => 'actualizarIssuesVencidos',
+                                                'error' => 'Ticket sin Vencer:' . $issue->id]);
                 }
         }
     }

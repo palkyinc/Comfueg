@@ -68,15 +68,15 @@ use App\Models\Contrato;
 /* Route::get('/readDay', function () {
         dd(CronFunciones::readDay());
         }); */
-Route::get('/archivoSem/{dias}', function ($dias) {
+/* Route::get('/archivoSem/{dias}', function ($dias) {
 dd(CronFunciones::generarArchivoSem($dias));
-});
+}); */
 
-/* Route::get('/sarasa', function () {
+Route::get('/sarasa', function () {
         CronFunciones::actualizarIssuesVencidos ();
         //CronFunciones::logError(['clase' => 'routes/web.php', 'metodo' => 'sarasa', 'error' => 'Funciona OK.']);
         //CronFunciones::enviarErrorsMail();
-}); */
+});
 
 /* Route::view('/welcome', 'index'); */
 /* Route::get('/test/', function () {
