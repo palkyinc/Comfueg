@@ -399,7 +399,7 @@ abstract class CronFunciones
                 {
                         $issue_updates = Issues_update::where('issue_id', $issue->id)->get();
                         $indice = count($issue_updates)-1;
-                        //echo $indice  . ' | ';
+                         //dd($indice);
                         ### encontrar si issue vencida y con mas de 5 dias sin updates por usuarios que no sean el 1.
                         if ($indice > -1) {
                                 $last_update = ($issue_updates[$indice]);
@@ -527,6 +527,11 @@ abstract class CronFunciones
                 fclose($file);
         }
     }
+    public static function audoriaPaneles()
+    {
+        $contratos = Contrato::select('id', 'num_panel', 'num_equipo')->where('baja', false)->get();
+        dd($contratos);
+    }
     public static function diario()
     {
         self::resetCounter();
@@ -538,8 +543,15 @@ abstract class CronFunciones
     public static function diario01()
     {
         self::setClockAndResetGateway();
+    }
+    public static function diario02()
+    {
         self::actualizarIssuesVencidos();
+    }
+    public static function diario03()
+    {
         self::enviarErrorsMail();
     }
+
     
 }

@@ -34,6 +34,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('backup:run')->daily()->at('20:00')->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->command('palky:syncGdrive UP')->daily()->at('20:30')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure('migvicpereyra@hotmail.com')->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->call(function(){CronFunciones::diario01();})->dailyAt('06:00')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure('migvicpereyra@hotmail.com');
+        $schedule->call(function(){CronFunciones::diario02();})->dailyAt('06:10')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure('migvicpereyra@hotmail.com');
+        $schedule->call(function(){CronFunciones::diario03();})->dailyAt('06:20')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure('migvicpereyra@hotmail.com');
         $schedule->call(function(){$this->cadaMinuto();})->everyMinute()->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure('migvicpereyra@hotmail.com');
         //$schedule->call(function(){$this->cadaCincoMinutos();})->everyFiveMinutes();
         $schedule->call(function(){$this->mensual();})->monthly()->timezone(Config::get('constants.USO_HORARIO_ARG'));
