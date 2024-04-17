@@ -90,7 +90,10 @@ class Ubiquiti{
         if (!is_bool(strpos($inthat, $esto)))
         return substr($inthat, strpos($inthat,$esto)+strlen($esto));
     }
-
+    public static function makeBkp ($datos)
+    {
+        shell_exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg configPanels/' . $datos['ip'] . '-bkp.cfg  2>&1');
+    }
     /* 
     * tratarMac([
     *                     'usuario' => '',

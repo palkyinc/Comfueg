@@ -18,6 +18,7 @@ use App\Custom\GatewayMikrotik;
 use App\Mail\DeudaTecnicaResumen;
 use App\Mail\ReporteError;
 use App\Mail\CambioDeEstadoEnProveedor;
+use App\Custom\ubiquiti;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
@@ -390,17 +391,18 @@ abstract class CronFunciones
         $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.DEUDAS_TECNICA_MAIL_GROUP'));
         Mail::to($arrayCorreos)->send($toSend);
     }
-    private static function actualizarIssuesVencidos ()
+    PRIVATE static function actualizarIssuesVencidos ()
     {
         $issues = Issue::where('closed', false)->get();
         foreach ($issues as $key => $issue)
         {
+                self::logError(['clase' => 'Cronfunciones.php',
+                                'metodo' => 'actualizarIssuesVencidos',
+                                'error' => 'Procesando ticket: ' . $issue->id]);
                 if ($issue->getVencida(true))
                 {
                         $issue_updates = Issues_update::where('issue_id', $issue->id)->get();
                         $indice = count($issue_updates)-1;
-                         //dd($indice);
-                        ### encontrar si issue vencida y con mas de 5 dias sin updates por usuarios que no sean el 1.
                         if ($indice > -1) {
                                 $last_update = ($issue_updates[$indice]);
                                 $last_update_date = new DateTime($last_update->created_at);
@@ -429,7 +431,7 @@ abstract class CronFunciones
                                                         'metodo' => 'actualizarIssuesVencidos',
                                                         'error' => 'Advertencia sobre ticket:' . $issue->id]);
                                 }
-                                elseif (!$interval->invert && $last_update->relUsuario->id !== 1) ### CERRAR
+                                elseif (!$interval->invert && $last_update->relUsuario->id === 1) ### CERRAR
                                 {
                                         self::enviarAdverCerrar($issue,
                                                                 'Aviso automático. Ticket vencido y sin novedades. Se cierra.',
@@ -438,6 +440,10 @@ abstract class CronFunciones
                                         self::logError(['clase' => 'Cronfunciones.php',
                                                         'metodo' => 'actualizarIssuesVencidos',
                                                         'error' => 'Se Cierra ticket:' . $issue->id]);
+                                } else {
+                                        self::logError(['clase' => 'Cronfunciones.php',
+                                                'metodo' => 'actualizarIssuesVencidos',
+                                                'error' => 'Ticket sin Vencer:' . $issue->id]);        
                                 }
                         }
                         else
@@ -475,6 +481,10 @@ abstract class CronFunciones
                 }
         }
         $issue->viewers = json_encode($viewers);
+        if($tipoMail === 3)
+        {
+                $issue->closed = true;
+        }
         $issue->save(); 
         $issue->enviarMail($tipoMail);
     }
@@ -530,6 +540,11 @@ abstract class CronFunciones
     public static function audoriaPaneles()
     {
         $contratos = Contrato::select('id', 'num_panel', 'num_equipo')->where('baja', false)->get();
+        ubiquiti::makeBkp([
+                         'usuario' => 'admincf',
+                         'password' => 'Decalcut@22',
+                         'ip' => '10.10.0.2',
+         ]);
         dd($contratos);
     }
     public static function diario()
