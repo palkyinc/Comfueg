@@ -36,9 +36,9 @@ use App\Http\Controllers\AltaController;
 use App\Http\Controllers\BtfDebitoController;
 use App\Http\Controllers\Concepto_debitoController;
 
-use App\Custom\CronFunciones;//TEST
 ####TEST
 /* 
+use App\Custom\CronFunciones;//TEST
 use Illuminate\Support\Facades\Mail;//TEST
 use App\Models\Cliente; //TEST
 use App\Custom\GatewayMikrotik;//TEST
@@ -72,13 +72,13 @@ use App\Models\Contrato;
 dd(CronFunciones::generarArchivoSem($dias));
 }); */
 
-Route::get('/sarasa', function () {
+/* Route::get('/sarasa', function () {
         //CronFunciones::audoriaPaneles ();
-        CronFunciones::actualizarIssuesVencidos();
+        CronFunciones::diario02();
         //CronFunciones::logError(['clase' => 'routes/web.php', 'metodo' => 'sarasa', 'error' => 'Funciona OK.']);
         //CronFunciones::enviarErrorsMail();
         dd('Fin Sarasa.');
-});
+}); */
 
 /* Route::view('/welcome', 'index'); */
 /* Route::get('/test/', function () {

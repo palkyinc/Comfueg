@@ -25,11 +25,11 @@ class Issue extends Model
     ### $tipo = 2 ->actualizacion
     ### $tipo = 3 ->cerrado
     ##----------
-    public function enviarMail ($tipo)
+    public function enviarMail ($tipo, $auto = false)
     {
         $arrayAsignado = [$this->relAsignado->email];
         $arrayViewers = $this->getArrayViewers();
-        if(auth()->user()->id != $this->asignado_id)
+        if($auto || auth()->user()->id != $this->asignado_id)
         {
             $this->subEnviarEmail($arrayAsignado, $arrayViewers, $tipo);
         }

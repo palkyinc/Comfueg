@@ -486,7 +486,7 @@ abstract class CronFunciones
                 $issue->closed = true;
         }
         $issue->save(); 
-        $issue->enviarMail($tipoMail);
+        $issue->enviarMail($tipoMail, true);
     }
     private static function enviarErrorsMail()
     {
