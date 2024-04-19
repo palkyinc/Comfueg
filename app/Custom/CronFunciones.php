@@ -169,10 +169,9 @@ abstract class CronFunciones
                                 }
                         }
                 } else {
-                        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'readCounterGateway', 'error' => 'Error al contactar al Gateway' . $gateway->relEquipo->ip]);
+                        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'readCounterGateway', 'error' => 'ERROR al contactar al Gateway: ' . $gateway->relEquipo->ip]);
                 }
         }
-        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'readCounterGateway', 'error' => 'Finaliza OK']);;
     }
     private static function resetCounter($mensual = false)
     {
@@ -186,12 +185,12 @@ abstract class CronFunciones
                 if ($mensual)
                 {
                         $apiMikro->resetCounterMensual();
-                        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'resetCounter(Mensual)', 'error' => 'Finaliza OK']);
                 }
                 else   {
                         $apiMikro->resetCounter();
-                        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'resetCounter()', 'error' => 'Finaliza OK']);
-                        }    
+                }    
+            } else {
+                    self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'resetCounter()', 'error' => 'ERROR al contactar al Gateway: ' . $gateway->relEquipo->ip]);
             }
         }
     }
@@ -274,10 +273,9 @@ abstract class CronFunciones
                 $file = fopen('/app/storage/Crons/' . $ayer . '-sem.dat', 'w');
                 fwrite($file, json_encode($salida));
                 fclose($file);
-                self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'generarArchivoSem', 'error' => 'FInaliza OK']);        
                 return true;
         }
-        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'generarArchivoSem', 'error' => 'Error al abrir el archivo storage/Crons/' . $ayer . '.dat']);
+        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'generarArchivoSem', 'error' => 'ERROR al abrir el archivo storage/Crons/' . $ayer . '.dat']);
         return false;
     }
     public static function readDay()
@@ -391,14 +389,11 @@ abstract class CronFunciones
         $arrayCorreos = Mail_group::arrayCorreos(Config::get('constants.DEUDAS_TECNICA_MAIL_GROUP'));
         Mail::to($arrayCorreos)->send($toSend);
     }
-    PRIVATE static function actualizarIssuesVencidos ()
+    private static function actualizarIssuesVencidos ()
     {
         $issues = Issue::where('closed', false)->get();
         foreach ($issues as $key => $issue)
         {
-                self::logError(['clase' => 'Cronfunciones.php',
-                                'metodo' => 'actualizarIssuesVencidos',
-                                'error' => 'Procesando ticket: ' . $issue->id]);
                 if ($issue->getVencida(true))
                 {
                         $issue_updates = Issues_update::where('issue_id', $issue->id)->get();
@@ -423,43 +418,36 @@ abstract class CronFunciones
                                 $interval = $last_update_date->diff($hoy);
                                 if (!$interval->invert && $last_update->relUsuario->id !== 1) ### ADVERTENCIA
                                 {
+                                        ### Advertencia de Ticket
                                         self::enviarAdverCerrar($issue,
                                                                 'Aviso automático. Ticket vencido y sin novedades. De no mediar novedades se cerrará automaticamente en 2 días.',
                                                                 5,
                                                                 2);
-                                        self::logError(['clase' => 'Cronfunciones.php',
-                                                        'metodo' => 'actualizarIssuesVencidos',
-                                                        'error' => 'Advertencia sobre ticket:' . $issue->id]);
                                 }
                                 elseif (!$interval->invert && $last_update->relUsuario->id === 1) ### CERRAR
                                 {
+                                        ### Cerrar Ticket
                                         self::enviarAdverCerrar($issue,
                                                                 'Aviso automático. Ticket vencido y sin novedades. Se cierra.',
                                                                 5,
                                                                 3);
-                                        self::logError(['clase' => 'Cronfunciones.php',
-                                                        'metodo' => 'actualizarIssuesVencidos',
-                                                        'error' => 'Se Cierra ticket:' . $issue->id]);
                                 } else {
-                                        self::logError(['clase' => 'Cronfunciones.php',
-                                                'metodo' => 'actualizarIssuesVencidos',
-                                                'error' => 'Ticket sin Vencer:' . $issue->id]);        
+                                        ### Ticket sin vencer
                                 }
                         }
                         else
                         {
+                                ### Advertencia de ticket
                                 self::enviarAdverCerrar($issue,
                                                                 'Aviso automático. Ticket vencido y sin novedades. De no mediar novedades se cerrará automaticamente en 2 días.',
                                                                 5,
                                                                 2);
-                                self::logError(['clase' => 'Cronfunciones.php',
-                                                'metodo' => 'actualizarIssuesVencidos',
-                                                'error' => 'Advertencia sobre ticket:' . $issue->id]);
                         }
                 } else {
-                                self::logError(['clase' => 'Cronfunciones.php',
+                                ### Ticket sin vencer
+                                /* self::logError(['clase' => 'Cronfunciones.php',
                                                 'metodo' => 'actualizarIssuesVencidos',
-                                                'error' => 'Ticket sin Vencer:' . $issue->id]);
+                                                'error' => 'Ticket sin Vencer:' . $issue->id]); */
                 }
         }
     }
@@ -520,11 +508,9 @@ abstract class CronFunciones
         foreach ($archivos as $archivo) {
                 if ((str_split($archivo,8)[0]) < $paraBorrar)
                 {
-                        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'borrarArchivos', 'error' => 'Se borra: ' . $archivo]);
                         Storage::disk('crons')->delete($archivo);
                 }
         }
-        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'borrarArchivos', 'error' => 'Finaliza OK']);
     }
     public static function logError($data)
     {
@@ -539,13 +525,29 @@ abstract class CronFunciones
     }
     public static function audoriaPaneles()
     {
+        $result = self::makeBkp ('admincf', 'Decalcut@22', '10.10.0.2');
+        if($result['retval'])
+        {
+                dd($result['output']);
+        } else {
+                dd('OK');
+        }
         $contratos = Contrato::select('id', 'num_panel', 'num_equipo')->where('baja', false)->get();
-        ubiquiti::makeBkp([
-                         'usuario' => 'admincf',
-                         'password' => 'Decalcut@22',
-                         'ip' => '10.10.0.2',
-         ]);
-        dd($contratos);
+        $paneles = Panel::select('id', 'ssid', 'id_equipo')->where('activo', true)->where('rol', 'PANEL')->get();
+       /*  foreach ($paneles as $key => $panel) {
+                self::makeBkp ($panel->relEquipo->getUsuario(), $panel->relEquipo->getPassword(), $panel->relEquipo->ip);
+        }*/
+        dd('Fin.');
+        //$ptpap = Panel::where('activo', true)->where('rol', 'PTPAP')->get();
+        //$ptpst = Panel::where('activo', true)->where('rol', 'PTPST')->get();
+    }
+    private static function makeBkp ($usuario, $password, $ip)
+    {
+        return ubiquiti::makeBkp([
+                         'usuario' => $usuario,
+                         'password' => $password,
+                         'ip' => $ip,
+                        ]);
     }
     public static function diario()
     {

@@ -73,8 +73,8 @@ dd(CronFunciones::generarArchivoSem($dias));
 }); */
 
 /* Route::get('/sarasa', function () {
-        //CronFunciones::audoriaPaneles ();
-        CronFunciones::diario02();
+        CronFunciones::audoriaPaneles ();
+        //CronFunciones::diario02();
         //CronFunciones::logError(['clase' => 'routes/web.php', 'metodo' => 'sarasa', 'error' => 'Funciona OK.']);
         //CronFunciones::enviarErrorsMail();
         dd('Fin Sarasa.');

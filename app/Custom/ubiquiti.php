@@ -92,7 +92,12 @@ class Ubiquiti{
     }
     public static function makeBkp ($datos)
     {
-        shell_exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg configPanels/' . $datos['ip'] . '-bkp.cfg  2>&1');
+        $output=null;
+        $retval=null;
+        exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg configPanels/' . $datos['ip'] . '-bkp.cfg  2>&1',
+                            $output,
+                            $retval);
+        return ['output' => $output, 'retval' => $retval];
     }
     /* 
     * tratarMac([
