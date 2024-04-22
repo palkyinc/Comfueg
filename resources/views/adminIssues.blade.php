@@ -71,10 +71,11 @@ $mostrarSololectura = true;
                             <th scope="col"> Novedades</th>
                             <th scope="col" colspan="2">
                                 @can('issues_create')
-                                @if ($contrato)
-                                    <a href="/agregarIssue?contrato_id={{$contrato}}" class="btn btn-dark">Agregar</a>
-                                    
-                                @endif
+                                    @if ($contrato)
+                                        <a href="/agregarIssue?contrato_id={{$contrato}}" class="btn btn-dark">Agregar</a>
+                                    @else
+                                        <a href="/agregarIssue" class="btn btn-dark">Agregar</a>
+                                    @endif
                                 @endcan
                             </th>
                         </tr>
