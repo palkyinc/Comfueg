@@ -27,6 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.6] - 2024-04-23
+### Add
+1. Nuevo metodo en CronFunciones bkpPaneles ()
+### Changed
+1.  Se resuelve problema al generar archivoSem por existir un cliente agregado en el mikrotik estando de baja el contrato
+
 ## [0.9.5] - 2024-04-11
 ### Add
 1. Nuevo metodo en CronFunciones actualizarIssuesVencidos ()

@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
         $emailOutput = 'migvicpereyra@hotmail.com';
         // $schedule->command('inspire')->hourly();
         $schedule->call(function(){$this->semanal();})->weeklyOn(1, '09:00')->timezone(Config::get('constants.USO_HORARIO_ARG'))->sendOutputTo('storage/logs/schedule.log');
+        $schedule->call(function(){CronFunciones::bkpPaneles();})->weeklyOn(3, '03:00')->timezone(Config::get('constants.USO_HORARIO_ARG'))->sendOutputTo('storage/logs/schedule.log');
         $schedule->call(function(){CronFunciones::diario();})->daily()->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput)->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->command('backup:clean')->daily()->at('04:30')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput)->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->command('backup:run')->daily()->at('20:00')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput)->timezone(Config::get('constants.USO_HORARIO_ARG'));

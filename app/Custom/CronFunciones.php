@@ -523,23 +523,29 @@ abstract class CronFunciones
                 fclose($file);
         }
     }
-    public static function audoriaPaneles()
+    public static function bkpPaneles()
     {
-        $result = self::makeBkp ('admincf', 'Decalcut@22', '10.10.0.2');
-        if($result['retval'])
-        {
-                dd($result['output']);
-        } else {
-                dd('OK');
-        }
         $contratos = Contrato::select('id', 'num_panel', 'num_equipo')->where('baja', false)->get();
         $paneles = Panel::select('id', 'ssid', 'id_equipo')->where('activo', true)->where('rol', 'PANEL')->get();
-       /*  foreach ($paneles as $key => $panel) {
-                self::makeBkp ($panel->relEquipo->getUsuario(), $panel->relEquipo->getPassword(), $panel->relEquipo->ip);
-        }*/
-        dd('Fin.');
-        //$ptpap = Panel::where('activo', true)->where('rol', 'PTPAP')->get();
-        //$ptpst = Panel::where('activo', true)->where('rol', 'PTPST')->get();
+        self::makeBkpArray($paneles);
+        $ptpap = Panel::where('activo', true)->where('rol', 'PTPAP')->get();
+        self::makeBkpArray($ptpap);
+        $ptpst = Panel::where('activo', true)->where('rol', 'PTPST')->get();
+        self::makeBkpArray($ptpst);
+    }
+    private static function makeBkpArray ($paneles)
+    {
+        foreach ($paneles as $key => $panel) {
+                $result = self::makeBkp ($panel->relEquipo->getUsuario(), $panel->relEquipo->getPassword(), $panel->relEquipo->ip);
+                if($result['retval'])
+                {
+                        foreach ($result['output'] as $key => $value) {
+                        self::logError(['clase' => 'Cronfunciones.php',
+                                                        'metodo' => 'audoriaPaneles',
+                                                        'error' => 'IP: ' . $panel->relEquipo->ip . ' | ' . $value]);    
+                        }
+                }
+        }
     }
     private static function makeBkp ($usuario, $password, $ip)
     {
