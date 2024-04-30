@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 2. Realizar los cambios en Changelog.md actualizando la fecha de la versión.
 3. Add y commit en el branch develop
 4. Pasar a Master y luego realizar push de la versión con el tag si corresponde.
-5. Volver develop.
+5. Volver develop. 
 
 ### Secuencia de arctualización en server producción:
 1. php artisan down

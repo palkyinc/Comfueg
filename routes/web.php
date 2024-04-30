@@ -35,6 +35,7 @@ use App\Http\Controllers\Info_ClienteController;
 use App\Http\Controllers\AltaController;
 use App\Http\Controllers\BtfDebitoController;
 use App\Http\Controllers\Concepto_debitoController;
+use App\Http\Controllers\MacAddressExceptionController;
 
 ####TEST
 use App\Custom\CronFunciones;//TEST
@@ -73,8 +74,8 @@ dd(CronFunciones::generarArchivoSem($dias));
 }); */
 
 Route::get('/sarasa', function () {
-        CronFunciones::audoriaPaneles ();
-        //CronFunciones::diario02();
+        //CronFunciones::bkpPaneles();
+        CronFunciones::audoriaPaneles();
         //CronFunciones::logError(['clase' => 'routes/web.php', 'metodo' => 'sarasa', 'error' => 'Funciona OK.']);
         //CronFunciones::enviarErrorsMail();
         dd('Fin Sarasa.');
@@ -194,7 +195,13 @@ Route::get('/adminModelos', [ModeloController::class, 'index'])->middleware('aut
 Route::get('/agregarModelo', [ModeloController::class, 'create'])->middleware('auth');
 Route::post('/agregarModelo', [ModeloController::class, 'store'])->middleware('auth');
 Route::get('/modificarModelo/{id}', [ModeloController::class, 'edit'])->middleware('auth');
-Route::patch('/modificarModelo', [ModeloController::class, 'update'])->middleware('auth');
+####################
+####### CRUD Excepciones
+Route::get('/adminExceptions', [MacAddressExceptionController::class, 'index'])->middleware('auth');
+Route::get('/agregarException', [MacAddressExceptionController::class, 'create'])->middleware('auth');
+Route::post('/agregarException', [MacAddressExceptionController::class, 'store'])->middleware('auth');
+Route::get('/modificarException/{id}', [MacAddressExceptionController::class, 'edit'])->middleware('auth');
+Route::patch('/modificarException', [MacAddressExceptionController::class, 'update'])->middleware('auth');
 #####################
 ####### CRUD Contratos
 Route::get('/adminContratos', [ContratoController::class, 'index'])->middleware('auth');

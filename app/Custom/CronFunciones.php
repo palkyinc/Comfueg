@@ -523,9 +523,55 @@ abstract class CronFunciones
                 fclose($file);
         }
     }
-    public static function bkpPaneles()
+    public static function audoriaPaneles()
     {
         $contratos = Contrato::select('id', 'num_panel', 'num_equipo')->where('baja', false)->get();
+        $paneles = Panel::select('id', 'ssid', 'id_equipo')->where('activo', true)->where('rol', 'PANEL')->get();
+        foreach ($paneles as $key => $panel) {
+                $File = fopen ('configPanels/' . $panel->relEquipo->ip . '-bkp.cfg', 'r');
+                while (!feof ($File))
+                {
+                        $linea = fgets($File);
+                        $datoLinea = explode('=', $linea);
+                        $lineaExplotada = explode ('.', ($datoLinea[0]));
+                        if ($lineaExplotada[0] == 'wireless' && $lineaExplotada[1] == '1' && $lineaExplotada[2] == 'mac_acl' && isset($lineaExplotada[4]))
+                        {
+                                
+                                if ($lineaExplotada[4] === 'comment') {
+                                        $macs_panel[$lineaExplotada[3]]['contrato_id'] = explode (';', $datoLinea[1])[0];
+                                }
+                                if ($lineaExplotada[4] === 'mac') {
+                                        $macs_panel[$lineaExplotada[3]]['mac'] = rtrim($datoLinea[1]);
+                                        $macs_panel[$lineaExplotada[3]]['panel'] = $panel->id;
+                                }
+                        }
+                }
+                fclose($File);
+                foreach ($macs_panel as $key => $value)
+                {
+                        
+                        if (is_numeric($value['contrato_id']))
+                        {
+                                $encontrado = false;
+                                foreach ($contratos as $key => $contrato) {
+                                        if ($contrato->id == $value['contrato_id'] && $contrato->num_panel == $value['panel'] && $contrato->relEquipo->mac_address === $value['mac']) {
+                                                $encontrado = true;
+                                        }
+                                }
+                                if (!$encontrado) {
+                                        echo $value['contrato_id'] . ' | ' . $value['mac'] . ' | ' . $value['panel'] . '<br>';
+                                }
+                        }
+                        else 
+                        {
+                                echo $value['contrato_id'] . ' | ' . $value['mac'] . ' | ' . $value['panel'] . '<br>';
+                        }
+                }
+        }
+        dd('fincho');
+    }
+    public static function bkpPaneles()
+    {
         $paneles = Panel::select('id', 'ssid', 'id_equipo')->where('activo', true)->where('rol', 'PANEL')->get();
         self::makeBkpArray($paneles);
         $ptpap = Panel::where('activo', true)->where('rol', 'PTPAP')->get();

@@ -38,12 +38,10 @@ class Ubiquiti{
                                 : 
                                 ('http://'.$ip);
 	}
-    
     public function getIp()
     {
         return $this->_ip;
     }
-
     public function setRenewDhcp ()
     {
         if ($this->status()){
@@ -54,7 +52,6 @@ class Ubiquiti{
             return false;
         }
     }
-
     public function getTestinternet ($direccion)
     {
         $comando = 'echo y | plink -pw '. $this->_password . ' '  . $this->_username . '@' . $this->_ip . ' ping ' . $direccion . ' -c 10 > putty.log  2>&1';
@@ -74,17 +71,14 @@ class Ubiquiti{
         fclose($file);
         return isset($dato) ? $dato : null;
     }
-
     private function between ($esto, $that, $inthat)
     {
         return $this->before($that, $this->after($esto, $inthat));
     }
-
     private function before ($esto, $inthat)
     {
         return substr($inthat, 0, strpos($inthat, $esto));
     }
-
     private function after ($esto, $inthat)
     {
         if (!is_bool(strpos($inthat, $esto)))
