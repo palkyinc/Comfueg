@@ -27,6 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.7] - 2024-XX-XX
+### Add
+
+1. Se agrega bajaAut() en Cronfunciones. Baja automatica de contratos guiados por ticket. 
+### Changed
+1.  
+
 ## [0.9.6] - 2024-04-23
 ### Add
 1. Nuevo metodo en CronFunciones bkpPaneles ()

@@ -150,4 +150,31 @@ class Contrato extends Model
         }
         return($respuesta);
     }
+    public function removeContract()
+    {
+        ### quitar mac del panel
+        $respuesta[] = $this->modificarMac(1);
+        ### quitar contrato del gateway
+        $respuesta[] = $this->removeContratoGateway();
+        $this->activo = false;
+        $this->baja = true;
+        $this->save();
+        $respuesta [] = $this->relEquipo->changeEquipoStatus(false);
+        return $respuesta;
+    }
+    private function removeContratoGateway()
+    {
+        if ($apiMikro = $this->openSessionGateway($this)) {
+            $clientsDataGateway = $apiMikro->getGatewayData();
+            $gatewayContract = new ClientMikrotik($this->id, $clientsDataGateway);
+            $apiMikro->removeClient($gatewayContract);
+            $apiMikro->comm('/ip/dhcp-server/lease/remove', ['numbers' => $apiMikro->getIdDhcpServer($this->id)]);
+            $respuesta = 'EXITO: Contrato de ' . $this->relCliente->getNomYApe() . ' fue Removido con exito del Gateway!!';
+        	unset($apiMikro);
+        } else 
+            {
+                $respuesta = 'ERROR: No se pudo realizar el cambio.';
+            }
+        return($respuesta);
+    }
 }

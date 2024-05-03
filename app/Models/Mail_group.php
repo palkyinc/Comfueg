@@ -25,6 +25,7 @@ class Mail_group extends Model
     }
     public static function arrayUsersId ($id)
     {
+        $respuesta = [];
         $grupo = Mail_group::find($id);
         foreach($grupo->RelUsers as $user)
         {

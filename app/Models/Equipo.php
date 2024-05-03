@@ -67,20 +67,25 @@ class Equipo extends Model
         $this->setPassword(Config::get('constants.CLIENT_PASS'));
         $this->setUsuario(Config::get('constants.CLIENT_USER'));
     }
-    public function relProducto () {
+    public function relProducto ()
+    {
         return $this->belongsTo('App\Models\Producto', 'num_dispositivo', 'id');
     }
-    public function relPanel () {
+    public function relPanel ()
+    {
         return $this->belongsTo('App\Models\Panel', 'id_equipo', 'id');
     }
-    public function relAntena () {
+    public function relAntena ()
+    {
         return $this->belongsTo('App\Models\Antena', 'num_antena', 'id');
     }
-    public function relContrato () {
+    public function relContrato ()
+    {
         return $this->belongsTo('App\Models\Contrato', 'num_equipo', 'id');
     }
     ## retorna todos los equipos clientes que no se agregaron a un contrato
-    public static function equiposSinAgregar (){
+    public static function equiposSinAgregar ()
+    {
         $equiposTodos = Equipo::get();
         $paneles = Panel::get();
         $equipos;
@@ -115,13 +120,6 @@ class Equipo extends Model
         }
         return true;
     }
-    /** 
-    * Asigna un IP libre si el IP asignado es 0.0.0.0, sino verifica si el IP esta usado en contrato o panel.
-    * Si el IP esta usado le asigna uno libre.
-    * Retorna true si consigue asignale un IP o si el IP que tiene asignado es valido
-    * Retorna false si falla al asignar IP.
-    * @return Boolean
-    */
     public function setIpAuto ()
     {
         if ($this->ip != '0.0.0.0' && self::ipLibrePaneles($this->ip, true) && self::ipLibrePaneles($this->ip, true)) {
@@ -171,11 +169,8 @@ class Equipo extends Model
         $this->setIpActual($ip_actual);
         return true;
     }
-    /**
-     * Retorna True si los activo
-     * Retorna False si no hizo nada
-     * @return Boolean*/
-    public function activarEstado () {
+    public function activarEstado ()
+    {
         if ($this->fecha_baja) {
             $this->fecha_baja = null;
             $this->save();
@@ -203,10 +198,37 @@ class Equipo extends Model
     {
         return Variable::find(1)->ip_final;
     }
-
     public function getResumida()
     {
         return ($this->nombre . ', ' . $this->relProducto->modelo . ', ' . $this->mac_address);
     }
-
+    public function changeEquipoStatus ($darAlta)
+    {
+        if ($darAlta) 
+        {
+            $this->fecha_baja = null;
+            ## Si viene con un IP verificar que no este usado
+            ## sino set ip auto
+            $rta = 'EXITO: Equipo ' . $this->getResumida() . ' dado de alta.';
+            if ( Equipo::ipLibrePaneles($this->ip, true) && Equipo::ipLibrePaneles($this->ip, false) )
+            {
+                if ($this->ip === '0.0.0.0') {
+                    $rta = $rta . 'EXITO: Se asigna IP Auto.';
+                    return $this->setIpAuto() ? $rta : false;
+                }
+            }
+            else {
+                return false;
+            }
+            return $rta;
+        } else
+                {
+                    ### BAJA
+                    $this->fecha_baja = date('Y-m-d');
+                    $this->ip = '0.0.0.0';
+                    $rta = 'EXITO: Equipo ' . $this->getResumida() . ' dado de baja';
+                }
+        $this->save();
+        return $rta;
+    }
 }## finde la clase

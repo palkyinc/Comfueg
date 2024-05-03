@@ -40,7 +40,8 @@ class Kernel extends ConsoleKernel
         $schedule->call(function(){CronFunciones::diario03();})->dailyAt('06:20')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput);
         $schedule->call(function(){$this->cadaMinuto();})->everyMinute()->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput);
         //$schedule->call(function(){$this->cadaCincoMinutos();})->everyFiveMinutes();
-        $schedule->call(function(){$this->mensual();})->monthly()->timezone(Config::get('constants.USO_HORARIO_ARG'));
+        $schedule->call(function(){$this->mensual();})->monthly()->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput)->timezone(Config::get('constants.USO_HORARIO_ARG'));
+        $schedule->call(function(){CronFunciones::bajaAut();})->monthly()->days([1,2,3,4,5,6,7,8,9,10])->at('21:00')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput)->timezone(Config::get('constants.USO_HORARIO_ARG'));
         ### ->monthly(); //Run the task on the first day of every month at 00:00
     }
     /**

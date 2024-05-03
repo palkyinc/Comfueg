@@ -555,6 +555,33 @@ abstract class CronFunciones
                          'ip' => $ip,
                         ]);
     }
+    public static function bajaAut()
+    {
+        $issues = Issue::where('closed', false)->where('titulo_id', 1)->get();
+        foreach ($issues as $key => $issue) {
+                $respuestas = $issue->relContrato->removeContract();
+                $issue->relContrato->refresh();
+                $error_rta = false;
+                foreach ($respuestas as $key => $rta)
+                {
+                        if ($wordTest = str_split($rta, 5)[0] === 'ERROR')
+                        {
+                                self::logError(['clase' => 'Cronfunciones.php',
+                                                        'metodo' => 'bajaAut',
+                                                        'error' => $rta]);
+                                $error_rta = true;
+                        }
+                }
+                if (!$error_rta)
+                {
+                        self::enviarAdverCerrar($issue,
+                                        'Baja automática en el dia de la fecha. Se cierra.',
+                                        6,
+                                        3);
+                
+                }
+        }
+    }
     public static function diario()
     {
         self::resetCounter();
@@ -575,6 +602,4 @@ abstract class CronFunciones
     {
         self::enviarErrorsMail();
     }
-
-    
 }
