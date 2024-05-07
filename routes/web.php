@@ -73,7 +73,7 @@ dd(CronFunciones::generarArchivoSem($dias));
 }); */
 
 /* Route::get('/sarasa', function () {
-        CronFunciones::bajaAut ();
+        CronFunciones::diario02 ();
         dd('Fin Sarasa.');
 }); */
 

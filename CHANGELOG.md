@@ -29,8 +29,8 @@ ___ -->
 
 ## [0.9.7] - 2024-XX-XX
 ### Add
-
 1. Se agrega bajaAut() en Cronfunciones. Baja automatica de contratos guiados por ticket. 
+2. Se agrega funcionalidad de baja automatica a los tickets de suspensión por Mora.
 ### Changed
 1. Fix sobre app/Custom/ubiquiti.php por error en path al abrir archivos.
 
