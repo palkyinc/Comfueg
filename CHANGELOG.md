@@ -32,7 +32,8 @@ ___ -->
 
 1. Se agrega bajaAut() en Cronfunciones. Baja automatica de contratos guiados por ticket. 
 ### Changed
-1.  
+1. Fix sobre app/Custom/ubiquiti.php por error en path al abrir archivos.
+
 
 ## [0.9.6] - 2024-04-23
 ### Add
