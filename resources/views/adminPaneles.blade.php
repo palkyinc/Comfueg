@@ -11,20 +11,29 @@ $mostrarSololectura = true;
                         <label for="sitio" class="mx-3">Sitio</label>
                         <select class="form-control" name="sitio" id="sitio">
                             <option value="">Seleccione un Sitio...</option>
-                            @foreach ($sitios as $sitio)
-                                    <option value="{{$sitio->id}}">{{$sitio->nombre}}</option>
+                            @foreach ($sitios as $site)
+                                    <option value="{{$site->id}}">{{$site->nombre}}</option>
                             @endforeach
                         </select>
                         <button type="submit" class="btn btn-primary mx-3">Enviar</button>
                     </form>
 
-        @if ( session('mensaje') )
-            <div class="alert alert-success">
-                @foreach (session('mensaje') as $item)
-                    {{ $item }} <br>
-                @endforeach
-            </div>
-        @endif
+         @if ( session('mensaje') )
+        <ul class="list-group">
+            @foreach (session('mensaje') as $key => $items)
+                @if ($key === 'success')
+                        @foreach ($items as $item)
+                            <li class="list-group-item list-group-item-success">{{ $item }}</li>
+                        @endforeach
+                @endif
+                @if ($key === 'error')
+                        @foreach ($items as $item)
+                            <li class="list-group-item list-group-item-danger"> {{ $item }} </li>
+                        @endforeach
+                @endif
+            @endforeach
+        </ul>
+    @endif
         
 <div class="table-responsive">
                 
@@ -83,9 +92,14 @@ $mostrarSololectura = true;
                                             <img src="imagenes/iconfinder_Multimedia_Turn_on_off_power_button_interface_3841792.svg" alt="imagen de activar" height="20px">
                                         </a>
                                     @endif
+                                    @if($panel->rol === 'GATEWAY')
+                                        <a href="/modificarDnsServers/{{$panel->id}}" class="margenAbajo btn btn-outline-secundary" title="dns servers">
+                                            <img src="imagenes/9045176_server_dns_icon.svg" alt="imagen de activar" height="20px">
+                                        </a>
+                                    @endif
                                     <a href="/modificarEquipoUserPass/{{$panel->relEquipo->id}}" class="margenAbajo btn btn-outline-secundary" title="Editar Equipo User Pass">
-                                    <img src="imagenes/iconfinder_unlock_open_password_lock_key_3994412.svg" alt="imagen de candado" height="20px">
-                                    </a>  
+                                        <img src="imagenes/iconfinder_unlock_open_password_lock_key_3994412.svg" alt="imagen de candado" height="20px">
+                                    </a>
                                 @endcan
                             </td>
                             
@@ -94,7 +108,7 @@ $mostrarSololectura = true;
                     </tbody>
                 </table>
 </div>
-        {{ $paneles->links() }}
+        {{ $paneles->appends(['ssid' => $ssid, 'sitio' => $sitio])->links() }}
 @endcan
 @include('sinPermiso')
 @endsection

@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.8] - 2024-05-17
+### Add
+1. Crud para DNS server
+
 ## [0.9.7] - 2024-05-10
 ### Add
 1. Se agrega bajaAut() en Cronfunciones. Baja automatica de contratos guiados por ticket. 
@@ -495,4 +499,4 @@ ___
 > - Sections add and modify of: Antena, Barrio, Calle, Ciudad, Codigos de Area, direccion, equipo, panel, productos, plan, site and cliente were completed.  
 > - This CHANGELOG file to hopefully serve as an evolving example of a
   standardized open source project CHANGELOG.  
-> - README now contains answers to common questions about CHANGELOGs  
+> - README now contains answers to common questions about CHANGELOGs

@@ -10,7 +10,6 @@ abstract class MisFunciones {
     {
         return 'Hola';
     }
-
     public static function encontrarSitios ()
     {
         $id = 30;
@@ -42,8 +41,7 @@ abstract class MisFunciones {
             echo 'Es Panel';
         }
     }
-
-    function obenerSitiosPaneles()
+    public static function obenerSitiosPaneles()
     {
         $id = 31;
         $sitios = Site::all();
@@ -65,6 +63,17 @@ abstract class MisFunciones {
                 {
                     echo "Sitio siguiente/s afectados";
                 }
+    }
+    public static function logError($data)
+    {
+        ### $data['clase']
+        ### $data['metodo']
+        ### $data['error']
+        if($file = fopen('/app/storage/logs/Errors.log', 'a+'))
+        {
+                fwrite($file, date('Y-m-d|H:s') . ';' . $data['clase'] . ';' . $data['metodo'] . ';' . $data['error'] . PHP_EOL);
+                fclose($file);
+        }
     }
 
 }

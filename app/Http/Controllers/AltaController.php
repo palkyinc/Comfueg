@@ -53,13 +53,6 @@ class AltaController extends Controller
     {
         //
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request, $modify = false)
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
@@ -86,7 +79,6 @@ class AltaController extends Controller
         }
         return $alta;
     }
-
     public function validar(Request $request)
     {
         $aValidar = [
@@ -97,46 +89,18 @@ class AltaController extends Controller
         ];
         $request->validate($aValidar);
     }
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         //
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         //
     }
-    
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function updateInstalldate(Request $request)
     {
         $alta = Alta:: find($request->input('id'));
@@ -145,19 +109,13 @@ class AltaController extends Controller
         $respuesta['success'][] = 'Se actualizó la fecha de instalación correctamente a ' . $alta->instalacion_fecha . ' del Cliente: ' . $alta->relCliente->getNomYApe();
         return redirect ('adminAltas')->with('mensaje', $respuesta);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //
     }
     
-    
+    ### Api
+
     public function cancelApi (Request $request){
         ($alta = Alta::find($request->input('id')));
         if ($alta->anulado) {
