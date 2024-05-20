@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.9] - 2024-XX-XX
+### Add
+### Changed
+1. Se borra dd() que quedó por error.
+
 ## [0.9.8] - 2024-05-17
 ### Add
 1. Crud para DNS server

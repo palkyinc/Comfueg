@@ -190,7 +190,6 @@ class GatewayMikrotik extends RouterosAPI
 		$lanInterface = $this->getLanInterface();
 		$this->write('/ip/dhcp-server/print');
 		$dhcpServers = $this->parseResponse($this->read(false));
-		dd('checkDhcpServer');
 		foreach ($dhcpServers as $dhcpServer) {
 			if ($dhcpServer['name'] == 'SlamServer' && $dhcpServer['interface'] == $lanInterface)
 			{
