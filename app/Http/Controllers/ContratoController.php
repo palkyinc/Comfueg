@@ -60,8 +60,8 @@ class ContratoController extends Controller
                                         'website' => env('DOMINIO_COMFUEG'),
                                         'vuejs' => env('VUEJS_VERSION')]);
     }
-
-    public function getContract ($id) {
+    public function getContract ($id)
+    {
         if (preg_match("/^[0-9]*$/", $id)) {
             $contrato = Contrato::find($id);
             $contrato->num_equipo = Equipo::find($contrato->num_equipo);
@@ -81,7 +81,6 @@ class ContratoController extends Controller
         }
         return response()->json(null);
     }
-
     public function vueIndex ()
     {
         return view('altaContrato', [
@@ -90,7 +89,6 @@ class ContratoController extends Controller
             'vuejs' => env('VUEJS_VERSION')
         ]);
     }
-    
     public function getListadoContratosactivos ()
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
@@ -171,7 +169,6 @@ class ContratoController extends Controller
         $datos = $this->getDataCreateEdit();
         return view ('agregarContrato', $datos);
     }
-
     public function getDataCreateEdit ($id_equipo = null)
     {
         $clientes = Cliente::orderBy('apellido')->get();
@@ -210,7 +207,8 @@ class ContratoController extends Controller
                 return false;
             }
     }
-    public function storeContractFromAlta (Request $request){
+    public function storeContractFromAlta (Request $request)
+    {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
         $alta = Alta::find($request->input('alta_id'));
         $contrato = new Contrato;
@@ -313,8 +311,8 @@ class ContratoController extends Controller
         }
         return response()->json($mensaje, 200);
     }
-
-    private function analizarRta ($rta){
+    private function analizarRta ($rta)
+    {
         if ($wordTest = str_split($rta, 5)[0] === 'EXITO') {
             return true;
         } elseif ($wordTest === 'ERROR') {
@@ -361,7 +359,6 @@ class ContratoController extends Controller
             }
         return redirect('/adminContratos?contrato=' . $contrato->id)->with('mensaje', $respuesta);
     }
-
     public function validar(Request $request)
     {
         $aValidar = [
@@ -387,7 +384,6 @@ class ContratoController extends Controller
         }
         $request->validate($aValidar);
     }
-
     /**
      * Display the specified resource.
      *
@@ -398,7 +394,6 @@ class ContratoController extends Controller
     {
         ##
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -412,7 +407,6 @@ class ContratoController extends Controller
         $datos['elemento'] =  $elemento;
         return view('modificarContrato', $datos);
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -503,7 +497,6 @@ class ContratoController extends Controller
         }
         return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -522,7 +515,6 @@ class ContratoController extends Controller
         $respuesta[] = "Se dió de BAJA el contrato N° $contrato->id";
         return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
     }
-
     private function changeEquipoStatus ($id_equipo, $darAlta)
     {
         $equipo = Equipo::find($id_equipo);
@@ -540,7 +532,6 @@ class ContratoController extends Controller
         $equipo->save();
         return $rta;
     }
-
     private function forzarAlta ($equipo)
     {
         $equipo->fecha_baja = null;
@@ -559,7 +550,6 @@ class ContratoController extends Controller
         }
         return $rta;
     }
-    
     /**
      * ReAdd the specified resource from storage.
      *
@@ -583,7 +573,6 @@ class ContratoController extends Controller
         }
         return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
     }
-
     public function test ($id)
     {
         $contrato = Contrato::find($id);
@@ -598,7 +587,8 @@ class ContratoController extends Controller
 
     ################# Métodos de Gateway ####################################
 
-    public function renewIPAntenaClient($contrato){
+    public function renewIPAntenaClient($contrato)
+    {
         if ($contrato->relEquipo->getUsuario() === null){
                 $contrato->relEquipo->setUsPassInicial();
         }
@@ -654,7 +644,6 @@ class ContratoController extends Controller
             }
         return($respuesta);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -694,7 +683,6 @@ class ContratoController extends Controller
             }
         return ($respuesta);
     }
-    
     /**
      * Show the form for creating a new resource.
      *
@@ -722,7 +710,6 @@ class ContratoController extends Controller
         }
         return($respuesta);
     }
-    
     /**
      * Show the form for creating a new resource.
      *
@@ -743,7 +730,6 @@ class ContratoController extends Controller
             }
         return($respuesta);
     }
-
     public function modificarMac (Contrato $contrato, $ope)
     {
         return ubiquiti::tratarMac(

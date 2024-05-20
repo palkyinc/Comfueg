@@ -28,6 +28,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $emailOutput = 'migvicpereyra@hotmail.com';
+        $dia_baja = date('d');
+        if ($dia_baja > 10){$dia_baja = 1;}
         // $schedule->command('inspire')->hourly();
         $schedule->call(function(){$this->semanal();})->weeklyOn(1, '09:00')->timezone(Config::get('constants.USO_HORARIO_ARG'))->sendOutputTo('storage/logs/schedule.log');
         $schedule->call(function(){CronFunciones::bkpPaneles();})->weeklyOn(3, '03:00')->timezone(Config::get('constants.USO_HORARIO_ARG'))->sendOutputTo('storage/logs/schedule.log');
@@ -40,8 +42,9 @@ class Kernel extends ConsoleKernel
         $schedule->call(function(){CronFunciones::diario03();})->dailyAt('06:20')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput);
         $schedule->call(function(){$this->cadaMinuto();})->everyMinute()->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput);
         //$schedule->call(function(){$this->cadaCincoMinutos();})->everyFiveMinutes();
-        $schedule->call(function(){$this->mensual();})->monthly()->timezone(Config::get('constants.USO_HORARIO_ARG'));
-        ### ->monthly(); //Run the task on the first day of every month at 00:00
+        $schedule->call(function(){$this->mensual();})->monthly()->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput)->timezone(Config::get('constants.USO_HORARIO_ARG'));
+        $schedule->call(function(){CronFunciones::bajaAut();})->monthlyOn( $dia_baja, '00:05')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput)->timezone(Config::get('constants.USO_HORARIO_ARG'));
+        ### ->monthly(); //Run the task on the first day of every month at 00:00 ->monthlyOn(4, '15:00')
     }
     /**
      * Register the commands for the application.

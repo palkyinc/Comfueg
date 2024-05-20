@@ -6,14 +6,11 @@ use App\Models\Equipo;
 use App\Models\Site;
 use App\Models\Panel;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Custom\GatewayMikrotik;
 
 class PanelController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         $sitios = Site::get();
@@ -21,21 +18,22 @@ class PanelController extends Controller
         $ssid = strtoupper($request->input('ssid'));
         if ($sitio || $ssid)
         {
+            //dd($sitio);
             $paneles = Panel::select("*")
                 ->whereRaw("UPPER(ssid) LIKE (?)", ["%{$ssid}%"])
                 ->whereRaw("UPPER(num_site) LIKE (?)", ["%{$sitio}"])
                 ->paginate(10);
-            } else  {
-                $paneles = Panel::select('*')->paginate(10);
-            }
-        return view('adminPaneles', ['paneles' => $paneles, 'datos' => 'active', 'sitios' => $sitios]);
+        } else  {
+            $paneles = Panel::select('*')->paginate(10);
+        }
+        return view('adminPaneles', [
+            'paneles' => $paneles,
+            'datos' => 'active',
+            'sitios' => $sitios,
+            'sitio' => $sitio,
+            'ssid' => $ssid
+        ]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $equipos = Equipo::equiposSinAgregar();
@@ -51,24 +49,16 @@ class PanelController extends Controller
             'roles' => ['PTPAP' => 'PTPAP', 'PTPST' => 'PTPST', 'PANEL' => 'PANEL', 'SWITCH' => 'SWITCH', 'GATEWAY' => 'GATEWAY']
         ]);
     }
-
     private function eliminarClientes($equipos)
     {
-    foreach ($equipos as $key => $equipo) {
-        $ipEquipo = explode(".", $equipo->ip);
-        if ($ipEquipo[2] !== '0') {
-            unset($equipos[$key]);
+        foreach ($equipos as $key => $equipo) {
+            $ipEquipo = explode(".", $equipo->ip);
+            if ($ipEquipo[2] !== '0') {
+                unset($equipos[$key]);
+            }
         }
+        return $equipos;
     }
-    return $equipos;
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $this->validar($request);
@@ -84,10 +74,29 @@ class PanelController extends Controller
         $Panel->activo = TRUE;
         $Panel->comentario = $request->input('comentario');
         $Panel->save();
-        $respuesta[] = 'El Panel se creó correctamente';
+        $respuesta['success'][] = 'El Panel se creó correctamente';
         return redirect('/adminPaneles')->with('mensaje', $respuesta);
     }
-
+    public function storeDns(Request $request)
+    {
+        //dd($request);
+        $request->validate(
+            [
+                'inputCheck'   => ['required', Rule::in(['external', 'passThrough', 'none'])],
+                'dns_server_ip' => 'ip',
+        ]);
+        $dns_server_array['server'] = $request->dns_server_ip;
+        $dns_server_array['passThrough'] = false;
+        $dns_server_array['external'] = false;
+        if ($request->inputCheck === 'passThrough') {
+            $dns_server_array['passThrough'] = true;
+        } elseif ($request->inputCheck === 'external') {
+            $dns_server_array['external'] = true;
+        }
+        return redirect('adminPaneles')->with('mensaje',
+            $this->addDeleteDns($request->panel_id, $dns_server_array, false, true)
+        );
+    }
     public function validar(Request $request, $idPanel = "")
     {
         if ($idPanel) {
@@ -110,14 +119,6 @@ class PanelController extends Controller
             ]
         );
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Panel  $panel
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request)
     {
         $ssid = $request->input('ssid');
@@ -142,55 +143,41 @@ class PanelController extends Controller
         $Panel->cable_tipo = $cable_tipo;
         $Panel->activo = $activo;
         $Panel->comentario = $comentario;
-        $respuesta[] = 'Se cambió con exito en Panel con ID: ' . $Panel->id;
+        $respuesta['success'][] = 'Se cambió con exito en Panel con ID: ' . $Panel->id;
         if ($Panel->ssid != $Panel->getOriginal()['ssid']) {
-            $respuesta[] = ' ssid: ' . $Panel->getOriginal()['ssid'] . ' POR ' . $Panel->ssid;
+            $respuesta['success'][] = ' ssid: ' . $Panel->getOriginal()['ssid'] . ' POR ' . $Panel->ssid;
         }
         if ($Panel->rol != $Panel->getOriginal()['rol']) {
-            $respuesta[] = ' Rol: ' . $Panel->getOriginal()['rol'] . ' POR ' . $Panel->rol;
+            $respuesta['success'][] = ' Rol: ' . $Panel->getOriginal()['rol'] . ' POR ' . $Panel->rol;
         }
         if ($Panel->id_equipo != $Panel->getOriginal()['id_equipo']) {
-            $respuesta[] = ' Id Equipo: ' . $Panel->getOriginal()['id_equipo'] . ' POR ' . $Panel->id_equipo;
+            $respuesta['success'][] = ' Id Equipo: ' . $Panel->getOriginal()['id_equipo'] . ' POR ' . $Panel->id_equipo;
         }
         if ($Panel->num_site != $Panel->getOriginal()['num_site']) {
-            $respuesta[] = ' Num Site: ' . $Panel->getOriginal()['num_site'] . ' POR ' . $Panel->num_site;
+            $respuesta['success'][] = ' Num Site: ' . $Panel->getOriginal()['num_site'] . ' POR ' . $Panel->num_site;
         }
         if ($Panel->panel_ant != $Panel->getOriginal()['panel_ant']) {
-            $respuesta[] = ' Panel Ant: ' . $Panel->getOriginal()['panel_ant'] . ' POR ' . $Panel->panel_ant;
+            $respuesta['success'][] = ' Panel Ant: ' . $Panel->getOriginal()['panel_ant'] . ' POR ' . $Panel->panel_ant;
         }
         if ($Panel->altura != $Panel->getOriginal()['altura']) {
-            $respuesta[] = ' altura: ' . $Panel->getOriginal()['altura'] . ' POR ' . $Panel->altura;
+            $respuesta['success'][] = ' altura: ' . $Panel->getOriginal()['altura'] . ' POR ' . $Panel->altura;
         }
         if ($Panel->cable_fecha != $Panel->getOriginal()['cable_fecha']) {
-            $respuesta[] = ' cable_fecha: ' . $Panel->getOriginal()['cable_fecha'] . ' POR ' . $Panel->cable_fecha;
+            $respuesta['success'][] = ' cable_fecha: ' . $Panel->getOriginal()['cable_fecha'] . ' POR ' . $Panel->cable_fecha;
         }
         if ($Panel->cable_tipo != $Panel->getOriginal()['cable_tipo']) {
-            $respuesta[] = ' cable_tipo: ' . $Panel->getOriginal()['cable_tipo'] . ' POR ' . $Panel->cable_tipo;
+            $respuesta['success'][] = ' cable_tipo: ' . $Panel->getOriginal()['cable_tipo'] . ' POR ' . $Panel->cable_tipo;
         }
         if ($Panel->comentario != $Panel->getOriginal()['comentario']) {
-            $respuesta[] = ' comentario: ' . $Panel->getOriginal()['comentario'] . ' POR ' . $Panel->comentario;
+            $respuesta['success'][] = ' comentario: ' . $Panel->getOriginal()['comentario'] . ' POR ' . $Panel->comentario;
         }
         $Panel->save();
         return redirect('adminPaneles')->with('mensaje', $respuesta);
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Panel  $panel
-     * @return \Illuminate\Http\Response
-     */
     public function show(Panel $panel)
     {
         //
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Panel  $panel
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $equipos = Equipo::equiposSinAgregar();
@@ -209,26 +196,72 @@ class PanelController extends Controller
             'roles' => ['PTPAP' => 'PTPAP', 'PTPST' => 'PTPST', 'PANEL' => 'PANEL', 'SWITCH' => 'SWITCH', 'GATEWAY' => 'GATEWAY']
         ]);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Panel  $panel
-     * @return \Illuminate\Http\Response
-     */
+    public function editDns ($id)
+    {
+        $panel = Panel::find($id);
+        $dnsList = json_decode($panel->dns_servers, true);
+        if($dnsList === null)
+        {
+            $dnsList = [];
+        }
+        return view('modificarPanelDns', [
+            'panel' => $panel,
+            'datos' => 'active',
+            'dnsList' => $dnsList
+        ]);
+    }
     public function destroy(Panel $panel)
     {
         //
+    }
+    public function destroyDns(Request $request)
+    {
+        $dns_server_array['server'] = $request->dns_server;
+        return redirect('adminPaneles')->with('mensaje',
+            $this->addDeleteDns($request->panel_id, $dns_server_array, true)
+        );
+    }
+    public function addDeleteDns ($panel_id, $dns_server_array, $delete, $tipo = null)
+    {
+        $panel = Panel::find($panel_id);
+        $dns_servers = json_decode($panel->dns_servers, true);
+        $borrado = false;
+        $agregado = false;
+        if ($delete) {
+            foreach ($dns_servers as $key => $value)
+            {
+                if($value['server'] === $dns_server_array['server'])
+                {
+                    unset($dns_servers[$key]);
+                    $respuesta['success'][] = 'Se eliminó el dns:' . $dns_server_array['server'];
+                    $borrado = true;
+                }
+            }
+        } else {
+            $dns_servers[] = $dns_server_array;
+            $respuesta['success'][] = 'Se agregó el dns:' . $dns_server_array['server'];
+            $agregado = true;
+        }
+        if (!$borrado && !$agregado)
+        {
+            $respuesta['error'][] = 'No se pudo eliminar o agregar el dns:' . $dns_server_array['server'];
+        } else {
+            $panel->dns_servers = json_encode($dns_servers);
+            $panel->save();
+            $apiMikro = GatewayMikrotik::getConnection($panel->relEquipo->ip, $panel->relEquipo->getUsuario(), $panel->relEquipo->getPassword());
+            $apiMikro->checkDnsServer($panel->dns_servers);
+        }
+        return($respuesta);
     }
     public function activar($id)
     {
         $Panel = Panel::find($id);
         if ($Panel->activo) {
             $Panel->activo = false;
-            $respuesta[] = 'Se desactivo ID: ' . $Panel->id;
+            $respuesta['success'][] = 'Se desactivo ID: ' . $Panel->id;
         } else {
             $Panel->activo = true;
-            $respuesta[] = 'Se activo ID: ' . $Panel->id;
+            $respuesta['success'][] = 'Se activo ID: ' . $Panel->id;
         }
         $Panel->save();
         return redirect('adminPaneles')->with('mensaje', $respuesta);

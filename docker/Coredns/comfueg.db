@@ -1,0 +1,12 @@
+$ORIGIN comfueg.
+@	3600 IN	SOA comfueg. laboratorio.comunicacionesfueguinas.com. (
+				2017042747 ; serial
+				7200       ; refresh (2 hours)
+				3600       ; retry (1 hour)
+				1209600    ; expire (2 weeks)
+				3600       ; minimum (1 hour)
+				)
+
+		IN 	NS 	comfueg
+intranet	IN	A	10.10.0.245
+test 		IN	A	10.10.0.244

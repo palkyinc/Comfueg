@@ -2,6 +2,7 @@
 
 namespace App\Custom;
 use App\Custom\RouterosAPI;
+use App\Custom\MisFunciones;
 use App\Models\Plan;
 use App\Models\Proveedor;
 use Illuminate\Support\Facades\Config;
@@ -60,7 +61,6 @@ class GatewayMikrotik extends RouterosAPI
 				   	"comment"  		=> $datos['comment']
 				   	));
    	}
-	
 	public function setClient ($datos) // $datos = [ id_HotspotUser => id_HotspotUser, id_AddressList => id_AddressList , $name => ip, $mac-address => mac, $comment => id_genesys, $server => servidor, $list => plan]
 		{
 			$this->comm("/ip/hotspot/user/set", array(
@@ -78,7 +78,6 @@ class GatewayMikrotik extends RouterosAPI
 					   	"comment"  		=> $datos['comment']
 					   	));
 	   	}
-
    	public function removeClient ($clienteMikrotik)
    	{
    		$this->comm("/ip/hotspot/user/remove", array (
@@ -93,7 +92,6 @@ class GatewayMikrotik extends RouterosAPI
 			));
 		}
    	}
-
 	public function resetCounter ()
 	{
 		$clienteMikrotik = $this->getGatewayData();
@@ -105,12 +103,10 @@ class GatewayMikrotik extends RouterosAPI
 			}
 		}
 	}
-
 	public function resetCounterMensual ()
 	{
 			$this->comm("/ip/hotspot/user/reset-counters");
 	}
-
    	public function disableClient ($clienteMikrotik)
    	{
    		$this->comm("/ip/hotspot/user/disable", array (
@@ -124,11 +120,10 @@ class GatewayMikrotik extends RouterosAPI
 			$this->removeClientBloqued($clienteMikrotik->id_HotspotHost);
 		}
    	}
-
-	public function removeClientBloqued ($id) {
+	public function removeClientBloqued ($id)
+	{
 		$this->comm("/ip/hotspot/host/remove", array( "numbers" => $id ));
 	}
-	
 	public function enableClient ($clienteMikrotik)
 	{
 		$this->comm("/ip/hotspot/user/enable", array (
@@ -144,7 +139,6 @@ class GatewayMikrotik extends RouterosAPI
 						));
 		}
 	}
-	   
 	public function getGatewayData ($soloHotspotHost = false)
 	{
 		$this->write('/ip/hotspot/host/print');
@@ -163,7 +157,6 @@ class GatewayMikrotik extends RouterosAPI
 		return ['hotspotHost' => $hotspotHost, 'hotspotUser' => $hotspotUser, 'addressList' => $addressList];
 		
 	}
-
 	public function checkHotspotServer ($gateway_ip)
 	{
 		$this->write('/ip/hotspot/print');
@@ -192,7 +185,6 @@ class GatewayMikrotik extends RouterosAPI
 		}
 		return false;
 	}
-
 	public function checkDhcpServer ($gateway_ip)
 	{
 		$lanInterface = $this->getLanInterface();
@@ -204,7 +196,7 @@ class GatewayMikrotik extends RouterosAPI
 				$this->write('/ip/dhcp-server/network/print');
 				$networks = $this->parseResponse($this->read(false));
 				foreach ($networks as $network) {
-					if ($network['address'] == Config::get('constants.LAN_SEGMENT') && $network['gateway'] == $gateway_ip && $network['dns-server'] == $gateway_ip && $network['comment'] == 'addBySlam')
+					if ($network['address'] == Config::get('constants.LAN_SEGMENT') && $network['gateway'] == $gateway_ip && $network['dns-server'] == $gateway_ip && $network['comment'] == 'addBySlamDnsSettings')
 					{
 						return true;
 					}
@@ -228,12 +220,82 @@ class GatewayMikrotik extends RouterosAPI
 												'disabled' => 'no']);
 			$this->comm('/ip/dhcp-server/network/add', ['address' => Config::get('constants.LAN_SEGMENT'),
 														'gateway' => $gateway_ip,
-														'comment' => 'addBySlam',
-														'dns-server' => $gateway_ip]);
+														'comment' => 'addBySlamDnsSettings']);
 		}
 		return false;
 	}
+	public function checkDnsServer ($dnsList)
+	{
+		### DND Pass Trough
+		$external = false;
+		$dnsLists = json_decode($dnsList);
+		$dnsListado = null;
+		$this->write('/ip/firewall/nat/print');
+		$nats = $this->parseResponse($this->read(false));
+		foreach ($nats as $key => $nat) {
+			if(isset($nat['comment'])&& $nat['comment'] == 'addSlam;PassThrough')
+			{
+			$this->comm('/ip/firewall/nat/remove', ['numbers' => $nat['.id']]);
+			}
+		}
+		foreach ($dnsLists as $key => $value) {
+			if (!$dnsListado)
+			{
+				$dnsListado = $value->server;
+			} else {
+				$dnsListado .= ',' . $value->server;
+			}
+			if ($value->passThrough && !$external)
+			{
+				$this->comm('/ip/firewall/nat/add', [
+					"chain" => "pre-hotspot",
+					"action" => "accept",
+					"to-addresses" => $value->server,
+					"protocol" => "udp",
+					"src-address" => $value->server,
+					"hotspot" => "auth",
+					"dst-port" => "53",
+					"comment" => "addSlam;PassThrough"
+				]);
+			} elseif ($value->external)
+			{
+				$external = true;
+			}
+		}
+		if($external)
+		{
+			$this->comm('/ip/firewall/nat/add', [
+					"chain" => "pre-hotspot",
+					"action" => "accept",
+					"protocol" => "udp",
+					"hotspot" => "auth",
+					"dst-port" => "53",
+					"comment" => "addSlam;PassThrough"
+				]);
+		}
+		//dd($dnsListado);
 
+		### DNS Settings
+		$this->comm('/ip/dns/set', ['servers' => $dnsListado]);
+		
+		### DNS Servers Settings
+		$this->write('/ip/dhcp-server/network/print');
+		$dhcpServers = $this->parseResponse($this->read(false));
+		//dd($dhcpServers);
+		foreach ($dhcpServers as $key => $dhcpServer)
+		{
+			if($dhcpServer['comment'] === 'addBySlamDnsSettings' && $dhcpServer['dns-server'] !== $dnsListado)
+			{
+				$this->comm('/ip/dhcp-server/network/set', [
+					'numbers' => $dhcpServer['.id'],
+					'dns-server' => $dnsListado]);
+			}
+		}
+		### '/ip/dhcp-server/network/edit'
+		/* self::logError(['clase' => 'Cronfunciones.php',
+                                                        'metodo' => 'audoriaPaneles',
+                                                        'error' => 'IP: ' . $panel->relEquipo->ip . ' | ' . $value]); */
+	}
 	public function getIdDhcpServer($contrato_id)
 	{
 		$this->write('/ip/dhcp-server/lease/print');
@@ -247,7 +309,6 @@ class GatewayMikrotik extends RouterosAPI
 		}
 		return false;
 	}
-
 	public function getLanInterface()
 	{
 		$interfaces = $this->getDatosInterfaces();
@@ -291,7 +352,6 @@ class GatewayMikrotik extends RouterosAPI
 			$this->crearPlanTree();
 		}
 	}
-
 	public function getTreeNumbers($id = 'total')
 	{
 		$this->write('/queue/tree/print');
@@ -308,7 +368,6 @@ class GatewayMikrotik extends RouterosAPI
 		return $respuesta;
 		
 	}
-	
 	public function getMangleNumbers($id)
 	{
 		$this->write('/ip/firewall/mangle/print');
@@ -325,7 +384,6 @@ class GatewayMikrotik extends RouterosAPI
 		return $respuesta;
 		
 	}
-
 	public function getTypeNumbers($nombre = 'total')
 	{
 		$respuesta = null;
@@ -342,7 +400,6 @@ class GatewayMikrotik extends RouterosAPI
 		}
 		return $respuesta;
 	}
-	
 	public function crearPlanType($nombre = 'total', $up = '768K', $down = '1024K')
 	{
 		$this->comm('/queue/type/add', array(
@@ -366,7 +423,6 @@ class GatewayMikrotik extends RouterosAPI
 			'pcq-classifier' => 'dst-address'
 		));
 	}
-
 	public function crearPlanTree($nombre = 'total', $id = 'total')
 	{
 		$this->comm('/queue/tree/add', array(
@@ -384,7 +440,6 @@ class GatewayMikrotik extends RouterosAPI
 			"comment"	=>  $id . "_up;Plan_id;addBySlam",
 		));
 	}
-	
 	public function crearPlanMangle($nombre, $id)
 	{
 		$this->comm('/ip/firewall/mangle/add', array(
@@ -404,8 +459,6 @@ class GatewayMikrotik extends RouterosAPI
 			"comment"	=>  $id . "_up;Plan_id;addBySlam",
 		));
 	}
-
-	
 	public function modificarPlanType($down, $up, $action)
 	{
 		if ($down !== null){
@@ -415,7 +468,6 @@ class GatewayMikrotik extends RouterosAPI
 			$this->comm('/queue/type/'.$action, $up);
 		}
 	}
-	
 	public function modificarPlanTree($down, $up, $action)
 	{
 		if ($down !== null){
@@ -425,7 +477,6 @@ class GatewayMikrotik extends RouterosAPI
 			$this->comm('/queue/tree/'.$action, $up);
 		}
 	}
-	
 	public function modificarPlanMangle($down, $up, $action)
 	{
 		if ($down !== null){
@@ -464,7 +515,6 @@ class GatewayMikrotik extends RouterosAPI
 		}
 		return(['rtas' => $rtas, 'vlans' => $vlans]);
 	}
-
 	public function getDatosEthernet($id, $esVlan = false)
 	{
 		if (!$esVlan)
@@ -478,7 +528,6 @@ class GatewayMikrotik extends RouterosAPI
 		$this->addListDataToInterface($interface[0]);
 		return $interface[0];
 	}
-
 	public function addListDataToInterface (&$value, $retornarId = false)
 	{
 		$this->write('/interface/list/member/print');
@@ -494,7 +543,6 @@ class GatewayMikrotik extends RouterosAPI
 			}
 		}
 	}
-
 	public function getDatosList()
 	{
 		$this->write('/interface/list/print');
@@ -508,7 +556,6 @@ class GatewayMikrotik extends RouterosAPI
 		}
 		return $respuesta;
 	}
-
 	public function checkInterfacesList()
 	{
 		$rtas = $this->getDatosList();
@@ -528,17 +575,14 @@ class GatewayMikrotik extends RouterosAPI
 			$this->comm('/interface/list/add', ['name' =>'LAN', 'comment' => 'addBySlam']);
 		}
 	}
-
 	public function modifyInterface($array, $action) //numbers, name, disabled= yes | no
 	{
 		$this->comm('/interface/ethernet/' . $action, $array);
 	}
-	
 	public function modifyVlan($array, $action) //$array = numbers, name, disabled= yes | no
 	{
 		$this->comm('/interface/vlan/' . $action, $array);
 	}
-
 	public function modifyInterfaceListMember($array, $action)
 	{
 		$this->comm('/interface/list/member/' . $action, $array);
@@ -649,7 +693,6 @@ class GatewayMikrotik extends RouterosAPI
 			$this->removeProveedor('/ip/dhcp-client/print', '/ip/dhcp-client/' . $action, $proveedor->id);
 		}
 	}
-
 	private function removeProveedor($print, $remove, $proveedor_id, $all = false)
 	{
 		$this->write($print);
@@ -671,14 +714,12 @@ class GatewayMikrotik extends RouterosAPI
 			}
 		}
 	}
-
 	public function removeAllProveedores()
 	{
 		$this->removeProveedor('/ip/route/print', '/ip/route/remove', 0, true);
 		$this->removeProveedor('/ip/firewall/mangle/print', '/ip/firewall/mangle/remove', 0, true);
 		$this->removeProveedor('/ip/dhcp-client/print', '/ip/dhcp-client/remove', 0, true);
 	}
-	
 	public function setClock()
 	{
 		date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
@@ -689,12 +730,10 @@ class GatewayMikrotik extends RouterosAPI
     				['date' => $date,
     				 'time' => $time]);
 	}
-
 	public function resetGateway()
 	{
 		$this->comm('/system/reboot');
 	}
-
 	public function makeBackup ()
 	{
 		$this->comm('/system/backup/save', ['dont-encrypt' => 'yes', 'name' => 'BKP_Diary']);

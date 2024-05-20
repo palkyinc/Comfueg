@@ -1,0 +1,14 @@
+{
+
+  "description": "Allow DNS traffic",
+
+  "filter": [
+    {
+      "in": "LAN",
+      "out": "_fw",
+      "service": "dns",
+      "action": "accept",
+      "flow-limit": { "count": 10, "interval": 6 }
+    }
+  ]
+}

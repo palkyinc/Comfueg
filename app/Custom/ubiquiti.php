@@ -88,7 +88,7 @@ class Ubiquiti{
     {
         $output=null;
         $retval=null;
-        exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg configPanels/' . $datos['ip'] . '-bkp.cfg  2>&1',
+        exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg /app/public/configPanels/' . $datos['ip'] . '-bkp.cfg  2>&1',
                             $output,
                             $retval);
         return ['output' => $output, 'retval' => $retval];
@@ -105,9 +105,9 @@ class Ubiquiti{
     */
     public static function tratarMac ($datos)
         {
-            shell_exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg configPanels/' . $datos['ip'] . '-old.cfg  2>&1');
-            $oldFile = fopen ('configPanels/' . $datos['ip'] . '-old.cfg', 'r');
-            $newFile = fopen ('configPanels/' . $datos['ip'] . '.cfg', 'w');
+            shell_exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg /app/public/configPanels/' . $datos['ip'] . '-old.cfg  2>&1');
+            $oldFile = fopen ('/app/public/configPanels/' . $datos['ip'] . '-old.cfg', 'r');
+            $newFile = fopen ('/app/public/configPanels/' . $datos['ip'] . '.cfg', 'w');
             while (!feof ($oldFile))
             {
                 $linea = fgets($oldFile);
@@ -160,7 +160,7 @@ class Ubiquiti{
                         fwrite($newFile, 'wireless.1.mac_acl.' . $i . '.status=' . $listaMacs[$i]['status']);
                     }
                     fclose($newFile);
-                    shell_exec('echo y | pscp -scp -pw ' . $datos['password'] . ' configPanels/' . $datos['ip'] . '.cfg '  . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg 2>&1' );
+                    shell_exec('echo y | pscp -scp -pw ' . $datos['password'] . ' /app/public/configPanels/' . $datos['ip'] . '.cfg '  . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg 2>&1' );
                     shell_exec('echo y | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 addmac ' . $datos['macaddress'] . ' 2>&1');
                     shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m save.sh 2>&1');
                     shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m reboot.sh 2>&1');
@@ -189,7 +189,7 @@ class Ubiquiti{
                                 $largoArray--;
                             }
                             fclose($newFile);
-                            shell_exec('echo y | pscp -scp -pw ' . $datos['password'] . ' configPanels/' . $datos['ip'] . '.cfg '  . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg 2>&1' );
+                            shell_exec('echo y | pscp -scp -pw ' . $datos['password'] . ' /app/public/configPanels/' . $datos['ip'] . '.cfg '  . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg 2>&1' );
                             shell_exec('echo y | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 delmac ' . $datos['macaddress'] . ' 2>&1');
                             shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 kickmac ' . $datos['macaddress'] . ' 2>&1');
                             shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m save.sh 2>&1');

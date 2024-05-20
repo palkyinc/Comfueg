@@ -27,6 +27,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.9] - 2024-XX-XX
+### Add
+### Changed
+1. Se borra dd() que quedó por error.
+
+## [0.9.8] - 2024-05-17
+### Add
+1. Crud para DNS server
+
+## [0.9.7] - 2024-05-10
+### Add
+1. Se agrega bajaAut() en Cronfunciones. Baja automatica de contratos guiados por ticket. 
+2. Se agrega funcionalidad de baja automatica a los tickets de suspensión por Mora.
+3. se agrega Contenedor docker para iniciar DNS server con Coredns.
+### Changed
+1. Fix sobre app/Custom/ubiquiti.php por error en path al abrir archivos.
+
+
 ## [0.9.6] - 2024-04-23
 ### Add
 1. Nuevo metodo en CronFunciones bkpPaneles ()
@@ -486,4 +504,4 @@ ___
 > - Sections add and modify of: Antena, Barrio, Calle, Ciudad, Codigos de Area, direccion, equipo, panel, productos, plan, site and cliente were completed.  
 > - This CHANGELOG file to hopefully serve as an evolving example of a
   standardized open source project CHANGELOG.  
-> - README now contains answers to common questions about CHANGELOGs  
+> - README now contains answers to common questions about CHANGELOGs

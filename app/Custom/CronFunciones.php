@@ -416,7 +416,7 @@ abstract class CronFunciones
                                 }
                                 $hoy =  new DateTime();
                                 $interval = $last_update_date->diff($hoy);
-                                if (!$interval->invert && $last_update->relUsuario->id !== 1) ### ADVERTENCIA
+                                if (!$interval->invert && $last_update->relUsuario->id !== 1 && $issue->titulo_id !== 5) ### ADVERTENCIA
                                 {
                                         ### Advertencia de Ticket
                                         self::enviarAdverCerrar($issue,
@@ -424,13 +424,18 @@ abstract class CronFunciones
                                                                 5,
                                                                 2);
                                 }
-                                elseif (!$interval->invert && $last_update->relUsuario->id === 1) ### CERRAR
+                                elseif (!$interval->invert && ($last_update->relUsuario->id === 1 || $issue->titulo_id === 5)) ### CERRAR
                                 {
                                         ### Cerrar Ticket
-                                        self::enviarAdverCerrar($issue,
-                                                                'Aviso automático. Ticket vencido y sin novedades. Se cierra.',
-                                                                5,
-                                                                3);
+                                        if ($issue->titulo_id !== 5) {
+                                                self::enviarAdverCerrar($issue,
+                                                                        'Aviso automático. Ticket vencido y sin novedades. Se cierra.',
+                                                                        5,
+                                                                        3);
+                                        } else {
+                                                 self::bajaIssue($issue);
+                                        }
+                                        
                                 } else {
                                         ### Ticket sin vencer
                                 }
@@ -445,6 +450,7 @@ abstract class CronFunciones
                         }
                 } else {
                                 ### Ticket sin vencer
+                                ### Suspension por Mora -> suspender
                                 /* self::logError(['clase' => 'Cronfunciones.php',
                                                 'metodo' => 'actualizarIssuesVencidos',
                                                 'error' => 'Ticket sin Vencer:' . $issue->id]); */
@@ -601,6 +607,46 @@ abstract class CronFunciones
                          'ip' => $ip,
                         ]);
     }
+    public static function bajaAut()
+    {
+        $issues = Issue::where('closed', false)->where('titulo_id', 1)->get();
+        foreach ($issues as $key => $issue) {
+                self::bajaIssue($issue);
+        }
+    }
+    private static function bajaIssue(Issue $issue)
+    {
+        $respuestas = $issue->relContrato->removeContract();
+                $issue->relContrato->refresh();
+                $error_rta = false;
+                foreach ($respuestas as $key => $rta)
+                {
+                        if ($wordTest = str_split($rta, 5)[0] === 'ERROR')
+                        {
+                                self::logError(['clase' => 'Cronfunciones.php',
+                                                        'metodo' => 'bajaAut',
+                                                        'error' => $rta]);
+                                $error_rta = true;
+                        }
+                }
+                switch ($issue->titulo_id) {
+                        case 5:
+                                $mensaje = 'Baja de contrato por exceder los 30 días de suspensión por mora.';
+                                break;
+                        
+                        default:
+                                $mensaje = 'Baja automática en el dia de la fecha. Se cierra.';
+                                break;
+                }
+                if (!$error_rta)
+                {
+                        self::enviarAdverCerrar($issue,
+                                        $mensaje,
+                                        6,
+                                        3);
+                
+                }
+    }
     public static function diario()
     {
         self::resetCounter();
@@ -621,6 +667,4 @@ abstract class CronFunciones
     {
         self::enviarErrorsMail();
     }
-
-    
 }

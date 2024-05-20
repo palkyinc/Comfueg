@@ -16,7 +16,6 @@ services:
     network_mode: bridge
     links:
       - database
-
   database:
     hostname: slam-mysql
     container_name: mysql
@@ -29,5 +28,16 @@ services:
       - MYSQL_ROOT_PASSWORD==@ndres0426
     restart: unless-stopped
     network_mode: bridge
+  dns:
+    hostname: slam-coredns
+    container_name: coredns
+    image: "image.coredns:1.0"
+    ports:
+      - "53:53/udp"
+    volumes:
+      - "/media/proyectos/Coredns:/CoreDNS"
+    restart: unless-stopped
+    network_mode: bridge
+    command: -conf /CoreDNS/Corefile
 volumes:
   db-aircontrol:

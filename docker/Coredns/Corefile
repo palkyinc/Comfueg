@@ -1,0 +1,7 @@
+. {
+    forward . 8.8.8.8 1.1.1.1 200.0.243.10
+}
+
+comfueg:53 {
+    file /CoreDNS/comfueg.db
+} 

@@ -38,15 +38,15 @@ use App\Http\Controllers\Concepto_debitoController;
 use App\Http\Controllers\MacAddressExceptionController;
 
 ####TEST
-use App\Custom\CronFunciones;//TEST
 /* 
+use App\Custom\GatewayMikrotik;//TEST
+use App\Models\Equipo; //TEST
+use App\Custom\CronFunciones;//TEST
 use Illuminate\Support\Facades\Mail;//TEST
 use App\Models\Cliente; //TEST
-use App\Custom\GatewayMikrotik;//TEST
 use App\Custom\Ubiquiti;
 use App\Models\Mail_group;
 use Illuminate\Support\Facades\File;
-use App\Models\Equipo;
 use App\Models\Contadores_mensuales;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
@@ -339,10 +339,13 @@ Route::delete('/eliminarInterface/{interface_id}/{gateway_id}', [GatewayInterfac
 ####### CRUD Paneles 
 Route::get('/adminPaneles', [PanelController::class, 'index'])->middleware('auth');
 Route::get('/modificarPanel/{id}', [PanelController::class, 'edit'])->middleware('auth');
+Route::get('/modificarDnsServers/{id}', [PanelController::class, 'editDns'])->middleware('auth');
 Route::patch('/modificarPanel', [PanelController::class, 'update'])->middleware('auth');
 Route::get('/panelActivar/{id}', [PanelController::class, 'activar'])->middleware('auth');
 Route::get('/agregarPanel', [PanelController::class, 'create'])->middleware('auth');
 Route::post('/agregarPanel', [PanelController::class, 'store'])->middleware('auth');
+Route::post('/agregarDnsPanel', [PanelController::class, 'storeDns'])->middleware('auth');
+Route::delete('/eliminarDnsPanel/', [PanelController::class, 'destroyDns'])->middleware('auth');
 ### API-Rest Equipos
 Route::get('/getPanels', [PanelController::class, 'getPanels'])->middleware('auth');
 Route::get('/getPanel/{id}', [PanelController::class, 'getPanelById'])->middleware('auth');
