@@ -38,10 +38,10 @@ use App\Http\Controllers\Concepto_debitoController;
 use App\Http\Controllers\MacAddressExceptionController;
 
 ####TEST
-/* 
-use App\Custom\GatewayMikrotik;//TEST
 use App\Models\Equipo; //TEST
+/* 
 use App\Custom\CronFunciones;//TEST
+use App\Custom\GatewayMikrotik;//TEST
 use Illuminate\Support\Facades\Mail;//TEST
 use App\Models\Cliente; //TEST
 use App\Custom\Ubiquiti;
@@ -73,9 +73,11 @@ use App\Models\Contrato;
 dd(CronFunciones::generarArchivoSem($dias));
 }); */
 
-Route::get('/sarasa', function () {
+Route::get('/auditPaneles', function () {
+        $equipo = Equipo::Find(519);
+        dd(isset($equipo->isFree()['exception_id']));
         //CronFunciones::bkpPaneles();
-        CronFunciones::audoriaPaneles();
+        //CronFunciones::audoriaPaneles();
         //CronFunciones::logError(['clase' => 'routes/web.php', 'metodo' => 'sarasa', 'error' => 'Funciona OK.']);
         //CronFunciones::enviarErrorsMail();
         dd('Fin Sarasa.');
@@ -198,10 +200,9 @@ Route::get('/modificarModelo/{id}', [ModeloController::class, 'edit'])->middlewa
 ####################
 ####### CRUD Excepciones
 Route::get('/adminExceptions', [MacAddressExceptionController::class, 'index'])->middleware('auth');
-Route::get('/agregarException', [MacAddressExceptionController::class, 'create'])->middleware('auth');
+Route::get('/agregarException/{id}', [MacAddressExceptionController::class, 'create'])->middleware('auth');
 Route::post('/agregarException', [MacAddressExceptionController::class, 'store'])->middleware('auth');
-Route::get('/modificarException/{id}', [MacAddressExceptionController::class, 'edit'])->middleware('auth');
-Route::patch('/modificarException', [MacAddressExceptionController::class, 'update'])->middleware('auth');
+Route::delete('/borrarException', [MacAddressExceptionController::class, 'destroy'])->middleware('auth');####################
 #####################
 ####### CRUD Contratos
 Route::get('/adminContratos', [ContratoController::class, 'index'])->middleware('auth');

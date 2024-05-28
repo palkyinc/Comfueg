@@ -8,7 +8,7 @@ $mostrarSololectura = true;
                         <h2 class="mx-3">Administración de clientes</h2>
                         <label for="num_cliente" class="mx-3">Id Genesys</label>
                         <input type="text" name="num_cliente" class="form-control mx-3" id="num_cliente">
-                        <label for="apellido" class="mx-3">Apellido</label>
+                        <label for="apellido" class="mx-3">Apellido / Razón Social</label>
                         <input type="text" name="apellido" class="form-control mx-3" id="apellido">
                         <button type="submit" class="btn btn-primary mx-3">Enviar</button>
                     </form>

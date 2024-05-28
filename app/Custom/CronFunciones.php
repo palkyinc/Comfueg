@@ -544,7 +544,13 @@ abstract class CronFunciones
                         {
                                 
                                 if ($lineaExplotada[4] === 'comment') {
-                                        $macs_panel[$lineaExplotada[3]]['contrato_id'] = explode (';', $datoLinea[1])[0];
+                                        $dato = explode (';', $datoLinea[1]);
+                                        $macs_panel[$lineaExplotada[3]]['contrato_id'] = $dato[0];
+                                        if (count($dato) > 1) {
+                                                $macs_panel[$lineaExplotada[3]]['tipo'] = $dato[1];
+                                        }else{
+                                                $macs_panel[$lineaExplotada[3]]['tipo'] = 'Unknown';
+                                        }
                                 }
                                 if ($lineaExplotada[4] === 'mac') {
                                         $macs_panel[$lineaExplotada[3]]['mac'] = rtrim($datoLinea[1]);
@@ -561,20 +567,24 @@ abstract class CronFunciones
                                 $encontrado = false;
                                 foreach ($contratos as $key => $contrato) {
                                         if ($contrato->id == $value['contrato_id'] && $contrato->num_panel == $value['panel'] && $contrato->relEquipo->mac_address === $value['mac']) {
+                                                //dd($macs_panel);                                                
+                                                //dd($value);                                                
                                                 $encontrado = true;
                                         }
                                 }
                                 if (!$encontrado) {
-                                        echo $value['contrato_id'] . ' | ' . $value['mac'] . ' | ' . $value['panel'] . '<br>';
+                                        $noEncontrado [] = $value;
+                                        //echo $value['contrato_id'] . ' | ' . $value['mac'] . ' | ' . $value['panel'] . '<br>';
                                 }
                         }
                         else 
                         {
-                                echo $value['contrato_id'] . ' | ' . $value['mac'] . ' | ' . $value['panel'] . '<br>';
+                                $noEncontrado [] = $value;
+                                //echo $value['contrato_id'] . ' | ' . $value['mac'] . ' | ' . $value['panel'] . '<br>';
                         }
                 }
         }
-        dd('fincho');
+        dd($noEncontrado);
     }
     public static function bkpPaneles()
     {

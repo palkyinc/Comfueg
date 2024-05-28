@@ -15,11 +15,6 @@ use Illuminate\Support\Facades\Config;
 
 class EquipoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         $ip = strtoupper($request->input('ip'));
@@ -30,12 +25,6 @@ class EquipoController extends Controller
             ->paginate(10);
         return view('adminEquipos', ['equipos' => $equipos, 'datos' => 'active']);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $dispositivos = Producto::get();
@@ -46,13 +35,6 @@ class EquipoController extends Controller
             'datos' => 'active'
         ]);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $this->validar($request);
@@ -73,24 +55,10 @@ class EquipoController extends Controller
         $respuesta[] = 'El Equipo se creo correctamente';
         return redirect('/adminEquipos?mac_address=' . $Equipo->mac_address)->with('mensaje', $respuesta);
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Equipo  $equipo
-     * @return \Illuminate\Http\Response
-     */
     public function show(Equipo $equipo)
     {
         ##
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Equipo  $equipo
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $dispositivos = Producto::get();
@@ -105,19 +73,11 @@ class EquipoController extends Controller
     }
     ##https://github.com/mattkingshott/axiom/blob/master/README.md
     ##,'unique:equipos,mac_address,' . $Equipo->id
-    
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Equipo  $equipo
-     * @return \Illuminate\Http\Response
-     */
     public function editUserPass($id)
     {
         $equipo = Equipo::getUserPassword($id);
         return view('modificarEquipoUserPass', ['nodos' => 'active', 'elemento' => $equipo]);
     }
-    
     public function validar(Request $request, $idEquipo = "", $esApi = false)
     {
         $condicion = [
@@ -146,14 +106,6 @@ class EquipoController extends Controller
             $request->validate($condicion);
         }
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Equipo  $equipo
-     * @return \Illuminate\Http\Response
-     */
     public function updateUserpass(Request $request)
     {
         $request->validate(
@@ -178,13 +130,6 @@ class EquipoController extends Controller
         $respuesta[] = 'Se cambió con exito Usuario y Contraseña del equipo con ID:' . $request->input('id');
         return redirect('adminPaneles')->with('mensaje', $respuesta);
     }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Equipo  $equipo
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request)
     {
         $nombre = $request->input('nombre');
@@ -245,23 +190,10 @@ class EquipoController extends Controller
         $Equipo->save();
         return redirect('adminEquipos?mac_address=' . $Equipo->mac_address)->with('mensaje', $respuesta);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Equipo  $Equipo
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Equipo $equipo)
     {
        ##
     }
-    /**
-     * Activate o desactivate equipo.
-     *
-     * @param  \App\Models\Equipo  $Equipo
-     * @return \Illuminate\Http\Response
-     */
     public function activar(Request $request)
     {
         $Equipo = Equipo::find($request->input('idEdit'));
@@ -276,7 +208,6 @@ class EquipoController extends Controller
         $rta [] = 'Se cambió con exito. ' . $respuesta;
         return redirect('adminEquipos?mac_address=' . $Equipo->mac_address)->with('mensaje', $rta);
     }
-
     public function ipLibre($ip)
     {
         if (Equipo::ipLibrePaneles($ip, true) && Equipo::ipLibrePaneles($ip, false)){
@@ -287,7 +218,8 @@ class EquipoController extends Controller
 
     ### API REST Functions
 
-    public function getById ($id) {
+    public function getById ($id)
+    {
         $equipo = Equipo::find($id);
         if ($equipo) {
             $equipo->num_dispositivo = Producto::find($equipo->num_dispositivo);
@@ -299,7 +231,8 @@ class EquipoController extends Controller
             return response()->json(false, 200);
         }
     }
-    public function existByMac($macaddress) {
+    public function existByMac($macaddress)
+    {
         $regex = '/^(?:[0-9A-F]{2}[:]){5}(?:[0-9A-F]{2})$/';
         $rta['status']= false;
         $rta['datos'] = null;
@@ -326,7 +259,6 @@ class EquipoController extends Controller
         
         return response()->json($rta, 200);
     }
-    
     public function storeApiRest(Request $request)
     {
         date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Panel;
 use App\Models\Contrato;
 use App\Models\Variable;
+use App\Models\Mac_address_exception;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Config;
 
@@ -81,8 +82,25 @@ class Equipo extends Model
     }
     public function relContrato ()
     {
-        return $this->belongsTo('App\Models\Contrato', 'num_equipo', 'id');
+        return $this->belongsTo(Contrato::class, 'num_equipo');
     }
+    public function relContratoRouter()
+    {
+        return $this->belongsTo(Contrato::class, 'router_id');
+    }
+    public function isFree ()
+    {
+        if ($contrato = Contrato::where('router_id', $this->id)->first()) {
+            return ['contrato_id' => $contrato->id];
+        } elseif ($contrato = Contrato::where('num_equipo', $this->id)->first()) {
+            return ['contrato_id' => $contrato->id];
+        } elseif ($panel = Panel::where('id_equipo', $this->id)->first()) {
+            return ['panel_id' => $panel->id];
+        } elseif ($exception = Mac_address_exception::where('equipo_id', $this->id)->first()) {
+            return ['exception_id' => $exception->id];
+        }
+        return false;
+    } 
     ## retorna todos los equipos clientes que no se agregaron a un contrato
     public static function equiposSinAgregar ()
     {

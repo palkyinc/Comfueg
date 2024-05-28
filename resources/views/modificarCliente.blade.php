@@ -110,7 +110,6 @@ $mostrarSololectura = true;
         let razonSocial = document.getElementById('razonSocial');
         razonSocial.value = apellido.value;
         btnChk(btn);
-        es_empresa.classList.add('ocultar');
         btn.addEventListener('click', e => {
             btnChk(btn);
         })

@@ -20,6 +20,22 @@ $mostrarSololectura = true;
                 @endforeach
             </div>
         @endif
+        @if ( session('mensaje_full') )
+            <ul class="list-group">
+                @foreach (session('mensaje_full') as $key => $items)
+                    @if ($key === 'success')
+                            @foreach ($items as $item)
+                                <li class="list-group-item list-group-item-success">{{ $item }}</li>
+                            @endforeach
+                    @endif
+                    @if ($key === 'error')
+                            @foreach ($items as $item)
+                                <li class="list-group-item list-group-item-danger"> {{ $item }} </li>
+                            @endforeach
+                    @endif
+                @endforeach
+            </ul>
+        @endif
         
 <div class="table-responsive" id="table">
                 
@@ -77,11 +93,30 @@ $mostrarSololectura = true;
                                 </td>
                             @endif
                             <td>{{$equipo->comentario}}</td>
-                            <td>
+                            <td  class="d-flex">
                                 @can('equipos_edit')
                                 <a href="/modificarEquipo/{{ $equipo->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                 </a>
+                                @endcan
+                                @can('mac_exception_create')
+                                @if (!$equipo->isFree() && !$equipo->fecha_baja)
+                                    <a href="/agregarException/{{ $equipo->id }}" class="margenAbajo btn btn-outline-secundary" title="Agregar Panel Excepción">
+                                        <img src="imagenes/9111103_player_list_add_icon.svg" alt="imagen de list add" height="20px">
+                                    </a>
+                                @endif
+                                @endcan
+                                @can('mac_exception_create')
+                                @if (isset($equipo->isFree()['exception_id']))
+                                    <form action="/borrarException" method="post" class="margenAbajo">
+                                    @csrf
+                                    @method('delete')
+                                        <input type="hidden" name="idEdit" value="{{$equipo->isFree()['exception_id']}}">
+                                        <button type="submit" class="btn btn-outline-secundary" title="Borrar Excepción">
+                                            <img src="imagenes/3556096_delete_list_remove_ui_icon.svg" alt="imagen de list remove" height="20px">
+                                        </botton>
+                                    </form>
+                                @endif
                                 @endcan
                             </td>
                             
