@@ -55,6 +55,9 @@ $mostrarSololectura = true;
                                 @can('equipos_create')
                                 <a href="/agregarEquipo" class="btn btn-dark">Agregar</a>
                                 @endcan
+                                @can('mac_exception_create')
+                                <a href="/adminExceptions" class="btn btn-dark">Panel Exceptions</a>
+                                @endcan
                             </th>
                         </tr>
                     </thead>
@@ -69,29 +72,42 @@ $mostrarSololectura = true;
                             <td>{{$equipo->mac_address}}</td>
                             <td>{{$equipo->ip}}</td>
                             <td>{{$equipo->relAntena->descripcion}}</td>
-                            @if ($equipo->fecha_baja != '')
-                                <td>
-                                    @can('equipos_edit')
-                                    <form action="/equipoActivar" method="post" class="margenAbajo">
-                                    @csrf
-                                    @method('patch')
-                                        <input type="hidden" name="idEdit" value="{{$equipo->id}}">
-                                        <button class="btn btn-danger"  title="Habilitar">Activar</button>
-                                    </form>
-                                    @endcan
-                                </td>
+                            @if ($isFree = $equipo->isFree())
+                                @if (isset($isFree['contrato_id']))
+                                    <td><a href="adminContratos?contrato={{$isFree['contrato_id']}}" class="btn btn-info" title="Ir a Contrato">Contrato</a></td>
+                                @endif
+                                @if (isset($isFree['panel_id']))
+                                    <td><a href="adminPaneles?panel={{$isFree['panel_id']}}" class="btn btn-info" title="Ir a Panel">Panel</a></td>
+                                @endif
+                                @if (isset($isFree['exception_id']))
+                                    <td>Excepción</td>
+                                @endif
                             @else
-                                <td>
-                                    @can('equipos_edit')
-                                    <form action="/equipoActivar" method="post" class="margenAbajo">
-                                    @csrf
-                                    @method('patch')
-                                        <input type="hidden" name="idEdit" value="{{$equipo->id}}">
-                                        <button class="btn btn-success" title="DesHabilitar">Desactivar</button>
-                                    </form>
-                                    @endcan
-                                </td>
+                                @if ($equipo->fecha_baja != '')
+                                    <td>
+                                        @can('equipos_edit')
+                                        <form action="/equipoActivar" method="post" class="margenAbajo">
+                                        @csrf
+                                        @method('patch')
+                                            <input type="hidden" name="idEdit" value="{{$equipo->id}}">
+                                            <button class="btn btn-danger" title="Habilitar">Activar</button>
+                                        </form>
+                                        @endcan
+                                    </td>
+                                @else
+                                    <td>
+                                        @can('equipos_edit')
+                                            <form action="/equipoActivar" method="post" class="margenAbajo">
+                                            @csrf
+                                            @method('patch')
+                                                <input type="hidden" name="idEdit" value="{{$equipo->id}}">
+                                                <button class="btn btn-success" title="DesHabilitar">Libre</button>
+                                            </form>
+                                        @endcan
+                                    </td>
+                                @endif
                             @endif
+                            {{--  --}}
                             <td>{{$equipo->comentario}}</td>
                             <td  class="d-flex">
                                 @can('equipos_edit')

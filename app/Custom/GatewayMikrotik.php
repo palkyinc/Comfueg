@@ -273,15 +273,13 @@ class GatewayMikrotik extends RouterosAPI
 					"comment" => "addSlam;PassThrough"
 				]);
 		}
-		//dd($dnsListado);
-
+		
 		### DNS Settings
 		$this->comm('/ip/dns/set', ['servers' => $dnsListado]);
 		
 		### DNS Servers Settings
 		$this->write('/ip/dhcp-server/network/print');
 		$dhcpServers = $this->parseResponse($this->read(false));
-		//dd($dhcpServers);
 		foreach ($dhcpServers as $key => $dhcpServer)
 		{
 			if($dhcpServer['comment'] === 'addBySlamDnsSettings' && $dhcpServer['dns-server'] !== $dnsListado)
@@ -532,7 +530,6 @@ class GatewayMikrotik extends RouterosAPI
 	{
 		$this->write('/interface/list/member/print');
 		$lists = $this->parseResponse($this->read(false));
-		//if (!isset($value['name'])) dd($value);
 		foreach ($lists as $list) {
 			if ($list['interface'] == $value['name']) {
 				$value['list'] = $list['list'];
@@ -625,7 +622,6 @@ class GatewayMikrotik extends RouterosAPI
 													'disabled' => 'no',
 													'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam']);
 			}
-			//dd($proveedor->getProveedoresQuantity());
 			$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'prerouting',
 															'in-interface' => $interface,
 															'connection-mark' => 'no-mark',
@@ -693,7 +689,7 @@ class GatewayMikrotik extends RouterosAPI
 			$this->removeProveedor('/ip/dhcp-client/print', '/ip/dhcp-client/' . $action, $proveedor->id);
 		}
 	}
-	private function removeProveedor($print, $remove, $proveedor_id, $all = false)
+	public function removeProveedor($print, $remove, $proveedor_id, $all = false)
 	{
 		$this->write($print);
 		$rtas = $this->parseResponse($this->read(false));
@@ -707,9 +703,9 @@ class GatewayMikrotik extends RouterosAPI
 						$this->comm($remove, ['numbers' => $key]);
 					}
 					elseif ($comment[0] == $proveedor_id)
-						{
-							$this->comm($remove, ['numbers' => $key]);
-						}
+					{
+						$this->comm($remove, ['numbers' => $key]);
+					}
 				}
 			}
 		}
@@ -720,13 +716,16 @@ class GatewayMikrotik extends RouterosAPI
 		$this->removeProveedor('/ip/firewall/mangle/print', '/ip/firewall/mangle/remove', 0, true);
 		$this->removeProveedor('/ip/dhcp-client/print', '/ip/dhcp-client/remove', 0, true);
 	}
+	public function removeAddressProveedor($proveedor_id)
+	{
+		$this->removeProveedor('/ip/address/print', '/ip/address/remove', $proveedor_id, false);
+	}
 	public function setClock()
 	{
 		date_default_timezone_set(Config::get('constants.USO_HORARIO_ARG'));
 		$date = date('M/d/Y');
 		$time = date('H:i:s');
-		//dd($time);
-        $this->comm('/system/clock/set',
+		$this->comm('/system/clock/set',
     				['date' => $date,
     				 'time' => $time]);
 	}

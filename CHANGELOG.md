@@ -27,6 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.10] - 2024-0X-XX
+### Add
+1. Se agrega Panel Exceptions
+### Changed
+1. Se mejora vista adminEquipos, en columna estado se verá Contrao, Panel, Libre, Activar.
+2. Se realiza cambio en GatewayMikrotik para que borre ip/address del proveedor.
+
 ## [0.9.9] - 2024-05-28
 ### Add
 1. Se agrega Panel Exceptions

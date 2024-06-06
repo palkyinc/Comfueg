@@ -8,6 +8,7 @@ use App\Models\Panel;
 use App\Models\Issue;
 use App\Models\Issues_update;
 use App\Models\Contrato;
+use App\Models\Mac_address_exception;
 use App\Models\Plan;
 use App\Models\Proveedor;
 use App\Models\Site_has_incidente;
@@ -531,9 +532,11 @@ abstract class CronFunciones
     }
     public static function audoriaPaneles()
     {
+        $exceptions = Mac_address_exception::get();
         $contratos = Contrato::select('id', 'num_panel', 'num_equipo')->where('baja', false)->get();
         $paneles = Panel::select('id', 'ssid', 'id_equipo')->where('activo', true)->where('rol', 'PANEL')->get();
-        foreach ($paneles as $key => $panel) {
+        foreach ($paneles as $key => $panel)
+        {
                 $File = fopen ('configPanels/' . $panel->relEquipo->ip . '-bkp.cfg', 'r');
                 while (!feof ($File))
                 {
@@ -573,18 +576,54 @@ abstract class CronFunciones
                                         }
                                 }
                                 if (!$encontrado) {
-                                        $noEncontrado [] = $value;
+                                        $noEncontrados [] = $value;
                                         //echo $value['contrato_id'] . ' | ' . $value['mac'] . ' | ' . $value['panel'] . '<br>';
                                 }
                         }
                         else 
                         {
-                                $noEncontrado [] = $value;
+                                $noEncontrados [] = $value;
                                 //echo $value['contrato_id'] . ' | ' . $value['mac'] . ' | ' . $value['panel'] . '<br>';
                         }
                 }
         }
-        dd($noEncontrado);
+        foreach ($noEncontrados as $key => $noEncontrado)
+        {
+                $existe = false;
+                if(!isset($noEncontradosTemp))
+                {
+                        $noEncontradosTemp[] = $noEncontrado;
+                } else {
+                        foreach ($noEncontradosTemp as $aguja => $value) {
+                                if($noEncontrado['mac'] === $value['mac'])
+                                {
+                                        $existe = true;
+                                }
+                        }
+                        if(!$existe) {
+                                $noEncontradosTemp[] = $noEncontrado;
+                        }
+                }
+        }
+        $noEncontrados = $noEncontradosTemp;
+        foreach ($noEncontrados as $keyNoEncontrado => $noEncontrado)
+        {
+                if($noEncontrado['contrato_id'] === 'exception')
+                {
+                        foreach ($exceptions as $keyException => $exception) {
+                                if ($exception->panel_id === $noEncontrado['panel'] && $exception->relEquipo->mac_address === $noEncontrado['mac']) {
+                                        unset($noEncontrados[$keyNoEncontrado]);
+                                }
+                        }
+                }
+        }
+        foreach ($noEncontrados as $key => $value) {
+                $data = 'Contrato: ' . $value['contrato_id'] . '| Tipo: ' . $value['tipo'] . '| Mac: ' . $value['mac'] . '| Panel: ' . $value['panel'];
+                self::logError(['clase' => 'Cronfunciones.php',
+                                'metodo' => 'audoriaPaneles',
+                                'error' => $data
+                        ]);
+        }
     }
     public static function bkpPaneles()
     {
@@ -603,7 +642,7 @@ abstract class CronFunciones
                 {
                         foreach ($result['output'] as $key => $value) {
                         self::logError(['clase' => 'Cronfunciones.php',
-                                                        'metodo' => 'audoriaPaneles',
+                                                        'metodo' => 'makeBkpArray',
                                                         'error' => 'IP: ' . $panel->relEquipo->ip . ' | ' . $value]);    
                         }
                 }

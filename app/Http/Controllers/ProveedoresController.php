@@ -301,7 +301,7 @@ class ProveedoresController extends Controller
                 foreach ($proveedoresActualizar as $proveedor)
                 {
                     $cantClassifiers = round($proveedor->bajada/$proveedor->relGateway->div_classifier);
-                    //dd($cantClassifiers);
+                    $apiMikro->removeAddressProveedor($proveedor->id);
 			        $apiMikro->modifyProveedor($proveedor, 'add', $totalClassifiers, $cantClassifiers, $pointerClassifier);
                     $proveedor->sinActualizar = false;
                     $proveedor->save();

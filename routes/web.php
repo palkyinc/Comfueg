@@ -38,10 +38,12 @@ use App\Http\Controllers\Concepto_debitoController;
 use App\Http\Controllers\MacAddressExceptionController;
 
 ####TEST
-use App\Models\Equipo; //TEST
 /* 
-use App\Custom\CronFunciones;//TEST
 use App\Custom\GatewayMikrotik;//TEST
+use App\Models\Proveedor;//TEST
+use App\Models\Panel;//TEST
+use App\Custom\CronFunciones;//TEST
+use App\Models\Equipo; //TEST
 use Illuminate\Support\Facades\Mail;//TEST
 use App\Models\Cliente; //TEST
 use App\Custom\Ubiquiti;
@@ -50,7 +52,6 @@ use Illuminate\Support\Facades\File;
 use App\Models\Contadores_mensuales;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
-use App\Models\Contrato;
 */
 
 
@@ -73,15 +74,13 @@ use App\Models\Contrato;
 dd(CronFunciones::generarArchivoSem($dias));
 }); */
 
-Route::get('/auditPaneles', function () {
-        $equipo = Equipo::Find(519);
-        dd(isset($equipo->isFree()['exception_id']));
+/* Route::get('/auditPaneles', function () {
         //CronFunciones::bkpPaneles();
-        //CronFunciones::audoriaPaneles();
+        CronFunciones::audoriaPaneles();
         //CronFunciones::logError(['clase' => 'routes/web.php', 'metodo' => 'sarasa', 'error' => 'Funciona OK.']);
         //CronFunciones::enviarErrorsMail();
         dd('Fin Sarasa.');
-});
+}); */
 
 /* Route::view('/welcome', 'index'); */
 /* Route::get('/test/', function () {

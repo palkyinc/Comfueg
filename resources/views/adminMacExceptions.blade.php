@@ -34,6 +34,7 @@ $mostrarSololectura = true;
         <thead class="thead-light">
             <tr>
                 <th scope="col"> Id </th>
+                <th scope="col"> Nombre </th>
                 <th scope="col"> Mac Address </th>
                 <th scope="col"> Dispositivo </th>
                 <th scope="col"> Descripción </th>
@@ -50,6 +51,7 @@ $mostrarSololectura = true;
             @foreach ($mac_exceptions as $mac_exception)
                 <tr>
                     <th scope="row"> {{$mac_exception->id}}</th>
+                    <td>{{$mac_exception->relEquipo->nombre}}</td>
                     <td>{{$mac_exception->relEquipo->mac_address}}</td>
                     <td>{{$mac_exception->relPanel->ssid}}({{$mac_exception->relPanel->relEquipo->ip}})</td>
                     <td>{{$mac_exception->description}}</td>

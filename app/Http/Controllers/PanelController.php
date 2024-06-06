@@ -15,6 +15,7 @@ class PanelController extends Controller
     {
         $sitios = Site::get();
         $sitio = $request->input('sitio');
+        $panel = $request->input('panel');
         $ssid = strtoupper($request->input('ssid'));
         if ($sitio || $ssid)
         {
@@ -23,7 +24,9 @@ class PanelController extends Controller
                 ->whereRaw("UPPER(ssid) LIKE (?)", ["%{$ssid}%"])
                 ->whereRaw("UPPER(num_site) LIKE (?)", ["%{$sitio}"])
                 ->paginate(10);
-        } else  {
+        } elseif ($panel) {
+            $paneles = Panel::select('*')->where('id', $panel)->paginate(10);
+        } else {
             $paneles = Panel::select('*')->paginate(10);
         }
         return view('adminPaneles', [
