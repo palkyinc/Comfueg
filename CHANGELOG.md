@@ -30,6 +30,7 @@ ___ -->
 ## [0.9.10] - 2024-0X-XX
 ### Add
 1. Se agrega Panel Exceptions
+2. Se agrega Paneles Config
 ### Changed
 1. Se mejora vista adminEquipos, en columna estado se verá Contrao, Panel, Libre, Activar.
 2. Se realiza cambio en GatewayMikrotik para que borre ip/address del proveedor.

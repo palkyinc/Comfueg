@@ -36,9 +36,12 @@ use App\Http\Controllers\AltaController;
 use App\Http\Controllers\BtfDebitoController;
 use App\Http\Controllers\Concepto_debitoController;
 use App\Http\Controllers\MacAddressExceptionController;
+use App\Http\Controllers\ConfigPanelController;
 
 ####TEST
 /* 
+use Illuminate\Support\Facades\File; //TEST
+use Illuminate\Support\Facades\Storage; //TEST
 use App\Custom\GatewayMikrotik;//TEST
 use App\Models\Proveedor;//TEST
 use App\Models\Panel;//TEST
@@ -83,13 +86,16 @@ dd(CronFunciones::generarArchivoSem($dias));
 }); */
 
 /* Route::view('/welcome', 'index'); */
-/* Route::get('/test/', function () {
-}); */
+/* Route::get('/test/', function (){}); */
 
 ### Route index
 Route::get('/', [Info_ClienteController::class, 'index']);
 Route::get('/inicio', [Info_ClienteController::class, 'index2'])->middleware('auth');
 /* Route::get('/charts', function (){dd('Hola Domun');return view('charts');}); */
+####################
+####### Config Panels
+Route::get('/adminConfigPanels', [ConfigPanelController::class, 'index']); //->middleware('auth');
+Route::get('/downloadConfigPanel/{filename}', [ConfigPanelController::class, 'download'])->name('downloadConfigPanel'); //->middleware('auth');
 ####################
 ####### Gateway API rest Web services
 //Route::get('/gateway/clients/{ip}', [PruebaController::class, 'testPanel'])->middleware('auth');

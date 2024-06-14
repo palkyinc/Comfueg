@@ -54,6 +54,7 @@
 								<a class="dropdown-item" href="/adminNodos">Nodos Info</a>
 								<a class="dropdown-item" href="/adminIncidencias">Incidencias Globales</a>
 								<a class="dropdown-item" href="/adminDeudasTecnica">Deuda Técnica</a>
+								<a class="dropdown-item" href="/adminConfigPanels">Paneles Config</a>
 							</div>
 						</li>
 						<li class="nav-item dropdown">
