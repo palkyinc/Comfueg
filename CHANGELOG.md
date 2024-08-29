@@ -32,8 +32,9 @@ ___ -->
 1. Se agrega Panel Exceptions
 2. Se agrega Paneles Config
 ### Changed
-1. Se mejora vista adminEquipos, en columna estado se verá Contrao, Panel, Libre, Activar.
+1. Se mejora vista adminEquipos, en columna estado se verá Contrato, Panel, Libre, Activar.
 2. Se realiza cambio en GatewayMikrotik para que borre ip/address del proveedor.
+3. Se corrige problema con path en CronFunciones, metodo audoriaPaneles().
 
 ## [0.9.9] - 2024-05-28
 ### Add

@@ -526,7 +526,7 @@ abstract class CronFunciones
         ### $data['error']
         if($file = fopen('/app/storage/logs/Errors.log', 'a+'))
         {
-                fwrite($file, date('Y-m-d|H:s') . ';' . $data['clase'] . ';' . $data['metodo'] . ';' . $data['error'] . PHP_EOL);
+                fwrite($file, date('Y-M-d|H:i') . ';' . $data['clase'] . ';' . $data['metodo'] . ';' . $data['error'] . PHP_EOL);
                 fclose($file);
         }
     }
@@ -537,31 +537,37 @@ abstract class CronFunciones
         $paneles = Panel::select('id', 'ssid', 'id_equipo')->where('activo', true)->where('rol', 'PANEL')->get();
         foreach ($paneles as $key => $panel)
         {
-                $File = fopen ('configPanels/' . $panel->relEquipo->ip . '-bkp.cfg', 'r');
-                while (!feof ($File))
-                {
-                        $linea = fgets($File);
-                        $datoLinea = explode('=', $linea);
-                        $lineaExplotada = explode ('.', ($datoLinea[0]));
-                        if ($lineaExplotada[0] == 'wireless' && $lineaExplotada[1] == '1' && $lineaExplotada[2] == 'mac_acl' && isset($lineaExplotada[4]))
+                $goal_file = '/app/public/configPanels/' . $panel->relEquipo->ip . '-bkp.cfg';
+                if (file_exists($goal_file)) {
+                        $File = fopen ($goal_file, 'r');
+                        while (!feof ($File))
                         {
-                                
-                                if ($lineaExplotada[4] === 'comment') {
-                                        $dato = explode (';', $datoLinea[1]);
-                                        $macs_panel[$lineaExplotada[3]]['contrato_id'] = $dato[0];
-                                        if (count($dato) > 1) {
-                                                $macs_panel[$lineaExplotada[3]]['tipo'] = $dato[1];
-                                        }else{
-                                                $macs_panel[$lineaExplotada[3]]['tipo'] = 'Unknown';
+                                $linea = fgets($File);
+                                $datoLinea = explode('=', $linea);
+                                $lineaExplotada = explode ('.', ($datoLinea[0]));
+                                if ($lineaExplotada[0] == 'wireless' && $lineaExplotada[1] == '1' && $lineaExplotada[2] == 'mac_acl' && isset($lineaExplotada[4]))
+                                {
+                                        
+                                        if ($lineaExplotada[4] === 'comment') {
+                                                $dato = explode (';', $datoLinea[1]);
+                                                $macs_panel[$lineaExplotada[3]]['contrato_id'] = $dato[0];
+                                                if (count($dato) > 1) {
+                                                        $macs_panel[$lineaExplotada[3]]['tipo'] = $dato[1];
+                                                }else{
+                                                        $macs_panel[$lineaExplotada[3]]['tipo'] = 'Unknown';
+                                                }
+                                        }
+                                        if ($lineaExplotada[4] === 'mac') {
+                                                $macs_panel[$lineaExplotada[3]]['mac'] = rtrim($datoLinea[1]);
+                                                $macs_panel[$lineaExplotada[3]]['panel'] = $panel->id;
                                         }
                                 }
-                                if ($lineaExplotada[4] === 'mac') {
-                                        $macs_panel[$lineaExplotada[3]]['mac'] = rtrim($datoLinea[1]);
-                                        $macs_panel[$lineaExplotada[3]]['panel'] = $panel->id;
-                                }
                         }
+                        fclose($File);
+                } else {
+                        self::logError(['clase' => 'Cronfunciones.php', 'metodo' => 'audoriaPaneles', 'error' => 'ERROR: al abrir configPanels/' . $panel->relEquipo->ip . '-bkp.cfg', 'r']);
                 }
-                fclose($File);
+                
                 foreach ($macs_panel as $key => $value)
                 {
                         

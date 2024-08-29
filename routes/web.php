@@ -39,13 +39,13 @@ use App\Http\Controllers\MacAddressExceptionController;
 use App\Http\Controllers\ConfigPanelController;
 
 ####TEST
+use App\Custom\CronFunciones;//TEST
 /* 
 use Illuminate\Support\Facades\File; //TEST
 use Illuminate\Support\Facades\Storage; //TEST
 use App\Custom\GatewayMikrotik;//TEST
 use App\Models\Proveedor;//TEST
 use App\Models\Panel;//TEST
-use App\Custom\CronFunciones;//TEST
 use App\Models\Equipo; //TEST
 use Illuminate\Support\Facades\Mail;//TEST
 use App\Models\Cliente; //TEST
