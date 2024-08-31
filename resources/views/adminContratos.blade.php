@@ -95,6 +95,11 @@ title="Dirección:
                                             <img src="imagenes/pin_location.svg" alt="Pin en mapa" height="20px">
                                         </a>
                                     @endif
+                                    @if (!$contrato->baja && $contrato->activo)
+                                        <a href="/suspenderIssue/{{ $contrato->id }}" class="margenAbajo" title="Suspender por Mora">
+                                            <img src="imagenes/disconnect_offline_wifi_internet_off_icon.svg" alt="imagen de lapiz editor" height="20px">
+                                        </a>
+                                    @endif
                                     @can('contratos_edit')
                                         <a href="/modificarContrato/{{ $contrato->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                             <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">

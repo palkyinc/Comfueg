@@ -39,8 +39,8 @@ use App\Http\Controllers\MacAddressExceptionController;
 use App\Http\Controllers\ConfigPanelController;
 
 ####TEST
-use App\Custom\CronFunciones;//TEST
 /* 
+use App\Custom\CronFunciones;//TEST
 use Illuminate\Support\Facades\File; //TEST
 use Illuminate\Support\Facades\Storage; //TEST
 use App\Custom\GatewayMikrotik;//TEST
@@ -86,7 +86,7 @@ dd(CronFunciones::generarArchivoSem($dias));
 }); */
 
 /* Route::view('/welcome', 'index'); */
-/* Route::get('/test/', function (){}); */
+/* Route::get('/test/', function (){CronFunciones::bajaAut();}); */
 
 ### Route index
 Route::get('/', [Info_ClienteController::class, 'index']);
@@ -150,8 +150,10 @@ Route::patch('/modificarPanelHasBarrio', [Panel_has_barrioController::class, 'up
 Route::get('/adminIssues', [IssueController::class, 'index'])->middleware('auth');
 Route::get('/agregarIssue', [IssueController::class, 'create'])->middleware('auth');
 Route::post('/agregarIssue', [IssueController::class, 'store'])->middleware('auth');
+Route::post('/agregarIssueSuspend', [IssueController::class, 'storeSuspend'])->middleware('auth');
 Route::post('/buscarIssueCliente', [IssueController::class, 'buscarCliente'])->middleware('auth');
 Route::get('/modificarIssue/{id}', [IssueController::class, 'edit'])->middleware('auth');
+Route::get('/suspenderIssue/{id}', [IssueController::class, 'createSuspend'])->middleware('auth');
 Route::patch('/modificarIssue', [IssueController::class, 'update'])->middleware('auth');
 Route::get('/listadoIssues', [IssueController::class, 'getListadoIssues'])->middleware('auth');
 ####################

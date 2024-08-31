@@ -664,10 +664,19 @@ abstract class CronFunciones
     }
     public static function bajaAut()
     {
-        $issues = Issue::where('closed', false)->where('titulo_id', 1)->get();
-        foreach ($issues as $key => $issue) {
+        $issue = Issue::where('closed', false)->where('titulo_id', 1)->first();
+        if ($issue) {
+                self::logError(['clase' => 'Cronfunciones.php',
+                                        'metodo' => 'bajaAut',
+                                        'error' => 'para bajar issue id = ' . $issue->id]);
                 self::bajaIssue($issue);
-        }
+                return true;
+        } 
+        self::logError(['clase' => 'Cronfunciones.php',
+                                'metodo' => 'bajaAut',
+                                'error' => 'Sin Issue para bajar']);
+        /* foreach ($issues as $key => $issue) {
+        } */
     }
     private static function bajaIssue(Issue $issue)
     {
@@ -679,7 +688,7 @@ abstract class CronFunciones
                         if ($wordTest = str_split($rta, 5)[0] === 'ERROR')
                         {
                                 self::logError(['clase' => 'Cronfunciones.php',
-                                                        'metodo' => 'bajaAut',
+                                                        'metodo' => 'bajaIssue',
                                                         'error' => $rta]);
                                 $error_rta = true;
                         }
@@ -722,4 +731,12 @@ abstract class CronFunciones
     {
         self::enviarErrorsMail();
     }
+    public static function testFuncion ()
+    {
+        self::logError(['clase' => 'Cronfunciones.php',
+                                'metodo' => 'testFuncion',
+                                'error' => '00:' . date('i'),
+                        ]);
+    }
+
 }

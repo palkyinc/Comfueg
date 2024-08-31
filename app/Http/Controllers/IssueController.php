@@ -63,7 +63,8 @@ class IssueController extends Controller
         }else {
             $contrato=null;
         }
-        $titulos = Issue_title::get();
+        $titulos = Issue_title::where('id', '!=', 5)->get();
+        //dd($titulos);
         $usuarios = User::get();
         return view ('agregarIssue', [
                                         'internet' => 'active',
@@ -73,6 +74,21 @@ class IssueController extends Controller
                                         'usuarios' => $usuarios,
                                         'cliente' => $cliente
                                     ]);
+    }
+    public function createSuspend ($id)
+    {
+
+        $contrato = Contrato::find($id);
+        $titulo = Issue_title::find(5);
+        $user = auth()->user();
+        $usuarios = User::get();
+        return view ('agregarIssueSuspend', [
+            'internet' => 'active',
+            'titulo' => $titulo,
+            'contrato' => $contrato,
+            'user' => $user,
+            'usuarios' => $usuarios,
+        ]);
     }
     /**
      * Store a newly created resource in storage.
@@ -100,6 +116,26 @@ class IssueController extends Controller
         $issue->save();
         $issue->enviarMail(1);
         $respuesta[] = 'Nuevo Ticket se ha creado correctamente';
+        return redirect('/adminIssues')->with('mensaje', $respuesta);
+    }
+    public function storeSuspend (Request $request)
+    {
+        $contrato = Contrato::find($request->contrato_id);
+        $viewers = $this->getViewers($request, 5);
+        $request->validate(['descripcion' => 'required|min:3|max:500']);
+        $issue = new Issue();
+        $issue->titulo_id = 5;
+        $issue->descripcion = $request->descripcion;
+        $issue->asignado_id = $request->user_id;
+        $issue->creator_id = auth()->user()->id;
+        $issue->cliente_id = $request->cliente_id;
+        $issue->contrato_id = $request->contrato_id;
+        $issue->viewers = json_encode($viewers);
+        $issue->closed = false;
+        $issue->save();
+        $issue->enviarMail(1);
+        $respuesta[] = 'Nuevo Ticket se ha creado correctamente';
+        $respuesta[] = $contrato->changeStateContratoGateway();
         return redirect('/adminIssues')->with('mensaje', $respuesta);
     }
     public function validarTwo(Request $request) {
@@ -240,7 +276,7 @@ class IssueController extends Controller
         $issue_updates->usuario_id = auth()->user()->id;
         $issue_updates->asignadoAnt_id = $issue->asignado_id;
         $issue_updates->asignadoSig_id = $request->asignado;
-        $issue_updates->save();
+        //$issue_updates->save();
         $guardar = false;
         $mailTipo = 2;
         if ($issue->asignado_id != $request->asignado)
@@ -264,13 +300,19 @@ class IssueController extends Controller
             $guardar = true;
             $issue->closed = true;
             $mailTipo = 3;
+            if ($issue->titulo_id === 5) {
+                $respuesta[] = $issue->relContrato->changeStateContratoGateway();
+            }
+            ## si titulo = 5
+            ## entonces cambio estado del contrato
         }
         if ($guardar)
         {
            $issue->save(); 
         }
         $issue->enviarMail($mailTipo);
-        return redirect('adminIssues')->with('mensaje', ['Ticket actualizado correctamente.']);
+        $respuesta[] = 'Ticket actualizado correctamente.';
+        return redirect('adminIssues')->with('mensaje', $respuesta);
     }
     public function getListadoIssues ()
     {

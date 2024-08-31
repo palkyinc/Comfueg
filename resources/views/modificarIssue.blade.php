@@ -125,7 +125,11 @@ $mostrarSololectura = true;
 <div class="form-row">
     <div class="form-group col-md-12">
         <input type="checkbox" name="closed" value="closed">
-        <label for="closed"> Cerrada. </label><br>
+        @if ($issue->titulo_id === 5)
+            <label for="closed"> Habilitar/Cerrar. </label><br>
+        @else
+            <label for="closed"> Cerrar. </label><br>
+        @endif
     </div>
 </div>
 <div class="form-row ">

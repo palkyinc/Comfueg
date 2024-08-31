@@ -134,17 +134,20 @@ class Contrato extends Model
         }
         $clientsDataGateway = $apiMikro->getGatewayData();
             $gatewayContract = new ClientMikrotik($this->id, $clientsDataGateway, $macaddress);
-            if ($this->activo)
+            if (!$this->activo)
             {
                 $apiMikro->enableClient($gatewayContract);
+                $this->activo = true;
                 $respuesta = 'EXITO. Contrato de ' . $this->relCliente->getNomYApe() . ' fue habilitado con Exito!!';
             }
             else
             {
                 $apiMikro->disableClient($gatewayContract);
+                $this->activo = false;
                 $respuesta = 'EXITO. Contrato de ' . $this->relCliente->getNomYApe() . ' fue deshabilitado con Exito!!';
             }
             unset($apiMikro);
+            $this->save();
         } else {
             $respuesta = 'ERROR. No se pudo realizar el cambio.';
         }

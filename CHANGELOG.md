@@ -35,6 +35,7 @@ ___ -->
 1. Se mejora vista adminEquipos, en columna estado se verá Contrato, Panel, Libre, Activar.
 2. Se realiza cambio en GatewayMikrotik para que borre ip/address del proveedor.
 3. Se corrige problema con path en CronFunciones, metodo audoriaPaneles().
+4. Cambio en Ticket suspender. A partir de ahora slam suspende contrato al cargarse el ticket.
 
 ## [0.9.9] - 2024-05-28
 ### Add

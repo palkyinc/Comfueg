@@ -87,11 +87,12 @@ $mostrarSololectura = true;
                 </div>
             <div class="form-group col-md-2">
                 @if ($elemento->activo)
-                    <input class="form-check-input" type="checkbox" name="activo" id="flexSwitchCheckChecked" checked>
-                @else
-                    <input class="form-check-input" type="checkbox" name="activo" id="flexSwitchCheckChecked">
+                    <label class="form-check-label" for="flexSwitchCheckChecked">Habilitado</label>
+                    {{-- <input class="form-check-input" type="checkbox" name="activo" id="flexSwitchCheckChecked" checked> --}}
+                    @else
+                    <label class="form-check-label" for="flexSwitchCheckChecked">Deshabilitado</label>
+                    {{-- <input class="form-check-input" type="checkbox" name="activo" id="flexSwitchCheckChecked"> --}}
                 @endif
-                <label class="form-check-label" for="flexSwitchCheckChecked">Habilitado:</label>
             </div>
         </div>
             <input type="text" name="id" value="{{$elemento->id}}" hidden>

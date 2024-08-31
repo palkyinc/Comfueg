@@ -436,7 +436,7 @@ class ContratoController extends Controller
         $contrato->num_panel = $request['num_panel'];
         $contrato->num_plan = $request['num_plan'];
         $contrato->created_at = $request['created_at'];
-        $contrato->activo = (isset($request['activo']) && $request['activo'] == 'on') ? true : false;
+        //$contrato->activo = (isset($request['activo']) && $request['activo'] == 'on') ? true : false;
         if ($contrato->relDireccion->coordenadas !== $request['coordenadas'] &&
             $contrato->id_direccion == $contrato->getOriginal()['id_direccion']
             )
@@ -474,10 +474,10 @@ class ContratoController extends Controller
         if ($contrato->created_at != $contrato->getOriginal()['created_at']) {
             $respuesta[] = ' Creado el: ' . $contrato->getOriginal()['created_at'] . ' POR ' . $contrato->created_at;
         }
-        if ($contrato->activo != $contrato->getOriginal()['activo']) {
+        /* if ($contrato->activo != $contrato->getOriginal()['activo']) {
             $respuesta[] = ' Habilitado: ' . $contrato->getOriginal()['activo'] . ' POR ' . $contrato->activo;
             $momificar['activo'] = true;
-        }
+        } */
         $contrato->save();
         unset($contrato);
         ##Si hubo cambio de panel o equipo aca se deberia setear el nuevo mac.
@@ -491,10 +491,10 @@ class ContratoController extends Controller
             $respuesta[] = $this->modifyContratoGateway($contrato);
             $respuesta[] = $this->renewIPAntenaClient($contrato);
         }
-        if (isset($momificar['activo']))
+        /* if (isset($momificar['activo']))
         {
             $respuesta[] = $this->changeStateContratoGateway($contrato);
-        }
+        } */
         return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
     }
     /**
