@@ -63,7 +63,9 @@ class IssueController extends Controller
         }else {
             $contrato=null;
         }
-        $titulos = Issue_title::where('id', '!=', 5)->get();
+        $titulos = Issue_title::where('id', '!=', 1 )->
+                                where('id', '!=', 5 )->
+                                get();
         //dd($titulos);
         $usuarios = User::get();
         return view ('agregarIssue', [
@@ -75,19 +77,36 @@ class IssueController extends Controller
                                         'cliente' => $cliente
                                     ]);
     }
-    public function createSuspend ($id)
+    public function createSuspend ($id, $titulo_id)
     {
-
         $contrato = Contrato::find($id);
-        $titulo = Issue_title::find(5);
+        $titulo = Issue_title::find($titulo_id);
         $user = auth()->user();
         $usuarios = User::get();
+        switch ($titulo_id) {
+            case 1:
+                $actualizacion = 'baja';
+                $h1 = 'Baja de Contrato';
+                break;
+            
+            case 5:
+                $actualizacion = 'suspensión';
+                $h1 = 'Suspender cuenta por Mora';
+                break;
+            
+            default:
+                $actualizacion = 'deafault';
+                $h1 = 'Deafault';
+                break;
+        }
         return view ('agregarIssueSuspend', [
             'internet' => 'active',
             'titulo' => $titulo,
             'contrato' => $contrato,
             'user' => $user,
             'usuarios' => $usuarios,
+            'actualizacion' => $actualizacion,
+            'h1' => $h1,
         ]);
     }
     /**
@@ -120,23 +139,28 @@ class IssueController extends Controller
     }
     public function storeSuspend (Request $request)
     {
-        $contrato = Contrato::find($request->contrato_id);
+        $contrato = Contrato::find($request->afectado);
         $viewers = $this->getViewers($request, 5);
         $request->validate(['descripcion' => 'required|min:3|max:500']);
+        if ($rta = $this->validarTwo($request)) {
+            return back()->withInput()->withErrors(['msg' => [$rta]]);
+        }
         $issue = new Issue();
-        $issue->titulo_id = 5;
+        $issue->titulo_id = $request->titulo;
         $issue->descripcion = $request->descripcion;
         $issue->asignado_id = $request->user_id;
         $issue->creator_id = auth()->user()->id;
         $issue->cliente_id = $request->cliente_id;
-        $issue->contrato_id = $request->contrato_id;
+        $issue->contrato_id = $request->afectado;
         $issue->viewers = json_encode($viewers);
         $issue->closed = false;
         $issue->save();
         $issue->enviarMail(1);
         $respuesta[] = 'Nuevo Ticket se ha creado correctamente';
-        $respuesta[] = $contrato->changeStateContratoGateway();
-        return redirect('/adminIssues')->with('mensaje', $respuesta);
+        if ($request->titulo === 5) {
+            $respuesta[] = $contrato->changeStateContratoGateway();
+        }
+        return redirect('/adminContratos')->with('mensaje', $respuesta);
     }
     public function validarTwo(Request $request) {
         $contrato = Contrato::find($request->afectado);

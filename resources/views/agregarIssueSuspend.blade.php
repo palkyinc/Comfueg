@@ -4,7 +4,7 @@
 @php
 $mostrarSololectura = true;
 @endphp
-<h3>Suspender cuenta por Mora</h3>
+<h3>{{$h1}}</h3>
 <div class="alert bg-light border col-8 mx-auto p-4">
         <form action="/agregarIssueSuspend" method="post" enctype="multipart/form-data">
             @csrf
@@ -22,7 +22,7 @@ $mostrarSololectura = true;
                         $contrato->relDireccion->numero . ', ' . 
                         $contrato->relDireccion->relBarrio->nombre}}
                     </label>
-                    <input type="hidden" name='contrato_id' value='{{$contrato->id}}'>
+                    <input type="hidden" name='afectado' value='{{$contrato->id}}'>
                 </div>
             </div>
             <div class="form-row">
@@ -30,6 +30,7 @@ $mostrarSololectura = true;
                     <label for="titulo" class="mx-3">Título: <br>
                         {{$titulo->title}}
                     </label>
+                    <input type="hidden" name='titulo' value='{{$titulo->id}}'>
                 </div>
                 <div class="form-group border col-md-6">
                     <label for="asignado" class="mx-3">Asignado a:<br>
@@ -40,7 +41,7 @@ $mostrarSololectura = true;
             </div>
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <label for="descripcion">Motivo de la suspensión: </label>
+                        <label for="descripcion">Motivo de la {{$actualizacion}}: </label>
                         <textarea name="descripcion" class="form-control" rows="auto" cols="50">{{old('descripcion')}}</textarea>
                     </div>
                 </div>
@@ -65,7 +66,7 @@ $mostrarSololectura = true;
                     </div>
                 </div> --}}
                 <button type="submit" class="btn btn-primary" id="enviar">Crear</button>
-                <a href="/adminIssues" class="btn btn-primary">Volver</a>
+                <a href="/adminContratos?contrato={{$contrato->id}}" class="btn btn-primary">Volver</a>
         </form>    
 </div>
 

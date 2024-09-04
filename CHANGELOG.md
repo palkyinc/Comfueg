@@ -36,6 +36,8 @@ ___ -->
 2. Se realiza cambio en GatewayMikrotik para que borre ip/address del proveedor.
 3. Se corrige problema con path en CronFunciones, metodo audoriaPaneles().
 4. Cambio en Ticket suspender. A partir de ahora slam suspende contrato al cargarse el ticket.
+5. Se cambia GatewayMikrotik metodo checkDhcpServer para que no borre los dns servers.
+6. Cambio en Ticket Baja. Paso rapido para la Baja de contrato. Slam dara de baja el contrato a la 1am del 1 al 10.
 
 ## [0.9.9] - 2024-05-28
 ### Add

@@ -84,11 +84,13 @@ title="Dirección:
                                         <img src="imagenes/iconfinder_graph_3338898.svg" alt="imagen de cosumo cliente" height="20px">
                                     </a>
                                     <a href="adminIssues?rebusqueda=on&usuario=todos&contrato={{$contrato->id}}" title="Historial tickets" >
-                                    <img src="imagenes/iconfinder_cinema_ticket_film_media_movie_icon.svg" alt="imganen ticket" height="30px">
+                                        <img src="imagenes/iconfinder_cinema_ticket_film_media_movie_icon.svg" alt="imganen ticket" height="30px">
                                     </a>
-                                    <a href="testContrato/{{$contrato->id}}" title="Test/Dashboard" >
-                                    <img src="imagenes/7638092_exam_test_checklist_online learning_education_icon.svg" alt="imagen ticket" height="30px">
-                                    </a>
+                                    @if (!$contrato->baja)
+                                        <a href="testContrato/{{$contrato->id}}" title="Test/Dashboard" >
+                                            <img src="imagenes/7638092_exam_test_checklist_online learning_education_icon.svg" alt="imagen ticket" height="30px">
+                                        </a>
+                                    @endif
                                     @if ($contrato->relDireccion->coordenadas != '')
                                         <a href="https://www.google.com/maps/place/{{$contrato->relDireccion->coordenadas}}" target="_blank"
                                             class="margenAbajo btn btn-link" title="Ver en Google maps">
@@ -96,8 +98,11 @@ title="Dirección:
                                         </a>
                                     @endif
                                     @if (!$contrato->baja && $contrato->activo)
-                                        <a href="/suspenderIssue/{{ $contrato->id }}" class="margenAbajo" title="Suspender por Mora">
-                                            <img src="imagenes/disconnect_offline_wifi_internet_off_icon.svg" alt="imagen de lapiz editor" height="20px">
+                                        <a href="/suspenderIssue/{{ $contrato->id }}/5" class="margenAbajo btn btn-outline-secundary" title="Suspender por Mora">
+                                            <img src="imagenes/disconnect_offline_wifi_internet_off_icon.svg" alt="imagen de desonectar" height="20px">
+                                        </a>
+                                        <a href="/suspenderIssue/{{ $contrato->id }}/1" class="margenAbajo btn btn-outline-secundary" title="Baja">
+                                            <img src="imagenes/iconfinder_cross_delete_remove_cancel_icon.svg" alt="imagen de remove" height="20px">
                                         </a>
                                     @endif
                                     @can('contratos_edit')
@@ -113,17 +118,18 @@ title="Dirección:
                                                     <img src="imagenes/iconfinder_Multimedia_Turn_on_off_power_button_interface_3841792.svg" alt="imagen de activar" height="20px">
                                                 </button>
                                             </form>
-                                        @else
-                                            <form action="/eliminarContrato" method="post" class="margenAbajo">
-                                            @csrf
-                                            @method('delete')
-                                                <input type="hidden" name="id" value="{{$contrato->id}}">
-                                                <button class="btn btn-outline-secundary boton-Baja"  title="Dar de Baja">
-                                                    <img src="imagenes/iconfinder_Turn_On__Off_2134663.svg" alt="imagen de Desactivar" height="20px">
-                                                </button>
-                                            </form>
                                         @endif
                                     @endcan
+                                    @if(auth()->user()->hasRole('Admin') && !$contrato->baja)
+                                        <form action="/eliminarContrato" method="post" class="margenAbajo">
+                                        @csrf
+                                        @method('delete')
+                                            <input type="hidden" name="id" value="{{$contrato->id}}">
+                                            <button class="btn btn-outline-secundary boton-Baja"  title="Dar de Baja">
+                                                <img src="imagenes/iconfinder_Turn_On__Off_2134663.svg" alt="imagen de Desactivar" height="20px">
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                             
                             </tr>

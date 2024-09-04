@@ -40,10 +40,11 @@ use App\Http\Controllers\ConfigPanelController;
 
 ####TEST
 /* 
+use App\Models\Contrato; //TEST
+use App\Custom\GatewayMikrotik;//TEST
 use App\Custom\CronFunciones;//TEST
 use Illuminate\Support\Facades\File; //TEST
 use Illuminate\Support\Facades\Storage; //TEST
-use App\Custom\GatewayMikrotik;//TEST
 use App\Models\Proveedor;//TEST
 use App\Models\Panel;//TEST
 use App\Models\Equipo; //TEST
@@ -86,7 +87,17 @@ dd(CronFunciones::generarArchivoSem($dias));
 }); */
 
 /* Route::view('/welcome', 'index'); */
-/* Route::get('/test/', function (){CronFunciones::bajaAut();}); */
+/* Route::get('/test/', function (){
+        $contrato = (Contrato::find(9498));
+        dd($contrato->changeStateContratoGateway());
+        $apiMikro = GatewayMikrotik::getConnection($contrato->relPlan->relPanel->relEquipo->ip, $contrato->relPlan->relPanel->relEquipo->getUsuario(), $contrato->relPlan->relPanel->relEquipo->getPassword());
+        if ($apiMikro)
+        {
+                $apiMikro->checkDhcpServer($contrato->relPlan->relPanel->relEquipo->ip);
+        } else {
+                dd('Error');
+        }
+}); */
 
 ### Route index
 Route::get('/', [Info_ClienteController::class, 'index']);
@@ -153,7 +164,7 @@ Route::post('/agregarIssue', [IssueController::class, 'store'])->middleware('aut
 Route::post('/agregarIssueSuspend', [IssueController::class, 'storeSuspend'])->middleware('auth');
 Route::post('/buscarIssueCliente', [IssueController::class, 'buscarCliente'])->middleware('auth');
 Route::get('/modificarIssue/{id}', [IssueController::class, 'edit'])->middleware('auth');
-Route::get('/suspenderIssue/{id}', [IssueController::class, 'createSuspend'])->middleware('auth');
+Route::get('/suspenderIssue/{id}/{titulo_id}', [IssueController::class, 'createSuspend'])->middleware('auth');
 Route::patch('/modificarIssue', [IssueController::class, 'update'])->middleware('auth');
 Route::get('/listadoIssues', [IssueController::class, 'getListadoIssues'])->middleware('auth');
 ####################

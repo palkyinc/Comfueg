@@ -196,7 +196,8 @@ class GatewayMikrotik extends RouterosAPI
 				$this->write('/ip/dhcp-server/network/print');
 				$networks = $this->parseResponse($this->read(false));
 				foreach ($networks as $network) {
-					if ($network['address'] == Config::get('constants.LAN_SEGMENT') && $network['gateway'] == $gateway_ip && $network['dns-server'] == $gateway_ip && $network['comment'] == 'addBySlamDnsSettings')
+					$dns_server = ($network['dns-server']);
+					if ($network['address'] == Config::get('constants.LAN_SEGMENT') && $network['gateway'] == $gateway_ip /* && $network['dns-server'] == $gateway_ip */ && $network['comment'] == 'addBySlamDnsSettings')
 					{
 						return true;
 					}
@@ -220,6 +221,7 @@ class GatewayMikrotik extends RouterosAPI
 												'disabled' => 'no']);
 			$this->comm('/ip/dhcp-server/network/add', ['address' => Config::get('constants.LAN_SEGMENT'),
 														'gateway' => $gateway_ip,
+														'dns-server' => $dns_server ?? '',
 														'comment' => 'addBySlamDnsSettings']);
 		}
 		return false;
