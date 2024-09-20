@@ -102,7 +102,10 @@ title="Dirección:
                                             <img src="imagenes/disconnect_offline_wifi_internet_off_icon.svg" alt="imagen de desonectar" height="20px">
                                         </a>
                                         <a href="/suspenderIssue/{{ $contrato->id }}/1" class="margenAbajo btn btn-outline-secundary" title="Baja">
-                                            <img src="imagenes/iconfinder_cross_delete_remove_cancel_icon.svg" alt="imagen de remove" height="20px">
+                                            <img src="imagenes/iconfinder_cross_delete_remove_cancel_icon.svg" alt="imagen de remover" height="20px">
+                                        </a>
+                                        <a href="/speedChangeIssue/{{ $contrato->id }}" class="margenAbajo btn btn-outline-secundary" title="Cambio de velocidad">
+                                            <img src="imagenes/iconfinder_dashboard_speed_icon.svg" alt="imagen de cambio de velocidad" height="20px">
                                         </a>
                                     @endif
                                     @can('contratos_edit')

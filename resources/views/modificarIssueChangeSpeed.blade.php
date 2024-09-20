@@ -10,7 +10,7 @@ $mostrarSololectura = true;
     @endif
 </h3>
 <div class="alert bg-light border m-3 col-8 mx-auto p-4">
-<form action="/modificarIssue" method="post" enctype="multipart/form-data">
+<form action="/modificarIssueChangeSpeed" method="post" enctype="multipart/form-data">
 @csrf
 @method('patch')
 <div class="form-row">
@@ -47,21 +47,6 @@ $mostrarSololectura = true;
             <p>Panel: <a href="http://{{$issue->relContrato->relPanel->relEquipo->ip}}" target="_blank">{{$issue->relContrato->relPanel->ssid}}</a></p>
         @else
             Sin Contrato.    
-        @endif
-        @if (!$issue->closed)
-            <select class="form-control" name="contrato">
-                <option value="">Sin Contrato</option>
-                @foreach ($contratos as $elemento)
-                <option value="{{$elemento->id}}"
-                    @if (null != $issue->contrato_id && $issue->contrato_id == $elemento->id)
-                        selected
-                    @endif
-                                                >{{$elemento->id . ' | ' . 
-                                                    $elemento->relDireccion->relCalle->nombre . ', ' . 
-                                                    $elemento->relDireccion->numero . ', ' . 
-                                                    $elemento->relDireccion->relBarrio->nombre}}</option>
-                @endforeach
-            </select>
         @endif
     </div>
     <div class="form-group border col-md-6">
@@ -116,46 +101,66 @@ $mostrarSololectura = true;
     </div>
 @endforeach
 @if (!$issue->closed)
-    <div class="form-row">
-        <div class="form-group col-md-12">
-            <label for="actualizacion">Actualización: </label>
-            <textarea name="actualizacion" class="form-control" rows="auto" cols="50">{{old('actualizacion')}}</textarea>
-        </div>
+<div class="form-row border align-items-center">
+    <div class="form-group col-md-4">
+        <label for="num_plan">Plan:</label>
+        <select class="form-control" name="num_plan" autofocus>
+            @foreach ($planes as $plan)
+                @if ( (null !== old('num_plan') && old('num_plan') == $plan->id) || $plan->id === $issue->relContrato->num_plan)
+                    <option value="{{$plan->id}}" selected>{{$plan->nombre}} {{ $plan->id === $issue->relContrato->num_plan ? '(ACTUAL)' : ''}}</option>
+                @else
+                    <option value="{{$plan->id}}">{{$plan->nombre}}</option>
+                @endif
+            @endforeach 
+        </select>
     </div>
-    <div class="form-row">
-        <div class="form-group col-md-12">
-            <input type="checkbox" name="closed" value="closed">
-            @if ($issue->titulo_id === 5)
-                <label for="closed"> Habilitar/Cerrar. </label><br>
-            @else
-                <label for="closed"> Cerrar. </label><br>
-            @endif
-        </div>
-    </div>
-    <div class="form-row ">
-        <div class="input-group col-md-8">
-            <p class="font-weight-bold">Seleccionar usuarios en seguimiento:</p>
-            <div class="form-row">
-                @foreach ($usuarios as $usuario)
-                    <div class="col-md-4">
-                        <input type="checkbox" name="viewer{{$usuario->id}}" value="{{$usuario->id}}"
-                            @foreach ((($issue->viewers != 'null' && $issue->viewers != null) ? json_decode($issue->viewers) : []) as $value)
-                                @if ($value == $usuario->id)
-                                    checked
-                                @endif
-                            @endforeach
-                        >    
-                        <label for="{{$usuario->id}}"> {{$usuario->name}} </label><br>
-                    </div>
-                @endforeach
+    <div class="form-group form-check align-items-center d-flex justify-content-center col-md-8">
+        <div class="row">
+            <div class="col-md-12">
+                <input class="form-check-input" type="radio" name="prueba_definitivo" value="prueba" id="flexSwitchCheckChecked"
+                {{ null === old('prueba_definitivo') || old('prueba_definitivo') === 'prueba' ? 'checked' : ''}}
+                >
+                <label class="form-check-label" for="flexSwitchCheckChecked">A Prueba</label>
+            </div>
+            <div class="col-md-12">
+                <input class="form-check-input" type="radio" name="prueba_definitivo" value="definitivo" id="flexSwitchCheckChecked"
+                {{ null === old('prueba_definitivo') || old('prueba_definitivo') === 'definitivo' ? 'checked' : ''}}
+                >
+                <label class="form-check-label" for="flexSwitchCheckChecked">Definitivo</label>
+            </div>
+            <div class="col-md-12">
+                <input class="form-check-input" type="radio" name="prueba_definitivo" value="original" id="flexSwitchCheckChecked"
+                {{ null === old('prueba_definitivo') || old('prueba_definitivo') === 'original' ? 'checked' : ''}}
+                >
+                <label class="form-check-label" for="flexSwitchCheckChecked">Volver a velocidad Original</label>
             </div>
         </div>
     </div>
-    {{-- <div class="form-row">
-        <div class="form-group">
-            <label for="scheme_file">Seleccionar o arrastrar archivos para adjuntar a la Incidencia.</label>
-            <input type="file" name="scheme_file[]" class="form-control-file" multiple>
+</div>
+<div class="form-row ">
+    <div class="input-group col-md-8">
+        <p class="font-weight-bold">Seleccionar usuarios en seguimiento:</p>
+        <div class="form-row">
+            @foreach ($usuarios as $usuario)
+                <div class="col-md-4">
+                    <input type="checkbox" name="viewer{{$usuario->id}}" value="{{$usuario->id}}"
+                        @foreach ((($issue->viewers != 'null' && $issue->viewers != null) ? json_decode($issue->viewers) : []) as $value)
+                            @if ($value == $usuario->id)
+                                checked
+                            @endif
+                        @endforeach
+                    >    
+                    <label for="{{$usuario->id}}"> {{$usuario->name}} </label><br>
+                </div>
+            @endforeach
         </div>
+    </div>
+</div>
+{{-- <div class="form-row">
+    <div class="form-group">
+        <label for="scheme_file">Seleccionar o arrastrar archivos para adjuntar a la Incidencia.</label>
+        <input type="file" name="scheme_file[]" class="form-control-file" multiple>
+    </div>
 </div> --}}
 @endif
     <div class="row m-3">

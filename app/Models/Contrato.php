@@ -165,7 +165,7 @@ class Contrato extends Model
         $respuesta [] = $this->relEquipo->changeEquipoStatus(false);
         return $respuesta;
     }
-    private function removeContratoGateway()
+    public function removeContratoGateway()
     {
         if ($apiMikro = $this->openSessionGateway($this)) {
             $clientsDataGateway = $apiMikro->getGatewayData();
@@ -179,5 +179,48 @@ class Contrato extends Model
                 $respuesta = 'ERROR: No se pudo realizar el cambio.';
             }
         return($respuesta);
+    }
+    public function modifyContratoGateway($true_false = false )
+    {
+        if ($apiMikro = $this->openSessionGateway())
+        {
+            $clientsDataGateway = $apiMikro->getGatewayData();
+            $gatewayContract = new ClientMikrotik($this->id, $clientsDataGateway);
+            if ($gatewayContract->id_AddressList && $gatewayContract->id_HotspotUser)
+            {
+                $apiMikro->setClient([
+                        'id_HotspotUser' => $gatewayContract->id_HotspotUser,
+                        'id_AddressList' => $gatewayContract->id_AddressList,
+                        'name' => $this->relEquipo->ip,
+                        'mac-address' => $this->relEquipo->mac_address,
+                        'comment' => $this->id,
+                        'server' => 'hotspot1',
+                        'list' => $this->relPlan->id]);
+                        $apiMikro->checkDhcpServer($this->relPlan->relPanel->relEquipo->ip);
+                        $apiMikro->comm('/ip/dhcp-server/lease/set', [  'numbers' => $apiMikro->getIdDhcpServer($this->id),
+                                                                        'address' => $this->relEquipo->ip,
+                                                                        'mac-address' => $this->relEquipo->mac_address]);
+                        $respuesta = 'Contrato de ' . $this->relCliente->getNomYApe() . ' modificado con Exito!!';
+            }
+            else
+                {
+                    if ($true_false) {
+                        return true;
+                    } else {
+                        $respuesta = $this->createContratoGateway();
+                    }
+                    
+                }
+            unset($apiMikro);
+        } 
+        else 
+            {
+                if ($true_false) {
+                    return false;
+                } else {
+                    $respuesta = 'ERROR al conectarse al Gateway: No se pudo modificar.';
+                }
+            }
+        return ($respuesta);
     }
 }

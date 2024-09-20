@@ -15,8 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1. Actualizar versión en el archivo constants.php
 2. Realizar los cambios en Changelog.md actualizando la fecha de la versión.
 3. Add y commit en el branch develop
-4. Pasar a Master y luego realizar push de la versión con el tag si corresponde.
-5. Volver develop. 
+4. Verificar si quedan // o dd() en los archivos tratados.
+5. Pasar a Master y luego realizar push de la versión con el tag si corresponde.
+6. Volver develop. 
 
 ### Secuencia de arctualización en server producción:
 1. php artisan down
@@ -27,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
-## [0.9.10] - 2024-0X-XX
+## [0.9.10] - 2024-09-20
 ### Add
 1. Se agrega Panel Exceptions
 2. Se agrega Paneles Config
@@ -38,6 +39,8 @@ ___ -->
 4. Cambio en Ticket suspender. A partir de ahora slam suspende contrato al cargarse el ticket.
 5. Se cambia GatewayMikrotik metodo checkDhcpServer para que no borre los dns servers.
 6. Cambio en Ticket Baja. Paso rapido para la Baja de contrato. Slam dara de baja el contrato a la 1am del 1 al 10.
+7. Se arregla envio de errores de mails.
+8. Se cambia ticket cambio de velocidad. A partir de ahora Slam realiza los cambios al cargar un ticket.
 
 ## [0.9.9] - 2024-05-28
 ### Add

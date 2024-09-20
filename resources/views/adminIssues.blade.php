@@ -136,7 +136,11 @@ $mostrarSololectura = true;
                     @endif
                 </div>
 </div>
-        {{ $incidentes->appends(['usuario' => $userSelected, 'abiertas' => $abiertas, 'cliente' => $cliente])->links() }}
+        {{ $incidentes->appends([   'usuario' => $userSelected, 
+                                    'abiertas' => $abiertas === 'off' ? '' : 'on',
+                                    'rebusqueda' => $rebusqueda ? 'on' : 0,
+                                    'cliente' => $cliente,
+                                    ])->links() }}
 @include('modals.incidentes')
 @endcan
 @include('sinPermiso')

@@ -8,6 +8,7 @@ use App\Models\Issue;
 use App\Models\Issues_update;
 use App\Models\Cliente;
 use App\Models\Contrato;
+use App\Models\Plan;
 use App\Models\Issue_title;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
@@ -24,6 +25,7 @@ class IssueController extends Controller
         $usuarios = User::get();
         $userSelected = (isset($request->usuario)) ? (($request->usuario != 'todos') ? $request->usuario : null) : auth()->user()->id;
         $abiertas = isset($request->abiertas) ? 'on' : (isset($request->rebusqueda ) ? 'off' : 'on' );
+        $rebusqueda = isset($request->rebusqueda ) ? true : false;
         $cliente = isset($request->cliente) ? $request->cliente : null;
         $contrato = isset($request->contrato) ? $request->contrato : null;
         $incidentes = Issue::asignado($userSelected)
@@ -38,7 +40,9 @@ class IssueController extends Controller
                                         'cliente' => $cliente, 
                                         'abiertas' => $abiertas, 
                                         'contrato' => $contrato, 
+                                        'rebusqueda' => $rebusqueda,
                                         'internet' => 'active']);
+
     }
     /**
      * Show the form for creating a new resource.
@@ -64,9 +68,9 @@ class IssueController extends Controller
             $contrato=null;
         }
         $titulos = Issue_title::where('id', '!=', 1 )->
+                                where('id', '!=', 4 )->
                                 where('id', '!=', 5 )->
                                 get();
-        //dd($titulos);
         $usuarios = User::get();
         return view ('agregarIssue', [
                                         'internet' => 'active',
@@ -107,6 +111,34 @@ class IssueController extends Controller
             'usuarios' => $usuarios,
             'actualizacion' => $actualizacion,
             'h1' => $h1,
+        ]);
+    }
+    public function createSpeedChange ($id)
+    {
+        ($contrato = Contrato::find($id));
+        $titulo = Issue_title::find(4);
+        $user = auth()->user();
+        $usuarios = User::get();
+        $actualizacion = 'cambio de velocidad';
+        $planes = Plan::where('gateway_id', '!=', null)->orderBy('bajada', 'asc')->get();
+        $h1 = 'Cambio de Velocidad';
+        if ($issue = Issue::where('contrato_id', $contrato->id)->where('titulo_id', 4)->where('closed', false)->first()) {
+            $issue_updates = Issues_update::where('issue_id', $issue->id)->get();
+            return view ('modificarIssueChangeSpeed', ['internet' => 'active',
+                                                        'issue' => $issue,
+                                                        'issues_updates' => $issue_updates,
+                                                        'planes' => $planes,
+                                                        'usuarios' => $usuarios]);
+        }
+        return view ('agregarIssueChangeSpeed', [
+            'internet' => 'active',
+            'titulo' => $titulo,
+            'contrato' => $contrato,
+            'user' => $user,
+            'usuarios' => $usuarios,
+            'actualizacion' => $actualizacion,
+            'h1' => $h1,
+            'planes' => $planes,
         ]);
     }
     /**
@@ -160,24 +192,82 @@ class IssueController extends Controller
         if ($request->titulo === 5) {
             $respuesta[] = $contrato->changeStateContratoGateway();
         }
-        return redirect('/adminContratos')->with('mensaje', $respuesta);
+        return redirect('/adminContratos?contrato=' . $request->afectado)->with('mensaje', $respuesta);
+    }
+    public function storeChangeSpeed (Request $request)
+    {
+        $request->validate(['afectado' => 'nullable|numeric',
+                            'cliente_id' => 'required|numeric',
+                            'titulo' => 'required|numeric',
+                            'num_plan' => 'required|numeric',
+                            'prueba_definitivo' => 'required|string',
+                            'asignado' => 'required|numeric',]);
+        $contrato = Contrato::find($request->afectado);
+        $viewers = $this->getViewers($request, 6);
+        if($request->num_plan == $contrato->num_plan)
+        {
+             return back()->withInput()->withErrors(['msg' => ['Selecionar una velocidad distinta a la actual en Plan.']]);
+        }
+        $creador = auth()->user();
+        $newPlan = Plan::find($request->num_plan);
+
+        $descripcion = 'El usuario ' . $creador->name . ' solicita cambio de velocidad a: ' . $newPlan->nombre . ($request->prueba_definitivo === 'prueba' ? ' a prueba' : ' defintivo') . '. Plan enterior: ' . $contrato->relPlan->nombre . '. |' . $contrato->relPlan->id . '|';
+        $issue = new Issue();
+        $issue->titulo_id = $request->titulo;
+        $issue->descripcion = $descripcion;
+        $issue->asignado_id = $request->asignado;
+        $issue->creator_id = auth()->user()->id;
+        $issue->cliente_id = $request->cliente_id;
+        $issue->contrato_id = $request->afectado;
+        $issue->viewers = json_encode($viewers);
+        $issue->closed = false;
+        $issue->save();
+        $issue->refresh();
+        $issue->enviarMail(1);
+        ### actualizar plan en contrato
+        $contrato->removeContratoGateway();
+        $contrato->num_plan = $request->num_plan;
+        $contrato->save();
+        $contrato->refresh();
+        ### actualizar gateway
+        if ($contrato->modifyContratoGateway()) {
+            $actualizacion = 'Se pasó a ' . $contrato->relPlan->nombre . ' automáticamente.';
+            if ($request->prueba_definitivo === 'definitivo') {
+                $issue->closed = true;
+                $issue->save();
+            }
+        } else {
+            $actualizacion = 'Error al intentar cambiar';
+        }
+        if ($request->prueba_definitivo === 'prueba') {
+            $issue_updates = new Issues_update();
+            $issue_updates->issue_id = $issue->id;
+            $issue_updates->descripcion = $actualizacion;
+            $issue_updates->usuario_id = 1;
+            $issue_updates->asignadoAnt_id = $issue->asignado_id;
+            $issue_updates->asignadoSig_id = $issue->asignado_id;
+            $issue_updates->save();
+        }
+        ### crear actuaslizacion con respuesta.
+        $respuesta[] = 'Nuevo Ticket se ha creado correctamente';
+        return redirect('/adminContratos?contrato=' . $request->afectado)->with('mensaje', $respuesta);
     }
     public function validarTwo(Request $request) {
         $contrato = Contrato::find($request->afectado);
         $contract = isset($contrato->id) ? $contrato->id : null;
-        // SI contrato dado de baja y (titulo distinto a "reconexion de contrato" y "Mudanza") ENTONCES mensaje:
+        ## SI contrato dado de baja y (titulo distinto a "reconexion de contrato" y "Mudanza") ENTONCES mensaje:
         if (isset($contrato->baja) && $contrato->baja === 1 && !($request->titulo === "7" || $request->titulo === "8")){
             return 'Para los contratos dados de baja solo se pueden usar los Titulos: "Reconexión de contrato" o "Mudanza"';
         }
-        // SINO SI contrato NO dado de baja y (titulo igual a "reconexion de contrato" o "Wispro") ENTONCES mensaje:
+        ## SINO SI contrato NO dado de baja y (titulo igual a "reconexion de contrato" o "Wispro") ENTONCES mensaje:
         if (isset($contrato->baja) && $contrato->baja === 0 && ($request->titulo === "7" || $request->titulo === "10") ){
             return 'No se puede usar los Títulos: "Reconexión de contrato" o "Wispro" en contratos activos (No Dados de baja).';
         }
-        // SINO SI SIN contrato y (titulo distinto a "Wispro") ENTONCES mensaje:
+        ## SINO SI SIN contrato y (titulo distinto a "Wispro") ENTONCES mensaje:
         if (!isset($contrato->baja) && $request->titulo !== "10") {
             return ('Incidentes sin Contrato solo se puede usar en tickets con el Título "Wispro"');
         }
-        // SINO SI existe issue con el mismo contrato y titulo mensaje:
+        ## SINO SI existe issue con el mismo contrato y titulo mensaje:
         if (
             ($request->titulo === "2" || $request->titulo === "3") &&
             (Issue::where('closed', false)->where('titulo_id', "2")->where('contrato_id', $contract)->first() ||
@@ -190,7 +280,7 @@ class IssueController extends Controller
         }
         return false;
     }
-    public function getViewers(Request $request, $cant)
+    private function getViewers(Request $request, $cant)
     {
         $viewers = null;
         if(count($request->request) > $cant)
@@ -254,7 +344,7 @@ class IssueController extends Controller
      */
     public function show($id)
     {
-        //
+        ##
     }
     /**
      * Show the form for editing the specified resource.
@@ -268,6 +358,15 @@ class IssueController extends Controller
         $usuarios = User::get();
         $contratos = Contrato::where('num_cliente', $issue->cliente_id)->get();
         $issue_updates = Issues_update::where('issue_id', $id)->get();
+        $planes = Plan::where('gateway_id', '!=', null)->orderBy('bajada', 'asc')->get();
+        if ($issue->titulo_id === 4){
+            return view ('modificarIssueChangeSpeed', ['internet' => 'active',
+                                        'issue' => $issue,
+                                        'contratos' => $contratos,
+                                        'issues_updates' => $issue_updates,
+                                        'planes' => $planes,
+                                        'usuarios' => $usuarios]);
+        }
         return view ('modificarIssue', ['internet' => 'active',
                                         'issue' => $issue,
                                         'contratos' => $contratos,
@@ -300,7 +399,7 @@ class IssueController extends Controller
         $issue_updates->usuario_id = auth()->user()->id;
         $issue_updates->asignadoAnt_id = $issue->asignado_id;
         $issue_updates->asignadoSig_id = $request->asignado;
-        //$issue_updates->save();
+        $issue_updates->save();
         $guardar = false;
         $mailTipo = 2;
         if ($issue->asignado_id != $request->asignado)
@@ -308,7 +407,6 @@ class IssueController extends Controller
             $guardar = true;
             $issue->asignado_id = $request->asignado;
         }
-        //$viewers = $this->getViewers($request, 6);
         if ($issue->contrato_id != $request->contrato)
         {
             $guardar = true;
@@ -333,6 +431,72 @@ class IssueController extends Controller
         if ($guardar)
         {
            $issue->save(); 
+        }
+        $issue->enviarMail($mailTipo);
+        $respuesta[] = 'Ticket actualizado correctamente.';
+        return redirect('adminIssues')->with('mensaje', $respuesta);
+    }
+    public function updateChangeSpeed(Request $request)
+    {
+        $request->validate(['id' => 'nullable|numeric',
+                            'asignado' => 'required|numeric',
+                            'num_plan' => 'required|numeric',
+                            'prueba_definitivo' => 'required|string',
+                        ]);
+        $issue = Issue::find($request->id);
+        $viewers = json_encode($this->getViewers($request, 5));
+        $issue_updates = new Issues_update();
+        $issue_updates->issue_id = $request->id;
+        $issue_updates->usuario_id = auth()->user()->id;
+        $issue_updates->asignadoAnt_id = $issue->asignado_id;
+        $issue_updates->asignadoSig_id = $request->asignado;
+        $guardar_issue = false;
+        $mailTipo = 2;
+        if ($request->prueba_definitivo === 'original') {
+            $issue_updates->descripcion = 'Se vuelve a velocidad original. Se cierra automaticamente.';
+            $issue->relContrato->num_plan = explode('|', $issue->descripcion)[1];
+            $issue->relContrato->save();
+            $issue->closed = true;
+            $guardar_issue = true;
+            $mailTipo = 3;
+            $momificar = true;
+        }
+        if ($request->prueba_definitivo === 'prueba') {
+            if($request->num_plan == $issue->relContrato->num_plan)
+            {
+                return back()->withInput()->withErrors(['msg' => ['Selecionar una velocidad distinta a la actual en Plan.']]);
+            }
+            $issue->relContrato->num_plan = $request->num_plan;
+            $issue->relContrato->save();
+            $issue_updates->descripcion = 'Cambio de velocidad a:' . Plan::find($request->num_plan)->nombre . '. Realizado automáticamente.';
+            $guardar_issue = true;
+            $momificar = true;
+        }
+        if ($request->prueba_definitivo === 'definitivo') {
+            ## setear la velocidad del formulario.
+            if ($issue->relContrato->num_plan != $request->num_plan) {
+                $issue->relContrato->num_plan = $request->num_plan;
+                  $issue_updates->descripcion = 'Cambio de velocidad a: ' . Plan::find($request->num_plan)->nombre . '. Velocidad definitiva. Se cierra automáticamente.';
+                $issue->relContrato->save();
+                $momificar = true;
+            } else {
+                $issue_updates->descripcion = 'Sin cambio de velocidad. Velocidad definitiva. Se cierra automáticamente.';
+                $momificar = false;
+            }
+            $issue->closed = true;
+            $guardar_issue = true;
+            $mailTipo = 3;
+        }
+        $issue_updates->save();
+        if ($guardar_issue)
+        {
+           $issue->save(); 
+           $issue->refresh(); 
+        }
+        if ($momificar)
+        {
+            $issue->relContrato->removeContratoGateway();
+            $issue->relContrato->modifyContratoGateway();
         }
         $issue->enviarMail($mailTipo);
         $respuesta[] = 'Ticket actualizado correctamente.';
@@ -368,6 +532,6 @@ class IssueController extends Controller
      */
     public function destroy($id)
     {
-        //
+        ##
     }
 }

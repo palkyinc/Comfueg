@@ -64,7 +64,8 @@ $mostrarSololectura = true;
                 </div>
                 <div class="form-group col-md-4">
                     <label for="num_plan">Plan: </label>
-                    <select class="form-control" name="num_plan">
+                    <p>{{$elemento->relPlan->nombre}}</p>
+                    {{-- <select class="form-control" name="num_plan">
                         <option value="null">Seleccione Plan...</option>
                         @foreach ($planes as $plan)
                             @if ($plan->id === $elemento->num_plan)
@@ -73,11 +74,12 @@ $mostrarSololectura = true;
                                 <option value="{{$plan->id}}">{{$plan->nombre}}</option>
                             @endif
                         @endforeach 
-                    </select>
+                    </select> --}}
                 </div>
                 <div class="form-group col-md-4">
                     <label for="created_at">Alta: </label>
-                    <input id="created_at" type="datetime-local" name="created_at" value="{{$elemento->inicioDateTimeLocal()}}" class="form-control">
+                    <p>{{$elemento->inicioDateTimeLocal()}}</p>
+                    {{-- <input id="created_at" type="datetime-local" name="created_at" value="" class="form-control"> --}}
                 </div>
                 <div class="form-group col-md-4">
                     <label for="coordenadas">Coordenadas: </label>

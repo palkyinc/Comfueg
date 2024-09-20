@@ -425,16 +425,18 @@ abstract class CronFunciones
                                                                 5,
                                                                 2);
                                 }
-                                elseif (!$interval->invert && ($last_update->relUsuario->id === 1 || $issue->titulo_id === 5)) ### CERRAR
+                                elseif (!$interval->invert && ($last_update->relUsuario->id === 1 || $issue->titulo_id === 5 || $issue->titulo_id === 4 )) ### CERRAR
                                 {
                                         ### Cerrar Ticket
-                                        if ($issue->titulo_id !== 5) {
+                                        if ($issue->titulo_id === 5) {
+                                                self::bajaIssue($issue);
+                                        } elseif ($issue->titulo_id === 4) {
+                                                self::backOriginalSpeed($issue);
+                                        } else {
                                                 self::enviarAdverCerrar($issue,
                                                                         'Aviso automático. Ticket vencido y sin novedades. Se cierra.',
                                                                         5,
                                                                         3);
-                                        } else {
-                                                 self::bajaIssue($issue);
                                         }
                                         
                                 } else {
@@ -452,9 +454,9 @@ abstract class CronFunciones
                 } else {
                                 ### Ticket sin vencer
                                 ### Suspension por Mora -> suspender
-                                /* self::logError(['clase' => 'Cronfunciones.php',
+                                self::logError(['clase' => 'Cronfunciones.php',
                                                 'metodo' => 'actualizarIssuesVencidos',
-                                                'error' => 'Ticket sin Vencer:' . $issue->id]); */
+                                                'error' => 'Ticket sin Vencer:' . $issue->id]);
                 }
         }
     }
@@ -550,9 +552,9 @@ abstract class CronFunciones
                                         
                                         if ($lineaExplotada[4] === 'comment') {
                                                 $dato = explode (';', $datoLinea[1]);
-                                                $macs_panel[$lineaExplotada[3]]['contrato_id'] = $dato[0];
+                                                $macs_panel[$lineaExplotada[3]]['contrato_id'] = trim($dato[0]);
                                                 if (count($dato) > 1) {
-                                                        $macs_panel[$lineaExplotada[3]]['tipo'] = $dato[1];
+                                                        $macs_panel[$lineaExplotada[3]]['tipo'] = trim($dato[1]);
                                                 }else{
                                                         $macs_panel[$lineaExplotada[3]]['tipo'] = 'Unknown';
                                                 }
@@ -576,20 +578,16 @@ abstract class CronFunciones
                                 $encontrado = false;
                                 foreach ($contratos as $key => $contrato) {
                                         if ($contrato->id == $value['contrato_id'] && $contrato->num_panel == $value['panel'] && $contrato->relEquipo->mac_address === $value['mac']) {
-                                                //dd($macs_panel);                                                
-                                                //dd($value);                                                
                                                 $encontrado = true;
                                         }
                                 }
                                 if (!$encontrado) {
                                         $noEncontrados [] = $value;
-                                        //echo $value['contrato_id'] . ' | ' . $value['mac'] . ' | ' . $value['panel'] . '<br>';
                                 }
                         }
                         else 
                         {
                                 $noEncontrados [] = $value;
-                                //echo $value['contrato_id'] . ' | ' . $value['mac'] . ' | ' . $value['panel'] . '<br>';
                         }
                 }
         }
@@ -662,6 +660,21 @@ abstract class CronFunciones
                          'ip' => $ip,
                         ]);
     }
+    private static function backOriginalSpeed(Issue $issue)
+    {
+        $mensaje = 'Se vuelve a velocidad original. Se cierra automaticamente.';
+        $issue->relContrato->num_plan = explode('|', $issue->descripcion)[1];
+        $issue->relContrato->save();
+        $issue->closed = true;
+        $issue->save(); 
+        $issue->refresh();
+        $issue->relContrato->removeContratoGateway();
+        $issue->relContrato->modifyContratoGateway();
+        self::enviarAdverCerrar($issue,
+                                $mensaje,
+                                6,
+                                3);
+    }
     public static function bajaAut()
     {
         $issue = Issue::where('closed', false)->where('titulo_id', 1)->first();
@@ -671,12 +684,7 @@ abstract class CronFunciones
                                         'error' => 'para bajar issue id = ' . $issue->id]);
                 self::bajaIssue($issue);
                 return true;
-        } 
-        self::logError(['clase' => 'Cronfunciones.php',
-                                'metodo' => 'bajaAut',
-                                'error' => 'Sin Issue para bajar']);
-        /* foreach ($issues as $key => $issue) {
-        } */
+        }
     }
     private static function bajaIssue(Issue $issue)
     {

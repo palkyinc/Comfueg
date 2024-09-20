@@ -40,9 +40,9 @@ use App\Http\Controllers\ConfigPanelController;
 
 ####TEST
 /* 
+use App\Custom\CronFunciones;//TEST
 use App\Models\Contrato; //TEST
 use App\Custom\GatewayMikrotik;//TEST
-use App\Custom\CronFunciones;//TEST
 use Illuminate\Support\Facades\File; //TEST
 use Illuminate\Support\Facades\Storage; //TEST
 use App\Models\Proveedor;//TEST
@@ -80,9 +80,10 @@ dd(CronFunciones::generarArchivoSem($dias));
 
 /* Route::get('/auditPaneles', function () {
         //CronFunciones::bkpPaneles();
-        CronFunciones::audoriaPaneles();
+        //CronFunciones::audoriaPaneles();
         //CronFunciones::logError(['clase' => 'routes/web.php', 'metodo' => 'sarasa', 'error' => 'Funciona OK.']);
-        //CronFunciones::enviarErrorsMail();
+        CronFunciones::diario02(); // => actualizarIssuesVencidos();
+        //CronFunciones::diario03(); // => enviarErrorsMail();
         dd('Fin Sarasa.');
 }); */
 
@@ -162,10 +163,13 @@ Route::get('/adminIssues', [IssueController::class, 'index'])->middleware('auth'
 Route::get('/agregarIssue', [IssueController::class, 'create'])->middleware('auth');
 Route::post('/agregarIssue', [IssueController::class, 'store'])->middleware('auth');
 Route::post('/agregarIssueSuspend', [IssueController::class, 'storeSuspend'])->middleware('auth');
+Route::post('/agregarIssueChangeSpeed', [IssueController::class, 'storeChangeSpeed'])->middleware('auth');
 Route::post('/buscarIssueCliente', [IssueController::class, 'buscarCliente'])->middleware('auth');
 Route::get('/modificarIssue/{id}', [IssueController::class, 'edit'])->middleware('auth');
 Route::get('/suspenderIssue/{id}/{titulo_id}', [IssueController::class, 'createSuspend'])->middleware('auth');
+Route::get('/speedChangeIssue/{id}', [IssueController::class, 'createSpeedChange'])->middleware('auth');
 Route::patch('/modificarIssue', [IssueController::class, 'update'])->middleware('auth');
+Route::patch('/modificarIssueChangeSpeed', [IssueController::class, 'updateChangeSpeed'])->middleware('auth');
 Route::get('/listadoIssues', [IssueController::class, 'getListadoIssues'])->middleware('auth');
 ####################
 ####### Deuda

@@ -44,7 +44,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function(){CronFunciones::diario01();})->dailyAt('06:00')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput);
         $schedule->call(function(){CronFunciones::diario02();})->dailyAt('06:10')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput);
         $schedule->call(function(){CronFunciones::diario03();})->dailyAt('06:20')->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput);
-        $schedule->call(function(){$this->cadaMinuto();})->everyMinute()->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput);
+        //$schedule->call(function(){$this->cadaMinuto();})->everyMinute()->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput);
         //$schedule->call(function(){$this->cadaCincoMinutos();})->everyFiveMinutes();
         $schedule->call(function(){$this->mensual();})->monthly()->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput)->timezone(Config::get('constants.USO_HORARIO_ARG'));
         $schedule->call(function(){CronFunciones::bajaAut();})->monthlyOn( $dia_baja, $horario_baja)->sendOutputTo('storage/logs/schedule.log')->emailOutputOnFailure($emailOutput)->timezone(Config::get('constants.USO_HORARIO_ARG'));
