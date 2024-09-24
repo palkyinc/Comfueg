@@ -28,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.11] - 2024-1X-XX
+### Add
+
+### Changed
+1. Cambio vista de editar contrato pide id de plan.
+
 ## [0.9.10] - 2024-09-20
 ### Add
 1. Se agrega Panel Exceptions

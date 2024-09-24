@@ -65,6 +65,7 @@ $mostrarSololectura = true;
                 <div class="form-group col-md-4">
                     <label for="num_plan">Plan: </label>
                     <p>{{$elemento->relPlan->nombre}}</p>
+                    <input type="hidden" name="num_plan" value="{{$elemento->num_plan}}">
                     {{-- <select class="form-control" name="num_plan">
                         <option value="null">Seleccione Plan...</option>
                         @foreach ($planes as $plan)

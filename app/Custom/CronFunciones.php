@@ -454,9 +454,9 @@ abstract class CronFunciones
                 } else {
                                 ### Ticket sin vencer
                                 ### Suspension por Mora -> suspender
-                                self::logError(['clase' => 'Cronfunciones.php',
+                                /* self::logError(['clase' => 'Cronfunciones.php',
                                                 'metodo' => 'actualizarIssuesVencidos',
-                                                'error' => 'Ticket sin Vencer:' . $issue->id]);
+                                                'error' => 'Ticket sin Vencer:' . $issue->id]); */
                 }
         }
     }
