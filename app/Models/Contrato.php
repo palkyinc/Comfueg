@@ -89,7 +89,9 @@ class Contrato extends Model
                 break;
             
             default:
-                return 'ERROR. En tipo de Contrato, al crear contrato en Mikrotik(' . $this->relPlan->relPanel->relEquipo->ip . ')';
+                //return 'ERROR. En tipo de Contrato, al crear contrato en Mikrotik(' . $this->relPlan->relPanel->relEquipo->ip . ')';
+                $ip = $this->relEquipo->ip;
+                $macaddress = $this->relEquipo->mac_address;
                 break;
         }
         if ($apiMikro = $this->openSessionGateway()) 
@@ -204,12 +206,8 @@ class Contrato extends Model
             }
             else
                 {
-                    if ($true_false) {
-                        return true;
-                    } else {
-                        $respuesta = $this->createContratoGateway();
-                    }
-                    
+                    $respuesta = $this->createContratoGateway();
+                    //dd($respuesta);    
                 }
             unset($apiMikro);
         } 

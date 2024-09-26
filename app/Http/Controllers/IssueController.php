@@ -230,7 +230,7 @@ class IssueController extends Controller
         $contrato->save();
         $contrato->refresh();
         ### actualizar gateway
-        if ($contrato->modifyContratoGateway()) {
+        if ($contrato->modifyContratoGateway(true)) {
             $actualizacion = 'Se pasó a ' . $contrato->relPlan->nombre . ' automáticamente.';
             if ($request->prueba_definitivo === 'definitivo') {
                 $issue->closed = true;
@@ -239,15 +239,13 @@ class IssueController extends Controller
         } else {
             $actualizacion = 'Error al intentar cambiar';
         }
-        if ($request->prueba_definitivo === 'prueba') {
-            $issue_updates = new Issues_update();
-            $issue_updates->issue_id = $issue->id;
-            $issue_updates->descripcion = $actualizacion;
-            $issue_updates->usuario_id = 1;
-            $issue_updates->asignadoAnt_id = $issue->asignado_id;
-            $issue_updates->asignadoSig_id = $issue->asignado_id;
-            $issue_updates->save();
-        }
+        $issue_updates = new Issues_update();
+        $issue_updates->issue_id = $issue->id;
+        $issue_updates->descripcion = $actualizacion;
+        $issue_updates->usuario_id = 1;
+        $issue_updates->asignadoAnt_id = $issue->asignado_id;
+        $issue_updates->asignadoSig_id = $issue->asignado_id;
+        $issue_updates->save();
         ### crear actuaslizacion con respuesta.
         $respuesta[] = 'Nuevo Ticket se ha creado correctamente';
         return redirect('/adminContratos?contrato=' . $request->afectado)->with('mensaje', $respuesta);
