@@ -51,7 +51,7 @@ class Contrato extends Model
         $respuesta = explode('+', date("c", strtotime($date)));
         return ($respuesta[0]);
     }
-    public function modificarMac ($ope) // 'ope' => 1 = Del, 0 = Add
+    public function modificarMac ($ope) ### 'ope' => 1 = Del, 0 = Add
     {
         return ubiquiti::tratarMac(
             [
@@ -131,7 +131,9 @@ class Contrato extends Model
                 break;
             
             default:
-                return 'ERROR. En tipo de Contrato, al crear contrato en Mikrotik(' . $this->relPlan->relPanel->relEquipo->ip . ')';
+                //return 'ERROR. En tipo de Contrato, al crear contrato en Mikrotik(' . $this->relPlan->relPanel->relEquipo->ip . ')';
+                $ip = $this->relEquipo->ip;
+                $macaddress = $this->relEquipo->mac_address;
                 break;
         }
         $clientsDataGateway = $apiMikro->getGatewayData();
@@ -206,8 +208,7 @@ class Contrato extends Model
             }
             else
                 {
-                    $respuesta = $this->createContratoGateway();
-                    //dd($respuesta);    
+                    $respuesta = $this->createContratoGateway();    
                 }
             unset($apiMikro);
         } 
