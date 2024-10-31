@@ -27,9 +27,9 @@ class Plan extends Model
     {
         if (isset($array['gateway']))
         {
-            //SI:cambio nombre
-            //buscar plan en gateway viejo con nombre viejo y borralo
-            //ELSE: buscar plan en gateway viejo con nombre y borrarlo
+            ###SI:cambio nombre
+            ###buscar plan en gateway viejo con nombre viejo y borralo
+            ### ELSE: buscar plan en gateway viejo con nombre y borrarlo
             if ($this->getOriginal()['gateway_id'])
             {
                 ### Verificar que no hay clientes con este plan
@@ -53,7 +53,7 @@ class Plan extends Model
                     {
                         $apiMikro->modificarPlanMangle(['numbers' => $answerMangle['down']], ['numbers' => $answerMangle['up']], 'remove');
                     }
-                    // si hay un gateway_id nuevo crear los planes.
+                    ###  si hay un gateway_id nuevo crear los planes.
                     unset($apiMikro);
                 }else return false;
             }
@@ -63,8 +63,8 @@ class Plan extends Model
                 if ($apiMikro)
                 {
                     $apiMikro->checkTotales();
-                    // cargar PLan en gateway nuevo
-                    $apiMikro->crearPlanType($this->id, $this->subida, $this->bajada);
+                    ###  cargar PLan en gateway nuevo
+                    $apiMikro->crearPlanType($this->id, $this->subida, $this->bajada, $this->mbt, $this->br, $this->bth);
                     $apiMikro->crearPlanTree($this->id, $this->id);
                     $apiMikro->crearPlanMangle($this->id, $this->id);
                     unset($apiMikro);
@@ -72,38 +72,42 @@ class Plan extends Model
             }
             return true;
         }
-        elseif ((isset($array['bajada']) || isset($array['subida'])) && $this->gateway_id)
+        elseif ((isset($array['bajada']) || isset($array['subida']) || isset($array['mbt']) || isset($array['br']) || isset($array['bth']) ) && $this->gateway_id)
             {
-                    $apiMikro = GatewayMikrotik::getConnection( $this->relPanel->relEquipo->ip, $this->relPanel->relEquipo->getUsuario(), $this->relPanel->relEquipo->getPassword());
-                    //check totales
-                    if ($apiMikro)
+                $apiMikro = GatewayMikrotik::getConnection( $this->relPanel->relEquipo->ip, $this->relPanel->relEquipo->getUsuario(), $this->relPanel->relEquipo->getPassword());
+                ### check totales
+                if ($apiMikro)
+                {
+                    $apiMikro->checkTotales();
+                    ### si cambio nombre cargo
+                    if ( isset($array['bajada']) || isset($array['mbt']) || isset($array['br']) || isset($array['bth']) )
                     {
-                        $apiMikro->checkTotales();
-                        //si cambio nombre cargo
-                        if (isset($array['bajada']))
-                        {
-                            $answerType = $apiMikro->getTypeNumbers($this->id);
-                            $apiMikro->modificarPlanType(   [
-                                                            'numbers' => $answerType['down'],
-                                                            'pcq-rate' => $this->bajada . 'K',
-                                                            'pcq-limit' => $this->bajada, 
-                                                            'pcq-total-limit' => ($this->bajada * 6),
-                                                            'pcq-burst-rate'=> ($this->bajada * 2) . 'K'
-                                                            ], null, 'set');
-                        }
-                        if (isset($array['subida']))
-                        {
-                            $answerType = $apiMikro->getTypeNumbers($this->id);
-                            $apiMikro->modificarPlanType(null,  [
-                                                                'numbers' => $answerType['up'], 
-                                                                'pcq-rate' => $this->subida . 'K',
-                                                                'pcq-limit' => $this->subida, 
-                                                                'pcq-total-limit' => ($this->subida * 6),
-                                                                'pcq-burst-rate'=> ($this->subida * 2) . 'K'
-                                                            ], 'set');
-                        }
-                    }else return false;
-                    unset($apiMikro);
+                        $answerType = $apiMikro->getTypeNumbers($this->id);
+                        $apiMikro->modificarPlanType(   [
+                                                        'numbers' => $answerType['down'],
+                                                        'pcq-rate' => $this->bajada . 'k',
+                                                        'pcq-limit' => $this->bajada, 
+                                                        'pcq-total-limit' => ($this->bajada * 6),
+                                                        'pcq-burst-threshold' => $this->bajada * ($this->bth/100) . 'k', 
+                                                        'pcq-burst-rate'=> $this->bajada * ($this->br/100) . 'k',
+                                                        'pcq-burst-time' => $this->mbt*$this->br/$this->bth . 's',
+                                                        ], null, 'set');
+                    }
+                    if ( isset($array['subida']) || isset($array['mbt']) || isset($array['br']) || isset($array['bth']) )
+                    {
+                        $answerType = $apiMikro->getTypeNumbers($this->id);
+                        $apiMikro->modificarPlanType(null,  [
+                                                            'numbers' => $answerType['up'], 
+                                                            'pcq-rate' => $this->subida . 'k',
+                                                            'pcq-limit' => $this->subida, 
+                                                            'pcq-total-limit' => ($this->subida * 6),
+                                                            'pcq-burst-threshold' => $this->subida * ($this->bth/100) . 'k', 
+                                                            'pcq-burst-rate'=> $this->subida * ($this->br/100) . 'k',
+                                                            'pcq-burst-time' => $this->mbt*$this->br/$this->bth . 's',
+                                                        ], 'set');
+                    }
+                }else return false;
+                unset($apiMikro);
             }
         return true;
     }
@@ -171,7 +175,7 @@ class Plan extends Model
                 }
                 if(!isset($mangle['subida']) || !isset($mangle['bajada'])) {return false;}
                     else { return true;}
-                dd($planesEnMikrotik);
+                dd('Plan.php. Metodo: reconcileMikrotik' /* $planesEnMikrotik */);
             }
                             
 

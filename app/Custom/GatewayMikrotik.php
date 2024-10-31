@@ -7,7 +7,7 @@ use App\Models\Plan;
 use App\Models\Proveedor;
 use Illuminate\Support\Facades\Config;
 
-//require('routeros_api.class.php');
+## require('routeros_api.class.php');
 
 class GatewayMikrotik extends RouterosAPI
 {
@@ -18,23 +18,23 @@ class GatewayMikrotik extends RouterosAPI
 	{
 		if (isset(self::$mikrotik))
 		{
-			// itero $mikrotik
+			##  itero $mikrotik
 			foreach (self::$mikrotik as $gateway) {
 				if ($gateway->id_session == $ip)
 				{
-					// si el $ip == $this->$id_sesion, devuelvo la sesion
+					##  si el $ip == $this->$id_sesion, devuelvo la sesion
 					return $gateway;
 				}
 			}
 		}
-		//llamo a getApiPointer()
-		// returno la sesion
+		## llamo a getApiPointer()
+		##  returno la sesion
 		return self::getApiPointer($ip, $usuario, $contrasenia);
 		
 	}
 	private static function getApiPointer($ip, $usuario, $contrasenia)
 	{
-		//Creo la sesion, $this->$id_session y la sumo a 4mikrotik
+		## Creo la sesion, $this->$id_session y la sumo a 4mikrotik
 		$api = new GatewayMikrotik();
 		$api->id_session = $ip;
 		if ($api->connect($ip, $usuario, $contrasenia))
@@ -46,7 +46,7 @@ class GatewayMikrotik extends RouterosAPI
 
 	#########		Clientes		#######################
 
-	public function addClient ($datos) // $datos = [ $name => ip, $mac-address => mac, $comment => id_genesys, $server => servidor, $list => plan]
+	public function addClient ($datos) ##  $datos = [ $name => ip, $mac-address => mac, $comment => id_genesys, $server => servidor, $list => plan]
 	{
 		$this->comm("/ip/hotspot/user/add", array(
 		    "name"     		=> $datos['mac-address'],
@@ -61,7 +61,7 @@ class GatewayMikrotik extends RouterosAPI
 				   	"comment"  		=> $datos['comment']
 				   	));
    	}
-	public function setClient ($datos) // $datos = [ id_HotspotUser => id_HotspotUser, id_AddressList => id_AddressList , $name => ip, $mac-address => mac, $comment => id_genesys, $server => servidor, $list => plan]
+	public function setClient ($datos) ##  $datos = [ id_HotspotUser => id_HotspotUser, id_AddressList => id_AddressList , $name => ip, $mac-address => mac, $comment => id_genesys, $server => servidor, $list => plan]
 		{
 			$this->comm("/ip/hotspot/user/set", array(
 			    "numbers"     	=> $datos['id_HotspotUser'],
@@ -400,26 +400,28 @@ class GatewayMikrotik extends RouterosAPI
 		}
 		return $respuesta;
 	}
-	public function crearPlanType($nombre = 'total', $up = '768K', $down = '1024K')
+	public function crearPlanType($nombre = 'total', $up = '768', $down = '1024', $mbt = 0, $br = 0, $bth = 0)
 	{
 		$this->comm('/queue/type/add', array(
 			"name"	=>	$nombre . "_up",
 			"kind"	=>	"pcq",
-			"pcq-rate" => $up . 'K',
+			"pcq-rate" => $up . 'k',
 			'pcq-limit' => $up, 
 			'pcq-total-limit' => $up * 6,
-			'pcq-burst-rate'=> $up * 2 . 'K',
-			'pcq-burst-time' => '1m',
+			'pcq-burst-threshold' => $up * ($bth/100) . 'k', 
+			'pcq-burst-rate'=> $up * ($br/100) . 'k',
+			'pcq-burst-time' => $mbt*$br/$bth . 's',
 			"pcq-classifier" => "src-address"
 		));
 		$this->comm('/queue/type/add', array(
 			'name'	=>	$nombre . "_down",
 			'kind'	=>	'pcq',
-			'pcq-rate' => $down . 'K',
+			'pcq-rate' => $down . 'k',
 			'pcq-limit' => $down, 
 			'pcq-total-limit' => $down * 6,
-			'pcq-burst-rate'=> $down * 2 . 'K',
-			'pcq-burst-time' => '1m',
+			'pcq-burst-threshold' => $down * ($bth/100) . 'k', 
+			'pcq-burst-rate'=> $down * ($br/100) . 'k',
+			'pcq-burst-time' => $mbt*$br/$bth . 's',
 			'pcq-classifier' => 'dst-address'
 		));
 	}
@@ -574,11 +576,11 @@ class GatewayMikrotik extends RouterosAPI
 			$this->comm('/interface/list/add', ['name' =>'LAN', 'comment' => 'addBySlam']);
 		}
 	}
-	public function modifyInterface($array, $action) //numbers, name, disabled= yes | no
+	public function modifyInterface($array, $action) ## numbers, name, disabled= yes | no
 	{
 		$this->comm('/interface/ethernet/' . $action, $array);
 	}
-	public function modifyVlan($array, $action) //$array = numbers, name, disabled= yes | no
+	public function modifyVlan($array, $action) ## $array = numbers, name, disabled= yes | no
 	{
 		$this->comm('/interface/vlan/' . $action, $array);
 	}

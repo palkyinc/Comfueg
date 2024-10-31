@@ -54,6 +54,9 @@ class PlanController extends Controller
         $Plan->nombre = $request->input('nombre');
         $Plan->bajada = $request->input('bajada');
         $Plan->subida = $request->input('subida');
+        $Plan->mbt = $request->input('mbt');
+        $Plan->br = $request->input('br');
+        $Plan->bth = $request->input('bth');
         $Plan->descripcion = $request->input('descripcion');
         $Plan->save();
         $respuesta[] = 'Plan se creo correctamente';
@@ -68,7 +71,7 @@ class PlanController extends Controller
      */
     public function show(Plan $plan)
     {
-        //
+        ## 
     }
 
     /**
@@ -87,13 +90,15 @@ class PlanController extends Controller
 
     public function validar(Request $request)
     {
-        //dd($request->input());
         $request->validate(
             [
                 'nombre' => 'required|min:2|max:20',
                 'descripcion' => 'max:100',
                 'bajada' => 'required|numeric|min:1|max:99999',
                 'subida' => 'required|numeric|min:1|max:99999',
+                'mbt' => 'required|numeric|min:0|max:99999',
+                'br' => 'required|numeric|min:0|max:99999',
+                'bth' => 'required|numeric|min:0|max:99999',
                 'gateway_id' => 'nullable|numeric'
             ]
         );
@@ -108,18 +113,16 @@ class PlanController extends Controller
      */
     public function update(Request $request)
     {
-        $nombre = $request->input('nombre');
-        $bajada = $request->input('bajada');
-        $subida = $request->input('subida');
-        $gateway_id = $request->input('gateway_id');
-        $descripcion = $request->input('descripcion');
         $plan = Plan::find($request->input('id'));
         $this->validar($request);
-        $plan->nombre = $nombre;
-        $plan->descripcion = $descripcion;
-        $plan->bajada = $bajada;
-        $plan->subida = $subida;
-        $plan->gateway_id = $gateway_id;
+        $plan->nombre = $request->input('nombre');
+        $plan->descripcion = $request->input('descripcion');
+        $plan->bajada = $request->input('bajada');
+        $plan->subida = $request->input('subida');
+        $plan->gateway_id = $request->input('gateway_id');
+        $plan->mbt = $request->input('mbt');
+        $plan->br = $request->input('br');
+        $plan->bth = $request->input('bth');
         $modifyMikrotik = false;
         $respuesta[] = 'Se cambió con exito:';
         if ($plan->nombre != $plan->getOriginal()['nombre']) {
@@ -135,6 +138,18 @@ class PlanController extends Controller
         if ($plan->subida != $plan->getOriginal()['subida']) {
             $respuesta[] = ' Subida: ' . $plan->getOriginal()['subida'] . ' POR ' . $plan->subida;
             $modifyMikrotik['subida'] = true;
+        }
+        if ($plan->mbt != $plan->getOriginal()['mbt']) {
+            $respuesta[] = ' Max Burst Time: ' . $plan->getOriginal()['mbt'] . ' POR ' . $plan->mbt;
+            $modifyMikrotik['mbt'] = true;
+        }
+        if ($plan->br != $plan->getOriginal()['br']) {
+            $respuesta[] = ' Burst Rate: ' . $plan->getOriginal()['br'] . ' POR ' . $plan->br;
+            $modifyMikrotik['br'] = true;
+        }
+        if ($plan->bth != $plan->getOriginal()['bth']) {
+            $respuesta[] = ' Burst Threshold: ' . $plan->getOriginal()['bth'] . ' POR ' . $plan->bth;
+            $modifyMikrotik['bth'] = true;
         }
         if ($plan->gateway_id != $plan->getOriginal()['gateway_id']) {
             $respuesta[] = ' Gateway: ' . $plan->getOriginal()['gateway_id'] . ' POR ' . $plan->gateway_id;

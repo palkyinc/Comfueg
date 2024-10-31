@@ -14,8 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Secuencia de arctualización en server desarrollo:
 1. Actualizar versión en el archivo constants.php
 2. Realizar los cambios en Changelog.md actualizando la fecha de la versión.
-3. Add y commit en el branch develop
-4. Verificar si quedan // o dd() en los archivos tratados.
+3. Verificar si quedan // o dd() en los archivos tratados.
+4. Add y commit en el branch develop
 5. Pasar a Master y luego realizar push de la versión con el tag si corresponde.
 6. Volver develop. 
 
@@ -28,9 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
-## [0.9.11] - 2024-1X-XX
+## [0.9.11] - 2024-10-30
 ### Add
-
+1. Implementación de Ráfagas.
 ### Changed
 1. Cambio vista de editar contrato pide id de plan.
 

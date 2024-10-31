@@ -41,7 +41,7 @@
 							<div class="dropdown-menu" aria-labelledby="nodosNavbarDropdown">
 								<a class="dropdown-item" href="/adminContratos">Contratos</a>
 								<a class="dropdown-item" href="/adminIssues">Tickets</a>
-								<a class="dropdown-item disabled" href="/adminAltas" >Altas</a>
+								<a class="dropdown-item" href="/adminAltas" >Altas</a>
 							</div>
 						</li>
 						<li class="nav-item dropdown">

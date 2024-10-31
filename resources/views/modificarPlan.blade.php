@@ -26,6 +26,28 @@ $mostrarSololectura = true;
                 <input type="text" name="subida" value="{{$elemento->subida}}" maxlength="15"  class="form-control">
             </div>
         </div>
+        <div>
+            <h5>Ráfagas</h5>
+            <div class="form-row border border-warning m-2 p-2">
+                <div class="form-group col-md-4">
+                    <label for="mbt">Max Burst Time (seg.)(*): </label>
+                    <input type="text" name="mbt" value="{{$elemento->mbt}}" value="{{old('mbt')}}" maxlength="30"  class="form-control">
+                    <p>Duración de la Ráfaga</p>
+                </div>
+                
+                <div class="form-group col-md-4">
+                    <label for="br">Burst Rate (%)(*): </label>
+                    <input type="text" name="br" value="{{$elemento->br}}" value="{{old('br')}}" maxlength="60"  class="form-control">
+                    <p>Max. Carga o descarga</p>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="bth">Burst Threshold (%)(*): </label>
+                    <input type="text" name="bth" value="{{$elemento->bth}}" value="{{old('bth')}}" maxlength="15"  class="form-control">
+                    <p>Umbral de comparación de lo contratado.</p>
+                </div>
+            </div>
+            <p>(*)Para no configurar ráfagas completar con cero.</p>
+        </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="gateway_id">Gateway:</label>
