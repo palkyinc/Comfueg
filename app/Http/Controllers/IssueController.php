@@ -190,12 +190,16 @@ class IssueController extends Controller
             $respuesta[] = $contrato->changeStateContratoGateway();
             $issue->save();
             $issue->enviarMail(1);
-        } else {
+        } elseif ($request->titulo == 1) 
+        {
+            $issue->save();
+            $respuesta[] = 'Nuevo Ticket de Baja se ha creado correctamente';
+            return redirect('/adminContratos?contrato=' . $request->afectado)->with('mensaje', $respuesta);
+        } else
+        {
             $respuesta[] = 'Error. en título de Ticket NO se ha creado correctamente';
             return redirect('/adminContratos?contrato=' . $request->afectado)->with('mensaje', $respuesta);
         }
-        $respuesta[] = 'Nuevo Ticket se ha creado correctamente';
-        return redirect('/adminContratos?contrato=' . $request->afectado)->with('mensaje', $respuesta);
     }
     public function storeChangeSpeed (Request $request)
     {
