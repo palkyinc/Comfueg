@@ -216,7 +216,7 @@ class ProveedoresController extends Controller
         $proveedor->ipGateway = $request['ipGateway'];
         $proveedor->ipProveedor = $request['ipProveedor'];
         $proveedor->maskProveedor = $request['maskProveedor'];
-        $proveedor->sinActualizar = true;
+        $proveedor->sinActualizar = false;
         if ($this->setDivClassifier($request->gateway_id, $request->div_classifier)) {
             $respuesta[] = 'Divisor Classifier: ' . $proveedor->relGateway->div_classifier . ' POR ' . $request->div_classifier;
         }
@@ -247,6 +247,12 @@ class ProveedoresController extends Controller
         if ($proveedor->maskProveedor != $proveedor->getOriginal()['maskProveedor']) {
             $respuesta[] = ' Mask Proveedor: ' . $proveedor->getOriginal()['maskProveedor'] . ' POR ' . $proveedor->maskProveedor;
         }
+        if (!isset($respuesta))
+        {
+            $respuesta[] = 'No se registran cambios.';
+        } else {
+            $proveedor->sinActualizar = true;
+        }
         $proveedor->save();
         return redirect('adminProveedores?gateway_id=' . $proveedor->gateway_id)->with('mensaje', $respuesta);
     }
@@ -274,52 +280,58 @@ class ProveedoresController extends Controller
      */
     public function refreshGateway ()
     {
+        //dd('Hola');
         while ($sinActualizar = Proveedor::where('sinActualizar', true)->first()) 
         {
-            $sinActualizar->reordenarClassifiers();
-            $totales = $sinActualizar->reordenarTotales();
-            $totalClassifiers = $sinActualizar->getClassifiersQuantity();
-            //dd($totalClassifiers);
-            $gateway = Panel::find($sinActualizar->gateway_id);
-            $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
-            if ($apiMikro) 
+            if(dd($sinActualizar->relGateway->div_classifier) > 3)
             {
-                if (($numbers = $apiMikro->getTypeNumbers()) == null){
-                    $apiMikro->modificarPlanType(   ['name' => 'total_down', 'kind' => 'pcq', 'pcq-classifier' => 'dst-address'], 
-                                                ['name' => 'total_up', 'kind' => 'pcq', 'pcq-classifier' => 'src-address'], 'add');
-                    $numbers = $apiMikro->getTypeNumbers();
-                }
-                $apiMikro->modificarPlanType(   ['numbers' => $numbers['down'], 'pcq-rate' => $totales['bajada'] . 'K'], 
-                                                ['numbers' => $numbers['up'], 'pcq-rate' => $totales['subida'] . 'K'], 'set');
-                $respuesta[] = ($apiMikro->checkNat() ? 'Regla de NAT confirmada.' : 'Se creó regla de NAT.');
-                $apiMikro->removeAllProveedores();
-                //dd($numbers);
-                $proveedoresActualizar = Proveedor::where('gateway_id', $sinActualizar->gateway_id)
-                                                    ->where('estado', true)
-                                                    ->get();
-                $pointerClassifier = 0;
-                foreach ($proveedoresActualizar as $proveedor)
+                $sinActualizar->reordenarClassifiers();
+                $totales = $sinActualizar->reordenarTotales();
+                $totalClassifiers = $sinActualizar->getClassifiersQuantity();
+                $gateway = Panel::find($sinActualizar->gateway_id);
+                $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
+                if ($apiMikro) 
                 {
-                    $cantClassifiers = round($proveedor->bajada/$proveedor->relGateway->div_classifier);
-                    $apiMikro->removeAddressProveedor($proveedor->id);
-			        $apiMikro->modifyProveedor($proveedor, 'add', $totalClassifiers, $cantClassifiers, $pointerClassifier);
-                    $proveedor->sinActualizar = false;
-                    $proveedor->save();
-                    $pointerClassifier += $cantClassifiers;
+                    if (($numbers = $apiMikro->getTypeNumbers()) == null){
+                        $apiMikro->modificarPlanType(   ['name' => 'total_down', 'kind' => 'pcq', 'pcq-classifier' => 'dst-address'], 
+                                                    ['name' => 'total_up', 'kind' => 'pcq', 'pcq-classifier' => 'src-address'], 'add');
+                        $numbers = $apiMikro->getTypeNumbers();
+                    }
+                    $apiMikro->modificarPlanType(   ['numbers' => $numbers['down'], 'pcq-rate' => $totales['bajada'] . 'K'], 
+                                                    ['numbers' => $numbers['up'], 'pcq-rate' => $totales['subida'] . 'K'], 'set');
+                    $respuesta[] = ($apiMikro->checkNat() ? 'Regla de NAT confirmada.' : 'Se creó regla de NAT.');
+                    $apiMikro->removeAllProveedores();
+                    //dd($numbers);
+                    $proveedoresActualizar = Proveedor::where('gateway_id', $sinActualizar->gateway_id)
+                                                        ->where('estado', true)
+                                                        ->get();
+                    $pointerClassifier = 0;
+                    foreach ($proveedoresActualizar as $proveedor)
+                    {
+                        $cantClassifiers = round($proveedor->bajada/$proveedor->relGateway->div_classifier);
+                        $apiMikro->removeAddressProveedor($proveedor->id);
+                        $apiMikro->modifyProveedor($proveedor, 'add', $totalClassifiers, $cantClassifiers, $pointerClassifier);
+                        $proveedor->sinActualizar = false;
+                        $proveedor->save();
+                        $pointerClassifier += $cantClassifiers;
+                    }
+                    $proveedoresActualizarUnable = Proveedor::where('gateway_id', $sinActualizar->gateway_id)
+                                                        ->where('estado', false)
+                                                        ->get();
+                    foreach ($proveedoresActualizarUnable as $proveedor) {
+                        $proveedor->sinActualizar = false;
+                        $proveedor->save();
+                    }
+                    $respuesta[] = 'Gateways Actualizados!!';
+                    unset($apiMikro);
                 }
-                $proveedoresActualizarUnable = Proveedor::where('gateway_id', $sinActualizar->gateway_id)
-                                                    ->where('estado', false)
-                                                    ->get();
-                foreach ($proveedoresActualizarUnable as $proveedor) {
-                    $proveedor->sinActualizar = false;
-                    $proveedor->save();
+                else
+                {
+                    $respuesta [] = 'Error al intentar conectarse a ' . $gateway->relEquipo->nombre;
                 }
-                $respuesta[] = 'Gateways Actualizados!!';
-                unset($apiMikro);
-            }
-            else
-            {
-                $respuesta [] = 'Error al intentar conectarse a ' . $gateway->relEquipo->nombre;
+            } else {
+                dd($sinActualizar->relGateway);
+                $sinActualizar->reordenarClassifiers(true);
             }
         }
         if (!isset($respuesta)) {$respuesta[] = 'Nada para actualizar';}

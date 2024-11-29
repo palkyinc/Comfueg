@@ -54,13 +54,18 @@ class Proveedor extends Model
         return $nextProveedor;
     }
 
-    public function reordenarClassifiers()
+    public function reordenarClassifiers($esFailOver = false)
     {
         $proveedores = Proveedor::where('estado', true)->where('gateway_id', $this->gateway_id)->get();
-        for ($i=0; $i < count($proveedores); $i++) { 
-            $proveedores[$i]->classifier = $i;
-            $proveedores[$i]->save();
+        if ($esFailOver) {
+            dd($proveedores);
+        } else {
+            for ($i=0; $i < count($proveedores); $i++) { 
+                $proveedores[$i]->classifier = $i;
+                $proveedores[$i]->save();
+            }
         }
+        
         $proveedores = Proveedor::where('estado', false)->where('gateway_id', $this->gateway_id)->get();
         foreach ($proveedores as $proveedor)
         {

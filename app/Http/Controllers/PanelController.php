@@ -19,7 +19,6 @@ class PanelController extends Controller
         $ssid = strtoupper($request->input('ssid'));
         if ($sitio || $ssid)
         {
-            //dd($sitio);
             $paneles = Panel::select("*")
                 ->whereRaw("UPPER(ssid) LIKE (?)", ["%{$ssid}%"])
                 ->whereRaw("UPPER(num_site) LIKE (?)", ["%{$sitio}"])
@@ -82,7 +81,6 @@ class PanelController extends Controller
     }
     public function storeDns(Request $request)
     {
-        //dd($request);
         $request->validate(
             [
                 'inputCheck'   => ['required', Rule::in(['external', 'passThrough', 'none'])],
@@ -136,6 +134,11 @@ class PanelController extends Controller
         $comentario = $request->input('comentario');
         $Panel = Panel::find($request->input('id'));
         $this->validar($request, $Panel->id);
+        if (isset($request->wan_failover)) {
+            $Panel->wan_failover = true;
+        } else {
+            $Panel->wan_failover = false;
+        }
         $Panel->ssid = $ssid;
         $Panel->rol = $rol;
         $Panel->id_equipo = $id_equipo;
@@ -147,6 +150,9 @@ class PanelController extends Controller
         $Panel->activo = $activo;
         $Panel->comentario = $comentario;
         $respuesta['success'][] = 'Se cambió con exito en Panel con ID: ' . $Panel->id;
+        if ($Panel->wan_failover != $Panel->getOriginal()['wan_failover']) {
+            $respuesta['success'][] = ' wan_failover: ' . $Panel->getOriginal()['wan_failover'] . ' POR ' . $Panel->wan_failover;
+        }
         if ($Panel->ssid != $Panel->getOriginal()['ssid']) {
             $respuesta['success'][] = ' ssid: ' . $Panel->getOriginal()['ssid'] . ' POR ' . $Panel->ssid;
         }

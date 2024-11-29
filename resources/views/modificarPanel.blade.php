@@ -16,7 +16,11 @@ $mostrarSololectura = true;
                     <input type="text" name="ssid" value="{{$elemento->ssid}}" maxlength="15" class="form-control">
                     <input type="hidden" name="activo" value="{{$elemento->activo}}" class="form-control">
                 </div>
-                <div class="form-group col-md-3">
+                @if ($elemento->rol === 'GATEWAY')
+                    <div class="form-group col-md-2">
+                @else
+                    <div class="form-group col-md-4">
+                @endif
                     <label for="rol">Rol: </label>
                     <select class="form-control" name="rol">
                         <option value="">Seleccione un Rol...</option>
@@ -29,6 +33,20 @@ $mostrarSololectura = true;
                         @endforeach
                     </select>
                 </div>
+                @if ($elemento->rol === 'GATEWAY')
+                <div class="form-group col-md-2">
+                        <label for="wan_failover">Wan Failover:</label>
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                @if ($elemento->wan_failover)
+                                    <input type="checkbox" name="wan_failover" value="1" aria-label="Checkbox for following text input" checked>
+                                @else
+                                    <input type="checkbox" name="wan_failover" value="1" aria-label="Checkbox for following text input" >
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 <div class="form-group col-md-3">
                     <label for="id_equipo">Equipo: </label>
                     <select class="form-control" name="id_equipo">
@@ -63,7 +81,7 @@ $mostrarSololectura = true;
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="panel_ant">Panel Anterior: </label>
                     <select class="form-control" name="panel_ant">
                         <option value="">Internet...</option>
@@ -89,13 +107,13 @@ $mostrarSololectura = true;
                     <label for="cable_fecha">Instalación de Cable: </label>
                     <input type="datetime-local" name="cable_fecha" value="{{$elemento->cable_fecha}}" class="form-control">
                 </div>
-                <div class="form-group col-md-8">
+                <div class="form-group col-md-6">
                     <label for="cable_tipo">Cable Marca detalles: </label>
                     <input type="text" name="cable_tipo" value="{{$elemento->cable_tipo}}" maxlength="50" class="form-control">
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-9">
+                <div class="form-group col-md-10">
                     <label for="comentario">Comentario: </label>
                     <textarea name="comentario" class="form-control" rows="auto" cols="50">{{$elemento->comentario}}</textarea>
                 </div>
