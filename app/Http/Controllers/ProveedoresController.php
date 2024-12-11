@@ -97,7 +97,8 @@ class ProveedoresController extends Controller
                 'ipProveedor' => 'nullable|ipv4',
                 'maskProveedor' => 'nullable|ipv4',
                 'div_classifier' => 'required|min:1|max:99999',
-                'gateway_id' => 'required|min:0|max:99999'
+                'gateway_id' => 'required|min:0|max:99999',
+                'wan_failover_id' => 'required|min:0|max:100'
             ]
         );
     }
@@ -129,6 +130,7 @@ class ProveedoresController extends Controller
         $proveedor->en_linea = false;
         $proveedor->contaOffline = 4;
         $this->setDivClassifier($request->gateway_id, $request->div_classifier);
+        dd($proveedor);
         $proveedor->save();
         $respuesta[] = 'Proveedor se creo correctamente';
         return redirect('/adminProveedores?gateway_id=' . $request->gateway_id)->with('mensaje', $respuesta);
@@ -138,7 +140,7 @@ class ProveedoresController extends Controller
     private function setDivClassifier($gateway_id, $div_classifier)
     {
         $gateway = Panel::find($gateway_id);
-        if ($div_classifier != $gateway->div_classifier) {
+        if (!$gateway->wan_failover && $div_classifier != $gateway->div_classifier) {
             # cambiar div_classifier y grabar
             $gateway->div_classifier = $div_classifier;
             $gateway->save();
@@ -167,6 +169,7 @@ class ProveedoresController extends Controller
     public function edit($id)
     {
         $proveedor = Proveedor::find($id);
+        //dd($proveedor);
         $apiMikro = GatewayMikrotik::getConnection($proveedor->relGateway->relEquipo->ip, $proveedor->relGateway->relEquipo->getUsuario(), $proveedor->relGateway->relEquipo->getPassword());
         if ($apiMikro) {
             $interfaces[] = $apiMikro->getDatosInterfaces(); //Las No usadas
@@ -203,7 +206,8 @@ class ProveedoresController extends Controller
      */
     public function update(Request $request)
     {
-        $this->validar($request); 
+        $this->validar($request);
+        //dd($request);
         $proveedor = Proveedor::find($request['id']);
         $proveedor->nombre = $request['nombre'];
         $proveedor->estado = $request['estado']; // si cambio de estado hay que revisar los classifier
@@ -217,8 +221,12 @@ class ProveedoresController extends Controller
         $proveedor->ipProveedor = $request['ipProveedor'];
         $proveedor->maskProveedor = $request['maskProveedor'];
         $proveedor->sinActualizar = false;
+        $proveedor->wan_failover_id = $request['wan_failover_id'];
         if ($this->setDivClassifier($request->gateway_id, $request->div_classifier)) {
             $respuesta[] = 'Divisor Classifier: ' . $proveedor->relGateway->div_classifier . ' POR ' . $request->div_classifier;
+        }
+        if ($proveedor->wan_failover_id != $proveedor->getOriginal()['wan_failover_id']) {
+            $respuesta[] = ' Wan Failover Id: ' . $proveedor->getOriginal()['wan_failover_id'] . ' POR ' . $proveedor->wan_failover_id;
         }
         if ($proveedor->nombre != $proveedor->getOriginal()['nombre']) {
             $respuesta[] = ' Nombre: ' . $proveedor->getOriginal()['nombre'] . ' POR ' . $proveedor->nombre;

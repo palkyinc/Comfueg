@@ -77,10 +77,18 @@ $mostrarSololectura = true;
                     <label for="ipGateway">IP defalut Gateway Router: </label>
                     <input type="text" name="ipGateway" value="{{$proveedor->ipGateway}}" maxlength="15" class="form-control">
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="div_classifier">Divisor para Classifier: </label>
-                    <input type="text" name="div_classifier" value="{{$proveedor->relGateway->div_classifier}}" maxlength="15" class="form-control">
-                </div>
+                @if (($proveedor->relGateway->wan_failover))
+                    <div class="form-group col-md-4">
+                        <label for="div_classifier">ID Wan Failover: </label>
+                        <input type="text" name="wan_failover_id" value="{{$proveedor->wan_failover_id}}" maxlength="15" class="form-control">
+                        <input type="text" name="div_classifier" value="1" maxlength="15" class="form-control" hidden>
+                    </div>
+                @else
+                    <div class="form-group col-md-4">
+                        <label for="div_classifier">Divisor para Classifier: </label>
+                        <input type="text" name="div_classifier" value="{{$proveedor->relGateway->div_classifier}}" maxlength="15" class="form-control">
+                    </div>
+                @endif
             </div>
 
             <input type="hidden" name="gateway_id" value="{{$proveedor->gateway_id}}">
