@@ -403,7 +403,7 @@ class GatewayMikrotik extends RouterosAPI
 	public function crearPlanType($nombre = 'total', $up = '768', $down = '1024', $mbt = 0, $br = 0, $bth = 0)
 	{
 		$this->comm('/queue/type/add', array(
-			"name"	=>	$nombre . "_up",
+			"name"	=>	$nombre . '_up',
 			"kind"	=>	"pcq",
 			"pcq-rate" => $up . 'k',
 			'pcq-limit' => $up, 
@@ -411,7 +411,7 @@ class GatewayMikrotik extends RouterosAPI
 			'pcq-burst-threshold' => $up * ($bth/100) . 'k', 
 			'pcq-burst-rate'=> $up * ($br/100) . 'k',
 			'pcq-burst-time' => $mbt*$br/$bth . 's',
-			"pcq-classifier" => "src-address"
+			"pcq-classifier" => 'src-address'
 		));
 		$this->comm('/queue/type/add', array(
 			'name'	=>	$nombre . "_down",

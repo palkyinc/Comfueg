@@ -54,9 +54,12 @@ class PlanController extends Controller
         $Plan->nombre = $request->input('nombre');
         $Plan->bajada = $request->input('bajada');
         $Plan->subida = $request->input('subida');
-        $Plan->mbt = $request->input('mbt');
-        $Plan->br = $request->input('br');
-        $Plan->bth = $request->input('bth');
+        if ($rta = $this->validarTwo($request)) {
+            return back()->withInput()->withErrors(['msg' => [$rta]]);
+        }
+        $Plan->mbt = $request->input('mbt') === null ? 0 : $request->input('mbt');
+        $Plan->br = $request->input('br') === null ? 0 : $request->input('br');;
+        $Plan->bth = $request->input('bth') === null ? 0 : $request->input('bth');;
         $Plan->descripcion = $request->input('descripcion');
         $Plan->save();
         $respuesta[] = 'Plan se creo correctamente';
@@ -96,14 +99,21 @@ class PlanController extends Controller
                 'descripcion' => 'max:100',
                 'bajada' => 'required|numeric|min:1|max:99999',
                 'subida' => 'required|numeric|min:1|max:99999',
-                'mbt' => 'required|numeric|min:0|max:99999',
-                'br' => 'required|numeric|min:0|max:99999',
-                'bth' => 'required|numeric|min:0|max:99999',
+                'mbt' => 'nullable|numeric|min:1|max:99999',
+                'br' => 'nullable|numeric|min:101|max:1000',
+                'bth' => 'nullable|numeric|min:50|max:100',
                 'gateway_id' => 'nullable|numeric'
             ]
         );
     }
-
+    public function validarTwo($request)
+    {
+        if ( ($request->input('mbt') && $request->input('br') && $request->input('bth')) || (!$request->input('mbt') && !$request->input('br') && !$request->input('bth')) ) {
+            return false;
+        } else {
+            return 'Max Burst Time, Burst Rate, Burst Threshold deben completarse todos vacios o con datos.';
+        }
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -120,9 +130,12 @@ class PlanController extends Controller
         $plan->bajada = $request->input('bajada');
         $plan->subida = $request->input('subida');
         $plan->gateway_id = $request->input('gateway_id');
-        $plan->mbt = $request->input('mbt');
-        $plan->br = $request->input('br');
-        $plan->bth = $request->input('bth');
+        if ($rta = $this->validarTwo($request)) {
+            return back()->withInput()->withErrors(['msg' => [$rta]]);
+        }
+        $plan->mbt = $request->input('mbt') === null ? 0 : $request->input('mbt');
+        $plan->br = $request->input('br') === null ? 0 : $request->input('br');;
+        $plan->bth = $request->input('bth') === null ? 0 : $request->input('bth');;
         $modifyMikrotik = false;
         $respuesta[] = 'Se cambió con exito:';
         if ($plan->nombre != $plan->getOriginal()['nombre']) {

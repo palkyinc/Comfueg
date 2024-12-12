@@ -71,7 +71,11 @@ $mostrarSololectura = true;
                                 
                                 <th scope="row"> {{$alta->relCliente->getNomyApe()}}</th>
                                 <td>{{$alta->relDireccion->getResumida()}}</td>
-                                <td>{{$alta->relPlan->nombre}}</td>
+                                @if ($alta->plan_id)
+                                    <td>{{$alta->relPlan->nombre}}</td>
+                                @else
+                                    <td>{{$alta->plan_name}}</td>
+                                @endif
                                 <td>{{$alta->comentarios}}</td>
                                 @if ($alta->instalado)
                                     <td>{{$alta->getStatus()}}</td>

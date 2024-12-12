@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\App;
 use App\Models\Equipo;
 use App\Models\Contrato;
 use App\Models\Panel;
+use App\Models\Plan;
 use App\Models\Producto;
 use App\Models\Antena;
 use Illuminate\Http\Request;
@@ -51,7 +52,7 @@ class AltaController extends Controller
      */
     public function create()
     {
-        //
+        ##
     }
     public function store(Request $request, $modify = false)
     {
@@ -64,6 +65,7 @@ class AltaController extends Controller
         $alta->cliente_id = $request->input('cliente_id');
         $alta->direccion_id = $request->input('direccion_id');
         $alta->plan_id = $request->input('plan_id');
+        $alta->plan_name = Plan::find($request->input('plan_id'))->nombre;
         $alta->comentarios = $request->input('comentarios');
         if (!$modify) {
             $alta->programado = false;
@@ -91,15 +93,15 @@ class AltaController extends Controller
     }
     public function show($id)
     {
-        //
+        ##
     }
     public function edit($id)
     {
-        //
+        ##
     }
     public function update(Request $request, $id)
     {
-        //
+        ##
     }
     public function updateInstalldate(Request $request)
     {
@@ -111,7 +113,7 @@ class AltaController extends Controller
     }
     public function destroy($id)
     {
-        //
+        ##
     }
     
     ### Api

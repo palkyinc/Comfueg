@@ -55,7 +55,7 @@ class Plan extends Model
                     }
                     ###  si hay un gateway_id nuevo crear los planes.
                     unset($apiMikro);
-                }else return false;
+                } else {return false;}
             }
             if ($this->gateway_id)
             {
@@ -68,7 +68,9 @@ class Plan extends Model
                     $apiMikro->crearPlanTree($this->id, $this->id);
                     $apiMikro->crearPlanMangle($this->id, $this->id);
                     unset($apiMikro);
-                } else return false;
+                } else {
+                    return false;
+                }
             }
             return true;
         }
@@ -175,7 +177,6 @@ class Plan extends Model
                 }
                 if(!isset($mangle['subida']) || !isset($mangle['bajada'])) {return false;}
                     else { return true;}
-                dd('Plan.php. Metodo: reconcileMikrotik' /* $planesEnMikrotik */);
             }
                             
 
