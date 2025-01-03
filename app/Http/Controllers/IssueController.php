@@ -238,6 +238,7 @@ class IssueController extends Controller
         $contrato->refresh();
         ### actualizar gateway
         if ($contrato->modifyContratoGateway(true)) {
+            $respuesta[] = $contrato->renewIPAntenaClient();
             $actualizacion = 'Se pasó a ' . $contrato->relPlan->nombre . ' automáticamente.';
             if ($request->prueba_definitivo === 'definitivo') {
                 $issue->closed = true;

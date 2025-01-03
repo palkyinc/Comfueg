@@ -30,6 +30,11 @@ ___ -->
 
 ## [0.9.11] - 2024-10-30
 ### Add
+### Changed
+1. Se agrega metodo renewIPAntenaClient() a Contrato.php 
+
+## [0.9.11] - 2024-10-30
+### Add
 1. Implementación de Ráfagas.
 ### Changed
 1. Cambio vista de editar contrato pide id de plan.

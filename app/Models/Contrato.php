@@ -222,4 +222,15 @@ class Contrato extends Model
             }
         return ($respuesta);
     }
+    public function renewIPAntenaClient()
+    {
+        if ($this->relEquipo->getUsuario() === null){
+                $this->relEquipo->setUsPassInicial();
+        }
+        $ubiquiti = new Ubiquiti($this->relEquipo->ip, $this->relEquipo->getUsuario(), $this->relEquipo->getPassword(), false, 80, 5);
+        if ($ubiquiti->setRenewDhcp()){
+            return 'EXITO: IP antena cliente renovado OK.';
+        }
+        return 'ERROR: al renovar IP antena cliente.';
+    }
 }
