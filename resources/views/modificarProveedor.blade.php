@@ -94,7 +94,7 @@ $mostrarSololectura = true;
             <input type="hidden" name="gateway_id" value="{{$proveedor->gateway_id}}">
             <input type="hidden" name="id" value="{{$proveedor->id}}">
             <button type="submit" class="btn btn-primary">Modificar</button>
-            <a href="/adminProveedores" class="btn btn-primary">volver</a>
+            <a href="/adminProveedores?gateway_id={{$proveedor->gateway_id}}" class="btn btn-primary">volver</a>
     </form>
     </div>
 

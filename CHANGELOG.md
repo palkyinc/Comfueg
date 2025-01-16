@@ -28,10 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
-## [0.9.11] - 2024-10-30
+## [0.9.12] - 2025-01-16
 ### Add
+1. Multiwan failover. (<https://help.mikrotik.com/docs/spaces/ROS/pages/26476608/Failover+WAN+Backup>).
 ### Changed
-1. Se agrega metodo renewIPAntenaClient() a Contrato.php 
+1. Se agrega metodo renewIPAntenaClient() a Contrato.php
+2. Se arregla metodo SiteHasIncidenteController en SiteHasIncidenteController.php
 
 ## [0.9.11] - 2024-10-30
 ### Add

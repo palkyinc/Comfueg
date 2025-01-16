@@ -239,7 +239,7 @@ class SiteHasIncidenteController extends Controller
     {
         $sitios = Site::all();
         foreach ($sitios as $sitio) {
-            $ptpst = Panel::where('num_site', $sitio->id)->where('rol', 'PTPST')->first();
+            $ptpst = Panel::where('num_site', $sitio->id)->where('rol', 'PTPST')->where('activo', true)->first();
             if ($ptpst) {
                 $panel_ant = Panel::find($ptpst->panel_ant);
                 $arbol[] = [$panel_ant->relSite->id => $ptpst->relSite->id,
@@ -308,7 +308,6 @@ class SiteHasIncidenteController extends Controller
                 $this->siguientesSitios($arbol, $arbol[$i][$sitioActual], $array_sitios);
             }
         }
-        //dd($array_sitios);
     }
     
     
@@ -333,7 +332,6 @@ class SiteHasIncidenteController extends Controller
     {
         $incidente = Site_has_incidente::find($id);
         $archivos = Entity_has_file::where('modelo_id', 3)->where('entidad_id', $id)->get();
-        //dd(date("c", strtotime($incidente->inicio)));
         return view('modificarSitehasIncidente', ['archivos' => $archivos, 'incidente' => $incidente, 'nodos' => 'active']);
     }
     
@@ -487,10 +485,8 @@ class SiteHasIncidenteController extends Controller
     public function destroyArchivo($id)
     {
         $aBorrar = Entity_has_file::find($id);
-        //$incidente_id = $aBorrar->entidad_id;
         $aBorrar->deleteArchivo();
         $aBorrar->delete();
-        //dd($aBorrar);
         $respuesta[] = 'Archivo se eliminó correctamente';
         return redirect('adminArchivosIncidente/' . $aBorrar->entidad_id)->with('mensaje', $respuesta);
     

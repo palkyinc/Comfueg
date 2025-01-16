@@ -27,13 +27,35 @@ $mostrarSololectura = true;
                         @endcan
                     </form>
 
-        @if ( session('mensaje') )
+        {{-- @if ( session('mensaje') )
             <div class="alert alert-success">
                 @foreach (session('mensaje') as $item)
                     {{ $item }} <br>
                 @endforeach
             </div>
-        @endif
+        @endif --}}
+        @if ( session('mensaje') )
+        <ul class="list-group">
+            @foreach (session('mensaje') as $key => $items)
+                {{-- @dd($key . ' + ' . $items); --}}
+                @if ($key === 'success')
+                        @foreach ($items as $item)
+                            <li class="list-group-item list-group-item-success">{{ $item }}</li>
+                        @endforeach
+                @endif
+                @if ($key === 'error')
+                        @foreach ($items as $item)
+                            <li class="list-group-item list-group-item-danger"> {{ $item }} </li>
+                        @endforeach
+                @endif
+                @if ($key === 'info')
+                        @foreach ($items as $item)
+                            <li class="list-group-item list-group-item-info"> {{ $item }} </li>
+                        @endforeach
+                @endif
+            @endforeach
+        </ul>
+    @endif
         
 <div class="table-responsive">
                 
@@ -46,7 +68,7 @@ $mostrarSololectura = true;
                             <th scope="col"> Bajada/Subida (Kb)</th>
                             <th scope="col"> Interface </th>
                             <th scope="col"> DNS recursión </th>
-                            <th scope="col"> Gateway </th>
+                            <th scope="col"> Wan Failover ID </th>
                             <th scope="col"> Estado </th>
                             <th scope="col"> En Linea </th>
                             <th scope="col" colspan="2">
@@ -73,7 +95,7 @@ $mostrarSololectura = true;
                             <td>{{$proveedor->bajada}}/{{$proveedor->subida}}</td>
                             <td>{{$proveedor->getInterfaceName()}}</td>
                             <td>{{$proveedor->dns}}</td>
-                            <td>{{$proveedor->relGateway->relEquipo->nombre}}</td>
+                            <td>{{$proveedor->wan_failover_id}}</td>
                             @if ($proveedor->estado)
                                 <td>Habilitado</td>
                             @else

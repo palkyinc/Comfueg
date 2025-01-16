@@ -356,16 +356,16 @@ class GatewayMikrotik extends RouterosAPI
 	{
 		$this->write('/queue/tree/print');
 		$rtas = $this->parseResponse($this->read(false));
-		$respuesta = null;
+		$respond = null;
 		foreach ($rtas as $key => $rta) {
 			if (isset($rta['comment']) && explode(';',$rta['comment'])[0] == $id . '_down') {
-				$respuesta['down'] = $key;
+				$respond['down'] = $key;
 			}
 			if (isset($rta['comment']) && explode(';', $rta['comment'])[0] == $id . '_up') {
-				$respuesta['up'] = $key;
+				$respond['up'] = $key;
 			}
 		}
-		return $respuesta;
+		return $respond;
 		
 	}
 	public function getMangleNumbers($id)
@@ -465,10 +465,17 @@ class GatewayMikrotik extends RouterosAPI
 	{
 		if ($down !== null){
 			$this->comm('/queue/type/'.$action, $down);
+			$rta['success'][] = 'Down en Total Queue Type actualizado'; 
+		} else {
+			$rta['error'][] = 'No se puede actualizar Down en Total Queue Type porque es NULL'; 
 		}
 		if ($up !== null){
 			$this->comm('/queue/type/'.$action, $up);
+			$rta['success'][] = 'Up en Total Queue Type actualizado'; 
+		} else {
+			$rta['error'][] = 'No se puede actualizar Up en Total Queue Type porque es NULL'; 
 		}
+		return $rta;
 	}
 	public function modificarPlanTree($down, $up, $action)
 	{
@@ -608,7 +615,7 @@ class GatewayMikrotik extends RouterosAPI
 
 	#########   PROVEEDORES 	######################
 
-	public function modifyProveedor(Proveedor $proveedor, $action, $totalClassifiers, $cantClassifiers, $pointerClassifier)
+	public function modifyProveedor(Proveedor $proveedor, $action, $totalClassifiers, $cantClassifiers, $pointerClassifier, $esBalanced = false)
 	{
 		if ($action == 'add')
 		{
@@ -626,40 +633,44 @@ class GatewayMikrotik extends RouterosAPI
 													'disabled' => 'no',
 													'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam']);
 			}
-			$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'prerouting',
-															'in-interface' => $interface,
-															'connection-mark' => 'no-mark',
-															'action' => 'mark-connection',
-															'new-connection-mark' => $interface . '_conn',
-															'passthrough' => 'yes',
-															'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam' ]);
-			for ($i=0; $i < $cantClassifiers; $i++)
-			{ 
-				$this->comm('/ip/firewall/mangle/' . $action, [	
-															'chain' => 'prerouting',
-															'src-address' => '10.10.0.0/16',
-															'in-interface-list' => 'LAN',
-															'connection-state' => 'established,related,new',
-															'per-connection-classifier' => 'src-address:' . $totalClassifiers . '/' . ($pointerClassifier + $i),
-															'dst-address-type' => '!local',
-															'action' => 'mark-connection',
-															'new-connection-mark' => $interface . '_conn',
-															'passthrough' => 'yes',
-															'comment' => $proveedor->id . ';proveedor_id;B;addedBySlam']);
-			}
-			$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'prerouting',
-															'in-interface-list' => 'LAN',
-															'connection-mark' => $interface . '_conn',
-															'action' => 'mark-routing',
-															'new-routing-mark' => 'to_' . $interface,
-															'passthrough' => 'no' ,
-															'comment' => $proveedor->id . ';proveedor_id;C;addedBySlam']);
-			$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'output',
-															'connection-mark' => $interface . '_conn',
-															'action' => 'mark-routing' ,
-															'new-routing-mark' => 'to_' . $interface,
-															'passthrough' => 'no',
-															'comment' => $proveedor->id . ';proveedor_id;D;addedBySlam']);
+			### si es balanced
+			if (!$esBalanced)
+			{
+				$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'prerouting',
+																'in-interface' => $interface,
+																'connection-mark' => 'no-mark',
+																'action' => 'mark-connection',
+																'new-connection-mark' => $interface . '_conn',
+																'passthrough' => 'yes',
+																'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam' ]);
+				for ($i=0; $i < $cantClassifiers; $i++)
+				{ 
+					$this->comm('/ip/firewall/mangle/' . $action, [	
+																'chain' => 'prerouting',
+																'src-address' => '10.10.0.0/16',
+																'in-interface-list' => 'LAN',
+																'connection-state' => 'established,related,new',
+																'per-connection-classifier' => 'src-address:' . $totalClassifiers . '/' . ($pointerClassifier + $i),
+																'dst-address-type' => '!local',
+																'action' => 'mark-connection',
+																'new-connection-mark' => $interface . '_conn',
+																'passthrough' => 'yes',
+																'comment' => $proveedor->id . ';proveedor_id;B;addedBySlam']);
+				}
+				$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'prerouting',
+																'in-interface-list' => 'LAN',
+																'connection-mark' => $interface . '_conn',
+																'action' => 'mark-routing',
+																'new-routing-mark' => 'to_' . $interface,
+																'passthrough' => 'no' ,
+																'comment' => $proveedor->id . ';proveedor_id;C;addedBySlam']);
+				$this->comm('/ip/firewall/mangle/' . $action, [	'chain' => 'output',
+																'connection-mark' => $interface . '_conn',
+																'action' => 'mark-routing' ,
+																'new-routing-mark' => 'to_' . $interface,
+																'passthrough' => 'no',
+																'comment' => $proveedor->id . ';proveedor_id;D;addedBySlam']);
+
 				$this->comm('/ip/route/' . $action, [	'dst-address' => $proveedor->dns,
 														'gateway' => $proveedor->ipGateway,
 														'check-gateway' => 'ping',
@@ -674,16 +685,33 @@ class GatewayMikrotik extends RouterosAPI
 														'target-scope' => '10',
 														'routing-mark' => 'to_' . $interface,
 														'comment' => $proveedor->id . ';proveedor_id;B;addedBySlam']);
-			if ($proveedor->getProveedoresQuantity() > 1)
-			{
-				$this->comm('/ip/route/' . $action, [	'dst-address' => '0.0.0.0/0',
-														'gateway' => $proveedor->dns,
-														'check-gateway' => 'ping',
-														'distance' => 2,
-														'scope' => 30,
-														'target-scope' => 10,
-														'routing-mark' => 'to_' . ($this->getDatosEthernet($proveedor->getNextInterface()->interface, $proveedor->getNextInterface()->esVlan)['name']),
-														'comment' => $proveedor->id . ';proveedor_id;C;addedBySlam']);
+				if ($proveedor->getProveedoresQuantity() > 1)
+				{
+					$this->comm('/ip/route/' . $action, [	'dst-address' => '0.0.0.0/0',
+															'gateway' => $proveedor->dns,
+															'check-gateway' => 'ping',
+															'distance' => 2,
+															'scope' => 30,
+															'target-scope' => 10,
+															'routing-mark' => 'to_' . ($this->getDatosEthernet($proveedor->getNextInterface()->interface, $proveedor->getNextInterface()->esVlan)['name']),
+															'comment' => $proveedor->id . ';proveedor_id;C;addedBySlam']);
+				}
+			}
+			### Finsi es Balanced
+			else {
+				$this->comm('/ip/route/' . $action, [
+													'dst-address' => $proveedor->dns,
+													'scope' => 10,
+													'gateway' => $proveedor->ipGateway,
+													'comment' => $proveedor->id . ';proveedor_id;A;addedBySlam'
+												]);
+				$this->comm('/ip/route/' . $action, [
+													'distance' => $proveedor->wan_failover_id,
+													'gateway' => $proveedor->ipGateway,
+													'target-scope' => 11,
+													'check-gateway' => 'ping',
+													'comment' => $proveedor->id . ';proveedor_id;B;addedBySlam'
+												]);
 			}
 		}
 		if ($action == 'remove')

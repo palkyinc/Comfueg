@@ -62,7 +62,7 @@ class ProveedoresController extends Controller
         $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
         if ($apiMikro) 
         {
-            $interfaces[] = $apiMikro->getDatosInterfaces(); //Las No usadas
+            $interfaces[] = $apiMikro->getDatosInterfaces(); ### Las No usadas
             foreach ($interfaces[0]['rtas'] as $key => $value) {
                 if (Proveedor::where('interface', $value['.id'])->where('gateway_id', $gateway->id)->first() ||
                     !isset($value['list']) || $value['list'] != 'WAN')
@@ -126,13 +126,13 @@ class ProveedoresController extends Controller
         $proveedor->ipGateway = $request->input('ipGateway');
         $proveedor->ipProveedor = $request->input('ipProveedor');
         $proveedor->maskProveedor = $request->input('maskProveedor');
+        $proveedor->wan_failover_id = $request->input('wan_failover_id');
         $proveedor->sinActualizar = true;
         $proveedor->en_linea = false;
         $proveedor->contaOffline = 4;
         $this->setDivClassifier($request->gateway_id, $request->div_classifier);
-        dd($proveedor);
         $proveedor->save();
-        $respuesta[] = 'Proveedor se creo correctamente';
+        $respuesta['success'][] = 'Proveedor se creo correctamente';
         return redirect('/adminProveedores?gateway_id=' . $request->gateway_id)->with('mensaje', $respuesta);
        
     }
@@ -157,7 +157,7 @@ class ProveedoresController extends Controller
      */
     public function show($id)
     {
-        //
+        ###
     }
 
     /**
@@ -169,10 +169,9 @@ class ProveedoresController extends Controller
     public function edit($id)
     {
         $proveedor = Proveedor::find($id);
-        //dd($proveedor);
         $apiMikro = GatewayMikrotik::getConnection($proveedor->relGateway->relEquipo->ip, $proveedor->relGateway->relEquipo->getUsuario(), $proveedor->relGateway->relEquipo->getPassword());
         if ($apiMikro) {
-            $interfaces[] = $apiMikro->getDatosInterfaces(); //Las No usadas
+            $interfaces[] = $apiMikro->getDatosInterfaces(); ### Las No usadas
             foreach ($interfaces[0]['rtas'] as $key => $value) {
                 $candidato = Proveedor::where('interface', $value['.id'])->first();
                 if (
@@ -207,10 +206,9 @@ class ProveedoresController extends Controller
     public function update(Request $request)
     {
         $this->validar($request);
-        //dd($request);
         $proveedor = Proveedor::find($request['id']);
         $proveedor->nombre = $request['nombre'];
-        $proveedor->estado = $request['estado']; // si cambio de estado hay que revisar los classifier
+        $proveedor->estado = $request['estado']; ### si cambio de estado hay que revisar los classifier
         $interface = explode('?', $request->input('interface'));
         $proveedor->interface = ((isset($interface[1]) && $interface[1] == 'v') ? $interface[0] : $request->input('interface'));
         $proveedor->esVlan = ((isset($interface[1]) && $interface[1] == 'v') ? true : false);
@@ -223,41 +221,41 @@ class ProveedoresController extends Controller
         $proveedor->sinActualizar = false;
         $proveedor->wan_failover_id = $request['wan_failover_id'];
         if ($this->setDivClassifier($request->gateway_id, $request->div_classifier)) {
-            $respuesta[] = 'Divisor Classifier: ' . $proveedor->relGateway->div_classifier . ' POR ' . $request->div_classifier;
+            $respuesta['info'][] = 'Divisor Classifier: ' . $proveedor->relGateway->div_classifier . ' POR ' . $request->div_classifier;
         }
         if ($proveedor->wan_failover_id != $proveedor->getOriginal()['wan_failover_id']) {
-            $respuesta[] = ' Wan Failover Id: ' . $proveedor->getOriginal()['wan_failover_id'] . ' POR ' . $proveedor->wan_failover_id;
+            $respuesta['info'][] = ' Wan Failover Id: ' . $proveedor->getOriginal()['wan_failover_id'] . ' POR ' . $proveedor->wan_failover_id;
         }
         if ($proveedor->nombre != $proveedor->getOriginal()['nombre']) {
-            $respuesta[] = ' Nombre: ' . $proveedor->getOriginal()['nombre'] . ' POR ' . $proveedor->nombre;
+            $respuesta['info'][] = ' Nombre: ' . $proveedor->getOriginal()['nombre'] . ' POR ' . $proveedor->nombre;
         }
         if ($proveedor->estado != $proveedor->getOriginal()['estado']) {
-            $respuesta[] = ' Estado: ' . $proveedor->getOriginal()['estado'] . ' POR ' . $proveedor->estado;
+            $respuesta['info'][] = ' Estado: ' . $proveedor->getOriginal()['estado'] . ' POR ' . $proveedor->estado;
         }
         if ($proveedor->interface != $proveedor->getOriginal()['interface']) {
-            $respuesta[] = ' Interface: ' . $proveedor->getOriginal()['interface'] . ' POR ' . $proveedor->interface;
+            $respuesta['info'][] = ' Interface: ' . $proveedor->getOriginal()['interface'] . ' POR ' . $proveedor->interface;
         }
         if ($proveedor->bajada != $proveedor->getOriginal()['bajada']) {
-            $respuesta[] = ' Bajada: ' . $proveedor->getOriginal()['bajada'] . ' POR ' . $proveedor->bajada;
+            $respuesta['info'][] = ' Bajada: ' . $proveedor->getOriginal()['bajada'] . ' POR ' . $proveedor->bajada;
         }
         if ($proveedor->subida != $proveedor->getOriginal()['subida']) {
-            $respuesta[] = ' Subida: ' . $proveedor->getOriginal()['subida'] . ' POR ' . $proveedor->subida;
+            $respuesta['info'][] = ' Subida: ' . $proveedor->getOriginal()['subida'] . ' POR ' . $proveedor->subida;
         }
         if ($proveedor->dns != $proveedor->getOriginal()['dns']) {
-            $respuesta[] = ' DNS Recursividad: ' . $proveedor->getOriginal()['dns'] . ' POR ' . $proveedor->dns;
+            $respuesta['info'][] = ' DNS Recursividad: ' . $proveedor->getOriginal()['dns'] . ' POR ' . $proveedor->dns;
         }
         if ($proveedor->ipGateway != $proveedor->getOriginal()['ipGateway']) {
-            $respuesta[] = ' IP del Default Gateway: ' . $proveedor->getOriginal()['ipGateway'] . ' POR ' . $proveedor->ipGateway;
+            $respuesta['info'][] = ' IP del Default Gateway: ' . $proveedor->getOriginal()['ipGateway'] . ' POR ' . $proveedor->ipGateway;
         }
         if ($proveedor->ipProveedor != $proveedor->getOriginal()['ipProveedor']) {
-            $respuesta[] = ' IP Proveedor: ' . $proveedor->getOriginal()['ipProveedor'] . ' POR ' . $proveedor->ipProveedor;
+            $respuesta['info'][] = ' IP Proveedor: ' . $proveedor->getOriginal()['ipProveedor'] . ' POR ' . $proveedor->ipProveedor;
         }
         if ($proveedor->maskProveedor != $proveedor->getOriginal()['maskProveedor']) {
-            $respuesta[] = ' Mask Proveedor: ' . $proveedor->getOriginal()['maskProveedor'] . ' POR ' . $proveedor->maskProveedor;
+            $respuesta['info'][] = ' Mask Proveedor: ' . $proveedor->getOriginal()['maskProveedor'] . ' POR ' . $proveedor->maskProveedor;
         }
         if (!isset($respuesta))
         {
-            $respuesta[] = 'No se registran cambios.';
+            $respuesta['info'][] = 'No se registran cambios.';
         } else {
             $proveedor->sinActualizar = true;
         }
@@ -275,7 +273,7 @@ class ProveedoresController extends Controller
     {
         $proveedor = Proveedor::find($id);
         $gateway_id = $proveedor->relGateway->id;
-        $respuesta[] = 'Se eliminó Proveedor: ' . $proveedor->nombre;
+        $respuesta['success'][] = 'Se eliminó Proveedor: ' . $proveedor->nombre;
         $proveedor->delete();
         return redirect('adminProveedores?gateway_id=' . $gateway_id)->with('mensaje', $respuesta);
     }
@@ -288,31 +286,77 @@ class ProveedoresController extends Controller
      */
     public function refreshGateway ()
     {
-        //dd('Hola');
         while ($sinActualizar = Proveedor::where('sinActualizar', true)->first()) 
         {
-            if(dd($sinActualizar->relGateway->div_classifier) > 3)
+            $respuesta = [];
+            $proveedoresActualizar = Proveedor::where('gateway_id', $sinActualizar->gateway_id)
+                                                        ->where('estado', true)
+                                                        ->get();
+            $gateway = Panel::find($sinActualizar->gateway_id);
+            $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
+            $numbers = $apiMikro->getTypeNumbers();
+            ### Verifica que los proveedores a Actualizar tengan wna failover correcto
+            foreach ($proveedoresActualizar as $key => $value) {
+                if ($value->wan_failover_id > 0)
+                {
+                    $wan_failover[$value->id] = $value->wan_failover_id;
+                } else {
+                    $wan_failover_balanced = true;
+                }
+            }
+            ### Si mal configurado wan failovewr vuelve a adminProveedores
+            if (isset($wan_failover) && isset($wan_failover_balanced))
+            {
+                $respuesta['error'][] = 'ID Wan Failover mal configurado.';
+                unset($apiMikro);
+                        return redirect('adminProveedores?gateway_id=' . (isset($gateway->id) ? $gateway->id : ''))->with('mensaje', ($respuesta));
+            ### Si esta seteado failover debe ordenar los proveedores y configurarlo en Mikrotik
+            }
+            else if(isset($wan_failover))
+            {
+                asort($wan_failover);
+                foreach ($wan_failover as $key => $value) {
+                    if (!isset($count)){
+                        $count = 1;
+                    } else {
+                        $count++;
+                    }
+                    ### Si los ID no estám em orden debe volver a adminProveedores
+                    if ($wan_failover[$key] !== $count)
+                    {
+                        $respuesta['error'][] = 'ID Wan Failover mal configurado.';
+                        unset($apiMikro);
+                        return redirect('adminProveedores?gateway_id=' . (isset($gateway->id) ? $gateway->id : ''))->with('mensaje', ($respuesta));
+                    }
+                    
+                    foreach ($proveedoresActualizar as $key => $proveedor) {
+                        if ($wan_failover[$proveedor->id] === 1) {
+                            $totales['bajada'] = $proveedor->bajada;
+                            $totales['subida'] = $proveedor->subida;
+                        }
+                    }
+                }
+                if ($apiMikro) 
+                {
+                    $respuesta += $this->modPlanTypes($numbers, $apiMikro, $totales);
+                    foreach ($proveedoresActualizar as $key => $proveedor) {
+                        $apiMikro->removeAddressProveedor($proveedor->id);
+                        $apiMikro->modifyProveedor($proveedor, 'add', null, null, null, true);
+                        $proveedor->sinActualizar = false;
+                        $proveedor->save();
+                    }
+                }
+                $respuesta += $this->proveedoresActualizarUnable ($sinActualizar);
+            }
+            else if(isset($wan_failover_balanced))
             {
                 $sinActualizar->reordenarClassifiers();
                 $totales = $sinActualizar->reordenarTotales();
                 $totalClassifiers = $sinActualizar->getClassifiersQuantity();
-                $gateway = Panel::find($sinActualizar->gateway_id);
-                $apiMikro = GatewayMikrotik::getConnection($gateway->relEquipo->ip, $gateway->relEquipo->getUsuario(), $gateway->relEquipo->getPassword());
                 if ($apiMikro) 
                 {
-                    if (($numbers = $apiMikro->getTypeNumbers()) == null){
-                        $apiMikro->modificarPlanType(   ['name' => 'total_down', 'kind' => 'pcq', 'pcq-classifier' => 'dst-address'], 
-                                                    ['name' => 'total_up', 'kind' => 'pcq', 'pcq-classifier' => 'src-address'], 'add');
-                        $numbers = $apiMikro->getTypeNumbers();
-                    }
-                    $apiMikro->modificarPlanType(   ['numbers' => $numbers['down'], 'pcq-rate' => $totales['bajada'] . 'K'], 
-                                                    ['numbers' => $numbers['up'], 'pcq-rate' => $totales['subida'] . 'K'], 'set');
-                    $respuesta[] = ($apiMikro->checkNat() ? 'Regla de NAT confirmada.' : 'Se creó regla de NAT.');
-                    $apiMikro->removeAllProveedores();
-                    //dd($numbers);
-                    $proveedoresActualizar = Proveedor::where('gateway_id', $sinActualizar->gateway_id)
-                                                        ->where('estado', true)
-                                                        ->get();
+                    $respuesta += $this->modPlanTypes($numbers, $apiMikro, $totales);
+                    
                     $pointerClassifier = 0;
                     foreach ($proveedoresActualizar as $proveedor)
                     {
@@ -323,26 +367,45 @@ class ProveedoresController extends Controller
                         $proveedor->save();
                         $pointerClassifier += $cantClassifiers;
                     }
-                    $proveedoresActualizarUnable = Proveedor::where('gateway_id', $sinActualizar->gateway_id)
-                                                        ->where('estado', false)
-                                                        ->get();
-                    foreach ($proveedoresActualizarUnable as $proveedor) {
-                        $proveedor->sinActualizar = false;
-                        $proveedor->save();
-                    }
-                    $respuesta[] = 'Gateways Actualizados!!';
-                    unset($apiMikro);
+                    $respuesta += $this->proveedoresActualizarUnable ($sinActualizar);
                 }
                 else
                 {
-                    $respuesta [] = 'Error al intentar conectarse a ' . $gateway->relEquipo->nombre;
+                    $respuesta['error'][] = 'Error al intentar conectarse a: ' . $gateway->relEquipo->nombre;
                 }
             } else {
-                dd($sinActualizar->relGateway);
+                ($sinActualizar->relGateway);
                 $sinActualizar->reordenarClassifiers(true);
             }
         }
-        if (!isset($respuesta)) {$respuesta[] = 'Nada para actualizar';}
-        return redirect('adminProveedores?gateway_id=' . (isset($gateway->id) ? $gateway->id : ''))->with('mensaje', $respuesta);
+        if (!isset($respuesta)) {$respuesta['info'][] = 'Nada para actualizar';}
+        unset($apiMikro);
+        return redirect('adminProveedores?gateway_id=' . (isset($gateway->id) ? $gateway->id : ''))->with('mensaje', ($respuesta));
+    }
+    private function proveedoresActualizarUnable ($sinActualizar) {
+
+        $proveedoresActualizarUnable = Proveedor::where('gateway_id', $sinActualizar->gateway_id)
+                        ->where('estado', false)
+                        ->get();
+        foreach ($proveedoresActualizarUnable as $proveedor) {
+            $proveedor->sinActualizar = false;
+            $proveedor->save();
+        }
+        $respuesta['success'][] = 'Proveedores de Gateway Actualizado.';
+        return $respuesta;
+    }
+    private function modPlanTypes($numbers, $apiMikro, $totales)
+    {
+        $respuesta = [];
+        if (($numbers) == null){
+            $respuesta += $apiMikro->modificarPlanType(   ['name' => 'total_down', 'kind' => 'pcq', 'pcq-classifier' => 'dst-address'], 
+                                        ['name' => 'total_up', 'kind' => 'pcq', 'pcq-classifier' => 'src-address'], 'add');
+            $numbers = $apiMikro->getTypeNumbers();
+        }
+        $respuesta += $apiMikro->modificarPlanType(   ['numbers' => $numbers['down'], 'pcq-rate' => $totales['bajada'] . 'K'], 
+                                        ['numbers' => $numbers['up'], 'pcq-rate' => $totales['subida'] . 'K'], 'set');
+        $apiMikro->removeAllProveedores();
+        $respuesta ['success'][] = $apiMikro->checkNat() ? 'Se confirma Regla de NAT se encuentra creada.' : 'Se creó regla de NAT.';
+        return $respuesta;
     }
 }

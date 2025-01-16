@@ -20,14 +20,13 @@ class Proveedor extends Model
         return $this->belongsTo('App\Models\Panel', 'gateway_id', 'id');
     }
 
-    public function getProveedoresQuantity() // tambien Next Classifier|
+    public function getProveedoresQuantity() ## tambien Next Classifier|
     {
         $proveedores = Proveedor::select('classifier')->where('estado', true)->where('gateway_id', $this->gateway_id)->get();
         return count($proveedores);
-        dd(count($proveedores));
     }
 
-    public function getClassifiersQuantity() // tambien Next Classifier|
+    public function getClassifiersQuantity() ## tambien Next Classifier|
     {
         $proveedores = Proveedor::select('bajada')->where('estado', true)->where('gateway_id', $this->gateway_id)->get();
         $total = 0;
@@ -58,7 +57,6 @@ class Proveedor extends Model
     {
         $proveedores = Proveedor::where('estado', true)->where('gateway_id', $this->gateway_id)->get();
         if ($esFailOver) {
-            dd($proveedores);
         } else {
             for ($i=0; $i < count($proveedores); $i++) { 
                 $proveedores[$i]->classifier = $i;
@@ -86,7 +84,7 @@ class Proveedor extends Model
                 if (isset($value['comment']))
                 {
                     $comment = explode(';', $value['comment']);
-                    if ($comment[0] == $this->id && $comment[1] == 'proveedor_id' && $comment[2] == 'B' && $value['active'] == 'true')
+                    if ($comment[0] == $this->id && $comment[1] == 'proveedor_id' && $comment[2] == 'A' && $value['active'] == 'true')
                     {
                         return true;
                     }

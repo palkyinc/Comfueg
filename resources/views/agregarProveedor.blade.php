@@ -56,17 +56,21 @@ $mostrarSololectura = true;
                 </div>
                 
                 <div class="form-row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-3">
                         <label for="dns">DNS para recursión: </label>
                         <input type="text" name="dns" value="{{old('dns')}}" maxlength="15" class="form-control">
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-3">
                         <label for="ipGateway">IP defalut Gateway Router: </label>
                         <input type="text" name="ipGateway" value="{{old('ipGateway')}}" maxlength="15" class="form-control">
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-3">
                         <label for="div_classifier">Divisor para Classifier: </label>
                         <input type="text" name="div_classifier" value="{{$gateway->div_classifier}}" maxlength="15" class="form-control">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="div_classifier">ID Wan Failover: </label>
+                        <input type="text" name="wan_failover_id" value="{{old('wan_failover_id')}}" maxlength="15" class="form-control">
                     </div>
                 </div>
 
