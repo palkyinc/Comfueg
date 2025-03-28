@@ -542,7 +542,7 @@ class GatewayMikrotik extends RouterosAPI
 		$this->write('/interface/list/member/print');
 		$lists = $this->parseResponse($this->read(false));
 		foreach ($lists as $list) {
-			if ($list['interface'] == $value['name']) {
+			if (isset($value['name']) && $list['interface'] == $value['name']) {
 				$value['list'] = $list['list'];
 				if ($retornarId)
 				{

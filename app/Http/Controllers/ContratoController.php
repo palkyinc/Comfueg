@@ -302,7 +302,7 @@ class ContratoController extends Controller
             
          */
         $alta->programado = true;
-        // $alta->instalacion_fecha debe ser la fecha que instaló luego de la prueba de instalacion.
+        ## $alta->instalacion_fecha debe ser la fecha que instaló luego de la prueba de instalacion.
         $alta->save();
         if (!isset($mensaje['error'])) {
             $mensaje['success'][] = 'EXITO. Contrato Cargado ok en panel y mikrotik.';
@@ -402,9 +402,9 @@ class ContratoController extends Controller
      */
     public function edit($id)
     {
-        $elemento = Contrato::find($id);
-        $datos = $this->getDataCreateEdit($elemento->num_equipo);
-        $datos['elemento'] =  $elemento;
+        $contrato = Contrato::find($id);
+        $datos = $this->getDataCreateEdit($contrato->num_equipo);
+        $datos['elemento'] =  $contrato;
         return view('modificarContrato', $datos);
     }
     /**

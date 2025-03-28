@@ -85,7 +85,7 @@ $mostrarSololectura = true;
         </div>
             <input type="hidden" name="id" value="{{$elemento->id}}">
             <button type="submit" class="btn btn-primary" id="enviar">Modificar</button>
-            <a href="/adminClientes" class="btn btn-primary">volver</a>
+            <a href="/inicio" class="btn btn-primary">volver</a>
     </form>
     </div>
 

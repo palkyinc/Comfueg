@@ -37,7 +37,6 @@ $mostrarSololectura = true;
         @if ( session('mensaje') )
         <ul class="list-group">
             @foreach (session('mensaje') as $key => $items)
-                {{-- @dd($key . ' + ' . $items); --}}
                 @if ($key === 'success')
                         @foreach ($items as $item)
                             <li class="list-group-item list-group-item-success">{{ $item }}</li>

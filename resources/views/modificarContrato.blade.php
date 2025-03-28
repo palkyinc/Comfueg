@@ -10,33 +10,25 @@ $mostrarSololectura = true;
         @csrf
         @method('patch')
         <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="num_cliente">Cliente: </label>
-                    <select class="form-control" name="num_cliente">
-                        <option value="null">Seleccione Cliente...</option>
-                        @foreach ($clientes as $cliente)
-                            @if ($cliente->id === $elemento->num_cliente)
-                                <option value="{{$cliente->id}}" selected>{{$cliente->getNomYApe()}}</option>
-                            @else
-                                <option value="{{$cliente->id}}">{{$cliente->getNomYApe()}}</option>
-                            @endif
-                        @endforeach 
-                    </select>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="id_direccion">Dirección: </label>
-                    <select class="form-control" name="id_direccion">
-                        <option value="null">Seleccione Dirección...</option>
-                        @foreach ($direcciones as $direccion)
-                            @if ($direccion->id === $elemento->id_direccion)
-                                <option value="{{$direccion->id}}" selected>{{$direccion->getResumida()}}</option>
-                            @else
-                                <option value="{{$direccion->id}}">{{$direccion->getResumida()}}</option>
-                            @endif
-                        @endforeach 
-                    </select>
-                </div>
-                <div class="form-group col-md-6">
+            <div class="form-group col-md-10 border">
+                <p class="m-3">Cliente: {{$elemento->relCliente->getNomYApe()}}</p>
+                <p class="m-3">Genesys ID:{{$elemento->relCliente->id}}</p>
+            </div>
+            <div class="form-group col-md-2 align-self-center d-flex justify-content-center d-flex flex-column">
+                <button class="btn btn-primary m-1">Cambiar</button>
+                <a href="/modificarCliente/{{$elemento->relCliente->id}}" class="btn btn-primary m-1">Editar</a>
+            </div>
+            
+            <div class="form-group col-md-10 border">
+                <p class="m-3">Dirección: {{$elemento->reldireccion->getResumida()}}</p>
+                <p class="m-3">Coordenadas: {{$elemento->relDireccion->coordenadas}}</p>
+            </div>
+            <div class="form-group col-md-2 align-self-center d-flex justify-content-center d-flex flex-column">
+                <button class="btn btn-primary m-1">Cambiar</button>
+                <button class="btn btn-primary m-1">Editar</button>
+            </div>
+            
+                {{-- <div class="form-group col-md-6">
                     <label for="num_equipo">Equipo Cliente: </label>
                     <select class="form-control" name="num_equipo">
                         <option value="null">Seleccione Equipo Cliente...</option>
@@ -48,58 +40,41 @@ $mostrarSololectura = true;
                             @endif
                         @endforeach 
                     </select>
+                </div> --}}
+            <div class="form-group col-md-12 border">
+                <p class="m-3">Equipo Cliente: {{$elemento->relEquipo->getResumida()}}</p>
+            </div>
+            
+            <div class="form-group col-md-12 border">
+                <p class="m-3">Panel: {{$elemento->relPanel->getResumida()}}</p>
+            </div>
+            
+            <div class="form-group col-md-12 border">
+                <p class="m-3">Plan: {{$elemento->relPlan->nombre}}</p>
+            </div>
+
+                <div class="form-group col-md-6 border">
+                    <p class="m-3">Alta: {{$elemento->inicioDateTimeLocal()}}</p>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="num_panel">Panel: </label>
-                    <select class="form-control" name="num_panel">
-                        <option value="null">Seleccione Panel a Asociarse...</option>
-                        @foreach ($paneles as $panel)
-                            @if ($panel->id === $elemento->num_panel)
-                                <option value="{{$panel->id}}" selected>{{$panel->getResumida()}}</option>
-                            @else
-                                <option value="{{$panel->id}}">{{$panel->getResumida()}}</option>
-                            @endif
-                        @endforeach 
-                    </select>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="num_plan">Plan: </label>
-                    <p>{{$elemento->relPlan->nombre}}</p>
-                    <input type="hidden" name="num_plan" value="{{$elemento->num_plan}}">
-                    {{-- <select class="form-control" name="num_plan">
-                        <option value="null">Seleccione Plan...</option>
-                        @foreach ($planes as $plan)
-                            @if ($plan->id === $elemento->num_plan)
-                                <option value="{{$plan->id}}" selected>{{$plan->nombre}}</option>
-                            @else
-                                <option value="{{$plan->id}}">{{$plan->nombre}}</option>
-                            @endif
-                        @endforeach 
-                    </select> --}}
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="created_at">Alta: </label>
-                    <p>{{$elemento->inicioDateTimeLocal()}}</p>
-                    {{-- <input id="created_at" type="datetime-local" name="created_at" value="" class="form-control"> --}}
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="coordenadas">Coordenadas: </label>
-                    <input id="coordenadas" type="text" name="coordenadas" value="{{$elemento->relDireccion->coordenadas}}" class="form-control">
-                </div>
-                <div class="form-group col-md-2">
-                </div>
-            <div class="form-group col-md-2">
+            <div class="form-group col-md-6 border">
+                <p class="m-3">Servicio: 
                 @if ($elemento->activo)
-                    <label class="form-check-label" for="flexSwitchCheckChecked">Habilitado</label>
-                    {{-- <input class="form-check-input" type="checkbox" name="activo" id="flexSwitchCheckChecked" checked> --}}
-                    @else
-                    <label class="form-check-label" for="flexSwitchCheckChecked">Deshabilitado</label>
-                    {{-- <input class="form-check-input" type="checkbox" name="activo" id="flexSwitchCheckChecked"> --}}
+                    Habilitado
+                @else
+                    Suspendido por Mora
                 @endif
+                </p>
+                <p class="m-3">Estado del Contrato: 
+                @if ($elemento->baja)
+                    Dado de Baja
+                @else
+                    Alta
+                @endif
+                </p>
             </div>
         </div>
-            <input type="text" name="id" value="{{$elemento->id}}" hidden>
-            <button type="submit" class="btn btn-primary" id="enviar">Modificar</button>
+            {{-- <input type="text" name="id" value="{{$elemento->id}}" hidden>
+            <button type="submit" class="btn btn-primary" id="enviar">Modificar</button> --}}
             <a href="/adminContratos?contrato={{$elemento->id}}" class="btn btn-primary">Volver abono</a>
     </form>
     </div>

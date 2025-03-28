@@ -155,8 +155,13 @@ class Proveedor extends Model
     {
         $apiMikro = GatewayMikrotik::getConnection($this->relGateway->relEquipo->ip, $this->relGateway->relEquipo->getUsuario(), $this->relGateway->relEquipo->getPassword());
         if ($apiMikro)
-        {
-            $interface = $apiMikro->getDatosEthernet($this->interface, $this->esVlan)['name'];
+        {   
+            $interface = ($apiMikro->getDatosEthernet($this->interface, $this->esVlan));
+            if (isset($interface['name'])) {
+                $interface = ($apiMikro->getDatosEthernet($this->interface, $this->esVlan))['name'];
+            } else {
+                $interface = 'Desconocido';
+            }
             unset($apiMikro);
             return($interface);
         }

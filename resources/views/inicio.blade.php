@@ -6,11 +6,40 @@
           Aquí va la frase.     
         @endif
         </h3>
+        
         @foreach ($proveedoresCaidos as $item)
           <div class="alert alert-danger" role="alert">
               ATENCIÓN: ({{$item->nombre}}) caído hace {{$item->tiempoCaida()}} en sitio: {{$item->relGateway->relSite->nombre}}
           </div>
         @endforeach
+        
+        @if ( session('mensaje') )
+            <ul class="list-group">
+                @foreach (session('mensaje') as $key => $items)
+                    @if ($key === 'success')
+                            @foreach ($items as $item)
+                                <li class="list-group-item list-group-item-success">{{ $item }}</li>
+                            @endforeach
+                    @endif
+                    @if ($key === 'error')
+                            @foreach ($items as $item)
+                                <li class="list-group-item list-group-item-danger"> {{ $item }} </li>
+                            @endforeach
+                    @endif
+                    @if ($key === 'warning')
+                            @foreach ($items as $item)
+                                <li class="list-group-item list-group-item-warning"> {{ $item }} </li>
+                            @endforeach
+                    @endif
+                    @if ($key === 'info')
+                            @foreach ($items as $item)
+                                <li class="list-group-item list-group-item-info"> {{ $item }} </li>
+                            @endforeach
+                    @endif
+                @endforeach
+            </ul>
+        @endif
+        
         <div class="container-fluid mt-5">
           <div class="row">
             <div class="col-sm">

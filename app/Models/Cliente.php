@@ -9,7 +9,7 @@ class Cliente extends Model
 {
     use HasFactory;
     public $timestamps = false;
-
+    
     public function relCodAreaTel () {
         return $this->belongsTo('App\Models\CodigoDeArea', 'cod_area_tel', 'id');
     }

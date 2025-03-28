@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.13] - 2025-0X-XX
+### Add
+1. Edición de Clientes desde Edición de contratos.
+
 ## [0.9.12] - 2025-01-16
 ### Add
 1. Multiwan failover. (<https://help.mikrotik.com/docs/spaces/ROS/pages/26476608/Failover+WAN+Backup>).

@@ -5,7 +5,7 @@
 $mostrarSololectura = true;
 @endphp
     <h3>Prueba contrato : {{$contrato->id}} | {{$contrato->relCLiente->getNomYApe()}} | {{$contrato->relPlan->nombre}} | Desde: {{$contrato->inicioDateTimeLocal()}}</h3>
-    <div id="testContrato">
+    {{-- <div id="testContrato">
         <testantenacliente></testantenacliente>
     </div>
     <div class="bg-light border p-3 mx-0 my-3">
@@ -24,7 +24,7 @@ $mostrarSololectura = true;
         <script src="/vue.js/resources/js/testantena.js"></script>
         <script src="/vue.js/resources/js/testAntenaCliente.js"></script>
         @include('layouts.consumosCliente2')
-    @endsection
+    @endsection --}}
 @endcan
 @include('sinPermiso')
 @endsection

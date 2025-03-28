@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use App\Models\CodigoDeArea;
 use Illuminate\Http\Request;
 use App\Models\Conceptos_debito;
+use Illuminate\Support\Facades\Auth;
 
 class ClienteController extends Controller
 {
@@ -159,7 +160,6 @@ class ClienteController extends Controller
 
     public function validar(Request $request, $modificando = false)
     {
-        //dd(CodigoDeArea::find($request->cod_area_tel)->codigoDeArea);
         if ($modificando){
             $id = 'required|numeric|min:1|max:99999';
         }else {
@@ -226,38 +226,66 @@ class ClienteController extends Controller
         $cliente->cod_area_cel = $request->input('cod_area_cel');
         $cliente->celular = $request->input('celular');
         $cliente->email = $request->input('email');
-        $cliente->es_empresa = ($request->input('es_empresa') == 'true' || $request->input('es_empresa') == 'on') ? true : false;
+        $cliente->es_empresa = ($request->input('es_empresa') == 'true' || $request->input('es_empresa') == 'on') ? 1 : 0;
         if ($noEsApi)
         {
-            $respuesta[] = 'Se cambió con exito:';
-            if ($cliente->nombre != $cliente->getOriginal()['nombre']) {
-                $respuesta[] = ' Nombre: ' . $cliente->getOriginal()['nombre'] . ' POR ' . $cliente->nombre;
-            }
-            if ($cliente->apellido != $cliente->getOriginal()['apellido']) {
-                $respuesta[] = ' Apellido: ' . $cliente->getOriginal()['apellido'] . ' POR ' . $cliente->apellido;
-            }
-            if ($cliente->cod_area_tel != $cliente->getOriginal()['cod_area_tel']) {
-                $respuesta[] = ' Código área Teléfono: ' . $cliente->getOriginal()['cod_area_tel'] . ' POR ' . $cliente->cod_area_tel;
-            }
-            if ($cliente->telefono != $cliente->getOriginal()['telefono']) {
-                $respuesta[] = ' Teléfono: ' . $cliente->getOriginal()['telefono'] . ' POR ' . $cliente->telefono;
-            }
-            if ($cliente->cod_area_cel != $cliente->getOriginal()['cod_area_cel']) {
-                $respuesta[] = ' Código área Celular: ' . $cliente->getOriginal()['cod_area_cel'] . ' POR ' . $cliente->cod_area_cel;
-            }
-            if ($cliente->celular != $cliente->getOriginal()['celular']) {
-                $respuesta[] = ' Celular: ' . $cliente->getOriginal()['celular'] . ' POR ' . $cliente->celular;
-            }
-            if ($cliente->email != $cliente->getOriginal()['email']) {
-                $respuesta[] = ' email: ' . $cliente->getOriginal()['email'] . ' POR ' . $cliente->email;
-            }
-            if ($cliente->es_empresa != $cliente->getOriginal()['es_empresa']) {
-                $respuesta[] = ' Empresa: ' . $cliente->getOriginal()['es_empresa'] . ' POR ' . $cliente->es_empresa;
+            if ($cliente->isDirty()) {
+                $respuesta['info'][] = 'Cambios en el cliente: '. $cliente->getNomYApe() . '-> ';
+                if ($cliente->isDirty('nombre')) {
+                    $respuesta['success'][] = ' Nombre: ' . $this->esVacio($cliente->getOriginal()['nombre']) . ' POR ' . $this->esVacio($cliente->nombre);
+                }
+                if ($cliente->isDirty('apellido')) {
+                    $respuesta['success'][] = ' Apellido: ' . $this->esVacio($cliente->getOriginal()['apellido']) . ' POR ' . $this->esVacio($cliente->apellido);
+                }
+                if ($cliente->isDirty('cod_area_tel')) {
+                    $respuesta['success'][] = ' Código área Teléfono: ' . $this->esVacio($cliente->getOriginal()['cod_area_tel']) . ' POR ' . $this->esVacio($cliente->cod_area_tel);
+                }
+                if ($cliente->isDirty('telefono')) {
+                    $respuesta['success'][] = ' Teléfono: ' . $this->esVacio($cliente->getOriginal()['telefono']) . ' POR ' . $this->esVacio($cliente->telefono);
+                }
+                if ($cliente->isDirty('cod_area_cel')) {
+                    $respuesta['success'][] = ' Código área Celular: ' . $this->esVacio($cliente->getOriginal()['cod_area_cel']) . ' POR ' . $this->esVacio($cliente->cod_area_cel);
+                }
+                if ($cliente->isDirty('celular')) {
+                    $respuesta['success'][] = ' Celular: ' . $this->esVacio($cliente->getOriginal()['celular']) . ' POR ' . $this->esVacio($cliente->celular);
+                }
+                if ($cliente->isDirty('email')) {
+                    $respuesta['success'][] = ' email: ' . $this->esVacio($cliente->getOriginal()['email']) . ' POR ' . $this->esVacio($cliente->email);
+                }
+                if ($cliente->isDirty('es_empresa')) {
+                    $respuesta['success'][] = ' Empresa: ' . $this->esVacio($cliente->getOriginal()['es_empresa']) . ' POR ' . $this->esVacio($cliente->es_empresa);
+                }
+            } else {
+                $respuesta['warning'][] = 'No hubo cambios en el cliente: '. $cliente->getNomYApe() . ': ';
             }
             $cliente->save();
+            if($contratos = \App\Models\Contrato::where('num_cliente', $cliente->id)->get())
+            {
+                $descripcion = null;
+                foreach ($respuesta as $key => $value) {
+                    $descripcion .= implode(". ", $value);
+                }
+                foreach ($contratos as $key => $contrato) {
+                    $ticket = \App\Models\Issue::create([
+                        'titulo_id' => 9,
+                        'descripcion' => $descripcion,
+                        'asignado_id' => Auth::id(),
+                        'creator_id' => 1,
+                        'cliente_id' => $cliente->id,
+                        'contrato_id' => $contrato->id,
+                        'closed' => true]);
+                    $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambio en titular del contrato N°: ' . $contrato->id;
+                }
+            }
+            ### SI tiene $cliente pertenece a algun $contratos entonces crear tickets con $respuesta
             return $respuesta;
         }
         $cliente->save();
+    }
+
+    private function esVacio ( $cadena)
+    {
+        return $cadena ? $cadena : 'null';
     }
 
     /**
@@ -269,7 +297,7 @@ class ClienteController extends Controller
      */
     public function update(Request $request)
     {
-        return redirect('adminClientes')->with('mensaje', $this->updateInBase($request, true));
+        return redirect('inicio')->with('mensaje', $this->updateInBase($request, true));
     }
 
     /**

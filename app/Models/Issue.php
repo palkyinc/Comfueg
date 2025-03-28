@@ -19,6 +19,15 @@ use App\Mail\TicketCerrado;
 class Issue extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'titulo_id',
+        'descripcion',
+        'asignado_id',
+        'creator_id',
+        'cliente_id',
+        'contrato_id',
+        'closed'
+    ];
 
     ##----------
     ### $tipo = 1 ->nuevo
@@ -84,7 +93,6 @@ class Issue extends Model
             $usuario = User::find($value);
             $respuesta[] = $usuario->email;
         }
-        //dd($respuesta);
         return isset($respuesta) ? $respuesta : [];
     }
     
