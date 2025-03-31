@@ -10,13 +10,38 @@ $mostrarSololectura = true;
         @csrf
         @method('patch')
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label for="title">Título: </label>
                 <input type="text" name="title" value="{{$elemento->title}}" maxlength="45"  class="form-control">
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label for="tmr">TMR: </label>
                 <input type="text" name="tmr" value="{{$elemento->tmr}}" maxlength="45"  class="form-control">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="tmr">Ticket Automático: </label>
+                
+                <div class="form-check">
+                    @if ($elemento->automatico)
+                        <input class="form-check-input" type="radio" name="automatico" id="exampleRadios1" value="1" checked>
+                    @else
+                        <input class="form-check-input" type="radio" name="automatico" id="exampleRadios1" value="1">
+                    @endif
+                    <label class="form-check-label" for="exampleRadios1">
+                        Si
+                    </label>
+                </div>
+                <div class="form-check">
+                    @if ($elemento->automatico)
+                        <input class="form-check-input" type="radio" name="automatico" id="exampleRadios2" value="0">
+                    @else
+                        <input class="form-check-input" type="radio" name="automatico" id="exampleRadios2" value="0" checked>
+                    @endif
+                    <label class="form-check-label" for="exampleRadios2">
+                        No
+                    </label>
+                </div>
+                
             </div>
         </div>
             <input type="hidden" name="id" value="{{$elemento->id}}">

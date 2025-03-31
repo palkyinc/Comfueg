@@ -31,6 +31,7 @@ ___ -->
 ## [0.9.13] - 2025-0X-XX
 ### Add
 1. Edición de Clientes desde Edición de contratos.
+2. Campo Automatico en Issue_title para filtrar titulos al cargar Issues manuales y que no aparescan los titulos automaticos. Necesita migrate.
 
 ## [0.9.12] - 2025-01-16
 ### Add

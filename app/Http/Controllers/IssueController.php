@@ -67,9 +67,7 @@ class IssueController extends Controller
         }else {
             $contrato=null;
         }
-        $titulos = Issue_title::where('id', '!=', 1 )->
-                                where('id', '!=', 4 )->
-                                where('id', '!=', 5 )->
+        $titulos = Issue_title::where('automatico', false )->
                                 get();
         $usuarios = User::get();
         return view ('agregarIssue', [
