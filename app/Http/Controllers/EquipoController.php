@@ -7,6 +7,7 @@ use App\Models\Equipo;
 use App\Models\Panel;
 use App\Models\Producto;
 use App\Models\Contrato;
+use App\Models\Mac_address_exception;
 use Illuminate\Http\Request;
 use Axiom\Rules\MacAddress;
 use DateTime;
@@ -244,11 +245,16 @@ class EquipoController extends Controller
                 $equipo->num_dispositivo = Producto::where('id', $equipo->num_dispositivo)->first();
                 $equipo->num_antena = Antena::where('id', $equipo->num_antena)->first();
                 $rta['datos'] = $equipo;
-                if ( ($contrato = Contrato::where('num_equipo', $equipo->id)->first()) || $panel = Panel::where('id_equipo', $equipo->id)->first()) 
+                if ( 
+                      ($mac_exception = Mac_address_exception::where('equipo_id', $equipo->id)->first()) || 
+                      ($contrato = Contrato::where('num_equipo', $equipo->id)->first()) || 
+                      ($panel = Panel::where('id_equipo', $equipo->id)->first())
+                    ) 
                 {
-                    $rta['mensaje'] = ($contrato ? 
+                    $rta['mensaje'] = ( $mac_exception ? 'Equipo con Mac Address Exception (' . $mac_exception->description . '). Comunicarse con el Administrador del sistema' :
+                                        ($contrato ? 
                                                     'Equipo asignado al Contrado' . ($contrato->baja ? '(Dado de baja)' : '') . ' N°: ' . $contrato->id . ', del Cliente: ' . ($contrato->relCliente->getNomyApe()) 
-                                                    : 'Equipo asignado al Panel: ' . ($panel->ssid ?? '') );
+                                                    : 'Equipo asignado al Panel: ' . ($panel->ssid ?? '') ));
                     $rta['status'] = true;
                 }
             }

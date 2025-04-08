@@ -133,6 +133,14 @@
             }
         })
     }
+    let btnEquipoDefault = zona.getElementsByClassName('boton-equipoDefault');
+    for (let i = 0; i < btnEquipoDefault.length; i++) {
+        btnEquipoDefault[i].addEventListener('click', e => {
+            if(!confirm("¿Seguro de setear equipo Default?")) {
+                e.preventDefault()
+            }
+        })
+    }
 </script>
 @foreach ($contratos as $contrato)
     <script>renderChartDaily({{$contrato->id}}, '{{$contrato->relCliente->getNomYApe()}}')</script>

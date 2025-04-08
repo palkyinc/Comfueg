@@ -12,7 +12,7 @@ $mostrarSololectura = true;
                     </form>
 
         @if ( session('mensaje') )
-            <div class="alert alert-success">
+            <div class="alert alert-info">
                 @foreach (session('mensaje') as $item)
                     {{ $item }} <br>
                 @endforeach
@@ -61,7 +61,11 @@ $mostrarSololectura = true;
                                     @endforeach
                                 </td>
                                 <td>
-                                    <a href="http://{{$contrato->relEquipo->ip}}" target="_blank">{{$contrato->relEquipo->ip}}</a>
+                                    @if ($contrato->relEquipo->ip === '0.0.0.0')
+                                        {{$contrato->relEquipo->ip}}    
+                                    @else
+                                        <a href="http://{{$contrato->relEquipo->ip}}" target="_blank">{{$contrato->relEquipo->ip}}</a>
+                                    @endif
                                 </td>
                                 <td title="{{$contrato->relEquipo->mac_address}}"> 
                                     @can('equipos_edit')
@@ -107,12 +111,36 @@ title="Dirección:
                                         <a href="/speedChangeIssue/{{ $contrato->id }}" class="margenAbajo btn btn-outline-secundary" title="Cambio de velocidad">
                                             <img src="imagenes/iconfinder_dashboard_speed_icon.svg" alt="imagen de cambio de velocidad" height="20px">
                                         </a>
-                                    @endif
-                                    @can('contratos_edit')
                                         <a href="/modificarContrato/{{ $contrato->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                             <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen de lapiz editor" height="20px">
                                         </a>
+                                    @endif
+                                    @can('contratos_edit')
                                         @if ($contrato->baja)
+                                            @if ($contrato->num_equipo !== 157)
+                                                <form action="/equipoDefaultContrato" method="post" class="margenAbajo">
+                                                @csrf
+                                                @method('patch')
+                                                    <input type="hidden" name="id" value="{{$contrato->id}}">
+                                                    <button class="btn btn-outline-secundary boton-equipoDefault"  title="Antena Default">
+                                                        <img src="imagenes/electronic_repair_service_router_network_icon.svg" alt="imagen de activar" height="20px">
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        @endif
+                                    @endcan
+                                    @if(auth()->user()->hasRole('Admin'))
+                                        
+                                        @if (!$contrato->baja)
+                                            <form action="/eliminarContrato" method="post" class="margenAbajo">
+                                            @csrf
+                                            @method('delete')
+                                                <input type="hidden" name="id" value="{{$contrato->id}}">
+                                                <button class="btn btn-outline-secundary boton-Baja"  title="Dar de Baja">
+                                                    <img src="imagenes/iconfinder_Turn_On__Off_2134663.svg" alt="imagen de Desactivar" height="20px">
+                                                </button>
+                                            </form>    
+                                        @else
                                             <form action="/realtaContrato" method="post" class="margenAbajo">
                                             @csrf
                                             @method('patch')
@@ -122,16 +150,6 @@ title="Dirección:
                                                 </button>
                                             </form>
                                         @endif
-                                    @endcan
-                                    @if(auth()->user()->hasRole('Admin') && !$contrato->baja)
-                                        <form action="/eliminarContrato" method="post" class="margenAbajo">
-                                        @csrf
-                                        @method('delete')
-                                            <input type="hidden" name="id" value="{{$contrato->id}}">
-                                            <button class="btn btn-outline-secundary boton-Baja"  title="Dar de Baja">
-                                                <img src="imagenes/iconfinder_Turn_On__Off_2134663.svg" alt="imagen de Desactivar" height="20px">
-                                            </button>
-                                        </form>
                                     @endif
                                 </td>
                             

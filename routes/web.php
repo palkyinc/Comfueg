@@ -235,8 +235,11 @@ Route::get('/agregarContrato', [ContratoController::class, 'create'])->middlewar
 Route::post('/agregarContrato', [ContratoController::class, 'store'])->middleware('auth');
 Route::get('/modificarContrato/{id}', [ContratoController::class, 'edit'])->middleware('auth');
 Route::get('/testContrato/{id}', [ContratoController::class, 'test'])->middleware('auth');
+Route::get('/modificarContratroNoPaga/{id}', [ContratoController::class, 'updateNoPaga'])->middleware('auth');
+Route::patch('/modificarContratoCliente', [ContratoController::class, 'updateCliente'])->middleware('auth');
 Route::patch('/modificarContrato', [ContratoController::class, 'update'])->middleware('auth');
 Route::patch('/realtaContrato', [ContratoController::class, 'undestroy'])->middleware('auth');
+Route::patch('/equipoDefaultContrato', [ContratoController::class, 'equipoDefault'])->middleware('auth');
 Route::delete('/eliminarContrato', [ContratoController::class, 'destroy'])->middleware('auth');
 Route::get('/altaContrato', [ContratoController::class, 'vueIndex'])->middleware('auth');
 ### API-Rest Altas

@@ -28,10 +28,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
-## [0.9.13] - 2025-0X-XX
+## [0.9.13] - 2025-04-07
 ### Add
-1. Edición de Clientes desde Edición de contratos.
-2. Campo Automatico en Issue_title para filtrar titulos al cargar Issues manuales y que no aparescan los titulos automaticos. Necesita migrate.
+1. Edición de Clientes desde Edición de contratos.  
+2. Campo Automatico en Issue_title para filtrar titulos al cargar Issues manuales y que no aparescan los titulos automaticos. Necesita migrate.  
+3. Se agrega posibilidad de cambiar el campo de facturar, status comercial con el usuario de administrador.
+4. Se agrega cambiar cliente desde editar cliente.  
+### Changed
+1. Se retira acceso directo a modificarException en vista adminException.  
+2. Se agrega en programarAlta restricción para seleccionar equipos con mac address Exception.  
 
 ## [0.9.12] - 2025-01-16
 ### Add

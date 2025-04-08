@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class ContratoController extends Controller
 {
@@ -497,6 +498,53 @@ class ContratoController extends Controller
         } */
         return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
     }
+    public function updateNoPaga ($id){
+        $contrato = Contrato::find($id);
+        $anterior = $contrato->no_paga;
+        $contrato->no_paga = $contrato->no_paga ? 0 : 1;
+        $posterior = $contrato->no_paga;
+        $respuesta['success'][] = $descripcion = 'Cambio en contrato N°: ' . $contrato->id . ' de: ' . $contrato->relCliente->getNomYApe() . ', se cambia Status Comercial de ' . ($contrato->no_paga ? 'Factura -> No Factura' : 'No Factura -> Factura') . '.';
+        $ticket = \App\Models\Issue::create([
+                    'titulo_id' => 9,
+                    'descripcion' => $descripcion,
+                    'asignado_id' => Auth::id(),
+                    'creator_id' => 1,
+                    'cliente_id' => $contrato->relCliente->id,
+                    'contrato_id' => $contrato->id,
+                    'closed' => true]);
+        $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambio en titular del contrato N°: ' . $contrato->id;
+        $contrato->save();
+        return redirect('/inicio')->with('mensaje', $respuesta);
+    }
+    public function updateCliente(Request $request) {
+        $contrato = Contrato::find($request->id);
+        if ($nuevoCliente = Cliente::find($request->genesys_id)) {
+            if ($nuevoCliente->id === $contrato->num_cliente) {
+                $respuesta['error'][] = 'El Genesys ID Cliente es igual al actual.';
+                return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+            }
+            $anterior = $contrato->num_cliente . ' (' . $contrato->relCliente->getNomYApe(true) . ')';
+            $contrato->num_cliente = $request->genesys_id;
+            $posterior = $nuevoCliente->id . ' (' . $nuevoCliente->getNomYApe(true) . ')';
+            
+            $respuesta['success'][] = $descripcion = 'Se actualizó cliente de: ' . $anterior . ' a ' . $posterior;
+            $contrato->save();
+            $contrato->refresh();
+            $ticket = \App\Models\Issue::create([
+                        'titulo_id' => 9,
+                        'descripcion' => $descripcion,
+                        'asignado_id' => Auth::id(),
+                        'creator_id' => 1,
+                        'cliente_id' => $contrato->relCliente->id,
+                        'contrato_id' => $contrato->id,
+                        'closed' => true]);
+            $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambio en titular del contrato N°: ' . $contrato->id;
+            return redirect('/inicio')->with('mensaje', $respuesta);
+        } else {
+            $respuesta['error'][] = 'El cliente con Genesys ID: ' . $request->genesys_id . ' no está cargado.';
+            return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+        }
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -583,6 +631,28 @@ class ContratoController extends Controller
             'conteo' => $conteo ?? new Contadores_mensuales,
             'website' => env('DOMINIO_COMFUEG'),
             'vuejs' => env('VUEJS_VERSION')]);
+    }
+    public function equipoDefault(Request $request)
+    {
+        $contrato = Contrato::find($request->id);
+        if ($contrato->baja && $contrato->num_equipo != 157) {
+            $descripcion = 'Se cambió Equipo ID: ' . $contrato->num_equipo . ', MacAddress: ' . $contrato->relEquipo->mac_address . ', por Equipo default seteado.';
+            $contrato->num_equipo = 157;
+            $respuesta['success'][] = 'Cambio en contrato de: ' . $contrato->relCliente->getNomYApe() . ', Equipo default seteado.';
+            $ticket = \App\Models\Issue::create([
+                'titulo_id' => 12,
+                'descripcion' => $descripcion,
+                'asignado_id' => Auth::id(),
+                'creator_id' => 1,
+                'cliente_id' => $contrato->relCliente->id,
+                'contrato_id' => $contrato->id,
+                'closed' => true]);
+            $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambio en titular del contrato N°: ' . $contrato->id;
+            $contrato->save();
+        } else {
+            $respuesta['error'][] = 'Sin Cambios en contrato de: ' . $contrato->relCliente->getNomYApe() . ', contrato no está dado de baja o ya está seteado el equipo default.';
+        }
+        return redirect('/inicio')->with('mensaje', $respuesta);
     }
 
     ################# Métodos de Gateway ####################################

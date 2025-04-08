@@ -36,7 +36,7 @@ $mostrarSololectura = true;
                 <th scope="col"> Id </th>
                 <th scope="col"> Nombre </th>
                 <th scope="col"> Mac Address </th>
-                <th scope="col"> Dispositivo </th>
+                <th scope="col"> Panel </th>
                 <th scope="col"> Descripción </th>
                 <th scope="col" colspan="2">
                     {{-- @can('mac_exception_create')
@@ -57,9 +57,9 @@ $mostrarSololectura = true;
                     <td>{{$mac_exception->description}}</td>
                     <td class="d-flex">
                         @can('mac_exception_edit')
-                            <a href="/modificarException/{{ $mac_exception->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
+                            {{-- <a href="/modificarException/{{ $mac_exception->id }}" class="margenAbajo btn btn-outline-secundary" title="Editar">
                                 <img src="imagenes/iconfinder_new-24_103173.svg" alt="imagen delete basquet" height="20px">
-                            </a>
+                            </a> --}}
                             <form action="/borrarException" method="post" class="margenAbajo">
                             @csrf
                             @method('delete')
