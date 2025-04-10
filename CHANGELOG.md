@@ -30,6 +30,13 @@ ___ -->
 
 ## [0.9.13] - 2025-04-07
 ### Add
+1. Edicion de direccion desde editar contrato.
+2. Agregar coordenada en Editar Contrato, cuando no se ha configurado una coordenada.
+
+### Changed
+
+## [0.9.13] - 2025-04-07
+### Add
 1. Edición de Clientes desde Edición de contratos.  
 2. Campo Automatico en Issue_title para filtrar titulos al cargar Issues manuales y que no aparescan los titulos automaticos. Necesita migrate.  
 3. Se agrega posibilidad de cambiar el campo de facturar, status comercial con el usuario de administrador.

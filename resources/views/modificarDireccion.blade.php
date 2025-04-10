@@ -89,6 +89,16 @@ $mostrarSololectura = true;
                         @endforeach 
                     </select>
                 </div>
+                <div class="form-group col-md-4">
+                    <label for="coordenadas">Coordenadas: </label>
+                    <input type="text" name="coordenadas" value="{{$elemento->coordenadas}}" maxlength="40"  class="form-control">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="comentarios">Comentarios</label>
+                    <input type="text" name="comentarios" value="{{$elemento->comentarios}}" maxlength="100" class="form-control">
+                </div>
             </div>
     
             <input type="hidden" name="id" value="{{$elemento->id}}">

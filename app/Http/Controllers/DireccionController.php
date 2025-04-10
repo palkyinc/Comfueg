@@ -7,6 +7,7 @@ use App\Models\Direccion;
 use App\Models\Calle;
 use App\Models\Ciudad;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DireccionController extends Controller
 {
@@ -21,7 +22,6 @@ class DireccionController extends Controller
         if ($calle)
         {
             $Street = Calle::getCallePorNombre($calle);
-            //dd($Street);
             $direcciones = Direccion::with('relCalle', 'relEntrecalle1', 'relBarrio', 'relCiudad', 'relEntrecalle2')
                             ->where("id_calle", $Street->id)
                             ->paginate(10);
@@ -69,7 +69,6 @@ class DireccionController extends Controller
         $Direccion->id_ciudad = $request->input('id_ciudad');
         if ($existe = Direccion::select('id')->where([['id_calle', $Direccion->id_calle ], ['numero', $Direccion->numero]])->first())
         {
-            //dd($existe->id);
             $respuesta[] = 'La dirección ya EXISTE. Es la ID: ' . $existe->id;
         } else  {
                 $Direccion->save();
@@ -97,12 +96,12 @@ class DireccionController extends Controller
      */
     public function edit($id)
     {
-        $Direccion = Direccion::find($id);
+        $direccion = Direccion::find($id);
         $calles = Calle::get();
         $barrios = Barrio::get();
         $ciudades = Ciudad::get();
         return view('modificarDireccion', [
-            'elemento' => $Direccion,
+            'elemento' => $direccion,
             'barrios' => $barrios,
             'calles' => $calles,
             'ciudades' => $ciudades,
@@ -118,41 +117,61 @@ class DireccionController extends Controller
      */
     public function update(Request $request)
     {
-        /* $id_calle = $request->input('id_calle');
-        $numero = $request->input('numero');
-        $entrecalle_1 = $request->input('entrecalle_1');
-        $entrecalle_2 = $request->input('entrecalle_2');
-        $id_barrio = $request->input('id_barrio');
-        $id_ciudad = $request->input('id_ciudad');
-        $direccion = Direccion::find($request->input('id'));
-        $this->validar($request, $direccion);
-        $direccion->id_calle = $id_calle;
-        $direccion->numero = $numero;
-        $direccion->entrecalle_1 = $entrecalle_1;
-        $direccion->entrecalle_2 = $entrecalle_2;
-        $direccion->id_barrio = $id_barrio;
-        $direccion->id_ciudad = $id_ciudad; */
         $direccion = $this->requestToObject($request, $request->input('id'));
-        if ($direccion->id_calle != $direccion->getOriginal()['id_calle']) {
-            $respuesta[] = ' Id Calle: ' . $direccion->getOriginal()['id_calle'] . ' POR ' . $direccion->id_calle;
+        if ($direccion->isDirty())
+        {
+            $respuesta['success'][] = ' La dirección ID: ' . $direccion->id_calle . ' ha sido modificada.';
+            if ($direccion->isDirty('id_calle')) {
+                $respuesta['success'][] = ' Id Calle: ' . $direccion->getOriginal()['id_calle'] . ' POR ' . $direccion->id_calle;
+            }
+            if ($direccion->isDirty('numero')) {
+                $respuesta['success'][] = ' Número: ' . $direccion->getOriginal()['numero'] . ' POR ' . $direccion->numero;
+            }
+            if ($direccion->isDirty('entrecalle_1')) {
+                $respuesta['success'][] = ' Entrecalle 1: ' . $direccion->getOriginal()['entrecalle_1'] . ' POR ' . $direccion->entrecalle_1;
+            }
+            if ($direccion->isDirty('entrecalle_2')) {
+                $respuesta['success'][] = ' Entrecalle 2: ' . $direccion->getOriginal()['entrecalle_2'] . ' POR ' . $direccion->entrecalle_2;
+            }
+            if ($direccion->isDirty('id_barrio')) {
+                $respuesta['success'][] = ' Id Barrio: ' . $direccion->getOriginal()['id_barrio'] . ' POR ' . $direccion->id_barrio;
+            }
+            if ($direccion->isDirty('id_ciudad')) {
+                $respuesta['success'][] = ' Id Ciudad: ' . $direccion->getOriginal()['id_ciudad'] . ' POR ' . $direccion->id_ciudad;
+            }
+            if ($direccion->isDirty('coordenadas')) {
+                $respuesta['success'][] = ' Coordenadas: ' . $direccion->getOriginal()['coordenadas'] . ' POR ' . $direccion->coordenadas;
+            }
+            if ($direccion->isDirty('comentarios')) {
+                $respuesta['success'][] = ' Comentarios: ' . $direccion->getOriginal()['comentarios'] . ' POR ' . $direccion->comentarios;
+            }
+            $direccion->save();
+            $direccion->refresh();
+            dd($direccion);
+            if($contratos = \App\Models\Contrato::where('id_direccion', $direccion->id)->get())
+            {
+                $descripcion = null;
+                foreach ($respuesta as $key => $value) {
+                    $descripcion .= implode(". ", $value);
+                }
+                foreach ($contratos as $key => $contrato) {
+                    $ticket = \App\Models\Issue::create([
+                        'titulo_id' => 8,
+                        'descripcion' => $descripcion,
+                        'asignado_id' => Auth::id(),
+                        'creator_id' => 1,
+                        'cliente_id' => $contrato->relCliente->id,
+                        'contrato_id' => $contrato->id,
+                        'closed' => true]);
+                    $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambios en Dirección del contrato N°: ' . $contrato->id;
+                }
+                return redirect('inicio')->with('mensaje', $respuesta);
+            }
+        } else {
+            $respuesta['info'][] = 'Nada para modificar.';
+            return redirect('adminDirecciones')->with('mensaje', $respuesta);
         }
-        if ($direccion->numero != $direccion->getOriginal()['numero']) {
-            $respuesta[] = ' Número: ' . $direccion->getOriginal()['numero'] . ' POR ' . $direccion->numero;
-        }
-        if ($direccion->entrecalle_1 != $direccion->getOriginal()['entrecalle_1']) {
-            $respuesta[] = ' Entrecalle 1: ' . $direccion->getOriginal()['entrecalle_1'] . ' POR ' . $direccion->entrecalle_1;
-        }
-        if ($direccion->entrecalle_2 != $direccion->getOriginal()['entrecalle_2']) {
-            $respuesta[] = ' Entrecalle 2: ' . $direccion->getOriginal()['entrecalle_2'] . ' POR ' . $direccion->entrecalle_2;
-        }
-        if ($direccion->id_barrio != $direccion->getOriginal()['id_barrio']) {
-            $respuesta[] = ' Id Barrio: ' . $direccion->getOriginal()['id_barrio'] . ' POR ' . $direccion->id_barrio;
-        }
-        if ($direccion->id_ciudad != $direccion->getOriginal()['id_ciudad']) {
-            $respuesta[] = ' Id Ciudad: ' . $direccion->getOriginal()['id_ciudad'] . ' POR ' . $direccion->id_ciudad;
-        }
-        $direccion->save();
-        return redirect('adminDirecciones')->with('mensaje', $respuesta);
+        
     }
 
     public function validar(Request $request)
@@ -164,7 +183,8 @@ class DireccionController extends Controller
                 'id_barrio' => 'required|numeric|min:1|max:99999',
                 'id_ciudad' => 'required|numeric|min:1|max:99999',
                 'entrecalle_1' => 'nullable|numeric|min:1|max:9999',
-                'entrecalle_2' => 'nullable|numeric|min:1|max:9999'
+                'entrecalle_2' => 'nullable|numeric|min:1|max:9999',
+                'coordenadas' => 'nullable|min:22|max:40'
             ]
         );
     }

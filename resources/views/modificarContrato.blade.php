@@ -52,11 +52,25 @@ $mostrarSololectura = true;
             
             <div class="form-group col-md-10 border">
                 <p class="m-3">Dirección: {{$elemento->reldireccion->getResumida()}}</p>
-                <p class="m-3">Coordenadas: {{$elemento->relDireccion->coordenadas}}</p>
+                @if ($elemento->relDireccion->coordenadas)
+                    <p class="m-3">Coordenadas: {{$elemento->relDireccion->coordenadas}}</p>
+                @else
+                    <form action="/modificarContratoCoordenadas" method="post" class="">
+                    @csrf
+                    @method('patch')
+                        <div class="m-3 form-inline">
+                            <label for="coordenadas">Coordenadas: </label>
+                            <input type="hidden" name="id" value="{{$elemento->id}}">
+                            <input type="text" name="coordenadas" value="{{$elemento->coordenadas}}" maxlength="40"  class="form-control m-3 p-3">
+                            <button class="btn btn-primary p-1"  title="Cambiar Cliente">Guardar</button>
+                        </div>
+                    </form>
+                @endif
+                <p class="m-3">Notas: {{$elemento->relDireccion->comentarios}}</p>
             </div>
             <div class="form-group col-md-2 align-self-center d-flex justify-content-center d-flex flex-column">
                 <button class="btn btn-primary m-1" disabled>Cambiar</button>
-                <button class="btn btn-primary m-1" disabled>Editar</button>
+                <a href="/modificarDireccion/{{$elemento->relDireccion->id}}" class="btn btn-primary m-1">Editar</a>
             </div>
             
             @if (auth()->user()->hasRole('Admin'))

@@ -89,15 +89,8 @@ dd(CronFunciones::generarArchivoSem($dias));
 
 /* Route::view('/welcome', 'index'); */
 /* Route::get('/test/', function (){
-        $contrato = (Contrato::find(9498));
-        dd($contrato->changeStateContratoGateway());
-        $apiMikro = GatewayMikrotik::getConnection($contrato->relPlan->relPanel->relEquipo->ip, $contrato->relPlan->relPanel->relEquipo->getUsuario(), $contrato->relPlan->relPanel->relEquipo->getPassword());
-        if ($apiMikro)
-        {
-                $apiMikro->checkDhcpServer($contrato->relPlan->relPanel->relEquipo->ip);
-        } else {
-                dd('Error');
-        }
+        $contrato = (\App\Models\Contrato::find(2));
+        dd($contrato);
 }); */
 
 ### Route index
@@ -237,6 +230,7 @@ Route::get('/modificarContrato/{id}', [ContratoController::class, 'edit'])->midd
 Route::get('/testContrato/{id}', [ContratoController::class, 'test'])->middleware('auth');
 Route::get('/modificarContratroNoPaga/{id}', [ContratoController::class, 'updateNoPaga'])->middleware('auth');
 Route::patch('/modificarContratoCliente', [ContratoController::class, 'updateCliente'])->middleware('auth');
+Route::patch('/modificarContratoCoordenadas', [ContratoController::class, 'updateCoordenadas'])->middleware('auth');
 Route::patch('/modificarContrato', [ContratoController::class, 'update'])->middleware('auth');
 Route::patch('/realtaContrato', [ContratoController::class, 'undestroy'])->middleware('auth');
 Route::patch('/equipoDefaultContrato', [ContratoController::class, 'equipoDefault'])->middleware('auth');

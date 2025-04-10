@@ -516,6 +516,23 @@ class ContratoController extends Controller
         $contrato->save();
         return redirect('/inicio')->with('mensaje', $respuesta);
     }
+    public function updateCoordenadas(Request $request)
+    {
+        $contrato = Contrato::find($request->id);
+        $respuesta['success'][] = $descripcion = 'Cambio en contrato N°: ' . $contrato->id . ' de coordenadas: ' . ($request->coordenadas ? $request->coordenadas : 'NULL') . ' por '  . ($contrato->relDireccion->coordenadas ? $contrato->relDireccion->coordenadas : 'NULL') . '.';
+        $contrato->relDireccion->coordenadas = $request->coordenadas;
+        $ticket = \App\Models\Issue::create([
+                    'titulo_id' => 13,
+                    'descripcion' => $descripcion,
+                    'asignado_id' => Auth::id(),
+                    'creator_id' => 1,
+                    'cliente_id' => $contrato->relCliente->id,
+                    'contrato_id' => $contrato->id,
+                    'closed' => true]);
+        $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambio en titular del contrato N°: ' . $contrato->id;
+        $contrato->save();
+        return redirect('/inicio')->with('mensaje', $respuesta);
+    }
     public function updateCliente(Request $request) {
         $contrato = Contrato::find($request->id);
         if ($nuevoCliente = Cliente::find($request->genesys_id)) {
