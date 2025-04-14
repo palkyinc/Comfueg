@@ -36,7 +36,7 @@ public function relCiudad ()
 }
 public function getResumida()
 {
-    return ($this->numero . ', ' . $this->relCalle->nombre . ', ' . $this->relBarrio->nombre);
+    return ($this->relCalle->nombre . ', ' . $this->numero . ', ' . $this->relBarrio->nombre);
 }
 
 }//fin de la clase

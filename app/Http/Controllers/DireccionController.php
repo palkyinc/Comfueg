@@ -36,8 +36,9 @@ class DireccionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $contrato_id = $request->contrato;
         $calles = Calle::get();
         $barrios = Barrio::get();
         $ciudades = Ciudad::get();
@@ -46,6 +47,7 @@ class DireccionController extends Controller
                         'datos' => 'active',
                         'calles' => $calles,
                         'barrios' => $barrios,
+                        'contrato_id' => $contrato_id,
                         'ciudades' => $ciudades
                         ]
                     );
@@ -59,22 +61,33 @@ class DireccionController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validar($request);
-        $Direccion = new Direccion;
-        $Direccion->id_calle = $request->input('id_calle');
-        $Direccion->numero = $request->input('numero');
-        $Direccion->entrecalle_1 = $request->input('entrecalle_1');
-        $Direccion->entrecalle_2 = $request->input('entrecalle_2');
-        $Direccion->id_barrio = $request->input('id_barrio');
-        $Direccion->id_ciudad = $request->input('id_ciudad');
-        if ($existe = Direccion::select('id')->where([['id_calle', $Direccion->id_calle ], ['numero', $Direccion->numero]])->first())
+        $direccion = $this->requestToObject($request);
+        if ($existe = Direccion::select('id')->where([['id_calle', $direccion->id_calle ], ['numero', $direccion->numero]])->first())
         {
-            $respuesta[] = 'La dirección ya EXISTE. Es la ID: ' . $existe->id;
+            $respuesta['info'][] = 'La dirección ya EXISTE. Es la ID: ' . $existe->id . '.';
         } else  {
-                $Direccion->save();
-                $respuesta[] = 'Dirección se creo correctamente';
-                }
-        return redirect('/adminDirecciones')->with('mensaje', $respuesta);
+            $direccion->save();
+            $respuesta['success'][] = 'Dirección se creó correctamente';
+        }
+        ### cambiar id direcicon en contrato
+        $contrato = \App\Models\Contrato::find($request->contrato_id);
+        if ($contrato->id_direccion === $existe->id)
+        {
+            $respuesta['info'][] = 'La dirección es la que actualmente esta cargada en contrato.';
+        } else {
+            $respuesta['success'][] = 'Se cambia (' . $contrato->relDireccion->getResumida() . ') por (' . $direccion->getResumida() . ') en el contrato ID: ' . $contrato->id . ' de ' . $contrato->relCliente->getNomYApe() . '.';
+            $contrato->id_direccion = $existe->id;
+            $contrato->save();
+            ### ver si existe mas contrato con direccion con este id
+            $respuesta = $this->addTicket($existe, $respuesta);
+            ### crear tkckets correspondientes
+
+        }
+        if ($request->contrato_id) {
+            return redirect('/modificarContrato/' . $request->contrato_id)->with('mensaje', $respuesta);
+        } else {
+            return redirect('/adminDirecciones')->with('mensaje', $respuesta);
+        }
     }
 
     /**
@@ -85,7 +98,7 @@ class DireccionController extends Controller
      */
     public function show(Direccion $direccion)
     {
-        // 
+        ###
     }
 
     /**
@@ -94,7 +107,7 @@ class DireccionController extends Controller
      * @param  \App\Models\Direccion  $direccion
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {
         $direccion = Direccion::find($id);
         $calles = Calle::get();
@@ -105,6 +118,7 @@ class DireccionController extends Controller
             'barrios' => $barrios,
             'calles' => $calles,
             'ciudades' => $ciudades,
+            'contrato_id' => $request->contrato_id,
              'datos' => 'active']);
     }
 
@@ -128,10 +142,10 @@ class DireccionController extends Controller
                 $respuesta['success'][] = ' Número: ' . $direccion->getOriginal()['numero'] . ' POR ' . $direccion->numero;
             }
             if ($direccion->isDirty('entrecalle_1')) {
-                $respuesta['success'][] = ' Entrecalle 1: ' . $direccion->getOriginal()['entrecalle_1'] . ' POR ' . $direccion->entrecalle_1;
+                $respuesta['success'][] = ' Entrecalle 1: ' . ($direccion->getOriginal()['entrecalle_1'] ? $direccion->getOriginal()['entrecalle_1'] : 'NULL') . ' POR ' . ($direccion->entrecalle_1 ? $direccion->entrecalle_1 : 'NULL');
             }
             if ($direccion->isDirty('entrecalle_2')) {
-                $respuesta['success'][] = ' Entrecalle 2: ' . $direccion->getOriginal()['entrecalle_2'] . ' POR ' . $direccion->entrecalle_2;
+                $respuesta['success'][] = ' Entrecalle 2: ' . ($direccion->getOriginal()['entrecalle_2'] ? $direccion->getOriginal()['entrecalle_2'] : 'NULL') . ' POR ' . ($direccion->entrecalle_2 ? $direccion->entrecalle_2 : 'NULL');
             }
             if ($direccion->isDirty('id_barrio')) {
                 $respuesta['success'][] = ' Id Barrio: ' . $direccion->getOriginal()['id_barrio'] . ' POR ' . $direccion->id_barrio;
@@ -140,38 +154,46 @@ class DireccionController extends Controller
                 $respuesta['success'][] = ' Id Ciudad: ' . $direccion->getOriginal()['id_ciudad'] . ' POR ' . $direccion->id_ciudad;
             }
             if ($direccion->isDirty('coordenadas')) {
-                $respuesta['success'][] = ' Coordenadas: ' . $direccion->getOriginal()['coordenadas'] . ' POR ' . $direccion->coordenadas;
+                $respuesta['success'][] = ' Coordenadas: ' . ($direccion->getOriginal()['coordenadas'] ? $direccion->getOriginal()['coordenadas'] : 'NULL') . ' POR ' . ($direccion->coordenadas ? $direccion->coordenadas : 'NULL');
             }
             if ($direccion->isDirty('comentarios')) {
-                $respuesta['success'][] = ' Comentarios: ' . $direccion->getOriginal()['comentarios'] . ' POR ' . $direccion->comentarios;
+                $respuesta['success'][] = ' Comentarios: ' . ($direccion->getOriginal()['comentarios'] ? $direccion->getOriginal()['comentarios'] : 'NULL') . ' POR ' . ($direccion->comentarios ? $direccion->comentarios : 'NULL');
             }
             $direccion->save();
             $direccion->refresh();
-            dd($direccion);
-            if($contratos = \App\Models\Contrato::where('id_direccion', $direccion->id)->get())
-            {
-                $descripcion = null;
-                foreach ($respuesta as $key => $value) {
-                    $descripcion .= implode(". ", $value);
-                }
-                foreach ($contratos as $key => $contrato) {
-                    $ticket = \App\Models\Issue::create([
-                        'titulo_id' => 8,
-                        'descripcion' => $descripcion,
-                        'asignado_id' => Auth::id(),
-                        'creator_id' => 1,
-                        'cliente_id' => $contrato->relCliente->id,
-                        'contrato_id' => $contrato->id,
-                        'closed' => true]);
-                    $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambios en Dirección del contrato N°: ' . $contrato->id;
-                }
-                return redirect('inicio')->with('mensaje', $respuesta);
-            }
+            $respuesta = $this->addTicket($direccion, $respuesta);
         } else {
             $respuesta['info'][] = 'Nada para modificar.';
-            return redirect('adminDirecciones')->with('mensaje', $respuesta);
+        }
+        if ($request->contrato_id) {
+            return redirect('/modificarContrato/' . $request->contrato_id)->with('mensaje', $respuesta);
+        } else {
+            return redirect('/adminDirecciones')->with('mensaje', $respuesta);
         }
         
+    }
+
+    private function addTicket ($direccion, $respuesta)
+    {
+        if($contratos = \App\Models\Contrato::where('id_direccion', $direccion->id)->get())
+        {
+            $descripcion = null;
+            foreach ($respuesta as $key => $value) {
+                $descripcion .= implode(". ", $value);
+            }
+            foreach ($contratos as $key => $contrato) {
+                $ticket = \App\Models\Issue::create([
+                    'titulo_id' => 13,
+                    'descripcion' => $descripcion,
+                    'asignado_id' => Auth::id(),
+                    'creator_id' => 1,
+                    'cliente_id' => $contrato->relCliente->id,
+                    'contrato_id' => $contrato->id,
+                    'closed' => true]);
+                $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambios en Dirección del contrato N°: ' . $contrato->id;
+            }
+        }
+        return $respuesta;
     }
 
     public function validar(Request $request)
@@ -184,7 +206,8 @@ class DireccionController extends Controller
                 'id_ciudad' => 'required|numeric|min:1|max:99999',
                 'entrecalle_1' => 'nullable|numeric|min:1|max:9999',
                 'entrecalle_2' => 'nullable|numeric|min:1|max:9999',
-                'coordenadas' => 'nullable|min:22|max:40'
+                'coordenadas' => 'nullable|min:22|max:40',
+                'comentarios' => 'nullable|max:40'
             ]
         );
     }
@@ -196,7 +219,7 @@ class DireccionController extends Controller
      */
     public function destroy(Direccion $direccion)
     {
-        //
+        ###
     }
 
     public function search ($street, $numero) {
@@ -263,4 +286,4 @@ class DireccionController extends Controller
         $direccion->comentarios = ( null !==$request->input('comentarios')) ? $request->input('comentarios') : '';
         return $direccion;
     }
-}//fin de la clase
+}##fin de la clase
