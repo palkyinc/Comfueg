@@ -64,10 +64,25 @@ $mostrarSololectura = true;
                         @endforeach 
                     </select>
                 </div>
+                <div class="form-group col-md-4">
+                    <label for="coordenadas">Coordenadas: </label>
+                    <input type="text" name="coordenadas" value="{{old('coordenadas')}}" maxlength="40"  class="form-control">
+                </div>
             </div>
-    
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="comentarios">Comentarios</label>
+                    <input type="text" name="comentarios" value="{{old('comentarios')}}" maxlength="100" class="form-control">
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-primary" id="enviar">Crear Nueva</button>
-            <a href="/adminDirecciones" class="btn btn-primary">volver</a>
+            @if (isset($contrato_id))
+                <a href="/modificarContrato/{{$contrato_id}}" class="btn btn-primary">Volver</a>
+                <input type="hidden" name="contrato_id" value="{{$contrato_id}}">
+            @else
+                <a href="/adminDirecciones" class="btn btn-primary">Volver</a>
+            @endif
     </form>
     </div>
 

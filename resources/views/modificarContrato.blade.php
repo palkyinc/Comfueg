@@ -4,32 +4,7 @@
 @php
 $mostrarSololectura = true;
 @endphp
-@if ( session('mensaje') )
-    <ul class="list-group m-1 p-1">
-        @foreach (session('mensaje') as $key => $items)
-            @if ($key === 'success')
-                    @foreach ($items as $item)
-                        <li class="list-group-item list-group-item-success">{{ $item }}</li>
-                    @endforeach
-            @endif
-            @if ($key === 'error')
-                    @foreach ($items as $item)
-                        <li class="list-group-item list-group-item-danger"> {{ $item }} </li>
-                    @endforeach
-            @endif
-            @if ($key === 'warning')
-                    @foreach ($items as $item)
-                        <li class="list-group-item list-group-item-warning"> {{ $item }} </li>
-                    @endforeach
-            @endif
-            @if ($key === 'info')
-                    @foreach ($items as $item)
-                        <li class="list-group-item list-group-item-info"> {{ $item }} </li>
-                    @endforeach
-            @endif
-        @endforeach
-    </ul>
-@endif
+@include('layouts.mensajes')
 <h3>Editar Contrato con ID: {{$elemento->id}}</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
         <div class="form-row">
@@ -69,20 +44,20 @@ $mostrarSololectura = true;
                 <p class="m-3">Notas: {{$elemento->relDireccion->comentarios}}</p>
             </div>
             <div class="form-group col-md-2 align-self-center d-flex justify-content-center d-flex flex-column">
-                <button class="btn btn-primary m-1" disabled>Cambiar</button>
-                <a href="/modificarDireccion/{{$elemento->relDireccion->id}}" class="btn btn-primary m-1">Editar</a>
+                <a href="/modificarContratoDireccion?contrato={{$elemento->id}}" class="btn btn-primary m-1">Cambiar</a>
+                <a href="/modificarDireccion/{{$elemento->relDireccion->id}}?contrato_id={{$elemento->id}}" class="btn btn-primary m-1">Editar</a>
             </div>
             
             @if (auth()->user()->hasRole('Admin'))
                 <div class="form-group col-md-10 border">
-                    <p class="m-3">Status comercial: {{$elemento->no_paga ? 'No Factura' : 'Factura'}}</p>
+                    <p class="m-3">Status comercial: {{$elemento->no_paga ? 'NO FACTURA' : 'Factura'}}</p>
                 </div>
                 <div class="form-group col-md-2 align-self-center d-flex justify-content-center d-flex flex-column">
                     <a href="/modificarContratroNoPaga/{{$elemento->id}}" class="btn btn-primary m-1">Cambiar</a>
                 </div>  
             @else
                 <div class="form-group col-md-12 border">
-                    <p class="m-3">Status comercial: {{$elemento->no_paga ? 'No Factura' : 'Factura'}}</p>
+                    <p class="m-3">Status comercial: {{$elemento->no_paga ? 'NO FACTURA' : 'Factura'}}</p>
                 </div>
             @endif
             
@@ -120,7 +95,7 @@ $mostrarSololectura = true;
         </div>
             {{-- <input type="text" name="id" value="{{$elemento->id}}" hidden>
             <button type="submit" class="btn btn-primary" id="enviar">Modificar</button> --}}
-            <a href="/adminContratos?contrato={{$elemento->id}}" class="btn btn-primary">Volver abono</a>
+            <a href="/adminContratos?contrato={{$elemento->id}}" class="btn btn-primary">Volver Contrato</a>
     </div>
 
     @if( $errors->any() )

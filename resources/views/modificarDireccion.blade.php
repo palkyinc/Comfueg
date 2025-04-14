@@ -101,6 +101,7 @@ $mostrarSololectura = true;
                 </div>
             </div>
     
+            <input type="hidden" name="contrato_id" value="{{$contrato_id}}">
             <input type="hidden" name="id" value="{{$elemento->id}}">
             <button type="submit" class="btn btn-primary" id="enviar">Modificar</button>
             <a href="/adminDirecciones" class="btn btn-primary">volver</a>

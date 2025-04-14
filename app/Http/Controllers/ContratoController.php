@@ -531,7 +531,7 @@ class ContratoController extends Controller
                     'closed' => true]);
         $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambio en titular del contrato N°: ' . $contrato->id;
         $contrato->save();
-        return redirect('/inicio')->with('mensaje', $respuesta);
+        return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
     }
     public function updateCliente(Request $request) {
         $contrato = Contrato::find($request->id);

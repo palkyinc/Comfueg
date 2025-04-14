@@ -32,6 +32,7 @@ ___ -->
 ### Add
 1. Edicion de direccion desde editar contrato.
 2. Agregar coordenada en Editar Contrato, cuando no se ha configurado una coordenada.
+3. Cargar Nueva dirección en Contrato.
 
 ### Changed
 

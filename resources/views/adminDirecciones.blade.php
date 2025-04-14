@@ -4,35 +4,7 @@
 @php
 $mostrarSololectura = true;
 @endphp
-@if ( session('mensaje') )
-    {{-- <div class="alert alert-success">
-        @foreach (session('mensaje') as $item)
-            {{ $item }} <br>
-        @endforeach
-    </div> --}}
-    @foreach (session('mensaje') as $key => $items)
-        @if ($key === 'success')
-                @foreach ($items as $item)
-                    <li class="list-group-item list-group-item-success">{{ $item }}</li>
-                @endforeach
-        @endif
-        @if ($key === 'error')
-                @foreach ($items as $item)
-                    <li class="list-group-item list-group-item-danger"> {{ $item }} </li>
-                @endforeach
-        @endif
-        @if ($key === 'warning')
-                @foreach ($items as $item)
-                    <li class="list-group-item list-group-item-warning"> {{ $item }} </li>
-                @endforeach
-        @endif
-        @if ($key === 'info')
-                @foreach ($items as $item)
-                    <li class="list-group-item list-group-item-info"> {{ $item }} </li>
-                @endforeach
-        @endif
-    @endforeach
-@endif
+@include('layouts.mensajes')
 <form class="form-inline mx-4 margin-10" action="" method="GET">
     <h2 class="mx-3">Administración de direcciones</h2>
     <label for="calle" class="mx-3">Calle: </label>
