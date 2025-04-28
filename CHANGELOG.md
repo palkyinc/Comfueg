@@ -28,11 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
-## [0.9.13] - 2025-04-07
+## [0.9.14] - 2025-04-28
 ### Add
 1. Edicion de direccion desde editar contrato.
 2. Agregar coordenada en Editar Contrato, cuando no se ha configurado una coordenada.
 3. Cargar Nueva dirección en Contrato.
+4. Nuevo procedimiento para cambio de panel, con ticket.
 
 ### Changed
 

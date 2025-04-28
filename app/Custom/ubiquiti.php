@@ -4,7 +4,7 @@ namespace App\Custom;
 /*
  * Usage example:
  * $ubiquiti   = new Ubiquiti('10.10.6.34', 'ubnt', 'S1mon3d@', true, '80', 3);
- * print_r($ubiquiti->stations(true)); //true => array | false | json
+ * print_r($ubiquiti->stations(true)); true => array | false | json
  * print_r($ubiquiti->status(true)); true => array | false | json
  * print_r($ubiquiti->status_new(true)); true => array | false | json
  * print_r($ubiquiti->ifstats(true)); true => array | false | json
@@ -60,7 +60,6 @@ class Ubiquiti{
         while(!feof($file))
             {
                 $linea = fgets($file);
-                //echo "$linea <br>\n";
                 if (substr($linea,0,10)==='10 packets')
                     $dato["Ping_Loss"] = $this->between('ved, ','%',$linea);
                 if (substr($linea,0,10)==='round-trip')
@@ -229,7 +228,7 @@ class Ubiquiti{
         
         $cookies = str_replace('\\','/', getcwd().'/'.'tmp/cookie-'.$this->_ip);
         
-        //Setup CURL
+        ### Setup CURL
         curl_setopt($this->_ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt ($this->_ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($this->_ch, CURLOPT_RETURNTRANSFER, true);
@@ -237,7 +236,7 @@ class Ubiquiti{
         curl_setopt($this->_ch, CURLOPT_HTTPHEADER,array("Expect:  "));
         curl_setopt($this->_ch, CURLOPT_TIMEOUT, $timeout);
 
-        // Login AirOS >= 8.5.0+ OR get cookie with session ID for AirOS < 8.5.0
+        ### Login AirOS >= 8.5.0+ OR get cookie with session ID for AirOS < 8.5.0
         curl_setopt($this->_ch, CURLOPT_URL, $this->_baseurl . '/api/auth');
         curl_setopt($this->_ch, CURLOPT_POST, true);
 	    curl_setopt($this->_ch, CURLOPT_POSTFIELDS, $postdata1);
@@ -245,7 +244,7 @@ class Ubiquiti{
         $response = curl_exec ($this->_ch);
         curl_setopt ($this->_ch, CURLOPT_HEADER, false);
 
-        // AirOS >= 8.5.0 request and return file
+        ### AirOS >= 8.5.0 request and return file
         if (curl_getinfo ($this->_ch, CURLINFO_HTTP_CODE) == 200)
         {
             curl_setopt($this->_ch, CURLOPT_URL, $this->_baseurl . $page);
@@ -253,13 +252,13 @@ class Ubiquiti{
             $result		= curl_exec($this->_ch);
 
             curl_setopt ($this->_ch, CURLOPT_URL, $this->_baseurl . "/logout.cgi");
-            //curl_setopt ($this->_ch, CURLOPT_HTTPHEADER, Array (trim ($XCSRFID[0]), 'X-AIROS-LUA: 1'));
+            ### curl_setopt ($this->_ch, CURLOPT_HTTPHEADER, Array (trim ($XCSRFID[0]), 'X-AIROS-LUA: 1'));
             curl_setopt ($this->_ch, CURLOPT_POST, 1);
             curl_setopt ($this->_ch, CURLOPT_POSTFIELDS, Array());
             curl_exec ($this->_ch);
         }
 
-        // Login failed, try AirOS < 8.5.0 login, request, and return file
+        ### Login failed, try AirOS < 8.5.0 login, request, and return file
         else
         {
                 curl_setopt ($this->_ch, CURLOPT_URL, $this->_baseurl . "/login.cgi");

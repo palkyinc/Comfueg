@@ -405,6 +405,7 @@ class ContratoController extends Controller
     {
         $contrato = Contrato::find($id);
         $datos = $this->getDataCreateEdit($contrato->num_equipo);
+        $datos['issue_id'] = ($issue_id = Issue::where('contrato_id', $contrato->id)->where('titulo_id', 11)->where('closed', false)->first()) ? $issue_id->id : NULL;
         $datos['elemento'] =  $contrato;
         return view('modificarContrato', $datos);
     }
@@ -437,7 +438,6 @@ class ContratoController extends Controller
         $contrato->num_panel = $request['num_panel'];
         $contrato->num_plan = $request['num_plan'];
         $contrato->created_at = $request['created_at'];
-        //$contrato->activo = (isset($request['activo']) && $request['activo'] == 'on') ? true : false;
         if ($contrato->relDireccion->coordenadas !== $request['coordenadas'] &&
             $contrato->id_direccion == $contrato->getOriginal()['id_direccion']
             )
@@ -561,6 +561,26 @@ class ContratoController extends Controller
             $respuesta['error'][] = 'El cliente con Genesys ID: ' . $request->genesys_id . ' no está cargado.';
             return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
         }
+    }
+    public function updatePanel (Request $request)
+    {
+        $contrato = Contrato::find($request->id);
+        $anterior = $contrato->relPanel;
+        $contrato->num_panel = $request['num_panel'];
+        $contrato->save();
+        $contrato->refresh();
+        $descripcion = Auth::user()->name . ' realiza prueba de ' . ($respuesta['info'][] = 'cambio Panel: ' . $anterior->ssid . ' POR ' . $contrato->relPanel->ssid . '. |' . $anterior->id . '|');
+        $this->analizarRta($rta = $contrato->modificarMac(0)) ? $respuesta['success'][] = $rta : $respuesta['error'][] = $rta; ### modificarMac = 'ope' => 1 = Del, 0 = Add
+        $ticket = \App\Models\Issue::create([
+                    'titulo_id' => 11,
+                    'descripcion' => $descripcion,
+                    'asignado_id' => Auth::id(),
+                    'creator_id' => 1,
+                    'cliente_id' => $contrato->relCliente->id,
+                    'contrato_id' => $contrato->id,
+                    'closed' => false]);
+        $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambio de Panel del contrato N°: ' . $contrato->id;
+        return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
     }
     /**
      * Remove the specified resource from storage.

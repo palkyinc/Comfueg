@@ -426,15 +426,22 @@ class IssueController extends Controller
             $guardar = true;
             $issue->closed = true;
             $mailTipo = 3;
+            ## si titulo = 5
+            ## entonces cambio estado del contrato
             if ($issue->titulo_id === 5) {
                 $respuesta[] = $issue->relContrato->changeStateContratoGateway();
             }
-            ## si titulo = 5
-            ## entonces cambio estado del contrato
+            ### Si Titulo = 11 entonces
+            if ($issue->titulo_id === 11) {
+                $respuesta[] = ($issue->relContrato->modificarMac(1));
+                $issue->relContrato->num_panel = explode('|', $issue->descripcion)[1];
+                $issue->relContrato->save();
+            }
+
         }
         if ($guardar)
         {
-           $issue->save(); 
+            $issue->save(); 
         }
         $issue->enviarMail($mailTipo);
         $respuesta[] = 'Ticket actualizado correctamente.';

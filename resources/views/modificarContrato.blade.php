@@ -65,10 +65,46 @@ $mostrarSololectura = true;
                 <p class="m-3">Equipo Cliente: {{$elemento->relEquipo->getResumida()}}</p>
             </div>
             
-            <div class="form-group col-md-12 border">
-                <p class="m-3">Panel: {{$elemento->relPanel->getResumida()}}</p>
-            </div>
             
+            @if(auth()->user()->can('contratos_edit'))
+                <div class="form-group col-md-10 border">
+                    <p class="m-3">Panel: {{$elemento->relPanel->getResumida()}}</p>
+                </div>
+                <div class="form-group col-md-2">
+                    <div class="border border-1 border-info p-1 m-1 d-flex flex-column justify-content-center">
+                        @if ($elemento->baja || !$elemento->activo)
+                            {{-- Si el cliente esta de baja o suspendido no habilitar cambio de panel --}}
+                            <p class="alert alert-info">Baja o suspendido</p> 
+                        @else
+                            @if ($issue_id)
+                                <p class="m-1 alert alert-info">Cambio de Panel en curso</p>
+                                <a class="m-1 btn btn-primary" href="/modificarIssue/{{$issue_id}}">Ver ticket</a>
+                            @else
+                                    <form action="/modificarContratoPanel" method="post" class="align-self-center d-flex justify-content-center d-flex flex-column margenAbajo">
+                                    @csrf
+                                    @method('patch')
+                                        <input type="hidden" name="id" value="{{$elemento->id}}">
+                                        <select class="custom-select p-1 m-1" name="num_panel">
+                                            @foreach ($paneles as $item)
+                                                @if ($item->id === $elemento->num_panel)
+                                                    <option value="{{$item->id}}" selected disabled>{{$item->ssid}}</option>
+                                                @else
+                                                    <option value="{{$item->id}}">{{$item->ssid}}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                        <button class="btn btn-primary p-1 m-1"  title="Cambiar Cliente">Cambiar</button>
+                                    </form>
+                            @endif    
+                        @endif
+                    </div>
+                </div>
+            @else
+                <div class="form-group col-md-12 border">
+                    <p class="m-3">Panel: {{$elemento->relPanel->getResumida()}}</p>
+                </div>
+            @endif
+
             <div class="form-group col-md-12 border">
                 <p class="m-3">Plan: {{$elemento->relPlan->nombre}}</p>
             </div>

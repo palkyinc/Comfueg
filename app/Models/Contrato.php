@@ -89,7 +89,6 @@ class Contrato extends Model
                 break;
             
             default:
-                //return 'ERROR. En tipo de Contrato, al crear contrato en Mikrotik(' . $this->relPlan->relPanel->relEquipo->ip . ')';
                 $ip = $this->relEquipo->ip;
                 $macaddress = $this->relEquipo->mac_address;
                 break;
@@ -131,7 +130,6 @@ class Contrato extends Model
                 break;
             
             default:
-                //return 'ERROR. En tipo de Contrato, al crear contrato en Mikrotik(' . $this->relPlan->relPanel->relEquipo->ip . ')';
                 $ip = $this->relEquipo->ip;
                 $macaddress = $this->relEquipo->mac_address;
                 break;

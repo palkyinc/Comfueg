@@ -102,7 +102,6 @@ abstract class CronFunciones
             {
                 $apiMikro->setClock();
                 $apiMikro->makeBackup();
-                //$apiMikro->resetGateway();
             }
         }
     }
@@ -432,6 +431,8 @@ abstract class CronFunciones
                                                 self::bajaIssue($issue);
                                         } elseif ($issue->titulo_id === 4) {
                                                 self::backOriginalSpeed($issue);
+                                        } elseif ($issue->titulo_id === 11) {
+                                                self::delOldPanel($issue);
                                         } else {
                                                 self::enviarAdverCerrar($issue,
                                                                         'Aviso automático. Ticket vencido y sin novedades. Se cierra.',
@@ -659,6 +660,25 @@ abstract class CronFunciones
                          'password' => $password,
                          'ip' => $ip,
                         ]);
+    }
+    private static function delOldPanel(Issue $issue)
+    {
+        $issue = \App\Models\Issue::find(4838);
+        $panel_ant = \App\Models\Panel::find(explode('|', $issue->descripcion)[1]);
+        $mensaje = \App\Custom\ubiquiti::tratarMac(
+            [
+                'usuario' => $panel_ant->relEquipo->getUsuario(),
+                'password' => $panel_ant->relEquipo->getPassword(),
+                'ip' => $panel_ant->relEquipo->ip,
+                'contrato' => $issue->relContrato->id,
+                'macaddress' => $issue->relContrato->relEquipo->mac_address,
+                'ope' => 1
+            ]) . '. Se cierra automaticamente.';
+        self::enviarAdverCerrar($issue,
+                                $mensaje,
+                                6,
+                                3);
+        
     }
     private static function backOriginalSpeed(Issue $issue)
     {

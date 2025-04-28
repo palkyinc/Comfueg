@@ -89,8 +89,8 @@ dd(CronFunciones::generarArchivoSem($dias));
 
 /* Route::view('/welcome', 'index'); */
 /* Route::get('/test/', function (){
-        $contrato = (\App\Models\Contrato::find(2));
-        dd($contrato);
+       
+        dd($respuesta);
 }); */
 
 ### Route index
@@ -230,6 +230,7 @@ Route::get('/modificarContrato/{id}', [ContratoController::class, 'edit'])->midd
 Route::get('/testContrato/{id}', [ContratoController::class, 'test'])->middleware('auth');
 Route::get('/modificarContratroNoPaga/{id}', [ContratoController::class, 'updateNoPaga'])->middleware('auth');
 Route::patch('/modificarContratoCliente', [ContratoController::class, 'updateCliente'])->middleware('auth');
+Route::patch('/modificarContratoPanel', [ContratoController::class, 'updatePanel'])->middleware('auth');
 Route::get('/modificarContratoDireccion', [DireccionController::class, 'create'])->middleware('auth');
 Route::patch('/modificarContratoCoordenadas', [ContratoController::class, 'updateCoordenadas'])->middleware('auth');
 Route::patch('/modificarContrato', [ContratoController::class, 'update'])->middleware('auth');
