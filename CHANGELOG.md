@@ -28,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
+## [0.9.15] - 2025-05-XX
+### Add
+### Changed
+1. CronFunciones.php, método: delOldPanel. Se Borra linea erronea utilizadas para pruebas.
+2. ubiquiti.php, método: tratarMac. Se agrega condición de no errores de conexion a panel.
+
 ## [0.9.14] - 2025-04-28
 ### Add
 1. Edicion de direccion desde editar contrato.

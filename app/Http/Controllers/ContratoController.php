@@ -516,6 +516,39 @@ class ContratoController extends Controller
         $contrato->save();
         return redirect('/inicio')->with('mensaje', $respuesta);
     }
+    public function updateEquipo (Request $request)
+    {
+        $contrato = Contrato::find($request['id']);
+        $new_equipo = Equipo::where('mac_address', strtoupper($request->mac_address))->first();
+        ### SI Existe el equipo con el $mac_addres
+        if ($new_equipo) {
+                $old_contrato = Contrato::where('num_equipo', $new_equipo->id)->first();
+                dd($old_contrato);
+                ### SI el equipo esta vinculado con un contrato
+                if ($old_contrato) {
+                    ### Si el contrato esta activo
+                        ### retornar con Mensaje:" mac address vinculado a contrato activo"
+                    ### SINO
+                        ### Borrar mac address en contrato anterior por mac address router default
+                        ### Cambiar equipo en contrato solicitado
+                ### SINO
+                } else {
+                    ### Cambiar equipo en contrato solicitado
+                }
+        ###SINO                
+        } else {
+            dd('no existe');
+            ### retornar con Mensaje:"No se encuentra equipo con Mac Address XX:XX:XX:XX:XX:XX"
+        }
+        
+        ### funcion Cambiar equipo en contrato solicitado
+            ### En equipo viejo agregar comentarios, 'Ex equipo de: De Tal, Fulano'
+            ### Cambiar ID de equipo de viejo a nuevo en contrato
+            ### Reprogramar mikrotik
+            ### Reprogramar antena
+            ### Crear ticket registrando cambio
+        
+    }
     public function updateCoordenadas(Request $request)
     {
         $contrato = Contrato::find($request->id);

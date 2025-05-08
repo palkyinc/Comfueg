@@ -104,7 +104,12 @@ class Ubiquiti{
     */
     public static function tratarMac ($datos)
         {
-            shell_exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg /app/public/configPanels/' . $datos['ip'] . '-old.cfg  2>&1');
+            $response = (shell_exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg /app/public/configPanels/' . $datos['ip'] . '-old.cfg  2>&1'));
+            $response_exploded = explode( ' | ', $response);
+            if(!isset($response_exploded[4]) || (isset($response_exploded[4]) && trim($response_exploded[4]) !== '100%'))
+            {
+                return 'ERROR. ' . $response;
+            }
             $oldFile = fopen ('/app/public/configPanels/' . $datos['ip'] . '-old.cfg', 'r');
             $newFile = fopen ('/app/public/configPanels/' . $datos['ip'] . '.cfg', 'w');
             while (!feof ($oldFile))

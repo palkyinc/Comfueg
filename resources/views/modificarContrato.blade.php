@@ -8,6 +8,7 @@ $mostrarSololectura = true;
 <h3>Editar Contrato con ID: {{$elemento->id}}</h3>
     <div class="alert bg-light border col-8 mx-auto p-4">
         <div class="form-row">
+            {{-- CLIENTE --}}
             <div class="form-group col-md-10 border">
                 <p class="m-3">Cliente: {{$elemento->relCliente->getNomYApe()}}</p>
                 <p class="m-3">Genesys ID:{{$elemento->relCliente->id}}</p>
@@ -24,7 +25,7 @@ $mostrarSololectura = true;
                 </div>
                 <a href="/modificarCliente/{{$elemento->relCliente->id}}" class="btn btn-primary m-1">Editar</a>
             </div>
-            
+            {{-- DIRECCION --}}
             <div class="form-group col-md-10 border">
                 <p class="m-3">Dirección: {{$elemento->reldireccion->getResumida()}}</p>
                 @if ($elemento->relDireccion->coordenadas)
@@ -47,12 +48,12 @@ $mostrarSololectura = true;
                 <a href="/modificarContratoDireccion?contrato={{$elemento->id}}" class="btn btn-primary m-1">Cambiar</a>
                 <a href="/modificarDireccion/{{$elemento->relDireccion->id}}?contrato_id={{$elemento->id}}" class="btn btn-primary m-1">Editar</a>
             </div>
-            
+            {{-- STATUS COMERCIAL --}}
             @if (auth()->user()->hasRole('Admin'))
                 <div class="form-group col-md-10 border">
                     <p class="m-3">Status comercial: {{$elemento->no_paga ? 'NO FACTURA' : 'Factura'}}</p>
                 </div>
-                <div class="form-group col-md-2 align-self-center d-flex justify-content-center d-flex flex-column">
+                <div class="form-group col-md-2 align-self-center p-1 m-1 d-flex justify-content-center d-flex flex-column">
                     <a href="/modificarContratroNoPaga/{{$elemento->id}}" class="btn btn-primary m-1">Cambiar</a>
                 </div>  
             @else
@@ -60,13 +61,23 @@ $mostrarSololectura = true;
                     <p class="m-3">Status comercial: {{$elemento->no_paga ? 'NO FACTURA' : 'Factura'}}</p>
                 </div>
             @endif
-            
-            <div class="form-group col-md-12 border">
-                <p class="m-3">Equipo Cliente: {{$elemento->relEquipo->getResumida()}}</p>
-            </div>
-            
-            
             @if(auth()->user()->can('contratos_edit'))
+                {{-- EQUIPO CLIENTE --}}
+                <div class="form-group col-md-10 border">
+                    <p class="m-3">Equipo Cliente: {{$elemento->relEquipo->getResumida()}}</p>
+                </div>
+                <div class="form-group col-md-2">
+                    <div class="border border-1 border-info p-1 m-1 d-flex flex-column justify-content-center">
+                        <form action="/modificarContratoEquipo" method="post" class="align-self-center d-flex justify-content-center d-flex flex-column margenAbajo">
+                        @csrf
+                        @method('patch')
+                            <input type="hidden" name="id" value="{{$elemento->id}}">
+                            <input type="text" name="mac_address" class="form-control p-1" placeholder="Mac Address" aria-label="nuevoCliente" aria-describedby="basic-addon1">
+                            <button class="btn btn-primary p-1"  title="Cambiar Cliente">Cambiar</button>
+                        </form>
+                    </div>
+                </div>
+                {{-- PANEL --}}
                 <div class="form-group col-md-10 border">
                     <p class="m-3">Panel: {{$elemento->relPanel->getResumida()}}</p>
                 </div>
@@ -77,14 +88,14 @@ $mostrarSololectura = true;
                             <p class="alert alert-info">Baja o suspendido</p> 
                         @else
                             @if ($issue_id)
-                                <p class="m-1 alert alert-info">Cambio de Panel en curso</p>
-                                <a class="m-1 btn btn-primary" href="/modificarIssue/{{$issue_id}}">Ver ticket</a>
+                                <p class="p-1 alert alert-info">Cambio de Panel en curso</p>
+                                <a class="p-1 btn btn-primary" href="/modificarIssue/{{$issue_id}}">Ver ticket</a>
                             @else
-                                    <form action="/modificarContratoPanel" method="post" class="align-self-center d-flex justify-content-center d-flex flex-column margenAbajo">
+                                    <form action="/modificarContratoPanel" method="post" class="d-flex justify-content-center d-flex flex-column margenAbajo">
                                     @csrf
                                     @method('patch')
                                         <input type="hidden" name="id" value="{{$elemento->id}}">
-                                        <select class="custom-select p-1 m-1" name="num_panel">
+                                        <select class="custom-select p-1" name="num_panel">
                                             @foreach ($paneles as $item)
                                                 @if ($item->id === $elemento->num_panel)
                                                     <option value="{{$item->id}}" selected disabled>{{$item->ssid}}</option>
@@ -93,25 +104,31 @@ $mostrarSololectura = true;
                                                 @endif
                                             @endforeach
                                         </select>
-                                        <button class="btn btn-primary p-1 m-1"  title="Cambiar Cliente">Cambiar</button>
+                                        <button class="btn btn-primary p-1"  title="Cambiar Cliente">Cambiar</button>
                                     </form>
                             @endif    
                         @endif
                     </div>
                 </div>
             @else
+                {{-- EQUIPO CLIENTE --}}
+                <div class="form-group col-md-12 border">
+                    <p class="m-3">Equipo Cliente: {{$elemento->relEquipo->getResumida()}}</p>
+                </div>
+                {{-- PANEL --}}
                 <div class="form-group col-md-12 border">
                     <p class="m-3">Panel: {{$elemento->relPanel->getResumida()}}</p>
                 </div>
             @endif
-
+            {{-- PLAN --}}
             <div class="form-group col-md-12 border">
                 <p class="m-3">Plan: {{$elemento->relPlan->nombre}}</p>
             </div>
-
-                <div class="form-group col-md-6 border">
-                    <p class="m-3">Alta: {{$elemento->inicioDateTimeLocal()}}</p>
-                </div>
+            {{-- ALTA --}}
+            <div class="form-group col-md-6 border">
+                <p class="m-3">Alta: {{$elemento->inicioDateTimeLocal()}}</p>
+            </div>
+            {{-- ESTADO DEL SERVICIO --}}
             <div class="form-group col-md-6 border">
                 <p class="m-3">Servicio: 
                 @if ($elemento->activo)
@@ -128,6 +145,7 @@ $mostrarSololectura = true;
                 @endif
                 </p>
             </div>
+
         </div>
             {{-- <input type="text" name="id" value="{{$elemento->id}}" hidden>
             <button type="submit" class="btn btn-primary" id="enviar">Modificar</button> --}}

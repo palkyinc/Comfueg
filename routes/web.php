@@ -40,6 +40,7 @@ use App\Http\Controllers\ConfigPanelController;
 
 ####TEST
 /* 
+use App\Custom\ubiquiti;//TEST
 use App\Custom\CronFunciones;//TEST
 use App\Models\Contrato; //TEST
 use App\Custom\GatewayMikrotik;//TEST
@@ -78,14 +79,22 @@ use Illuminate\Support\Facades\Crypt;
 dd(CronFunciones::generarArchivoSem($dias));
 }); */
 
-/* Route::get('/auditPaneles', function () {
+Route::get('/auditPaneles', function () {
         //CronFunciones::bkpPaneles();
         //CronFunciones::audoriaPaneles();
         //CronFunciones::logError(['clase' => 'routes/web.php', 'metodo' => 'sarasa', 'error' => 'Funciona OK.']);
-        CronFunciones::diario02(); // => actualizarIssuesVencidos();
+        //CronFunciones::diario02(); // => actualizarIssuesVencidos();
         //CronFunciones::diario03(); // => enviarErrorsMail();
+        /* echo ubiquiti::tratarMac([
+                         'usuario' => 'admincf',
+                         'password' => 'Decalcut@2',
+                         'ip' => '10.10.0.222',
+                         'contrato' => '1208',
+                         'macaddress' => '70:A7:41:1E:1D:B3',
+                         'ope' => 1 //1 = Del, 0 = Add
+         ]); */
         dd('Fin Sarasa.');
-}); */
+});
 
 /* Route::view('/welcome', 'index'); */
 /* Route::get('/test/', function (){
@@ -229,6 +238,7 @@ Route::post('/agregarContrato', [ContratoController::class, 'store'])->middlewar
 Route::get('/modificarContrato/{id}', [ContratoController::class, 'edit'])->middleware('auth');
 Route::get('/testContrato/{id}', [ContratoController::class, 'test'])->middleware('auth');
 Route::get('/modificarContratroNoPaga/{id}', [ContratoController::class, 'updateNoPaga'])->middleware('auth');
+Route::patch('/modificarContratoEquipo', [ContratoController::class, 'updateEquipo'])->middleware('auth');
 Route::patch('/modificarContratoCliente', [ContratoController::class, 'updateCliente'])->middleware('auth');
 Route::patch('/modificarContratoPanel', [ContratoController::class, 'updatePanel'])->middleware('auth');
 Route::get('/modificarContratoDireccion', [DireccionController::class, 'create'])->middleware('auth');

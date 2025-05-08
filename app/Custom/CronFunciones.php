@@ -392,13 +392,21 @@ abstract class CronFunciones
     private static function actualizarIssuesVencidos ()
     {
         $issues = Issue::where('closed', false)->get();
+        
+        dd($issues);
         foreach ($issues as $key => $issue)
         {
                 if ($issue->getVencida(true))
                 {
                         $issue_updates = Issues_update::where('issue_id', $issue->id)->get();
                         $indice = count($issue_updates)-1;
+                        if ($issue->titulo_id === 11) {
+                                $advertencia = 'Aviso automático. De no mediar novedades se cerrará automaticamente en 2 días. ATENCIÓN: El cierre automatico puede dejar a la antena cliente desasociada.';
+                        } else {
+                                $advertencia = 'Aviso automático. Ticket vencido y sin novedades. De no mediar novedades se cerrará automaticamente en 2 días.';
+                        }
                         if ($indice > -1) {
+                                echo $issue->id . '<br>';
                                 $last_update = ($issue_updates[$indice]);
                                 $last_update_date = new DateTime($last_update->created_at);
                                 if ($last_update->relUsuario->id !== 1) {
@@ -420,12 +428,13 @@ abstract class CronFunciones
                                 {
                                         ### Advertencia de Ticket
                                         self::enviarAdverCerrar($issue,
-                                                                'Aviso automático. Ticket vencido y sin novedades. De no mediar novedades se cerrará automaticamente en 2 días.',
+                                                                $advertencia,
                                                                 5,
                                                                 2);
                                 }
                                 elseif (!$interval->invert && ($last_update->relUsuario->id === 1 || $issue->titulo_id === 5 || $issue->titulo_id === 4 )) ### CERRAR
                                 {
+                                        $cierre = 'Aviso automático. Ticket vencido y sin novedades. Se cierra.';
                                         ### Cerrar Ticket
                                         if ($issue->titulo_id === 5) {
                                                 self::bajaIssue($issue);
@@ -435,12 +444,13 @@ abstract class CronFunciones
                                                 self::delOldPanel($issue);
                                         } else {
                                                 self::enviarAdverCerrar($issue,
-                                                                        'Aviso automático. Ticket vencido y sin novedades. Se cierra.',
+                                                                        $cierre,
                                                                         5,
                                                                         3);
                                         }
                                         
                                 } else {
+                                        echo ('Ticket sin vencer<br>');
                                         ### Ticket sin vencer
                                 }
                         }
@@ -448,7 +458,7 @@ abstract class CronFunciones
                         {
                                 ### Advertencia de ticket
                                 self::enviarAdverCerrar($issue,
-                                                                'Aviso automático. Ticket vencido y sin novedades. De no mediar novedades se cerrará automaticamente en 2 días.',
+                                                                $advertencia,
                                                                 5,
                                                                 2);
                         }
@@ -663,7 +673,6 @@ abstract class CronFunciones
     }
     private static function delOldPanel(Issue $issue)
     {
-        $issue = \App\Models\Issue::find(4838);
         $panel_ant = \App\Models\Panel::find(explode('|', $issue->descripcion)[1]);
         $mensaje = \App\Custom\ubiquiti::tratarMac(
             [
