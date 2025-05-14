@@ -215,7 +215,7 @@ class Contrato extends Model
                 if ($true_false) {
                     return false;
                 } else {
-                    $respuesta = 'ERROR al conectarse al Gateway: No se pudo modificar.';
+                    $respuesta = 'ERROR. al conectarse al Gateway: No se pudo modificar.';
                 }
             }
         return ($respuesta);

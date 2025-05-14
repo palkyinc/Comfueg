@@ -393,7 +393,6 @@ abstract class CronFunciones
     {
         $issues = Issue::where('closed', false)->get();
         
-        dd($issues);
         foreach ($issues as $key => $issue)
         {
                 if ($issue->getVencida(true))
@@ -406,7 +405,6 @@ abstract class CronFunciones
                                 $advertencia = 'Aviso automático. Ticket vencido y sin novedades. De no mediar novedades se cerrará automaticamente en 2 días.';
                         }
                         if ($indice > -1) {
-                                echo $issue->id . '<br>';
                                 $last_update = ($issue_updates[$indice]);
                                 $last_update_date = new DateTime($last_update->created_at);
                                 if ($last_update->relUsuario->id !== 1) {
@@ -426,31 +424,49 @@ abstract class CronFunciones
                                 $interval = $last_update_date->diff($hoy);
                                 if (!$interval->invert && $last_update->relUsuario->id !== 1 && $issue->titulo_id !== 5) ### ADVERTENCIA
                                 {
+                                        if ($issue->titulo_id === 11)
+                                        {
+                                                self::delOldPanel($issue);
+                                        }
+                                        else
+                                        {
                                         ### Advertencia de Ticket
                                         self::enviarAdverCerrar($issue,
                                                                 $advertencia,
                                                                 5,
                                                                 2);
+                                        }
                                 }
                                 elseif (!$interval->invert && ($last_update->relUsuario->id === 1 || $issue->titulo_id === 5 || $issue->titulo_id === 4 )) ### CERRAR
                                 {
-                                        $cierre = 'Aviso automático. Ticket vencido y sin novedades. Se cierra.';
                                         ### Cerrar Ticket
                                         if ($issue->titulo_id === 5) {
                                                 self::bajaIssue($issue);
-                                        } elseif ($issue->titulo_id === 4) {
+                                        }
+                                        elseif ($issue->titulo_id === 4)
+                                        {
                                                 self::backOriginalSpeed($issue);
-                                        } elseif ($issue->titulo_id === 11) {
-                                                self::delOldPanel($issue);
-                                        } else {
+                                        }
+                                        elseif ($issue->titulo_id === 8)
+                                        {
                                                 self::enviarAdverCerrar($issue,
-                                                                        $cierre,
+                                                                        'Cierre Automatico de un Ticket de Mudanza. Verificar dirección y geolocalización.',
+                                                                        7,
+                                                                        3);
+                                        }
+                                        elseif ($issue->titulo_id === 11)
+                                        {
+                                                self::delOldPanel($issue);
+                                        }
+                                        else
+                                        {
+                                                self::enviarAdverCerrar($issue,
+                                                                        'Aviso automático. Ticket vencido y sin novedades. Se cierra.',
                                                                         5,
                                                                         3);
                                         }
                                         
                                 } else {
-                                        echo ('Ticket sin vencer<br>');
                                         ### Ticket sin vencer
                                 }
                         }
@@ -638,6 +654,134 @@ abstract class CronFunciones
                                 'metodo' => 'audoriaPaneles',
                                 'error' => $data
                         ]);
+        }
+    }
+    public static function doFileAntennas ($actual_file, $anterior_file)
+    {
+        $contratos = Contrato::select('id', 'num_cliente', 'num_equipo')->where('activo', true)->where('baja', false)->get();
+        if (!($fp = fopen($actual_file, 'w'))){
+                self::logError(['clase' => 'Cronfunciones.php',
+                                'metodo' => 'doFileAntennas',
+                                'error' => 'Error al crear: ' . $actual_file]);
+                return false;
+        }
+        if (!fwrite($fp, json_encode($contratos))) {
+                self::logError(['clase' => 'Cronfunciones.php',
+                                'metodo' => 'doFileAntennas',
+                                'error' => 'Error al escribir: ' . $actual_file]);
+                return false;
+        } else {
+                fclose($fp);
+                unlink($anterior_file);
+                return true;
+        }
+    }
+    public static function readAntennasFile ($actual_file)
+    {
+        if ($fp = fopen($actual_file, 'r')) {
+                # code...
+                $datos = json_decode(fread($fp, filesize($actual_file)));
+                fclose($fp);
+                return $datos;
+        } else {
+                self::logError(['clase' => 'Cronfunciones.php',
+                                'metodo' => 'readAntennasFile',
+                                'error' => 'Error al abrir: ' . $actual_file]);
+                return false;
+        }
+        
+    }
+    public static function auditAntennas()
+    {
+        $anio = date('Y');
+        $mes = date('m');
+        $mes_ant = strval(date('m')-1);
+        $mes_ant = (strlen($mes_ant) < 2 ? '0' . $mes_ant : $mes_ant);
+        $carpeta = '/app/public/configClients/';
+        $actual_file = $carpeta . $anio . $mes . '.dat';
+        $anterior_file = $carpeta . $anio . $mes_ant . '.dat';
+        if (!file_exists($actual_file)  || file_exists($anterior_file)) {
+                self::doFileAntennas($actual_file, $anterior_file);
+        }
+        if (!$contratos = self::readAntennasFile($actual_file)) {
+                return false;
+        }
+        foreach ($contratos as $key => $contrato) {
+                $cliente = \App\Models\Cliente::select('id', 'nombre', 'apellido')->find($contrato->num_cliente);
+                $name = $cliente->getNomYApe();
+                $equipo = \App\Models\Equipo::select('id', 'ip', 'usuario', 'password')->find($contrato->num_equipo);
+                if ($equipo->nombre !== $name){
+                        $equipo->nombre = $name;
+                        $equipo->save();
+                }
+                self::logError(['clase' => 'Cronfunciones.php',
+                                'metodo' => 'auditAntennas',
+                                'error' => 'Procesando equipo: ' . $equipo->ip]);
+                $rta = ubiquiti::changeDeviceName([
+                        'usuario' => $equipo->getUsuario(),
+                        'password' => $equipo->getPassword(),
+                        'ip' => $equipo->ip,
+                        'contrato' => $contrato->id,
+                        'name' => $name,
+                        'ope' => 1 ## 1 = retrive, 0 = change
+                ]);
+                if (!is_array($rta) && str_split($rta, 5)[0] === 'ERROR') {
+                        self::logError(['clase' => 'Cronfunciones.php',
+                                'metodo' => 'auditAntennas',
+                                'error' => $rta . '|' . $equipo->ip]);
+                        if (isset($aBorrar)) {
+                                self::saveAntennasFile($contratos, $actual_file, $aBorrar);
+                        }
+                        return false;
+                } elseif (is_string($rta)) {
+                        self::logError(['clase' => 'Cronfunciones.php',
+                                'metodo' => 'auditAntennas',
+                                'error' => $rta]);
+                        $aBorrar[] = $contrato->id;
+                        self::saveAntennasFile($contratos, $actual_file, $aBorrar);
+                        return true;
+                } else {
+                        $aBorrar[] = $contrato->id;
+                }
+                        ## SI $rta es array, hubo cambio guardar en log, borrar de la lista
+                        ## SI $rta empieza con error, hubo errores guardar en log
+                        ## SI $rta es true, no hubo cambios, borrar de la lista.
+        }
+        self::saveAntennasFile($contratos, $actual_file, $aBorrar);
+        Return true;
+        /* 
+        chequeo los bkp's contra archivo solo de los registros no revisados
+        SI hay nombre cambiando
+                Se cambia nombre
+        
+        Se marca como revisado
+        Fin
+                */
+    }
+    public static function saveAntennasFile($contratos, $actual_file, $aBorrar)
+    {
+        foreach ($aBorrar as $contrato_id) {
+                foreach ($contratos as $key => $contrato) {
+                        if ($contrato_id === $contrato->id) {
+                                array_splice($contratos, $key, 1);
+                                break;
+                        }
+                }
+        }
+        if (!$fp = fopen($actual_file, 'w')) {
+                self::logError(['clase' => 'Cronfunciones.php',
+                'metodo' => 'saveAntennasFile',
+                'error' => 'Error al abrir: ' . $actual_file]);
+                return false;
+        }
+        if (!fwrite($fp, json_encode($contratos))) {
+                self::logError(['clase' => 'Cronfunciones.php',
+                                'metodo' => 'saveAntennasFile',
+                                'error' => 'Error al escribir: ' . $actual_file]);
+                return false;
+        } else {
+                fclose($fp);
+                return true;
         }
     }
     public static function bkpPaneles()

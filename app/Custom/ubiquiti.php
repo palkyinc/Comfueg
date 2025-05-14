@@ -83,6 +83,72 @@ class Ubiquiti{
         if (!is_bool(strpos($inthat, $esto)))
         return substr($inthat, strpos($inthat,$esto)+strlen($esto));
     }
+    /* 
+    'usuario' => 'ubnt',
+                         'password' => contraseña,
+                         'ip' => IP,
+                         'contrato' => Numero de contrato,
+                         'name' => nombre del cliente,
+                         'ope' => 1 //1 = retrive, 0 = change
+     */
+    public static function changeDeviceName ($datos)
+    {
+        $fileNameTemp = '/app/public/configClients/' . $datos['ip'] . '-temp.cfg';
+        $fileName = '/app/public/configClients/' . $datos['ip'] . '.cfg';
+        $filelog = '/app/public/configClients/' . $datos['ip'] . '-log.cfg';
+        $rta = (shell_exec ('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg ' . $fileNameTemp . ' 2>&1'));
+        $response_exploded = explode( ' | ', $rta);
+            if(!isset($response_exploded[4]) || (isset($response_exploded[4]) && trim($response_exploded[4]) !== '100%'))
+            {
+                return 'ERROR. ' . $rta;
+            } else {
+                $response[] = $rta;
+            }
+        
+        if (!file_exists($fileNameTemp)) {
+            return 'ERROR. al intentar leer ' . $fileNameTemp;
+        }
+        $tempFile = fopen ($fileNameTemp, 'r');
+        $file = fopen ($fileName, 'w');
+        $nombreAntenaCliente = $datos['name'] . '|Cont:' . $datos['contrato'] . PHP_EOL;
+        while (!feof ($tempFile))
+        {
+            $linea = fgets($tempFile);
+            $tmpLinea = explode('=', $linea);
+            if ( $tmpLinea[0] === 'resolv.host.1.name') {
+                if ($tmpLinea[1] !== $nombreAntenaCliente) {
+                    $linea = $tmpLinea[0] . '=' . $nombreAntenaCliente ;
+                    $response[] = 'Se cambia nombre de (' . trim($tmpLinea[1]) . ') a (' . trim($nombreAntenaCliente) . ')';
+                    $answer = 'Se cambia nombre de (' . trim($tmpLinea[1]) . ') a (' . trim($nombreAntenaCliente) . ' en IP:' . $datos['ip'];
+                    $grabar = true;
+                } else {
+                    $sameName = true;
+                }
+                
+            }
+            fwrite ($file, $linea);
+        }
+        fclose($tempFile);
+        fclose($file);
+        if (isset($grabar))
+        {
+            $response[] = shell_exec('echo y | pscp -scp -pw ' . $datos['password'] . ' ' . $fileName . ' '  . $datos['usuario'] . '@' . $datos['ip'] . ':/tmp/system.cfg 2>&1' );
+            $response[] = shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m save.sh 2>&1');
+            $response[] = shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m reboot.sh 2>&1');
+        }
+        $logfile = fopen($filelog, 'a');
+        fwrite($logfile, date('Y-M-d|H:i') . PHP_EOL);
+        foreach ($response as $key => $value) {
+            fwrite($logfile, $value);
+        }
+        fclose($logfile);
+        if (isset($sameName)) {
+            return true;
+        } else {
+            return $answer;
+        }
+        
+    }
     public static function makeBkp ($datos)
     {
         $output=null;
@@ -198,12 +264,12 @@ class Ubiquiti{
                             shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 kickmac ' . $datos['macaddress'] . ' 2>&1');
                             shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m save.sh 2>&1');
                             shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m reboot.sh 2>&1');
-                            return 'EXITO. Se eliminó Mac Address OK del Panel con IP:' . $datos['ip'];
+                            return 'EXITO. Se eliminó con exito Mac Address (' . $macaddress . ') del Panel con IP:' . $datos['ip'];
                         }
                         
                     }
                     fclose($newFile);
-                    return 'ERROR. No se encontró Mac Address para borrar en Panel con IP: ' . $datos['ip'];
+                    return 'ERROR. No se encontró Mac Address (' . $macaddress . ') para borrar en Panel con IP: ' . $datos['ip'];
                     break;
                 
                 default:

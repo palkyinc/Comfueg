@@ -30,6 +30,8 @@ ___ -->
 
 ## [0.9.15] - 2025-05-XX
 ### Add
+1. Cron de auditoria nombre de antena cliente
+
 ### Changed
 1. CronFunciones.php, método: delOldPanel. Se Borra linea erronea utilizadas para pruebas.
 2. ubiquiti.php, método: tratarMac. Se agrega condición de no errores de conexion a panel.

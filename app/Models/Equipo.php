@@ -220,7 +220,7 @@ class Equipo extends Model
     {
         return ($this->nombre . ', ' . $this->relProducto->modelo . ', ' . $this->mac_address);
     }
-    public function changeEquipoStatus ($darAlta)
+    public function changeEquipoStatus ($darAlta) ## 1 = Alta | 0 = Bja
     {
         if ($darAlta) 
         {
@@ -248,5 +248,13 @@ class Equipo extends Model
                 }
         $this->save();
         return $rta;
+    }
+    public function unlinkContract ($cliente_nombre)
+    {
+        $this->comentario = $this->comentario . ' EX-' . $contrato->relCliente->getNomYApe() . '|' . date("Y-M-d") . '. ';
+        $this->save();
+        $rta[] = 'EXITO. Se cambio comentario de equipo con macaddress: ' . $this->mac_address;
+        $rta[] = $this->changeEquipoStatus(0);
+
     }
 }## finde la clase

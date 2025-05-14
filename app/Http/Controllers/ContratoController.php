@@ -520,29 +520,58 @@ class ContratoController extends Controller
     {
         $contrato = Contrato::find($request['id']);
         $new_equipo = Equipo::where('mac_address', strtoupper($request->mac_address))->first();
+        $old_equipo = $contrato->relEquipo;
+        dd($old_equipo);
         ### SI Existe el equipo con el $mac_addres
         if ($new_equipo) {
                 $old_contrato = Contrato::where('num_equipo', $new_equipo->id)->first();
-                dd($old_contrato);
                 ### SI el equipo esta vinculado con un contrato
                 if ($old_contrato) {
-                    ### Si el contrato esta activo
-                        ### retornar con Mensaje:" mac address vinculado a contrato activo"
-                    ### SINO
+                    
+                    ### Si el contrato esta baja
+                    if ($old_contrato->baja) {
                         ### Borrar mac address en contrato anterior por mac address router default
                         ### Cambiar equipo en contrato solicitado
+                        dd('de baja y se puede cambiar');
+                    ### SINO
+                    } else {
+                        ### retornar con Mensaje:" mac address vinculado a contrato activo"
+                        $respuesta['error'][] = 'Equipo con Mac Address: ' . $request->mac_address . ' se encuentra afectado al contrato: ' . $old_contrato->id . ', perteneciente a: ' . $old_contrato->relCliente->getNomYApe();
+                        return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+                    }
+                    
                 ### SINO
                 } else {
                     ### Cambiar equipo en contrato solicitado
+                    ## activar equipo nuevo
+                    $answer = $new_equipo->changeEquipoStatus(true);
+                    if(!$answer)
+                    {
+                        $respuesta[] = 'ERROR. No se pudo asignar IP';
+                        return redirect ('/modificarContrato/' . $request['id'])->with('mensaje', $respuesta);
+                    }
+                    ## desactivar equipo anterior
+                    $respuesta[] = $old_equipo->unlinkContract($contrato->relCliente->getNomYApe());
+                    //$respuesta[] = $contrato->modificarMac(1);
+                    $contrato->num_equipo = $new_equipo->id;
+                    $respuesta[] = ' Cambio de Equipo: ' . $old_equipo->mac_address . ' POR ' . $new_equipo->mac_address;
+                    $contrato->save();
+                    $contrato->refresh();
+                    $respuesta[] = $contrato->modificarMac(0);
+                    $respuesta[] = $contrato->modifyContratoGateway();
+                    $respuesta[] = $contrato->renewIPAntenaClient();
+                    return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
                 }
         ###SINO                
         } else {
-            dd('no existe');
             ### retornar con Mensaje:"No se encuentra equipo con Mac Address XX:XX:XX:XX:XX:XX"
+            $respuesta['error'][] = 'No se encuentra equipo con Mac Address: ' . $request->mac_address . ' cargado en la base de datos.';
+            return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
         }
         
         ### funcion Cambiar equipo en contrato solicitado
             ### En equipo viejo agregar comentarios, 'Ex equipo de: De Tal, Fulano'
+            ### Al nuevo equipo cambiar nombre por nombre del contrato.
             ### Cambiar ID de equipo de viejo a nuevo en contrato
             ### Reprogramar mikrotik
             ### Reprogramar antena

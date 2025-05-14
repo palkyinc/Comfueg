@@ -38,10 +38,10 @@ use App\Http\Controllers\Concepto_debitoController;
 use App\Http\Controllers\MacAddressExceptionController;
 use App\Http\Controllers\ConfigPanelController;
 
+use App\Custom\CronFunciones;//TEST
 ####TEST
 /* 
 use App\Custom\ubiquiti;//TEST
-use App\Custom\CronFunciones;//TEST
 use App\Models\Contrato; //TEST
 use App\Custom\GatewayMikrotik;//TEST
 use Illuminate\Support\Facades\File; //TEST
@@ -81,18 +81,19 @@ dd(CronFunciones::generarArchivoSem($dias));
 
 Route::get('/auditPaneles', function () {
         //CronFunciones::bkpPaneles();
-        //CronFunciones::audoriaPaneles();
+        //$rta = CronFunciones::auditAntennas();
         //CronFunciones::logError(['clase' => 'routes/web.php', 'metodo' => 'sarasa', 'error' => 'Funciona OK.']);
-        //CronFunciones::diario02(); // => actualizarIssuesVencidos();
+        CronFunciones::diario02(); // => actualizarIssuesVencidos();
         //CronFunciones::diario03(); // => enviarErrorsMail();
-        /* echo ubiquiti::tratarMac([
-                         'usuario' => 'admincf',
-                         'password' => 'Decalcut@2',
-                         'ip' => '10.10.0.222',
-                         'contrato' => '1208',
-                         'macaddress' => '70:A7:41:1E:1D:B3',
-                         'ope' => 1 //1 = Del, 0 = Add
+        /* $rta = ubiquiti::changeDeviceName([
+                         'usuario' => 'ubnt',
+                         'password' => 'S1mon3d@',
+                         'ip' => '10.10.21.108',
+                         'contrato' => '541',
+                         'name' => 'PAONE & CI',
+                         'ope' => 1 //1 = retrive, 0 = change
          ]); */
+         dd($rta);
         dd('Fin Sarasa.');
 });
 
