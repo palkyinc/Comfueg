@@ -30,12 +30,17 @@ class Info_ClienteController extends Controller
         $es_cliente = ( $equipo = Equipo::where('ip', $ip_cliente)->first() ) ? true : false;
         if ($es_cliente)
         {
-            $contrato = Contrato::where('num_equipo', $equipo->id)->where('baja', false)->first();
+            $contrato = Contrato::where('num_equipo', $equipo->id)
+                                ->orWhere('router_id', $equipo->id)
+                                ->first();
+            if(!$contrato)
+            {
+                return redirect('inicio');
+            }
             $conteo = Contadores_mensuales::where('contrato_id', $contrato->id)->first();
         } else {
             return redirect('inicio');
         }
-        //dd($contrato);
         ## Si ip_cliente no existe como contrato de Alta
         ## Si ip_cliente esta habilitado OK mostrar pagina con info de navegación
         ## Si ip_cliente esta suspendido con instalacion pendiente mostrar pagina de instalación
@@ -62,7 +67,6 @@ class Info_ClienteController extends Controller
                         ->get();
         $tickets['total'] = count($issues);
         foreach ($issues as $issue) {
-            //dd($issue);
             if ($issue->getVencida(true)) {
                 $tickets['vencidos'] ++;
             }else {

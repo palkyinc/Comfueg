@@ -28,9 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. php artisan up
 ___ -->
 
-## [0.9.15] - 2025-05-XX
+## [0.9.15] - 2025-05-10
 ### Add
 1. Cron de auditoria nombre de antena cliente
+2. Cambio de equipo en contrato
 
 ### Changed
 1. CronFunciones.php, método: delOldPanel. Se Borra linea erronea utilizadas para pruebas.

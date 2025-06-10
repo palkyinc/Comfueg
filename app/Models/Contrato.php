@@ -51,7 +51,7 @@ class Contrato extends Model
         $respuesta = explode('+', date("c", strtotime($date)));
         return ($respuesta[0]);
     }
-    public function modificarMac ($ope) ### 'ope' => 1 = Del, 0 = Add
+    public function modificarMac ($ope) ### 'ope' =>> 1 = Del, 0 = Add
     {
         return ubiquiti::tratarMac(
             [
@@ -83,7 +83,12 @@ class Contrato extends Model
                 $macaddress = $this->relEquipo->mac_address;
                 break;
             
-            case (2 || 3):
+            case (2):
+                $ip = $this->relRouter->ip;
+                $macaddress = $this->relRouter->mac_address;
+                break;
+            
+            case (3):
                 $ip = $this->relRouter->ip;
                 $macaddress = $this->relRouter->mac_address;
                 break;
@@ -95,6 +100,7 @@ class Contrato extends Model
         }
         if ($apiMikro = $this->openSessionGateway()) 
         {
+            ### Programa contrato en MIkreotik
             $apiMikro->addClient([
                 'name' => $ip,
                 'mac-address' => $macaddress,
@@ -102,11 +108,23 @@ class Contrato extends Model
                 'server' => 'hotspot1',
                 'list' => $this->relPlan->id
             ]);
+            
+            ### Programa DHCP server para equipo y/o router
             $apiMikro->checkDhcpServer($this->relPlan->relPanel->relEquipo->ip);
-            $apiMikro->comm('/ip/dhcp-server/lease/add', [  'address' => $ip,
-                                                            'mac-address' => $macaddress,
-                                                            'server' => 'SlamServer',
-                                                            'comment' => $this->id]);
+            if ($this->tipo === 1 || $this->tipo === 0 || $this->tipo === 2)
+            {
+                $apiMikro->addClientDhcp([  'address' => $this->relEquipo->ip,
+                                            'mac-address' => $this->relEquipo->mac_address,
+                                            'server' => 'SlamServer',
+                                            'comment' => $this->id]);
+            }
+            if ($this->tipo === 2 || $this->tipo === 3)
+            {
+                $apiMikro->addClientDhcp([  'address' => $this->relRouter->ip,
+                                            'mac-address' => $this->relRouter->mac_address,
+                                            'server' => 'SlamServer',
+                                            'comment' => $this->id]);
+            }
             return 'EXITO. Contrato de ' . $this->relCliente->getNomYApe() . ' creado con Exito en Gateway(' . $this->relPlan->relPanel->relEquipo->ip . ')';
         } 
         else 
@@ -157,8 +175,10 @@ class Contrato extends Model
     }
     public function removeContract()
     {
-        ### quitar mac del panel
-        $respuesta[] = $this->modificarMac(1);
+        ### quitar mac del panel solo
+        if ($this->num_equipo !== 157) {
+            $respuesta[] = $this->modificarMac(1);
+        }
         ### quitar contrato del gateway
         $respuesta[] = $this->removeContratoGateway();
         $this->activo = false;
@@ -173,7 +193,9 @@ class Contrato extends Model
             $clientsDataGateway = $apiMikro->getGatewayData();
             $gatewayContract = new ClientMikrotik($this->id, $clientsDataGateway);
             $apiMikro->removeClient($gatewayContract);
-            $apiMikro->comm('/ip/dhcp-server/lease/remove', ['numbers' => $apiMikro->getIdDhcpServer($this->id)]);
+            while ($dhcp_id = $apiMikro->getIdDhcpServer($this->id)) {
+                $apiMikro->delClientDhcp($dhcp_id);
+            }
             $respuesta = 'EXITO: Contrato de ' . $this->relCliente->getNomYApe() . ' fue Removido con exito del Gateway!!';
         	unset($apiMikro);
         } else 
@@ -190,19 +212,38 @@ class Contrato extends Model
             $gatewayContract = new ClientMikrotik($this->id, $clientsDataGateway);
             if ($gatewayContract->id_AddressList && $gatewayContract->id_HotspotUser)
             {
+                $apiMikro->checkDhcpServer($this->relPlan->relPanel->relEquipo->ip);
+                while ($dhcp_id = $apiMikro->getIdDhcpServer($this->id)) {
+                    $apiMikro->delClientDhcp ($dhcp_id);
+                }
+                if ($this->tipo === 0 || $this->tipo === 1 || $this->tipo === 2) {
+                    $apiMikro->addClientDhcp ([ 'address' => $this->relEquipo->ip,
+                                                'mac-address' => $this->relEquipo->mac_address,
+                                                'server' => 'SlamServer',
+                                                'comment' => $this->id]);
+                }
+                if ($this->tipo === 2 || $this->tipo === 3) {
+                    $apiMikro->addClientDhcp (['address' => $this->relRouter->ip,
+                                    'mac-address' => $this->relRouter->mac_address,
+                                    'server' => 'SlamServer',
+                                    'comment' => $this->id]);
+                }
+                if ($this->tipo === 0 || $this->tipo === 1 ) {
+                    $client_ip = $this->relEquipo->ip; 
+                    $client_mac = $this->relEquipo->mac_address; 
+                } else {
+                    $client_ip = $this->relRouter->ip; 
+                    $client_mac = $this->relRouter->mac_address; 
+                }
                 $apiMikro->setClient([
-                        'id_HotspotUser' => $gatewayContract->id_HotspotUser,
-                        'id_AddressList' => $gatewayContract->id_AddressList,
-                        'name' => $this->relEquipo->ip,
-                        'mac-address' => $this->relEquipo->mac_address,
-                        'comment' => $this->id,
-                        'server' => 'hotspot1',
-                        'list' => $this->relPlan->id]);
-                        $apiMikro->checkDhcpServer($this->relPlan->relPanel->relEquipo->ip);
-                        $apiMikro->comm('/ip/dhcp-server/lease/set', [  'numbers' => $apiMikro->getIdDhcpServer($this->id),
-                                                                        'address' => $this->relEquipo->ip,
-                                                                        'mac-address' => $this->relEquipo->mac_address]);
-                        $respuesta = 'Contrato de ' . $this->relCliente->getNomYApe() . ' modificado con Exito!!';
+                    'id_HotspotUser' => $gatewayContract->id_HotspotUser,
+                    'id_AddressList' => $gatewayContract->id_AddressList,
+                    'name' => $client_ip, 
+                    'mac-address' => $client_mac, 
+                    'comment' => $this->id,
+                    'server' => 'hotspot1',
+                    'list' => $this->relPlan->id]);
+                $respuesta = 'EXITO. Contrato de ' . $this->relCliente->getNomYApe() . ' modificado con Exito!!';
             }
             else
                 {
@@ -231,4 +272,5 @@ class Contrato extends Model
         }
         return 'ERROR: al renovar IP antena cliente.';
     }
+    
 }

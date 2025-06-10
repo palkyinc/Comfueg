@@ -11,13 +11,7 @@ $mostrarSololectura = true;
                         <button type="submit" class="btn btn-primary mx-3">Enviar</button>
                     </form>
 
-        @if ( session('mensaje') )
-            <div class="alert alert-info">
-                @foreach (session('mensaje') as $item)
-                    {{ $item }} <br>
-                @endforeach
-            </div>
-        @endif
+@include('layouts.mensajes')
         
 <div class="table-responsive">
                 

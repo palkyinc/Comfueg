@@ -89,7 +89,7 @@ class Ubiquiti{
                          'ip' => IP,
                          'contrato' => Numero de contrato,
                          'name' => nombre del cliente,
-                         'ope' => 1 //1 = retrive, 0 = change
+                         'ope' => 1 || 1 = retrive, 0 = change
      */
     public static function changeDeviceName ($datos)
     {
@@ -264,19 +264,19 @@ class Ubiquiti{
                             shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' iwpriv ath0 kickmac ' . $datos['macaddress'] . ' 2>&1');
                             shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m save.sh 2>&1');
                             shell_exec('echo n | plink ' . $datos['usuario'] . '@' . $datos['ip'] . ' -pw ' . $datos['password'] . ' -m reboot.sh 2>&1');
-                            return 'EXITO. Se eliminó con exito Mac Address (' . $macaddress . ') del Panel con IP:' . $datos['ip'];
+                            return 'EXITO. Se eliminó con exito Mac Address (' . $datos['macaddress'] . ') del Panel con IP:' . $datos['ip'];
                         }
                         
                     }
                     fclose($newFile);
-                    return 'ERROR. No se encontró Mac Address (' . $macaddress . ') para borrar en Panel con IP: ' . $datos['ip'];
+                    return 'ERROR. No se encontró Mac Address (' . $datos['macaddress'] . ') para borrar en Panel con IP: ' . $datos['ip'];
                     break;
                 
                 default:
                     return "ERROR. tipo de ope incorrecta al tratar Mac en Panel";
                     break;
             }
-            shell_exec ("echo y | plink $usuario@$ip -pw $password iwpriv ath0 $command $macaddress > response.txt 2>&1");
+            //shell_exec ("echo y | plink $usuario@$ip -pw $password iwpriv ath0 $command $datos['macaddress'] > response.txt 2>&1");
             return true;
         }
 

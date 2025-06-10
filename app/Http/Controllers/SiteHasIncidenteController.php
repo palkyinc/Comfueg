@@ -285,7 +285,7 @@ class SiteHasIncidenteController extends Controller
             foreach ($aBarrios as $barrio) {
                 $barrios_afectados[$barrio['id']] = $barrio['nombre'];
             }
-        return $barrios_afectados;
+        return isset($barrios_afectados) ? $barrios_afectados : 'No se encuentran barrios asociados.';
     }
 
     private function panelesAfectados($arraySitios)

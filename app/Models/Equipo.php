@@ -127,20 +127,26 @@ class Equipo extends Model
         if ($dispositivos)
         {
             $candidatos = Panel::where('activo',true)->get();
+            foreach ($candidatos as $panel) {
+                if ($panel->relEquipo->ip === $ip)
+                {
+                    return false;
+                }
+            }
         } else {
             $candidatos = Contrato::where('baja',false)->get();
+            foreach ($candidatos as $contrato) {
+               if ($contrato->relEquipo->ip === $ip || ($contrato->relRouter && $contrato->relRouter->ip === $ip))
+                {
+                    return false;
+                }
         }
-        foreach ($candidatos as $panel) {
-            if ($panel->relEquipo->ip === $ip)
-            {
-                return false;
-            }
         }
         return true;
     }
     public function setIpAuto ()
     {
-        if ($this->ip != '0.0.0.0' && self::ipLibrePaneles($this->ip, true) && self::ipLibrePaneles($this->ip, true)) {
+        if ($this->ip != '0.0.0.0' && self::ipLibrePaneles($this->ip, true) && self::ipLibrePaneles($this->ip, false)) {
             return true;
         }
         $ip_inicial = $this->getIpInicial();
@@ -227,31 +233,43 @@ class Equipo extends Model
             $this->fecha_baja = null;
             ## Si viene con un IP verificar que no este usado
             ## sino set ip auto
-            $rta = 'EXITO: Equipo ' . $this->getResumida() . ' dado de alta.';
-            if ( Equipo::ipLibrePaneles($this->ip, true) && Equipo::ipLibrePaneles($this->ip, false) )
+            $rta = 'EXITO: Equipo ' . $this->getResumida() . ' IP: ' . $this->ip . ' configurado manual.';
+            if ( $this->ip === '0.0.0.0' || (Equipo::ipLibrePaneles($this->ip, true) && Equipo::ipLibrePaneles($this->ip, false)) )
             {
                 if ($this->ip === '0.0.0.0') {
-                    $rta = $rta . 'EXITO: Se asigna IP Auto.';
-                    return $this->setIpAuto() ? $rta : false;
+                    $rta = 'EXITO: Se asigna IP Auto a equipo ' . $this->mac_address . 'IP: ';
+                    return $this->setIpAuto() ? $rta . $this->ip : false;
                 }
             }
             else {
+                $this->changeEquipoStatus(false);
+                $rta = 'ERROR: IP ' . $this->ip . ' ya esta en uso.';
+                $this->ip = '0.0.0.0';
+                $this->save();
+                if ($this->setIpAuto()) {
+                    $rta .= ' Se asigna IP Auto a equipo ' . $this->mac_address . 'IP: ' . $this->ip;
+                } else {
                 return false;
-            }
+                }
             return $rta;
+            }
         } else
                 {
                     ### BAJA
                     $this->fecha_baja = date('Y-m-d');
                     $this->ip = '0.0.0.0';
-                    $rta = 'EXITO: Equipo ' . $this->getResumida() . ' dado de baja';
+                    $rta = 'EXITO: Equipo ' . $this->getResumida() . ' dado de baja. IP: 0.0.0.0';
+                    $this->save();
                 }
-        $this->save();
         return $rta;
+    }
+    public function checkEquipoIp ()
+    {
+
     }
     public function unlinkContract ($cliente_nombre)
     {
-        $this->comentario = $this->comentario . ' EX-' . $contrato->relCliente->getNomYApe() . '|' . date("Y-M-d") . '. ';
+        $this->comentario = $this->comentario . ' EX-' . $cliente_nombre . '|' . date("Y-M-d") . '. ';
         $this->save();
         $rta[] = 'EXITO. Se cambio comentario de equipo con macaddress: ' . $this->mac_address;
         $rta[] = $this->changeEquipoStatus(0);

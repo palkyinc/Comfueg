@@ -38,17 +38,17 @@ use App\Http\Controllers\Concepto_debitoController;
 use App\Http\Controllers\MacAddressExceptionController;
 use App\Http\Controllers\ConfigPanelController;
 
-use App\Custom\CronFunciones;//TEST
 ####TEST
 /* 
-use App\Custom\ubiquiti;//TEST
+use App\Models\Equipo; //TEST
 use App\Models\Contrato; //TEST
+use App\Custom\CronFunciones;//TEST
+use App\Custom\ubiquiti;//TEST
 use App\Custom\GatewayMikrotik;//TEST
 use Illuminate\Support\Facades\File; //TEST
 use Illuminate\Support\Facades\Storage; //TEST
 use App\Models\Proveedor;//TEST
 use App\Models\Panel;//TEST
-use App\Models\Equipo; //TEST
 use Illuminate\Support\Facades\Mail;//TEST
 use App\Models\Cliente; //TEST
 use App\Custom\Ubiquiti;
@@ -79,23 +79,24 @@ use Illuminate\Support\Facades\Crypt;
 dd(CronFunciones::generarArchivoSem($dias));
 }); */
 
-Route::get('/auditPaneles', function () {
+/* Route::get('/auditPaneles', function () {
         //CronFunciones::bkpPaneles();
         //$rta = CronFunciones::auditAntennas();
         //CronFunciones::logError(['clase' => 'routes/web.php', 'metodo' => 'sarasa', 'error' => 'Funciona OK.']);
         CronFunciones::diario02(); // => actualizarIssuesVencidos();
         //CronFunciones::diario03(); // => enviarErrorsMail();
-        /* $rta = ubiquiti::changeDeviceName([
+        $rta = ubiquiti::changeDeviceName([
                          'usuario' => 'ubnt',
                          'password' => 'S1mon3d@',
                          'ip' => '10.10.21.108',
                          'contrato' => '541',
                          'name' => 'PAONE & CI',
                          'ope' => 1 //1 = retrive, 0 = change
-         ]); */
+         ]);
          dd($rta);
         dd('Fin Sarasa.');
-});
+        });
+*/
 
 /* Route::view('/welcome', 'index'); */
 /* Route::get('/test/', function (){
@@ -239,6 +240,7 @@ Route::post('/agregarContrato', [ContratoController::class, 'store'])->middlewar
 Route::get('/modificarContrato/{id}', [ContratoController::class, 'edit'])->middleware('auth');
 Route::get('/testContrato/{id}', [ContratoController::class, 'test'])->middleware('auth');
 Route::get('/modificarContratroNoPaga/{id}', [ContratoController::class, 'updateNoPaga'])->middleware('auth');
+Route::patch('/modificarContratoTipo', [ContratoController::class, 'updateTipo'])->middleware('auth');
 Route::patch('/modificarContratoEquipo', [ContratoController::class, 'updateEquipo'])->middleware('auth');
 Route::patch('/modificarContratoCliente', [ContratoController::class, 'updateCliente'])->middleware('auth');
 Route::patch('/modificarContratoPanel', [ContratoController::class, 'updatePanel'])->middleware('auth');

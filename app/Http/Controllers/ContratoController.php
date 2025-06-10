@@ -229,7 +229,7 @@ class ContratoController extends Controller
         $contrato->pem = false;
         $contrato->creator = auth()->user()->id;
         $contrato->save();
-        $mensaje['success'][] = 'EXITO. Se grabó Contrato en Base de Datos.';
+        $mensaje['success'][] = 'EXITO. Se guardo Contrato.';
         switch ($contrato->tipo) {
             case 1:
                 ##activa el equipo
@@ -263,7 +263,6 @@ class ContratoController extends Controller
                 break;
             
             case 2:
-                dd('stop tipo 2');
                 ##set ip en num_equipo
                 $contrato->relEquipo->setIpAuto();
                 ##set ip en router_id
@@ -279,7 +278,6 @@ class ContratoController extends Controller
                 break;
             
             case 3:
-                dd('stop tipo 3');
                 ##set ip en router_id
                 $contrato->relRouter->setIpAuto();
                 ##Refresh al objeto
@@ -303,6 +301,7 @@ class ContratoController extends Controller
             
          */
         $alta->programado = true;
+        $alta->contrato_id = $contrato->id;
         ## $alta->instalacion_fecha debe ser la fecha que instaló luego de la prueba de instalacion.
         $alta->save();
         if (!isset($mensaje['error'])) {
@@ -405,6 +404,7 @@ class ContratoController extends Controller
     {
         $contrato = Contrato::find($id);
         $datos = $this->getDataCreateEdit($contrato->num_equipo);
+        $datos['tipos'] = [0 =>'Default (Standard)', 1 => 'STANDARD', 2 => 'ANTENA BRIDGE + ROUTER CLIENTE', 3 => 'SOLO ROUTER CLIENTE'];
         $datos['issue_id'] = ($issue_id = Issue::where('contrato_id', $contrato->id)->where('titulo_id', 11)->where('closed', false)->first()) ? $issue_id->id : NULL;
         $datos['elemento'] =  $contrato;
         return view('modificarContrato', $datos);
@@ -498,6 +498,23 @@ class ContratoController extends Controller
         } */
         return redirect ('adminContratos?contrato=' . $request['id'])->with('mensaje', $respuesta);
     }
+    public function updateTipo (Request $request)
+    {
+        $contrato = Contrato::find($request['id']);
+        $contrato->tipo = $request['tipo'];
+        $respuesta['success'][] = $descripcion = 'Cambio Tipo en contrato N°: ' . $contrato->id . ' de: ' . $contrato->relCliente->getNomYApe() . ', se cambia tipo de contrato de tipo: ' . $contrato->getOriginal()['tipo'] . ' a: ' . $contrato->tipo . '.';
+        $contrato->save();
+        $ticket = \App\Models\Issue::create([
+                    'titulo_id' => 12,
+                    'descripcion' => $descripcion,
+                    'asignado_id' => Auth::id(),
+                    'creator_id' => 1,
+                    'cliente_id' => $contrato->relCliente->id,
+                    'contrato_id' => $contrato->id,
+                    'closed' => true]);
+        $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambio en titular del contrato N°: ' . $contrato->id;
+        return redirect ('modificarContrato/' . $request['id'])->with('mensaje', $respuesta);
+    }
     public function updateNoPaga ($id){
         $contrato = Contrato::find($id);
         $anterior = $contrato->no_paga;
@@ -518,64 +535,227 @@ class ContratoController extends Controller
     }
     public function updateEquipo (Request $request)
     {
+        $hoy = date('d.M.Y');
         $contrato = Contrato::find($request['id']);
-        $new_equipo = Equipo::where('mac_address', strtoupper($request->mac_address))->first();
-        $old_equipo = $contrato->relEquipo;
-        dd($old_equipo);
-        ### SI Existe el equipo con el $mac_addres
-        if ($new_equipo) {
-                $old_contrato = Contrato::where('num_equipo', $new_equipo->id)->first();
-                ### SI el equipo esta vinculado con un contrato
-                if ($old_contrato) {
-                    
-                    ### Si el contrato esta baja
-                    if ($old_contrato->baja) {
-                        ### Borrar mac address en contrato anterior por mac address router default
-                        ### Cambiar equipo en contrato solicitado
-                        dd('de baja y se puede cambiar');
-                    ### SINO
-                    } else {
-                        ### retornar con Mensaje:" mac address vinculado a contrato activo"
-                        $respuesta['error'][] = 'Equipo con Mac Address: ' . $request->mac_address . ' se encuentra afectado al contrato: ' . $old_contrato->id . ', perteneciente a: ' . $old_contrato->relCliente->getNomYApe();
-                        return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
-                    }
-                    
-                ### SINO
-                } else {
-                    ### Cambiar equipo en contrato solicitado
-                    ## activar equipo nuevo
-                    $answer = $new_equipo->changeEquipoStatus(true);
-                    if(!$answer)
-                    {
-                        $respuesta[] = 'ERROR. No se pudo asignar IP';
-                        return redirect ('/modificarContrato/' . $request['id'])->with('mensaje', $respuesta);
-                    }
-                    ## desactivar equipo anterior
-                    $respuesta[] = $old_equipo->unlinkContract($contrato->relCliente->getNomYApe());
-                    //$respuesta[] = $contrato->modificarMac(1);
-                    $contrato->num_equipo = $new_equipo->id;
-                    $respuesta[] = ' Cambio de Equipo: ' . $old_equipo->mac_address . ' POR ' . $new_equipo->mac_address;
-                    $contrato->save();
-                    $contrato->refresh();
-                    $respuesta[] = $contrato->modificarMac(0);
-                    $respuesta[] = $contrato->modifyContratoGateway();
-                    $respuesta[] = $contrato->renewIPAntenaClient();
-                    return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
-                }
-        ###SINO                
+        if (isset($request->mac_address) && ($contrato->tipo === 0 || $contrato->tipo === 1 || $contrato->tipo === 2) ) {
+            $new_equipo = Equipo::where('mac_address', strtoupper($request->mac_address))->first();
+            if (!$new_equipo) {
+                $respuesta['error'][] = 'No se encuentra equipo con Mac Address: ' . $request->mac_address . ' cargado en la base de datos.';
+                return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+            }
         } else {
-            ### retornar con Mensaje:"No se encuentra equipo con Mac Address XX:XX:XX:XX:XX:XX"
-            $respuesta['error'][] = 'No se encuentra equipo con Mac Address: ' . $request->mac_address . ' cargado en la base de datos.';
+            $new_equipo = null;
+        }
+        if (isset($request->mac_address_2) && ($contrato->tipo === 2 || $contrato->tipo === 3 ) ) {
+            $new_router = Equipo::where('mac_address', strtoupper($request->mac_address_2))->first();
+            if (!$new_router) {
+                $respuesta['error'][] = 'No se encuentra equipo con Mac Address: ' . $request->mac_address_2 . ' cargado en la base de datos.';
+                return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+            }
+        } else {
+            $new_router = null;
+        }
+        if ($new_equipo && $new_router && $new_equipo->id === $new_router->id) {
+            $respuesta['error'][] = 'Se deben ingresan Mac Address distintos';
+                return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+        }
+        $old_equipo = $contrato->relEquipo;
+        $old_router = $contrato->relRouter;
+        $old_contrato_equipo = ($new_equipo) ? Contrato::where('num_equipo', $new_equipo->id)->orWhere('router_id', $new_equipo->id)->first() : null;
+        $old_contrato_router = ($new_router) ? Contrato::where('num_equipo', $new_router->id)->orWhere('router_id', $new_router->id)->first() : null;
+        ### Si los new_equipo y new_router son vacios retornar error
+        if (($contrato->tipo === 0 || $contrato->tipo === 1) && !$new_equipo) {
+            $respuesta['error'][] = 'Se Requiere MacAddress de Equipo.';
+            return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+        } elseif ($contrato->tipo === 2 && !$new_router && !$new_equipo)   {
+            $respuesta['error'][] = 'Se Requiere MacAddress de Equipo y/o de Router.';
+            return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+        } elseif (($contrato->tipo === 3) && !$new_router) {
+            $respuesta['error'][] = 'Se Requiere MacAddress de Router.';
             return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
         }
+        ## Si new equipo es panel o pertenece a exception
+            ## Volver a modificarContrato con mensaje de error
+        if ($new_equipo && $panel = \App\Models\Panel::where('id_equipo', $new_equipo->id)->where('activo', true)->first()) {
+            $respuesta['error'][] = 'Antena ' . $request->mac_address . ' es un panel ACTIVO: ' . $panel->ssid;
+            return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+        }
+        if ($new_equipo && $exception = \App\Models\Mac_address_exception::where('equipo_id', $new_equipo->id)->first()) {
+            $respuesta['error'][] = 'Antena ' . $request->mac_address . ' pertenece a una exception: ' . $exception->description;
+            return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+        }
+        ## Si new router es panel o pertenece a exception
+            ## Volver a modificarContrato con mensaje de error
+        if ($new_router && $panel = \App\Models\Panel::where('id_equipo', $new_router->id)->where('activo', true)->first()) {
+            $respuesta['error'][] = 'Router ' . $request->mac_address . ' es un panel ACTIVO: ' . $panel->ssid;
+            return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+        }
+        if ($new_router && $exception = \App\Models\Mac_address_exception::where('equipo_id', $new_router->id)->first()) {
+            $respuesta['error'][] = 'Router ' . $request->mac_address . ' pertenece a una exception: ' . $exception->description;
+            return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+        }
+
+
+        ### SI el equipo esta vinculado con un contrato
+         ### Cambiar ID de equipo de viejo a nuevo en contrato
+        if ($old_contrato_equipo) {
+            if ($old_contrato_equipo->id === $contrato->id) {
+                $respuesta['success'][] = 'Antena ' . $request->mac_address . ' pertenece al contrato de: ' . $old_contrato_equipo->relCliente->getNomYApe() . ', será reprogramado.';
+                $no_borrar_equipo = true;
+            } elseif ($old_contrato_equipo->baja) {
+                ### Cambiar num_equipo en contrato anterior por router default (157)
+                $old_contrato_equipo->num_equipo = 157;
+                $old_contrato_equipo->save();
+                $respuesta['success'][] = 'Antena ' . $request->mac_address . ' fue desvinculada del contrato de: ' . $old_contrato_equipo->relCliente->getNomYApe() . ', N°: ' . $old_contrato_equipo->id;
+            } else {
+                $respuesta['error'][] = 'Antena ' . $request->mac_address . ' pertenece al contrato activo de: ' . $old_contrato_equipo->relCliente->getNomYApe() . ', N°: ' . $old_contrato_equipo->id;
+                return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+            }
+            
+        }
+        if ($old_contrato_router) {
+            if ($old_contrato_router->id === $contrato->id) {
+                $respuesta['success'][] = 'Router ' . $request->mac_address_2 . ' pertenece al contrato de: ' . $old_contrato_router->relCliente->getNomYApe() . ', será reprogramado.';
+                $no_borrar_router = true;
+            } elseif ($old_contrato_router->baja) {
+                ### Cambiar roputer_id en contrato anterior por null
+                $old_contrato_router->router_id = null;
+                $old_contrato_router->save();
+                $respuesta['success'][] = 'Router ' . $request->mac_address_2 . ' fue desvinculada del contrato de: ' . $old_contrato_router->relCliente->getNomYApe() . ', N°: ' . $old_contrato_router->id;
+            } else {
+                $respuesta['error'][] = 'Router ' . $request->mac_address_2 . ' pertenece al contrato activo de: ' . $old_contrato_router->relCliente->getNomYApe() . ', N°: ' . $old_contrato_router->id;
+                return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
+            }
+            
+        }
+
+        ### En equipo viejo en contrato agregar comentarios, 'Ex equipo de: De Tal, Fulano'
+        if ((($new_equipo && $contrato->num_equipo) || ($contrato->num_equipo && $contrato->tipo === 3)) && !isset($no_borrar_equipo)) {
+            $contrato->relEquipo->unlinkContract ($contrato->relCliente->getNomYApe());
+        }
+        if ((($new_router && $contrato->router_id) || (($contrato->router_id && ($contrato->tipo === 1 || $contrato->tipo === 0)))) && !isset($no_borrar_router)  ) {
+            $contrato->relRouter->unlinkContract ($contrato->relCliente->getNomYApe());
+        }
+        ### quitar mac del panel solo
+        if ($contrato->num_equipo !== 157) {
+            $this->analizarRta($rta = $contrato->modificarMac(1)) ? $respuesta['success'][] = $rta : $respuesta['error'][] = $rta;
+        }
         
-        ### funcion Cambiar equipo en contrato solicitado
-            ### En equipo viejo agregar comentarios, 'Ex equipo de: De Tal, Fulano'
-            ### Al nuevo equipo cambiar nombre por nombre del contrato.
-            ### Cambiar ID de equipo de viejo a nuevo en contrato
-            ### Reprogramar mikrotik
-            ### Reprogramar antena
-            ### Crear ticket registrando cambio
+        ### Unlink equipo y/o router antiguos de Mikrotik
+        $this->analizarRta($rta = $contrato->removeContratoGateway()) ? $respuesta['success'][] = $rta : $respuesta['error'][] = $rta;
+        
+        ### Cambiar equipo en contrato solicitado
+        if (isset($no_borrar_equipo)) {
+
+            ### Cambiar por un IF
+            $contrato->num_equipo = 157;
+            $contrato->save();
+            $contrato->refresh();
+            if ($rta = $new_equipo->changeEquipoStatus(true)) {
+                $respuesta['success'][] = $rta;
+            } else {
+                $respuesta['error'][] = 'No se pudo asignar a IP, en Equipo con MacAddress: ' . $new_equipo->mac_address;
+                return redirect ('/modificarContrato/' . $request['id'])->with('mensaje', $respuesta);
+            }
+            
+            $contrato->num_equipo = $new_equipo->id;
+            $grabar = true;
+            $cambios[] = 'Equipo: Sin cambios, se reprograma: ' . $new_equipo->mac_address . ' con IP ' . $new_equipo->ip;
+        }
+        elseif ( ($contrato->tipo === 0 || $contrato->tipo === 1 || $contrato->tipo === 2) )
+        {
+            if($contrato->num_equipo !== 157)
+            {
+                $old_macaddress = $contrato->relEquipo->mac_address;
+            } else {
+                $old_macaddress = 'Equipo Default';
+            }
+            ### Cambiar estado de equipo y/o router nuevos
+            if ($new_equipo && !$rta = $new_equipo->changeEquipoStatus(true)) {
+                $respuesta['error'][] = 'No se pudo asignar a IP, en Equipo con MacAddress: ' . $new_equipo->mac_address;
+                return redirect ('/modificarContrato/' . $request['id'])->with('mensaje', $respuesta);
+            } else {
+                $this->analizarRta($rta) ? $respuesta['success'][] = $rta : $respuesta['error'][] = $rta;
+            }
+            $cambios[] = 'Equipo: ' . $new_equipo->mac_address . ' X ' . $old_macaddress;
+            $contrato->num_equipo = $new_equipo->id;
+            if ($contrato->tipo !== 2 && $contrato->router_id !== null) {
+                $cambios[] = ($contrato->relRouter->mac_address ? 'Router' . $contrato->relRouter->mac_address . ' X NULL' : '');
+                $contrato->router_id = null;
+            }
+            $grabar = true;
+        }
+
+        if (isset($no_borrar_router)) {
+            $contrato->router_id = null;
+            $contrato->save();
+            $contrato->refresh();
+            $this->analizarRta($rta = $new_router->changeEquipoStatus(true)) ? $respuesta['success'][] = $rta : $respuesta['error'][] = 'No se pudo asignar a IP, en Equipo con MacAddress: ' . $new_equipo->mac_address;
+            $contrato->router_id = $new_router->id;
+            $grabar = true;
+            $cambios[] = 'Router: Sin cambios, se reprograma: ' . $new_router->mac_address . ' con IP ' . $new_router->ip;
+        }
+        elseif ( ($contrato->tipo === 2 || $contrato->tipo === 3) )
+        {
+            if ($new_router) {
+                $old_macaddress = $contrato->relRouter ? $contrato->relRouter->mac_address : 'NULL';
+            } else {
+                $old_macaddress = 'NULL';
+            }
+            ### Cambiar estado de equipo y/o router nuevos
+            if ($new_router && !$rta_router = $new_router->changeEquipoStatus(true)) {
+                $respuesta['error'][] = 'No se pudo asignar a IP, en Equipo con MacAddress: ' . $new_router->mac_address;
+                return redirect ('/modificarContrato/' . $request['id'])->with('mensaje', $respuesta);
+            } else {
+                $this->analizarRta($rta_router) ? $respuesta['success'][] = $rta_router : $respuesta['error'][] = $rta_router;
+            }
+            $cambios[] = $new_router->mac_address . ' X ' . $old_macaddress ;
+            $contrato->router_id = $new_router->id;
+            $grabar = true;
+            if ($contrato->tipo === 3 && $contrato->num_equipo !== 157)
+            {
+                $old_macaddress = $contrato->relEquipo->mac_address;
+                $cambios[] = 'Equipo: ' . $contrato->relEquipo->mac_address . ' X Equipo Default';
+                $contrato->num_equipo = 157;
+            }
+        }
+        if (isset($grabar)) {
+            $contrato->save();
+            $contrato->refresh();
+        }
+
+        ### Al nuevo equipo cambiar nombre por nombre del contrato.
+        if ($new_equipo) {
+            $new_equipo->nombre = $contrato->relCliente->getNomYApe();
+            $new_equipo->save();
+        }
+        if ($new_router) {
+            $new_router->nombre = $contrato->relCliente->getNomYApe();
+            $new_router->save();
+        }
+        
+        ### Programar antena en Panel
+        if ($contrato->tipo === 0 || $contrato->tipo === 1 || $contrato->tipo === 2) {
+            $this->analizarRta($rta = $contrato->modificarMac(0)) ? $respuesta['success'][] = $rta : $respuesta['error'][] = $rta;
+        }
+
+        ### Reprogramar mikrotik
+        $this->analizarRta($rta = $contrato->modifyContratoGateway()) ? $respuesta['success'][] = $rta : $respuesta['error'][] = $rta;
+        $this->analizarRta($rta = $contrato->renewIPAntenaClient()) ? $respuesta['success'][] = $rta : $respuesta['error'][] = $rta;
+
+        ### Crear ticket registrando cambio
+        $descripcion = Auth::user()->name . ' realiza Cambio de equipo y/o router. ' . implode('. ', $cambios);
+        $ticket = \App\Models\Issue::create([
+            'titulo_id' => 12,
+            'descripcion' => $descripcion,
+            'asignado_id' => Auth::id(),
+            'creator_id' => 1,
+            'cliente_id' => $contrato->relCliente->id,
+            'contrato_id' => $contrato->id,
+            'closed' => true]);
+        $respuesta['success'][] = 'Ticket N°: ' . $ticket->id . ' por cambio en Equipo y/o Router del contrato N°: ' . $contrato->id;
+        
+        return redirect('/modificarContrato/' . $request->id)->with('mensaje', $respuesta);
         
     }
     public function updateCoordenadas(Request $request)

@@ -17,8 +17,8 @@ use App\Mail\DeudaTecnicaCerrada;
 class Site_has_incidente extends Model
 {
     use HasFactory;
-    // $tipo -> false = nuevo, 'actualizacion', 'cerrado'
-    // $esDeuda -> true = es Deuda, false = no es deuda
+    ### $tipo -> false = nuevo, 'actualizacion', 'cerrado'
+    ### $esDeuda -> true = es Deuda, false = no es deuda
     public function enviarMail($tipo = false, $esDeuda = false)
     {
         if (!$esDeuda)
@@ -86,7 +86,6 @@ class Site_has_incidente extends Model
     }
     public static function incidentesAbiertos ()
     {
-        //$incidentes = Site_has_incidente::where('final', null)->where('tipo', 'INCIDENTE')->get();
         $incidentes = Site_has_incidente::where('final', null)->get();
         foreach ($incidentes as $incidente) {
             $incidente->archivos = Entity_has_file::getArchivosEntidad(3, $incidente->id);

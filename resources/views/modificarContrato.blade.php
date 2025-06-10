@@ -53,28 +53,75 @@ $mostrarSololectura = true;
                 <div class="form-group col-md-10 border">
                     <p class="m-3">Status comercial: {{$elemento->no_paga ? 'NO FACTURA' : 'Factura'}}</p>
                 </div>
-                <div class="form-group col-md-2 align-self-center p-1 m-1 d-flex justify-content-center d-flex flex-column">
+                <div class="form-group col-md-2 align-self-center p-1 d-flex justify-content-center d-flex flex-column">
                     <a href="/modificarContratroNoPaga/{{$elemento->id}}" class="btn btn-primary m-1">Cambiar</a>
-                </div>  
+                </div>
+                {{-- TIPO DE CONTRATO --}}
+                <div class="form-group col-md-8 border">
+                    <p class="m-3">Tipo de contrato: {{$tipos[$elemento->tipo]}}</p>
+                </div>
+                <div class="form-group col-md-4 align-self-center p-1 d-flex justify-content-center d-flex flex-column">
+                    <div class="border border-1 border-info p-1 m-1 d-flex flex-column justify-content-center">
+                        <form action="/modificarContratoTipo" method="post" class="d-flex justify-content-center d-flex flex-column margenAbajo">
+                            @csrf
+                            @method('patch')
+                                <input type="hidden" name="id" value="{{$elemento->id}}">
+                                <select class="custom-select p-1" name="tipo">
+                                    @foreach ($tipos as $key => $tipo)
+                                        @if ($key === $elemento->tipo || $key === 0)
+                                            <option value="{{$key}}" selected disabled>{{$tipo}}</option>
+                                        @else
+                                            <option value="{{$key}}">{{$tipo}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                <button class="btn btn-primary p-1"  title="Cambiar Tipo">Cambiar</button>
+                        </form>
+                    </div>
+                </div>
             @else
                 <div class="form-group col-md-12 border">
                     <p class="m-3">Status comercial: {{$elemento->no_paga ? 'NO FACTURA' : 'Factura'}}</p>
                 </div>
+                {{-- TIPO DE CONTRATO --}}
+                <div class="form-group col-md-12 border">
+                    <p class="m-3">Tipo de contrato: {{$tipos[$elemento->tipo]}}</p>
+                </div>
+                
             @endif
+
             @if(auth()->user()->can('contratos_edit'))
-                {{-- EQUIPO CLIENTE --}}
+                {{-- EQUIPO CLIENTE Y ROUTER CLIENTE--}}
                 <div class="form-group col-md-10 border">
+                    
+                    @if ($elemento->num_equipo !== 157)
                     <p class="m-3">Equipo Cliente: {{$elemento->relEquipo->getResumida()}}</p>
+                    @else
+                    <p class="m-3">Equipo Cliente: NO CONFIGURADO</p>
+                    @endif
+                    
+                    @if ($elemento->router_id !== null)
+                        <p class="m-3">Router Cliente: {{$elemento->relRouter->getResumida()}}</p>
+                    @else
+                        <p class="m-3">Router Cliente: NO CONFIGURADO</p>
+                    @endif
                 </div>
                 <div class="form-group col-md-2">
-                    <div class="border border-1 border-info p-1 m-1 d-flex flex-column justify-content-center">
-                        <form action="/modificarContratoEquipo" method="post" class="align-self-center d-flex justify-content-center d-flex flex-column margenAbajo">
-                        @csrf
-                        @method('patch')
-                            <input type="hidden" name="id" value="{{$elemento->id}}">
-                            <input type="text" name="mac_address" class="form-control p-1" placeholder="Mac Address" aria-label="nuevoCliente" aria-describedby="basic-addon1">
-                            <button class="btn btn-primary p-1"  title="Cambiar Cliente">Cambiar</button>
-                        </form>
+                    <div class="form-group">
+                        <div class="border border-1 border-info p-1 m-1 d-flex flex-column justify-content-center">
+                            <form action="/modificarContratoEquipo" method="post" class="align-self-center d-flex justify-content-center d-flex flex-column margenAbajo">
+                            @csrf
+                            @method('patch')
+                                <input type="hidden" name="id" value="{{$elemento->id}}">
+                                @if ($elemento->tipo === 2 || $elemento->tipo === 1 || $elemento->tipo === 0)
+                                    <input type="text" name="mac_address" class="form-control p-1" placeholder="Mac Equipo" aria-label="nuevoCliente" aria-describedby="basic-addon1">
+                                @endif
+                                @if ($elemento->tipo === 2 || $elemento->tipo === 3)
+                                    <input type="text" name="mac_address_2" class="form-control p-1" placeholder="Mac Router" aria-label="nuevoCliente" aria-describedby="basic-addon1">
+                                @endif
+                                <button class="btn btn-primary p-1"  title="Cambiar Equipo/s">Cambiar</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 {{-- PANEL --}}
@@ -112,9 +159,17 @@ $mostrarSololectura = true;
                 </div>
             @else
                 {{-- EQUIPO CLIENTE --}}
-                <div class="form-group col-md-12 border">
-                    <p class="m-3">Equipo Cliente: {{$elemento->relEquipo->getResumida()}}</p>
-                </div>
+                @if ($elemento->tipo === 2 || $elemento->tipo === 1 || $elemento->tipo === 0)
+                    <div class="form-group col-md-12 border">
+                        <p class="m-3">Equipo Cliente: {{$elemento->relEquipo->getResumida()}}</p>
+                    </div>
+                @endif
+                {{-- ROUTER CLIENTE --}}
+                @if ($elemento->tipo === 2 || $elemento->tipo === 3)
+                    <div class="form-group col-md-12 border">
+                        <p class="m-3">Router Cliente: {{$elemento->relRouter->getResumida()}}</p>
+                    </div>
+                @endif
                 {{-- PANEL --}}
                 <div class="form-group col-md-12 border">
                     <p class="m-3">Panel: {{$elemento->relPanel->getResumida()}}</p>

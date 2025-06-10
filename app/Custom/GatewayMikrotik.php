@@ -46,6 +46,18 @@ class GatewayMikrotik extends RouterosAPI
 
 	#########		Clientes		#######################
 
+	public function addClientDhcp ($datos) ## $datos =  [  'address' => $ip, 'mac-address' => $macaddress, 'server' => 'SlamServer', 'comment' => $contrato->id]
+	{
+			$this->comm('/ip/dhcp-server/lease/add', [  'address' => $datos['address'],
+														'mac-address' => $datos['mac-address'],
+														'server' => 'SlamServer',
+														'comment' => $datos['comment']
+													]);
+	}
+	public function delClientDhcp ($dhcp_id) ## $dchp_id =>> id en mikrotik DHCP Server
+	{
+		$this->comm('/ip/dhcp-server/lease/remove', ['numbers' => $dhcp_id]);
+	}
 	public function addClient ($datos) ##  $datos = [ $name => ip, $mac-address => mac, $comment => id_genesys, $server => servidor, $list => plan]
 	{
 		$this->comm("/ip/hotspot/user/add", array(
@@ -62,22 +74,22 @@ class GatewayMikrotik extends RouterosAPI
 				   	));
    	}
 	public function setClient ($datos) ##  $datos = [ id_HotspotUser => id_HotspotUser, id_AddressList => id_AddressList , $name => ip, $mac-address => mac, $comment => id_genesys, $server => servidor, $list => plan]
-		{
-			$this->comm("/ip/hotspot/user/set", array(
-			    "numbers"     	=> $datos['id_HotspotUser'],
-			    "name"     		=> $datos['mac-address'],
-			    "mac-address"   => $datos['mac-address'],
-			   	"comment"  		=> $datos['comment'],
-			   	"server"		=> $datos['server']
-			    ));
-			
-			$this->comm("/ip/firewall/address-list/set", array(
-					    "numbers"     	=> $datos['id_AddressList'],
-			    		"list"     		=> $datos['list'],
-					    "address"   	=> $datos['name'],
-					   	"comment"  		=> $datos['comment']
-					   	));
-	   	}
+	{
+		$this->comm("/ip/hotspot/user/set", array(
+			"numbers"     	=> $datos['id_HotspotUser'],
+			"name"     		=> $datos['mac-address'],
+			"mac-address"   => $datos['mac-address'],
+			"comment"  		=> $datos['comment'],
+			"server"		=> $datos['server']
+			));
+		
+		$this->comm("/ip/firewall/address-list/set", array(
+					"numbers"     	=> $datos['id_AddressList'],
+					"list"     		=> $datos['list'],
+					"address"   	=> $datos['name'],
+					"comment"  		=> $datos['comment']
+					));
+	}
    	public function removeClient ($clienteMikrotik)
    	{
    		$this->comm("/ip/hotspot/user/remove", array (
